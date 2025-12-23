@@ -1,6 +1,6 @@
-const SITE_DESCRIPTION = "";
+const SITE_DESCRIPTION = "Events system";
 
-const SITE_NAME = "";
+const SITE_NAME = "Events system";
 
 const SITE_URL = "http://localhost:3000";
 
