@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@layer theme, base, mui, components, utilities;
+@import 'tailwindcss';
+
 
 :root {
   --background: #ffffff;
