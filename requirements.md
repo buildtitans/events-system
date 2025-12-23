@@ -73,3 +73,16 @@ A brief overview of your relevant experience, especially in event or booking sys
 Links or examples of similar projects you’ve completed.
 
 Your availability and preferred hourly rate or milestone pricing.
+
+## Technology
+
+* Backend server: fastify
+* DB Connection: kysely and kysely-codegen
+* DB: PostgresSQL
+* Docker
+* Frontend: NextJS, TRPC, React, and MUI
+* Schemas: Typebox
+* Environments Variables: dotenv
+* Logging: Pino
+* Auth: supertokens
+* Repo: nx
