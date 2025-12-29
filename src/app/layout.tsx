@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import Providers from "./providers";
 import { Roboto } from "next/font/google";
-import "./globals.css";
 import { buildMetaData } from "../lib/meta/metadata";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,11 +24,9 @@ const roboto = Roboto({
 
 export const metadata: Metadata = buildMetaData();
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+type RootLayoutType = Readonly<{ children: React.ReactNode }>;
+
+function RootLayout({ children }: RootLayoutType): React.ReactNode {
   return (
     <html lang="en" className={roboto.variable}>
       <body
@@ -37,12 +35,12 @@ export default function RootLayout({
           ${geistMono.variable} 
           antialiased`
         }>
-        <AppRouterCacheProvider
-          options={{ enableCssLayer: true }}
-        >
+        <Providers>
           {children}
-        </AppRouterCacheProvider>
+        </Providers>
       </body>
     </html>
-  );
-}
+  )
+};
+
+export default RootLayout;
