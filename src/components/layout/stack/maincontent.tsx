@@ -80,9 +80,13 @@ const StyledCard = styled(Card)(({ theme }) => ({
   padding: 0,
   height: '100%',
   backgroundColor: (theme.vars || theme).palette.background.paper,
+  transition: 'ease-in-out',
+  borderRadius: '2%',
+  transitionDuration: '200ms',
   '&:hover': {
     backgroundColor: 'transparent',
     cursor: 'pointer',
+    scale: 1.02
   },
   '&:focus-visible': {
     outline: '3px solid',

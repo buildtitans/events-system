@@ -10,6 +10,10 @@ import { StyledEngineProvider } from "@mui/material/styles";
 
 const theme = createTheme({
     palette: {
+
+        info: {
+            main: '#FFF'
+        },
         mode: 'dark'
     }
 });

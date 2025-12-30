@@ -6,9 +6,11 @@ import IconButton, { IconButtonOwnProps } from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useColorScheme } from '@mui/material/styles';
+import type { JSX } from 'react';
 
-export default function ColorModeIconDropdown(props: IconButtonOwnProps) {
+export default function ColorModeIconDropdown(props: IconButtonOwnProps): JSX.Element | null {
     const { mode, systemMode, setMode } = useColorScheme();
+    if (!mode) return null;
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
