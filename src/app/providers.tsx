@@ -3,8 +3,16 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
+import AppAppBar from '../components/layout/nav/AppBar';
+import { StyledEngineProvider } from "@mui/material/styles";
 
-const theme = createTheme();
+
+const theme = createTheme({
+    palette: {
+        mode: 'dark'
+    }
+});
 
 export default function Providers({
     children,
@@ -13,12 +21,22 @@ export default function Providers({
 }) {
     return (
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-            <ThemeProvider
-                theme={theme}
+            <StyledEngineProvider injectFirst
             >
-                <CssBaseline />
-                {children}
-            </ThemeProvider>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline enableColorScheme />
+                    <AppAppBar />
+                    <Container
+                        maxWidth="lg"
+                        component="main"
+                        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+                    >
+                        {children}
+
+                    </Container>
+                </ThemeProvider>
+
+            </StyledEngineProvider>
         </AppRouterCacheProvider>
     );
 }
