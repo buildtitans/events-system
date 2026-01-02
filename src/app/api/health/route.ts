@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
 import type { HealthCheckResponse } from "@/src/lib/types/types";
 
 //Simple scaffolding to test Fastify server spinup
