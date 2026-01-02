@@ -16,6 +16,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { styled } from '@mui/material/styles';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
+import { checkFastifyHealth } from '@/src/lib/services/checkFastifyHealth';
 
 const cardData = [
   {
@@ -185,6 +186,17 @@ export default function MainContent() {
   const handleClick = () => {
     console.info('You clicked the filter chip.');
   };
+
+
+  React.useEffect(() => {
+    const executeHealthCheck = async () => {
+      const health = await checkFastifyHealth();
+      console.log(health);
+    }
+
+    executeHealthCheck();
+  }, []);
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
