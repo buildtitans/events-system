@@ -1,8 +1,7 @@
-import { Search } from "./search"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
-
+import { Search } from "./search";
 
 export function EventsSearch() {
 

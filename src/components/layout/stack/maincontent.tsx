@@ -5,15 +5,29 @@ import { checkFastifyHealth } from '@/src/lib/services/checkFastifyHealth';
 import type { JSX } from 'react';
 import { LandingHeader } from '../../ui/typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
-import { EventsSearch } from '@/src/features/eventsSearch';
-import { EventCategories } from '@/src/features/eventCategories';
 import EventCards from './eventCards';
+import { ActiveCategory } from '@/src/features/events/activeCategory';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/store';
+
+const overrides = {
+  display: 'flex',
+  flexDirection: {
+    xs: 'column-reverse',
+    md: 'row'
+  },
+  width: '100%',
+  justifyContent: 'space-between',
+  alignItems: {
+    xs: 'start',
+    md: 'center'
+  },
+  gap: 4,
+  overflow: 'auto',
+};
 
 function MainContent(): JSX.Element {
-
-  const handleClick = () => {
-    console.info('You clicked the filter chip.');
-  };
+  const displayedCategory = useSelector((s: RootState) => s.categories.displayed);
 
   React.useEffect(() => {
     const executeHealthCheck = async () => {
@@ -36,27 +50,13 @@ function MainContent(): JSX.Element {
       <LandingHeader />
       <MobileEventsSearch />
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: {
-            xs: 'column-reverse',
-            md: 'row'
-          },
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: {
-            xs: 'start',
-            md: 'center'
-          },
-          gap: 4,
-          overflow: 'auto',
-        }}
+        sx={overrides}
       >
-        <EventCategories handleClick={handleClick} />
-        <EventsSearch />
+        <ActiveCategory />
       </Box>
 
       <EventCards
+        key={displayedCategory}
       />
     </Box>
   );

@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box"
-import { Search } from "@/src/features/search"
+import { Search } from "@/src/features/search/search"
 import IconButton from "@mui/material/IconButton"
 import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded';
 
