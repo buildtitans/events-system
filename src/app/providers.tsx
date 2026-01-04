@@ -1,12 +1,11 @@
-'use client';
-
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+"use client"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import AppAppBar from '../components/layout/nav/AppBar';
 import { StyledEngineProvider } from "@mui/material/styles";
-
+import { useEffect, useState } from 'react';
+import type { MountStatus } from '../lib/types/types';
 
 const theme = createTheme({
     palette: {
@@ -23,24 +22,30 @@ export default function Providers({
 }: {
     children: React.ReactNode;
 }) {
+    const [status, setStatus] = useState<MountStatus>('idle');
+
+    useEffect(() => setStatus('active'), []);
+
+
+
     return (
-        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-            <StyledEngineProvider injectFirst
-            >
-                <ThemeProvider theme={theme}>
-                    <CssBaseline enableColorScheme />
-                    <AppAppBar />
-                    <Container
-                        maxWidth="lg"
-                        component="main"
-                        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
-                    >
-                        {children}
+        <StyledEngineProvider injectFirst
+        >
+            <ThemeProvider theme={theme}>
+                <CssBaseline enableColorScheme />
+                {(status === 'active') && <AppAppBar key="navigation_bar" />}
 
-                    </Container>
-                </ThemeProvider>
+                {(status === 'active') && <Container
+                    key="content_container"
+                    maxWidth="lg"
+                    component="main"
+                    sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+                >
+                    {children}
 
-            </StyledEngineProvider>
-        </AppRouterCacheProvider>
+                </Container>}
+            </ThemeProvider>
+
+        </StyledEngineProvider>
     );
 }

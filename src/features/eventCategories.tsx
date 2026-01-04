@@ -16,11 +16,11 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 overflow: 'auto',
             }}
         >
-            <Chip onClick={handleClick} size="medium" label="All categories" />
+            <Chip onClick={handleClick} size="medium" label="Upcoming events" />
             <Chip
                 onClick={handleClick}
                 size="medium"
-                label="Company"
+                label="Local events"
                 sx={{
                     backgroundColor: 'transparent',
                     border: 'none',
@@ -29,7 +29,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
             <Chip
                 onClick={handleClick}
                 size="medium"
-                label="Product"
+                label="Online events"
                 sx={{
                     backgroundColor: 'transparent',
                     border: 'none',
@@ -38,7 +38,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
             <Chip
                 onClick={handleClick}
                 size="medium"
-                label="Design"
+                label="Categories"
                 sx={{
                     backgroundColor: 'transparent',
                     border: 'none',
@@ -47,7 +47,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
             <Chip
                 onClick={handleClick}
                 size="medium"
-                label="Engineering"
+                label="Popular events"
                 sx={{
                     backgroundColor: 'transparent',
                     border: 'none',

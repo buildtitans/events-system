@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Providers from "./providers";
 import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,9 +36,12 @@ function RootLayout({ children }: RootLayoutType): React.ReactNode {
           ${geistMono.variable} 
           antialiased`
         }>
-        <Providers>
-          {children}
-        </Providers>
+        <AppRouterCacheProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </AppRouterCacheProvider>
+
       </body>
     </html>
   )

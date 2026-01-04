@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SitemarkIcon from './Sitemark';
 import ColorModeIconDropdown from './ColorModelIconDropdown';
 
@@ -32,6 +32,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     padding: '8px 12px',
 }));
 
+
 export default function AppAppBar() {
     const [open, setOpen] = useState(false);
 
@@ -41,6 +42,7 @@ export default function AppAppBar() {
 
     return (
         <AppBar
+            component={"nav"}
             position="fixed"
             enableColorOnDark
             sx={{

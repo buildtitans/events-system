@@ -4,7 +4,7 @@ function LandingHeader() {
 
     return (
         <div >
-            <Typography variant="h1" gutterBottom>
+            <Typography variant="h2" gutterBottom>
                 Events System
             </Typography>
             <Typography>Stay in the loop with the latest about our products</Typography>
