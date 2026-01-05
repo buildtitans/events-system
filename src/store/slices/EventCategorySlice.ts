@@ -1,13 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { EventsArraySchemaType } from "@/src/schemas/typebox/eventSchema";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
 type EventCategoryState = {
-    displayed: PresentedCategory
+    displayed: PresentedCategory,
+    events: EventsArraySchemaType
 };
 
 const initialState: EventCategoryState = {
-    displayed: 'Upcoming events'
+    displayed: 'Upcoming events',
+    events: []
 };
 
 export const EventCategorySlice = createSlice({
@@ -17,10 +20,13 @@ export const EventCategorySlice = createSlice({
         selectCategory: (state: EventCategoryState, action: PayloadAction<PresentedCategory>) => {
             state.displayed = action.payload
         },
+        getEvents: (state: EventCategoryState, action: PayloadAction<EventsArraySchemaType>) => {
+            state.events = action.payload;
+        }
     }
 });
 
-export const { selectCategory } = EventCategorySlice.actions;
+export const { selectCategory, getEvents } = EventCategorySlice.actions;
 
 export default EventCategorySlice.reducer;
 

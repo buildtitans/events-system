@@ -5,10 +5,10 @@ import { checkFastifyHealth } from '@/src/lib/services/checkFastifyHealth';
 import type { JSX } from 'react';
 import { LandingHeader } from '../../ui/typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
-import EventCards from './eventCards';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/store';
+import { usePopulateEventsList } from '@/src/lib/hooks/usePopulateEventLIst';
+import { loadEventsPipeline } from '../../pipelines/events/loadEventsPipeline';
+
 
 const overrides = {
   display: 'flex',
@@ -27,7 +27,9 @@ const overrides = {
 };
 
 function MainContent(): JSX.Element {
-  const displayedCategory = useSelector((s: RootState) => s.categories.displayed);
+  const { eventLoadingStatus } = usePopulateEventsList();
+
+  console.log(eventLoadingStatus)
 
   React.useEffect(() => {
     const executeHealthCheck = async () => {
@@ -55,9 +57,8 @@ function MainContent(): JSX.Element {
         <ActiveCategory />
       </Box>
 
-      <EventCards
-        key={displayedCategory}
-      />
+      {loadEventsPipeline(eventLoadingStatus)}
+
     </Box>
   );
 }

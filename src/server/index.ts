@@ -14,3 +14,5 @@ server.listen({ port: 3001 }, (err, address) => {
     }
     server.log.info(`Fastify BFF listening at ${address}`)
 });
+
+export { server };

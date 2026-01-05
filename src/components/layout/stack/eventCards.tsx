@@ -3,18 +3,19 @@ import Box from '@mui/material/Box';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { cardData } from '@/src/lib/tokens/cardTokens';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
 import { Author } from '@/src/components/layout/box/author';
 import { useState } from 'react';
 import type { JSX } from 'react';
 import { EventItemCard } from '../box/eventItemCard';
 import { BlogCard } from '../box/blogCard';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/store';
 
 function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
+    const cardData = useSelector((s: RootState) => s.categories.events);
     const top = cardData.slice(0, 2);
-    console.log(top)
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);
@@ -24,9 +25,11 @@ function EventCards(): JSX.Element | null {
         setFocusedCardIndex(null);
     };
 
+    if (cardData.length === 0) return null;
+
     return (
         <Grid container spacing={2} columns={12}>
-            {top.map((card) => (
+            {((cardData.length > 0) && (top.length > 0)) && top.map((card) => (
                 <EventItemCard
                     eventItemProperties={card}
                     handleBlur={handleBlur}

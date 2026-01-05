@@ -1,12 +1,14 @@
 import {
     router,
-    publicProcedure
 } from "./trpc";
+import { eventsRouter } from "./routers/events";
 
 const appRouter = router({
-    //public procedure code will go here
+    events: eventsRouter
 });
 
-type AppRouter = typeof appRouter;
+type TrpcAppRouter = typeof appRouter;
 
-export type { AppRouter };
+export { appRouter }
+
+export type { TrpcAppRouter };
