@@ -3,14 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import type { AppDispatch, RootState } from "@/src/lib/store/root/store";
 import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
 import { trpcClient } from "../trpc/trpcClient";
+import type { EventLoadingStatus, UsePopulateEventsListHook } from "../types/types";
 
-export type EventLoadingStatus = 'idle' | 'pending'
 
-type UsePopulateEventsListType = {
-    eventLoadingStatus: EventLoadingStatus
-}
-
-const usePopulateEventsList = (): UsePopulateEventsListType => {
+const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const events = useSelector((s: RootState) => s.categories.events);
     const [eventStatus, setEventStatus] = useState<EventLoadingStatus>('pending');
     const timerRef = useRef<number | null>(null);
@@ -29,7 +25,7 @@ const usePopulateEventsList = (): UsePopulateEventsListType => {
             timerRef.current = window.setTimeout(() => {
                 setEventStatus('idle')
                 timerRef.current = null;
-            }, 3000);
+            }, 1500);
 
         };
 
