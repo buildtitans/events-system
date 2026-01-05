@@ -6,6 +6,7 @@ import AppAppBar from '../components/layout/nav/AppBar';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { useEffect, useState } from 'react';
 import type { MountStatus } from '../lib/types/types';
+import { ReduxProvider } from '@/src/store';
 
 const theme = createTheme({
     palette: {
@@ -26,26 +27,31 @@ export default function Providers({
 
     useEffect(() => setStatus('active'), []);
 
-
-
     return (
-        <StyledEngineProvider injectFirst
-        >
-            <ThemeProvider theme={theme}>
-                <CssBaseline enableColorScheme />
-                {(status === 'active') && <AppAppBar key="navigation_bar" />}
-
-                {(status === 'active') && <Container
-                    key="content_container"
-                    maxWidth="lg"
-                    component="main"
-                    sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        <ReduxProvider>
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider
+                    theme={theme}
                 >
-                    {children}
+                    <CssBaseline enableColorScheme />
+                    {(status === 'active') &&
+                        <AppAppBar
+                            key="navigation_bar"
+                        />
+                    }
 
-                </Container>}
-            </ThemeProvider>
-
-        </StyledEngineProvider>
+                    {(status === 'active') &&
+                        <Container
+                            key="content_container"
+                            maxWidth="lg"
+                            component="main"
+                            sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+                        >
+                            {children}
+                        </Container>
+                    }
+                </ThemeProvider>
+            </StyledEngineProvider>
+        </ReduxProvider>
     );
 }

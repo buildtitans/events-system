@@ -1,11 +1,16 @@
+"use client"
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/src/store"
+import { PresentedCategory } from "@/src/store/slices/EventCategorySlice";
 
 type EventCategoriesProps = {
-    handleClick: () => void
+    handleClick: (category: PresentedCategory) => () => void
 }
 
 export function EventCategories({ handleClick }: EventCategoriesProps) {
+    const displayed = useSelector((s: RootState) => s.categories.displayed);
 
     return (
         <Box
@@ -16,9 +21,9 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 overflow: 'auto',
             }}
         >
-            <Chip onClick={handleClick} size="medium" label="Upcoming events" />
+            <Chip onClick={handleClick("Upcoming events")} size="medium" label="Upcoming events" />
             <Chip
-                onClick={handleClick}
+                onClick={handleClick("Popular Events")}
                 size="medium"
                 label="Local events"
                 sx={{
@@ -27,7 +32,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 }}
             />
             <Chip
-                onClick={handleClick}
+                onClick={handleClick("Popular Events")}
                 size="medium"
                 label="Online events"
                 sx={{
@@ -36,7 +41,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 }}
             />
             <Chip
-                onClick={handleClick}
+                onClick={handleClick("Popular Events")}
                 size="medium"
                 label="Categories"
                 sx={{
@@ -45,7 +50,7 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 }}
             />
             <Chip
-                onClick={handleClick}
+                onClick={handleClick("Popular Events")}
                 size="medium"
                 label="Popular events"
                 sx={{

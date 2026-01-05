@@ -14,9 +14,11 @@
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.1",
+    "@fastify/cors": "^11.2.0",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
     "@mui/material-nextjs": "^7.3.6",
+    "@reduxjs/toolkit": "^2.11.2",
     "@sinclair/typebox": "^0.34.41",
     "@trpc/client": "^11.8.1",
     "@trpc/next": "^11.8.1",
@@ -27,7 +29,9 @@
     "next": "16.1.1",
     "pino": "^10.1.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-redux": "^9.2.0",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

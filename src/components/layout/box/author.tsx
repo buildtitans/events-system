@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { JSX } from 'react';
 
-function Author({ authors }: { authors: { name: string; avatar: string }[] }): JSX.Element {
+function Author({ authors }: { authors: { name: string; avatar: string }[] }): JSX.Element | null {
+
     return (
         <Box
             sx={{
