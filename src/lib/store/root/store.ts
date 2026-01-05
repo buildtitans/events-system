@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import EventCategories from '@/src/store/slices/EventCategorySlice';
+import EventCategories from '@/src/lib/store/slices/EventCategorySlice';
 
 const store = configureStore({
     reducer: {

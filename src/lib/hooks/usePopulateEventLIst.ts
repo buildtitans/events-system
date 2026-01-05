@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import type { AppDispatch, RootState } from "@/src/store";
-import { getEvents } from "@/src/store/slices/EventCategorySlice";
+import type { AppDispatch, RootState } from "@/src/lib/store/root/store";
+import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
 import { trpcClient } from "../trpc/trpcClient";
 
 export type EventLoadingStatus = 'idle' | 'pending'
