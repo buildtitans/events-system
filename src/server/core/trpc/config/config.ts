@@ -15,6 +15,7 @@ const trpcPluginOptions: FastifyTRPCPluginOptions<TrpcAppRouter> = {
     }
 };
 
+
 const CORSForTrpcConfig: CORSFastifyPluginConfig = {
     origin: ['http://localhost:3000'],
     credentials: true

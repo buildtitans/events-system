@@ -1,14 +1,23 @@
 import { Type, Static } from "@sinclair/typebox";
 
+const AuthorSchema = Type.Object({
+    name: Type.String(),
+    avatar: Type.String(),
+});
+
+const AuthorsSchema = Type.Array(AuthorSchema);
+
+type AuthorsSchemaType = Static<typeof AuthorsSchema>
+
 const EventSchema = Type.Object({
-    img: Type.Optional(Type.String()),
+    id: Type.Optional(Type.String()),
+    img: Type.Optional(Type.Union([Type.String(), Type.Null()])),
     tag: Type.String(),
     title: Type.String(),
     description: Type.String(),
-    authors: Type.Array(Type.Object({
-        name: Type.String(),
-        avatar: Type.String()
-    }))
+    authors: AuthorsSchema,
+    created_at: Type.String(),
+    updated_at: Type.String()
 });
 
 const EventsArraySchema = Type.Array(EventSchema);
@@ -28,6 +37,6 @@ type EventsArraySchemaType = Static<typeof EventsArraySchema>;
 
 type EventsReponseSchemaType = Static<typeof EventsReponseSchema>;
 
-export { EventSchema, EventsArraySchema, EventsReponseSchema };
+export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema };
 
-export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType };
+export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType, AuthorsSchemaType };

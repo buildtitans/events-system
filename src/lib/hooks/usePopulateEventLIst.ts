@@ -16,11 +16,9 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         if (events.length > 0) return;
 
         const loadEvents = async (): Promise<void> => {
-            const results = await trpcClient.events.list.query({
-                page: 1,
-                limit: 10
-            });
-            dispatch(getEvents(results.items));
+            await trpcClient.events.seed.mutate()
+            const events = await trpcClient.events.list.query();
+            dispatch(getEvents(events.items));
 
             timerRef.current = window.setTimeout(() => {
                 setEventStatus('idle')

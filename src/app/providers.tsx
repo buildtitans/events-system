@@ -6,7 +6,7 @@ import AppAppBar from '../components/layout/nav/AppBar';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { useEffect, useState } from 'react';
 import type { MountStatus } from '../lib/types/types';
-import { ReduxProvider } from '@/src/store';
+import { ReduxProvider } from '@/src/lib/store';
 
 const theme = createTheme({
     palette: {

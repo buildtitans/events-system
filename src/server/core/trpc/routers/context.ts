@@ -1,9 +1,13 @@
-import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
+import type { Kysely } from 'kysely';
+import type { DB } from '@/src/server/db/types';
+import { FastifyRequest } from 'fastify';
 
-export function createContext(options: CreateFastifyContextOptions) {
-    const { req, res } = options;
-
-    return { req, res };
+export type Context = {
+    db: Kysely<DB>,
 }
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+export function createContext({ req }: { req: FastifyRequest }): Context {
+    return {
+        db: req.server.db,
+    }
+}

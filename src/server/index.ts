@@ -1,10 +1,13 @@
 import { buildServer } from "./app";
+import { getEvents } from "./endpoints/getEvents";
 
 const server = buildServer();
 
 server.get('/health', async () => {
     return { ok: true }
 });
+
+server.get('/api/events', getEvents);
 
 
 server.listen({ port: 3001 }, (err, address) => {
