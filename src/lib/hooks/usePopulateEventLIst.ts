@@ -1,3 +1,4 @@
+"use client"
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import type { AppDispatch, RootState } from "@/src/lib/store/root/store";
@@ -10,12 +11,17 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const [eventStatus, setEventStatus] = useState<EventLoadingStatus>('pending');
     const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
+    const loadedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         if (events.length > 0) return;
+        if (loadedRef.current) return;
+        loadedRef.current = true
 
         const loadEvents = async (): Promise<void> => {
+
             const events = await trpcClient.events.list.query();
+            console.log(events.items);
             dispatch(getEvents(events.items));
 
             timerRef.current = window.setTimeout(() => {

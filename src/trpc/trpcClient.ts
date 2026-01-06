@@ -7,7 +7,8 @@ export const trpcClient = createTRPCProxyClient<AppRouter>({
     links: [
         httpBatchLink({
             url: "/api/trpc",
-            transformer: SuperJSON
+            transformer: SuperJSON,
+            maxURLLength: 0
         }),
     ],
 });
