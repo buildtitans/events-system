@@ -1,6 +1,8 @@
+import { Kysely } from "kysely";
 import { db } from "../db";
+import { DB } from "../db/types";
 
-async function listEvents(): Promise<any> {
+async function listEvents(db: Kysely<DB>): Promise<any> {
 
     const rows = await db
         .selectFrom("events")

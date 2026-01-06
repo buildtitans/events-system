@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import { db } from './db';
+import { eventsRoutes } from './routes/events.routes';
 
 function buildServer() {
     const app = Fastify({
@@ -7,6 +8,7 @@ function buildServer() {
     });
 
     app.decorate("db", db)
+    app.register(eventsRoutes, { prefix: "/api" });
 
     return app;
 }

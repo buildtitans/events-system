@@ -7,6 +7,4 @@ declare module "fastify" {
     interface FastifyInstance {
         db: Kysely<DB>
     }
-
-
 }
