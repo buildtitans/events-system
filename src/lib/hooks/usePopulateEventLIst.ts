@@ -2,9 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import type { AppDispatch, RootState } from "@/src/lib/store/root/store";
 import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
-import { trpcClient } from "../trpc/trpcClient";
 import type { EventLoadingStatus, UsePopulateEventsListHook } from "../types/types";
-
+import { trpcClient } from "@/src/trpc/trpcClient";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const events = useSelector((s: RootState) => s.categories.events);
@@ -16,7 +15,6 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         if (events.length > 0) return;
 
         const loadEvents = async (): Promise<void> => {
-            await trpcClient.events.seed.mutate()
             const events = await trpcClient.events.list.query();
             dispatch(getEvents(events.items));
 
