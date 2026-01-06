@@ -1,5 +1,5 @@
 import { buildServer } from "./app";
-import { getEvents } from "./endpoints/getEvents";
+import { listEvents } from "./services/getEvents";
 
 const server = buildServer();
 
@@ -7,7 +7,7 @@ server.get('/health', async () => {
     return { ok: true }
 });
 
-server.get('/api/events', getEvents);
+server.get('/api/events', listEvents);
 
 
 server.listen({ port: 3001 }, (err, address) => {

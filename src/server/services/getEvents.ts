@@ -1,6 +1,6 @@
 import { db } from "../db";
 
-async function getEvents(): Promise<any> {
+async function listEvents(): Promise<any> {
 
     const rows = await db
         .selectFrom("events")
@@ -11,4 +11,4 @@ async function getEvents(): Promise<any> {
     return rows;
 }
 
-export { getEvents };
+export { listEvents };
