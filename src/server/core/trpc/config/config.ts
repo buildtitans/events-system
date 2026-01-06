@@ -12,7 +12,6 @@ const trpcPluginOptions: FastifyTRPCPluginOptions<TrpcAppRouter> = {
     trpcOptions: {
         router: appRouter,
         createContext,
-
     }
 };
 

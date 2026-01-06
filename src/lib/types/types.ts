@@ -4,6 +4,12 @@ type HealthCheck = { ok: boolean };
 
 type HealthCheckResponse = Promise<NextResponse<HealthCheck>>;
 
-export type { HealthCheck, HealthCheckResponse };
+type MountStatus = 'active' | 'idle';
 
-export type MountStatus = 'active' | 'idle';
+type EventLoadingStatus = 'idle' | 'pending';
+
+type UsePopulateEventsListHook = {
+    eventLoadingStatus: EventLoadingStatus
+}
+
+export type { EventLoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus }

@@ -4,22 +4,21 @@ import { EventPaginationSchema } from "@/src/schemas/zod/eventPaginationInputSch
 
 
 const eventsRouter = router({
-    list:
-        publicProcedure
-            .input(EventPaginationSchema)
-            .query(({ input }) => {
-                const events = [...cardData] // <-- replace with db query after establishing Docker + PostgresSQL DB
-                const { page, limit } = input as any;
+    list: publicProcedure
+        .input(EventPaginationSchema)
+        .query(({ input }) => {
+            const events = [...cardData] // <-- replace with db query after establishing Docker + PostgresSQL DB
+            const { page, limit } = input;
 
-                return {
-                    items: events,
-                    meta: {
-                        page: page,
-                        limit: limit,
-                        total: events.length
-                    }
+            return {
+                items: events,
+                meta: {
+                    page: page,
+                    limit: limit,
+                    total: events.length
                 }
-            })
+            }
+        })
 });
 
 export { eventsRouter };
