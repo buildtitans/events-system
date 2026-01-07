@@ -1,6 +1,6 @@
 "use client"
 import Typography from '@mui/material/Typography';
-import { cardData } from '@/src/lib/tokens/cardTokens';
+import { cardData } from '@/src/lib/tokens/eventTokens';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
 import { Author } from '@/src/components/layout/box/author';
 import { EventItemCardProps } from "./eventItemCard";

@@ -1,5 +1,4 @@
-
-const cardData = [
+const placeHolderEvents = [
     {
         img: 'https://picsum.photos/800/450?random=1',
         tag: 'Engineering',
@@ -111,4 +110,4 @@ const cardData = [
 ];
 
 
-export { cardData };
+export { placeHolderEvents };
