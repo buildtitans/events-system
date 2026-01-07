@@ -33,12 +33,14 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-redux": "^9.2.0",
+    "superjson": "^2.2.6",
     "zod": "^4.3.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
+    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

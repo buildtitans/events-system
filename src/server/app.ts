@@ -1,18 +1,16 @@
 import Fastify from 'fastify';
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
-import { CORSForTrpcConfig, trpcPluginOptions } from './core/trpc/config/config';
-import cors from '@fastify/cors';
+import { db } from './db';
+import { eventsRoutes } from './routes/events.routes';
 
 function buildServer() {
     const app = Fastify({
         logger: true
     });
 
-    app.register(cors, CORSForTrpcConfig);
-    app.register(fastifyTRPCPlugin, trpcPluginOptions);
+    app.decorate("db", db)
+    app.register(eventsRoutes, { prefix: "/api" });
 
     return app;
 }
-
 
 export { buildServer };
