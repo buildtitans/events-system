@@ -2,11 +2,6 @@ import { buildServer } from "./app";
 
 const server = buildServer();
 
-server.get('/health', async () => {
-    return { ok: true }
-});
-
-
 server.listen({ port: 3001 }, (err, address) => {
     if (err) {
         server.log.error(err);

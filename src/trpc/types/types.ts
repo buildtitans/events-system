@@ -1,4 +1,5 @@
 type ApiPath = '/api'
-type EventsPath = `${ApiPath}/events`;
+type Endpoints = '/events' // extend with string unions
+type EventsPath = `${ApiPath}${Endpoints}`;
 
 export type { ApiPath, EventsPath }

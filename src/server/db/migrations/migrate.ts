@@ -1,0 +1,1 @@
+//TODO: create mitgrations file to create the events table on docker compose up
