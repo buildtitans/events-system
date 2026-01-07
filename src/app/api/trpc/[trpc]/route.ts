@@ -1,16 +1,16 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextRequest } from "next/server";
-import { eventsRouter } from "@/src/trpc/routers/eventsRouter";
 import { createContext } from "@/src/trpc/context";
+import { appRouter } from "@/src/trpc/router";
 
-function handler(req: NextRequest) {
+function handler(req: Request) {
     console.log("🔥 HIT TRPC ROUTE", req.url);
     return fetchRequestHandler({
         endpoint: "/api/trpc",
         req,
-        router: eventsRouter,
+        router: appRouter,
         createContext: () => createContext(req)
     })
 }
 
-export { handler as POST };
+
+export const POST = handler;

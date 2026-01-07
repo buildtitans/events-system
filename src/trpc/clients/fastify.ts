@@ -3,7 +3,7 @@
 export function createFastifyClient(baseUrl: string) {
     return {
         async getEvents() {
-            const res = await fetch(`${baseUrl}/api/trpc`, { method: "GET" });
+            const res = await fetch(`${baseUrl}/api/events`, { method: "GET" });
 
             if (!res.ok) {
                 const text = await res.text().catch(() => "");
