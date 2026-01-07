@@ -1,6 +1,6 @@
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
-import { DB } from "./types";
+import type { DB } from "@/src/server/db/types/types";
 
 const db = new Kysely<DB>({
     dialect: new PostgresDialect({

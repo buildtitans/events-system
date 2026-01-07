@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
-import { db } from './db';
-import { eventsRoutes } from './routes/events.routes';
-import { DBClient } from './db/dbClient';
+import { db } from '@/src/server/db/db';
+import { eventsRoutes } from '@/src/server/routes/events.routes';
+import { DBClient } from '@/src/server/db/clients/dbClient';
 
 function buildServer() {
     const app = Fastify({

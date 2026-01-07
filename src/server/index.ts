@@ -1,4 +1,4 @@
-import { buildServer } from "./app";
+import { buildServer } from "@/src/server/app";
 
 const server = buildServer();
 

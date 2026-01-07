@@ -1,4 +1,4 @@
-import type { DB } from "./types";
+import type { DB } from "@/src/server/db/types/types";
 import type { Kysely } from "kysely";
 
 export class DBClient {
