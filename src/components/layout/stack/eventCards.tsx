@@ -15,8 +15,7 @@ import { RootState } from '@/src/lib/store';
 function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const events = useSelector((s: RootState) => s.categories.events);
-    console.log(events)
-    if (!events) return null;
+    if ((!events) || (events.length === 0)) return null;
     const top = events.slice(0, 2);
 
     const handleFocus = (index: number) => {
@@ -27,7 +26,6 @@ function EventCards(): JSX.Element | null {
         setFocusedCardIndex(null);
     };
 
-    if (events.length === 0) return null;
 
     return (
         <Grid container spacing={2} columns={12}>

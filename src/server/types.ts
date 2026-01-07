@@ -1,10 +1,8 @@
 import "fastify";
-import type { Kysely } from "kysely";
-import type { DB } from "./db/types";
-
+import { DBClient } from "./db/dbClient";
 
 declare module "fastify" {
     interface FastifyInstance {
-        db: Kysely<DB>
+        db: DBClient
     }
 }

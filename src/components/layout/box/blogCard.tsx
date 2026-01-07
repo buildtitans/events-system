@@ -1,11 +1,13 @@
 "use client"
 import Typography from '@mui/material/Typography';
-import { cardData } from '@/src/lib/tokens/eventTokens';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
 import { Author } from '@/src/components/layout/box/author';
 import { EventItemCardProps } from "./eventItemCard";
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/lib/store';
 
 function BlogCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardProps) {
+    const events = useSelector((s: RootState) => s.categories.events);
 
     return (
         <StyledCard
@@ -26,21 +28,21 @@ function BlogCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardPr
             >
                 <div>
                     <Typography gutterBottom variant="caption" component="div">
-                        {cardData[3].tag}
+                        {events[3].tag}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
-                        {cardData[3].title}
+                        {events[3].title}
                     </Typography>
                     <StyledTypography
                         variant="body2"
                         color="text.secondary"
                         gutterBottom
                     >
-                        {cardData[3].description}
+                        {events[3].description}
                     </StyledTypography>
                 </div>
             </StyledCardContent>
-            <Author authors={cardData[3].authors} />
+            <Author authors={events[3].authors} />
         </StyledCard>
     )
 }

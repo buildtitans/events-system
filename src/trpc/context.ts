@@ -1,13 +1,13 @@
-import { createGetEventsClient } from "./clients/createGetEventsClient";
+import { EventsClient } from "./clients/createEventsClient";
 
 export type Context = {
-    api: ReturnType<typeof createGetEventsClient>;
+    eventsClient: EventsClient;
 };
 
 export function createContext(req: Request): Context {
     const baseUrl = "http://localhost:3001";
 
     return {
-        api: createGetEventsClient(baseUrl),
+        eventsClient: new EventsClient(baseUrl, "/api/events"),
     };
 }

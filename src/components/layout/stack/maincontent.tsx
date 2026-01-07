@@ -1,7 +1,5 @@
 "use client"
-import * as React from 'react';
 import Box from '@mui/material/Box';
-import { checkFastifyHealth } from '@/src/lib/services/checkFastifyHealth';
 import type { JSX } from 'react';
 import { LandingHeader } from '../../ui/typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
@@ -28,18 +26,6 @@ const overrides = {
 
 function MainContent(): JSX.Element {
   const { eventLoadingStatus } = usePopulateEventsList();
-
-  console.log(eventLoadingStatus)
-
-  React.useEffect(() => {
-    const executeHealthCheck = async () => {
-      const health = await checkFastifyHealth();
-      console.log(health.ok);
-    }
-
-    executeHealthCheck();
-  }, []);
-
 
   return (
     <Box

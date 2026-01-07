@@ -1,9 +1,10 @@
 import type { FastifyPluginAsync } from "fastify";
-import { listEvents } from "../services/getEvents";
 
 export const eventsRoutes: FastifyPluginAsync = async (app) => {
+
     app.get("/events", async () => {
-        const rows = await listEvents(app.db);
+        const dbClient = app.db
+        const rows = await dbClient.getEvents();
         return { items: rows, meta: { total: rows.length } };
     });
 };

@@ -22,7 +22,6 @@ export const EventCategorySlice = createSlice({
         },
         getEvents: (state: EventCategoryState, action: PayloadAction<EventsArraySchemaType>) => {
             state.events = action.payload;
-            console.log(state.events)
         }
     }
 });
