@@ -7,7 +7,7 @@ export class DBClient {
         this.db = db
     }
 
-    getEvents() {
+    async getEvents() {
         return this.db
             .selectFrom("events")
             .selectAll()
