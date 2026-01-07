@@ -1,7 +1,7 @@
 import { db } from "../index";
 import type { Insertable } from "kysely";
 import type { Events } from "../types";
-import { placeHolderEvents } from "@/src/lib/tokens/eventTokens";
+import rawEvents from "@/src/server/data/placeholder-events.json";
 
 async function seedEvents() {
 
@@ -10,7 +10,7 @@ async function seedEvents() {
     }
 
 
-    for (const event of placeHolderEvents) {
+    for (const event of rawEvents) {
         const row: Insertable<Events> = {
             title: event.title,
             description: event.description,
@@ -26,7 +26,7 @@ async function seedEvents() {
             .execute();
     }
 
-    console.log(`✅ Seeded ${placeHolderEvents.length} events`);
+    console.log(`Seeded ${rawEvents.length} events`);
 }
 
 seedEvents()
