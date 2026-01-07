@@ -1,13 +1,13 @@
-import { createFastifyClient } from "./clients/fastifyClient";
+import { createGetEventsClient } from "./clients/createGetEventsClient";
 
 export type Context = {
-    api: ReturnType<typeof createFastifyClient>;
+    api: ReturnType<typeof createGetEventsClient>;
 };
 
 export function createContext(req: Request): Context {
     const baseUrl = "http://localhost:3001";
 
     return {
-        api: createFastifyClient(baseUrl),
+        api: createGetEventsClient(baseUrl),
     };
 }

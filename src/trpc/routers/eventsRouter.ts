@@ -1,4 +1,3 @@
-import { Events } from "@/src/server/db/types";
 import { router, publicProcedure } from "../init";
 import { EventsArraySchemaType } from "@/src/schemas/eventSchema";
 

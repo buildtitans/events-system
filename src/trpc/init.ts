@@ -11,7 +11,10 @@ const publicProcedure = t.procedure;
 
 const requireApi = t.middleware(({ ctx, next }) => {
     if (!ctx.api) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "ctx.api missing from context" });
+        throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "ctx.api missing from context"
+        });
     }
     return next({
         ctx
