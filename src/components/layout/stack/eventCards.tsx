@@ -10,12 +10,14 @@ import type { JSX } from 'react';
 import { EventItemCard } from '../box/eventItemCard';
 import { BlogCard } from '../box/blogCard';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/src/store';
+import { RootState } from '@/src/lib/store';
 
 function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
-    const cardData = useSelector((s: RootState) => s.categories.events);
-    const top = cardData.slice(0, 2);
+    const events = useSelector((s: RootState) => s.categories.events);
+    console.log(events)
+    if (!events) return null;
+    const top = events.slice(0, 2);
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);
@@ -25,12 +27,13 @@ function EventCards(): JSX.Element | null {
         setFocusedCardIndex(null);
     };
 
-    if (cardData.length === 0) return null;
+    if (events.length === 0) return null;
 
     return (
         <Grid container spacing={2} columns={12}>
-            {((cardData.length > 0) && (top.length > 0)) && top.map((card) => (
+            {((events.length > 0) && (top.length > 0)) && top.map((card) => (
                 <EventItemCard
+                    key={card.id ?? card.description}
                     eventItemProperties={card}
                     handleBlur={handleBlur}
                     handleFocus={handleFocus}
@@ -50,7 +53,7 @@ function EventCards(): JSX.Element | null {
                     <CardMedia
                         component="img"
                         alt="green iguana"
-                        image={cardData[2].img}
+                        image={events[2].img ?? undefined}
                         sx={{
                             height: { sm: 'auto', md: '50%' },
                             aspectRatio: { sm: '16 / 9', md: '' },
@@ -58,16 +61,16 @@ function EventCards(): JSX.Element | null {
                     />
                     <StyledCardContent>
                         <Typography gutterBottom variant="caption" component="div">
-                            {cardData[2].tag}
+                            {events[2].tag}
                         </Typography>
                         <Typography gutterBottom variant="h6" component="div">
-                            {cardData[2].title}
+                            {events[2].title}
                         </Typography>
                         <StyledTypography variant="body2" color="text.secondary" gutterBottom>
-                            {cardData[2].description}
+                            {events[2].description}
                         </StyledTypography>
                     </StyledCardContent>
-                    <Author authors={cardData[2].authors} />
+                    <Author authors={events[2].authors} />
                 </StyledCard>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -78,13 +81,13 @@ function EventCards(): JSX.Element | null {
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
-                        eventItemProperties={cardData[3]}
+                        eventItemProperties={events[3]}
                     />
                     <BlogCard
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
-                        eventItemProperties={cardData[4]}
+                        eventItemProperties={events[4]}
                     />
 
                 </Box>
@@ -101,7 +104,7 @@ function EventCards(): JSX.Element | null {
                     <CardMedia
                         component="img"
                         alt="green iguana"
-                        image={cardData[5].img}
+                        image={events[5].img ?? undefined}
                         sx={{
                             height: { sm: 'auto', md: '50%' },
                             aspectRatio: { sm: '16 / 9', md: '' },
@@ -109,16 +112,16 @@ function EventCards(): JSX.Element | null {
                     />
                     <StyledCardContent>
                         <Typography gutterBottom variant="caption" component="div">
-                            {cardData[5].tag}
+                            {events[5].tag}
                         </Typography>
                         <Typography gutterBottom variant="h6" component="div">
-                            {cardData[5].title}
+                            {events[5].title}
                         </Typography>
                         <StyledTypography variant="body2" color="text.secondary" gutterBottom>
-                            {cardData[5].description}
+                            {events[5].description}
                         </StyledTypography>
                     </StyledCardContent>
-                    <Author authors={cardData[5].authors} />
+                    <Author authors={events[5].authors} />
                 </StyledCard>
             </Grid>
         </Grid>

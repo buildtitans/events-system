@@ -9,7 +9,6 @@ export function createFastifyClient(baseUrl: string) {
                 const text = await res.text().catch(() => "");
                 throw new Error(`Fastify GET /api/events failed: ${res.status} ${text}`);
             }
-
             return res.json();
         },
     };

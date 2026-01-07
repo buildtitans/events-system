@@ -21,14 +21,13 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         const loadEvents = async (): Promise<void> => {
 
             const res = await trpcClient.events.list.mutate()
-            const events = res.items
-            console.log(events);
-            //dispatch(getEvents(events));
+            const items = res.items
+            dispatch(getEvents(items));
 
             timerRef.current = window.setTimeout(() => {
                 setEventStatus('idle')
                 timerRef.current = null;
-            }, 1500);
+            }, 1200);
 
         };
 
