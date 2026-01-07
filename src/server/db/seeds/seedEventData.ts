@@ -4,7 +4,6 @@ import type { Events } from "../types";
 import { cardData } from "@/src/lib/tokens/cardTokens";
 
 async function seedEvents() {
-    console.log("🌱 Seeding events...");
 
     if (process.env.NODE_ENV === 'production') {
         throw new Error('Seeding disabled in production');
