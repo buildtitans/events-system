@@ -11,4 +11,3 @@ const db = new Kysely<DB>({
 });
 
 export { db };
-
