@@ -1,10 +1,15 @@
 import { db } from "../index";
-import { sql, type Insertable } from "kysely";
+import type { Insertable } from "kysely";
 import type { Events } from "../types";
 import { cardData } from "@/src/lib/tokens/cardTokens";
 
 async function seedEvents() {
     console.log("🌱 Seeding events...");
+
+    if (process.env.NODE_ENV === 'production') {
+        throw new Error('Seeding disabled in production');
+    }
+
 
     for (const event of cardData) {
         const row: Insertable<Events> = {
