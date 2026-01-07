@@ -1,8 +1,9 @@
 import { Events } from "@/src/server/db/types";
 import { router, publicProcedure } from "../init";
+import { EventsArraySchemaType } from "@/src/schemas/eventSchema";
 
 type EventsResponse = {
-    items: Events[],
+    items: EventsArraySchemaType,
     meta: {
         total: number
     }
@@ -13,8 +14,8 @@ export const eventsRouter = router({
         const rows = await ctx.api.getEvents();
 
         return {
-            items: rows,
-            meta: { total: Array.isArray(rows) ? rows.length : 0 },
+            items: rows.items,
+            meta: rows.items.length
         };
     }),
 });

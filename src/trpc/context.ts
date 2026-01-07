@@ -1,4 +1,4 @@
-import { createFastifyClient } from "./clients/fastify";
+import { createFastifyClient } from "./clients/fastifyClient";
 
 export type Context = {
     api: ReturnType<typeof createFastifyClient>;

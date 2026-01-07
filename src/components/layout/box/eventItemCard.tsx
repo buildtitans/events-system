@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
 import { Author } from '@/src/components/layout/box/author';
 import type { JSX } from 'react';
-import { EventSchemaType } from '@/src/schemas/typebox/eventSchema';
+import { EventSchemaType } from '@/src/schemas/eventSchema';
 
 export type EventItemCardProps = {
     handleFocus: (index: number) => void,
@@ -28,7 +28,7 @@ function EventItemCard({ focusedCardIndex, handleBlur, handleFocus, eventItemPro
                 <CardMedia
                     component="img"
                     alt="green iguana"
-                    image={eventItemProperties.img}
+                    image={eventItemProperties.img ?? undefined}
                     sx={{
                         aspectRatio: '16 / 9',
                         borderBottom: '1px solid',

@@ -23,10 +23,8 @@ const EventSchema = Type.Object({
 const EventsArraySchema = Type.Array(EventSchema);
 
 const EventsReponseSchema = Type.Object({
-    items: Type.Array(EventSchema),
+    items: EventsArraySchema,
     meta: Type.Object({
-        page: Type.Number(),
-        limit: Type.Number(),
         total: Type.Number()
     })
 });
