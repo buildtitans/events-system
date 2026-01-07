@@ -6,7 +6,7 @@ type HealthCheckResponse = Promise<NextResponse<HealthCheck>>;
 
 type MountStatus = 'active' | 'idle';
 
-type EventLoadingStatus = 'idle' | 'pending';
+type EventLoadingStatus = 'idle' | 'pending' | 'failed';
 
 type UsePopulateEventsListHook = {
     eventLoadingStatus: EventLoadingStatus

@@ -1,5 +1,6 @@
-import type { EventLoadingStatus } from "@/src/lib/hooks/usePopulateEventLIst"
-import LinearIndeterminate from "@/src/components/ui/feedback/linearLoader";
+import type { EventLoadingStatus } from "@/src/lib/types/types";
+import { LinearIndeterminate } from "@/src/components/ui/feedback/"
+import { NoEventsFound } from "../../layout/box/noEventsFound";
 import EventCards from "../../layout/stack/eventCards";
 import { JSX } from "react";
 
@@ -13,6 +14,9 @@ const loadEventsPipeline = (eventLoadingStatus: EventLoadingStatus): JSX.Element
         case "idle":
             return <EventCards
             />
+
+        case "failed":
+            return <NoEventsFound />
 
         default: {
             return (
