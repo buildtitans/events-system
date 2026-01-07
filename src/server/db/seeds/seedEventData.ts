@@ -26,7 +26,7 @@ async function seedEvents() {
             .execute();
     }
 
-    console.log(`Seeded ${rawEvents.length} events`);
+    console.log(`Seeded ${rawEvents.length} events from placeholder-events.json`);
 }
 
 seedEvents()
