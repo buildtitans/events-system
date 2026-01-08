@@ -8,7 +8,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: events_user
-      POSTGRES_PASSWORD: events_password
+      POSTGRES_PASSWORD: eventspassword
       POSTGRES_DB: events_db
     volumes:
       - postgres_data:/var/lib/postgresql/data

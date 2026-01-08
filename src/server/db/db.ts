@@ -6,8 +6,7 @@ import type { DB } from "@/src/server/db/types/types";
 const db = new Kysely<DB>({
     dialect: new PostgresDialect({
         pool: new Pool({
-
-            connectionString: "postgres://events_user:events_password@postgres:5432/events_db"
+            connectionString: process.env.DOCKER_DB_URL
         })
     })
 });
