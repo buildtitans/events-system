@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:codegen": "kysely-codegen --out-file src/server/db/types/types.ts",
     "db:seed": "tsx src/server/db/seeds/seedEventData.ts"
   },
   "dependencies": {

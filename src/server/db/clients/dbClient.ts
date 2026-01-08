@@ -17,6 +17,12 @@ export class DBClient {
             .execute();
     }
 
+
+    async createGroup(body: any) {
+
+    }
+
+
     //TODO: add handler to create new events from user input
 
 
