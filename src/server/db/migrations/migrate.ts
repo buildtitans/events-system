@@ -59,7 +59,6 @@ async function migrateWithRetry(
 }
 
 
-//executes migrations w/retries only when invoked directly from CLI
 if (require.main === module) {
     migrateWithRetry()
         .then(async () => {
