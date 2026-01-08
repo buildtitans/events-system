@@ -51,7 +51,4 @@ export async function up(db: Kysely<any>): Promise<void> {
       for each row
       execute function set_groups_updated_at();
     `.execute(db);
-
-
-
 }
