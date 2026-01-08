@@ -8,11 +8,20 @@ export class DBClient {
     }
 
     async getEvents() {
-        return this.db
+        const rows = this.db
             .selectFrom("events")
             .selectAll()
             .orderBy("created_at", "desc")
             .execute();
 
+        const events = (await rows).map((row) => ({
+            ...row,
+            created_at: row.created_at.toISOString(),
+            updated_at: row.updated_at.toISOString()
+        }))
+
+        console.log(rows)
+
+        return events;
     }
 };

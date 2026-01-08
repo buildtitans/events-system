@@ -10,7 +10,7 @@ const AuthorsSchema = Type.Array(AuthorSchema);
 type AuthorsSchemaType = Static<typeof AuthorsSchema>
 
 const EventSchema = Type.Object({
-    id: Type.Optional(Type.String()),
+    id: Type.String(),
     img: Type.Optional(Type.Union([Type.String(), Type.Null()])),
     tag: Type.String(),
     title: Type.String(),

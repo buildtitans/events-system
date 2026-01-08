@@ -8,7 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     //enabling of random uuid generation
 
     await db.schema
-        .createTable("events")
+        .createTable("events").ifNotExists()
         .addColumn("id", "uuid", (col) =>
             col
                 .primaryKey()

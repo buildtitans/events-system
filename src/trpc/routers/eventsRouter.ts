@@ -9,8 +9,14 @@ type EventsResponse = {
 }
 
 export const eventsRouter = router({
-    list: publicProcedure.mutation(async ({ ctx }): Promise<EventsResponse> => {
-        const rows = await ctx.eventsClient.getEvents();
-        return rows;
-    }),
+    list: publicProcedure.
+        mutation(async ({ ctx }): Promise<EventsResponse> => {
+            const rows = await ctx.eventsClient.getEvents();
+            return {
+                items: rows.items,
+                meta: {
+                    total: rows.items.length
+                }
+            };
+        }),
 });

@@ -9,6 +9,7 @@ export class EventsClient {
     async getEvents() {
         const res = await fetch(`${this.baseUrl}${this.path}`, { method: "GET" });
         if (!res.ok) {
+            console.error(res.status, res.statusText)
             throw new Error(`GET to ${this.path} failed: ${res.status} ${res.statusText}`);
         }
         return res.json();

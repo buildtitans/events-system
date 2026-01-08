@@ -24,7 +24,7 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
 
                 if (!res.items) {
                     setEventStatus("failed")
-                    throw new Error("failed to fetch events")
+                    throw new Error("Failed to fetch")
                 }
 
                 const { items } = res;
@@ -36,7 +36,7 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
                     timerRef.current = null;
                 }, 1200);
             } catch (err) {
-                console.error(err)
+                console.error("tRPC request failed before reaching the server", err)
             }
 
 

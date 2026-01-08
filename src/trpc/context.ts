@@ -6,8 +6,8 @@ export type Context = {
 
 export function createContext(req: Request): Context {
     const baseUrl = "http://localhost:3001";
-
+    const dockerUrl = "http://host.docker.internal:3001";
     return {
-        eventsClient: new EventsClient(baseUrl, "/api/events"),
+        eventsClient: new EventsClient("http://fastify:3001", "/api/events"),
     };
 }
