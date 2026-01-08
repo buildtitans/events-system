@@ -1,11 +1,9 @@
 import { Kysely, sql } from "kysely";
 
-//TODO: implement in script to create db on docker compose up
 
 export async function up(db: Kysely<any>): Promise<void> {
 
     await sql`create extension if not exists "pgcrypto"`.execute(db);
-    //enabling of random uuid generation
 
     await db.schema
         .createTable("events").ifNotExists()
