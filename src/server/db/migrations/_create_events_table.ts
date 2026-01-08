@@ -64,3 +64,8 @@ export async function up(db: Kysely<any>): Promise<void> {
   `.execute(db);
 
 }
+
+export async function down(db: Kysely<any>): Promise<void> {
+
+    await db.schema.dropTable("events").execute();
+}

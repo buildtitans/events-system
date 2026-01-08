@@ -19,15 +19,27 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         loadedRef.current = true
 
         const loadEvents = async (): Promise<void> => {
+            try {
+                const res = await trpcClient.events.list.mutate();
 
-            const { items } = await trpcClient.events.list.mutate();
+                if (!res.items) {
+                    setEventStatus("failed")
+                    throw new Error("failed to fetch events")
+                }
 
-            dispatch(getEvents(items));
+                const { items } = res;
 
-            timerRef.current = window.setTimeout(() => {
-                setEventStatus((items.length > 0) ? "idle" : "failed")
-                timerRef.current = null;
-            }, 1200);
+                dispatch(getEvents(items));
+
+                timerRef.current = window.setTimeout(() => {
+                    setEventStatus((items.length > 0) ? "idle" : "failed")
+                    timerRef.current = null;
+                }, 1200);
+            } catch (err) {
+                console.error(err)
+            }
+
+
         };
 
         loadEvents();

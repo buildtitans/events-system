@@ -13,5 +13,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  api:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://events_user:events_password@postgres:5432/events_db
+    command: sh -c "npx tsx src/server/db/migrations/migrate.ts && pnpm start"
+
 volumes:
   postgres_data:
