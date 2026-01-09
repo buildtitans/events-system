@@ -14,4 +14,6 @@ export const GroupSchema = Type.Object({
 
 export const GroupsSchema = Type.Array(GroupSchema);
 
+export type GroupSchemaType = Static<typeof GroupSchema>;
+
 export type GroupsSchemaType = Static<typeof GroupsSchema>;

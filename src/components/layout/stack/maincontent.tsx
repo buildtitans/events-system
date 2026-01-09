@@ -4,8 +4,9 @@ import type { JSX } from 'react';
 import { LandingHeader } from '../../ui/typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
-import { usePopulateEventsList } from '@/src/lib/hooks/usePopulateEventLIst';
-import { loadEventsPipeline } from '../../pipelines/events/loadEventsPipeline';
+import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/lib/store';
 
 
 const overrides = {
@@ -25,7 +26,8 @@ const overrides = {
 };
 
 function MainContent(): JSX.Element {
-  const { eventLoadingStatus } = usePopulateEventsList();
+  const tab = useSelector((s: RootState) => s.rendering.mainContent);
+  const content = useMainContentPipelines(tab);
 
   return (
     <Box
@@ -43,7 +45,7 @@ function MainContent(): JSX.Element {
         <ActiveCategory />
       </Box>
 
-      {loadEventsPipeline(eventLoadingStatus)}
+      {content}
 
     </Box>
   );
