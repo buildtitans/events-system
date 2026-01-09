@@ -1,6 +1,6 @@
 import { db } from "@/src/server/db/db";
 import type { Insertable } from "kysely";
-import type { Events } from "@/src/server/db/types/types";
+import type { Events } from "@/src/server/db/types/db";
 import rawEvents from "@/src/server/db/seeds/data/placeholder-events.json";
 
 async function seedEvents() {

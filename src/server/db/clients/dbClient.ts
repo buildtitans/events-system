@@ -1,4 +1,4 @@
-import type { DB } from "@/src/server/db/types/types";
+import type { DB } from "@/src/server/db/types/db";
 import type { Kysely } from "kysely";
 
 

@@ -10,6 +10,6 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 COPY . .
-# RUN pnpm build
+RUN pnpm build
 
 EXPOSE 3000
