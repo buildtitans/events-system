@@ -34,7 +34,7 @@ services:
     environment:
       DATABASE_URL: postgres://events_user:eventspassword@postgres:5432/events_db
       FASTIFY_URL: http://fastify:3001
-    command: sh -c "npx tsx src/server/db/migrations/migrate.ts && pnpm start"
+    command: sh -c "npx tsx src/server/db/migrations/migrate.ts && pnpm dev"
 
 volumes:
   postgres_data:
