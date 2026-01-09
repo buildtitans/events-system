@@ -12,6 +12,9 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .primaryKey()
                 .defaultTo(sql`gen_random_uuid()`)
         )
+        //.addColumn("group_id", "uuid", (col) =>
+        //    col.references("groups.id").onDelete('cascade').notNull()
+        //)
         .addColumn("img", "text", (col) =>
             col
                 .defaultTo(null)

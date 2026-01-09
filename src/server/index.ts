@@ -4,7 +4,7 @@ const server = buildServer();
 
 server.listen({
     port: 3001,
-    host: "0.0.0.0" //explicit host binding 
+    host: "0.0.0.0"
 }, (err, address) => {
     if (err) {
         server.log.error(err);

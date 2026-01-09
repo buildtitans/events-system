@@ -8,7 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:seed": "tsx src/server/db/seeds/seedEventData.ts"
+    "db:codegen": "dotenv -- kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
+    "db:migrate": "tsx src/server/db/migrations/migrate.ts",
+    "db:seedEvents": "tsx src/server/db/seeds/scripts/seedEvents.ts",
+    "db:seedGroups": "tsx src/server/db/seeds/scripts/seedGroups.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -43,6 +46,7 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "jest": "^30.2.0",

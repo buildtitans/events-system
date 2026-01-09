@@ -1,12 +1,13 @@
-import { EventsClient } from "./clients/createEventsClient";
+import { getEnv } from "../lib/utils/getEnv";
+import { FastifyApiClient } from "./clients/createFastifyApiClient";
 
 export type Context = {
-    eventsClient: EventsClient;
+    api: FastifyApiClient
 };
 
 export function createContext(req: Request): Context {
-    const serverUrl = "http://fastify:3001"
+    const baseUrl = getEnv("fastifyUrl");
     return {
-        eventsClient: new EventsClient(serverUrl, "/api/events"),
+        api: new FastifyApiClient(baseUrl)
     };
 }

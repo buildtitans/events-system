@@ -8,9 +8,15 @@ export const eventsRoutes: FastifyPluginAsync = async (app) => {
         return { items: rows, meta: { total: rows.length } };
     });
 
-    app.post("/startGroup", async () => {
+    app.get("/groups", async () => {
+        const rows = await dbClient.getGroups();
 
-        //TODO: dbClient handler for starting a new group
+        return {
+            items: rows,
+            meta: {
+                total: rows.length
+            }
+        }
     })
 
 
