@@ -10,7 +10,7 @@ const router = t.router;
 const publicProcedure = t.procedure;
 
 const requireApi = t.middleware(({ ctx, next }) => {
-    if (!ctx.eventsClient) {
+    if (!ctx.api) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "ctx.api missing from context"

@@ -18,8 +18,12 @@ export class DBClient {
     }
 
 
-    async createGroup(body: any) {
-
+    async getGroups() {
+        return this.db
+            .selectFrom("groups")
+            .selectAll()
+            .orderBy("created_at", "desc")
+            .execute()
     }
 
 

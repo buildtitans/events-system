@@ -4,8 +4,10 @@ config({ path: path.resolve(process.cwd(), ".env"), })
 
 const envVars = {
     dbPassword: process.env.POSTGRES_PASSWORD,
-    fastifyUrl: process.env.FASTIFY_SERVER_UR,
-    port: process.env.FASTIFY_SERVER_PORT
+    fastifyUrl: process.env.FASTIFY_SERVER_URL,
+    port: process.env.FASTIFY_SERVER_PORT,
+    events_endpoint: process.env.GET_EVENTS_ENDPOINT,
+    groups_endpoint: process.env.GET_GROUPS_ENDPOINT
 }
 
 

@@ -13,7 +13,7 @@ async function seedGroups() {
             category_id: null,
             updated_at: new Date(),
             created_at: new Date(),
-            slug: "",
+            slug: `${group.name}/${group.location}`,
         }
 
         await db
@@ -22,6 +22,8 @@ async function seedGroups() {
             .onConflict((conflict) => conflict.column("id").doNothing())
             .execute()
     }
+
+    console.log(`Seeded ${rawGroups.length} rows for table — "groups"`)
 }
 
 seedGroups()

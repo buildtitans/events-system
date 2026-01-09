@@ -8,10 +8,13 @@ type EventsResponse = {
     }
 }
 
+
 export const eventsRouter = router({
     list: publicProcedure.
         mutation(async ({ ctx }): Promise<EventsResponse> => {
-            const rows = await ctx.eventsClient.getEvents();
+
+            const rows = await ctx.api.getEvents();
             return rows
         }),
+
 });
