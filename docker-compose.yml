@@ -19,7 +19,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://events_user:events_password@postgres:5432/events_db
+      DATABASE_URL: postgres://events_user:eventspassword@postgres:5432/events_db
     ports:
       - "3001:3001"
 
@@ -31,7 +31,7 @@ services:
       - postgres
       - fastify
     environment:
-      DATABASE_URL: postgres://events_user:events_password@postgres:5432/events_db
+      DATABASE_URL: postgres://events_user:eventspassword@postgres:5432/events_db
       FASTIFY_URL: http://fastify:3001
     command: sh -c "npx tsx src/server/db/migrations/migrate.ts && pnpm start"
 
