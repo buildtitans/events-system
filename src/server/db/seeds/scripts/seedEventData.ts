@@ -1,14 +1,13 @@
 import { db } from "@/src/server/db/db";
 import type { Insertable } from "kysely";
 import type { Events } from "@/src/server/db/types/types";
-import rawEvents from "@/src/server/data/placeholder-events.json";
+import rawEvents from "@/src/server/db/seeds/data/placeholder-events.json";
 
 async function seedEvents() {
 
     if (process.env.NODE_ENV === 'production') {
         throw new Error('Seeding disabled in production');
     }
-
 
     for (const event of rawEvents) {
         const row: Insertable<Events> = {

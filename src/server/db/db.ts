@@ -3,10 +3,11 @@ import { Pool } from "pg";
 import type { DB } from "@/src/server/db/types/types";
 
 
+
 const db = new Kysely<DB>({
     dialect: new PostgresDialect({
         pool: new Pool({
-            connectionString: process.env.CONTAINER_DB_URL
+            connectionString: "postgres://events_user:eventspassword@postgres:5432/events_db"
         })
     })
 });
