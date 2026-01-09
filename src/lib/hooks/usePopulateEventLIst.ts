@@ -16,13 +16,13 @@ import type {
 } from "@/src/lib/store/root/store";
 import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
 import type {
-    EventLoadingStatus,
+    LoadingStatus,
     UsePopulateEventsListHook
 } from "../types/types";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const events = useSelector((s: RootState) => s.categories.events);
-    const [eventStatus, setEventStatus] = useState<EventLoadingStatus>('pending');
+    const [eventStatus, setEventStatus] = useState<LoadingStatus>('pending');
     const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
     const loadedRef = useRef<boolean | null>(null);

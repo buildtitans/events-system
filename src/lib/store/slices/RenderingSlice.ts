@@ -3,10 +3,10 @@ import {
     PayloadAction
 } from "@reduxjs/toolkit";
 
-type MainContentStatusType = 'Groups' | 'Events'
+type MainContentTabType = 'Groups' | 'Events'
 
 type RenderingInitialState = {
-    mainContent: MainContentStatusType
+    mainContent: MainContentTabType
 };
 
 const initialState: RenderingInitialState = {
@@ -33,5 +33,5 @@ type RenderingSliceType = ReturnType<typeof RenderingSlice.reducer>;
 export type {
     RenderingInitialState,
     RenderingSliceType,
-    MainContentStatusType
+    MainContentTabType
 };
