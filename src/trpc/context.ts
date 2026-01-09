@@ -5,7 +5,7 @@ export type Context = {
 };
 
 export function createContext(req: Request): Context {
-    const baseUrl = process.env.FASTIFY_BASE_URL ?? "http://fastify:3001"
+    const baseUrl = process.env.FASTIFY_SERVER_URL ?? "http://localhost:3001"
     return {
         eventsClient: new EventsClient(baseUrl, "/api/events"),
     };
