@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import EventCategories from '@/src/lib/store/slices/EventCategorySlice';
+import GroupsSlice from "@/src/lib/store/slices/GroupsSlice"
 
 const store = configureStore({
     reducer: {
         categories: EventCategories,
+        groups: GroupsSlice
     }
 });
 

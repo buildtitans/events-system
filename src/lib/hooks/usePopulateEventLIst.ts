@@ -5,6 +5,7 @@ import type { AppDispatch, RootState } from "@/src/lib/store/root/store";
 import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
 import type { EventLoadingStatus, UsePopulateEventsListHook } from "../types/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { getAllGroups } from "../store/slices/GroupsSlice";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const events = useSelector((s: RootState) => s.categories.events);
@@ -14,17 +15,18 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const loadedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
-        if (events.length > 0) return;
+        const events_stored = events;
+        if (events_stored.length > 0) return;
         if (loadedRef.current) return;
         loadedRef.current = true
 
         const loadEvents = async (): Promise<void> => {
             try {
                 const res = await trpcClient.events.list.mutate();
-                //const grps = await trpcClient.groups.list.mutate();
-                //console.log(grps);
+                const grps = await trpcClient.groups.list.mutate();
 
-                if (!res.items) {
+
+                if ((!res.items) || (!grps.items)) {
                     setEventStatus("failed")
                     throw new Error("Failed to fetch")
                 }
@@ -32,6 +34,7 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
                 const { items } = res;
 
                 dispatch(getEvents(items));
+                dispatch(getAllGroups(grps.items));
 
                 timerRef.current = window.setTimeout(() => {
                     setEventStatus((items.length > 0) ? "idle" : "failed")
