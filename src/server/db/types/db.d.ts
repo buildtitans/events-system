@@ -34,6 +34,19 @@ export interface Events {
   updated_at: Generated<Timestamp>;
 }
 
+export interface Groups {
+  category_id: string | null;
+  created_at: Generated<Timestamp>;
+  description: string | null;
+  id: Generated<string>;
+  location: string | null;
+  name: string;
+  organizer_id: string | null;
+  slug: string;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface DB {
   events: Events;
+  groups: Groups;
 }
