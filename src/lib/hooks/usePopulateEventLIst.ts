@@ -21,8 +21,8 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         const loadEvents = async (): Promise<void> => {
             try {
                 const res = await trpcClient.events.list.mutate();
-                const grps = await trpcClient.groups.list.mutate();
-                console.log(grps);
+                //const grps = await trpcClient.groups.list.mutate();
+                //console.log(grps);
 
                 if (!res.items) {
                     setEventStatus("failed")
@@ -40,8 +40,6 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
             } catch (err) {
                 console.error("tRPC request failed before reaching the server", err)
             }
-
-
         };
 
         loadEvents();
