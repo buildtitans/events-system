@@ -1,7 +1,7 @@
 "use client"
 import Box from '@mui/material/Box';
 import type { JSX } from 'react';
-import { LandingHeader } from '../../ui/typography/landingHeader';
+import { LandingHeader } from '../typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
 import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines';

@@ -1,4 +1,4 @@
-import type { CardType } from "@/src/components/layout/box/cards/eventCard";
+import type { CardType } from "@/src/components/ui/box/cards/eventCard";
 
 export type LayoutSlot =
     | { kind: "card", variant: CardType }
