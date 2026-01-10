@@ -19,7 +19,6 @@ function EventCards(): JSX.Element | null {
         setFocusedCardIndex(null);
     };
 
-
     return (
         <Grid container spacing={2} columns={12}>
             {renderLayout(events, handleBlur, handleFocus, focusedCardIndex)}
