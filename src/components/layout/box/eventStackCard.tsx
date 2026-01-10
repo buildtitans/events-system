@@ -6,7 +6,7 @@ import { EventItemCardProps } from "./eventItemCard";
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 
-function BlogCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardProps) {
+function EventStackCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardProps) {
     const events = useSelector((s: RootState) => s.categories.events);
 
     return (
@@ -47,4 +47,4 @@ function BlogCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardPr
     )
 }
 
-export { BlogCard }
+export { EventStackCard };
