@@ -8,7 +8,7 @@ import { renderLayout } from '../../pipelines/events/renderLayout';
 
 function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
-    const events = useSelector((s: RootState) => s.categories.events);
+    const events = useSelector((s: RootState) => s.events.events);
     if ((!events) || (events.length === 0)) return null;
 
     const handleFocus = (index: number) => {

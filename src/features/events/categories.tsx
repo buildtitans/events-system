@@ -1,8 +1,8 @@
 "use client"
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "@/src/lib/store"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/src/lib/store"
 import { PresentedCategory } from "@/src/lib/store/slices/EventCategorySlice";
 
 type EventCategoriesProps = {
@@ -10,7 +10,7 @@ type EventCategoriesProps = {
 }
 
 export function EventCategories({ handleClick }: EventCategoriesProps) {
-    const displayed = useSelector((s: RootState) => s.categories.displayed);
+    const displayed = useSelector((s: RootState) => s.events.displayed);
 
     return (
         <Box

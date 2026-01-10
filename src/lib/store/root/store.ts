@@ -5,7 +5,7 @@ import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
 
 const store = configureStore({
     reducer: {
-        categories: EventCategories,
+        events: EventCategories,
         groups: GroupsSlice,
         rendering: RenderingSlice
     }

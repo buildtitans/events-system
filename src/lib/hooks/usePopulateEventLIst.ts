@@ -21,7 +21,7 @@ import type {
 } from "../types/types";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
-    const events = useSelector((s: RootState) => s.categories.events);
+    const events = useSelector((s: RootState) => s.events.events)
     const [eventStatus, setEventStatus] = useState<LoadingStatus>('pending');
     const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 
 function EventStackCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardProps) {
-    const events = useSelector((s: RootState) => s.categories.events);
+    const events = useSelector((s: RootState) => s.events.events);
 
     return (
         <StyledCard
