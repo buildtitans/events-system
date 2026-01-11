@@ -26,7 +26,7 @@ export type CardDesignation = {
 }
 
 export type EventCardProps = {
-    handleFocus: (index: number) => void,
+    handleFocus: (index: number) => () => void,
     handleBlur: () => void,
     focusedCardIndex: number | null,
     event: EventSchemaType,
@@ -45,7 +45,7 @@ function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant }
 
             <StyledCard
                 variant="outlined"
-                onFocus={() => handleFocus(2)}
+                onFocus={handleFocus(2)}
                 onBlur={handleBlur}
                 tabIndex={0}
                 className={focusedCardIndex === 2 ? 'Mui-focused' : ''}

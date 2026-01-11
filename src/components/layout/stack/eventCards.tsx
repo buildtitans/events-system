@@ -1,6 +1,6 @@
 "use client"
 import Grid from '@mui/material/Grid';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { renderLayout } from '@/src/components/layout/engines/renderLayout';
@@ -11,13 +11,15 @@ function EventCards(): JSX.Element | null {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages);
     const currentPage = useSelector((s: RootState) => s.events.currentPage)
 
-    const handleFocus = (index: number) => {
-        setFocusedCardIndex(index);
-    };
+    const handleFocus = useCallback((index: number) => {
+        return () => {  //may remove curried useCallback
+            setFocusedCardIndex(index)
+        }
+    }, []);
 
-    const handleBlur = () => {
+    const handleBlur = useCallback(() => {
         setFocusedCardIndex(null);
-    };
+    }, []);
 
     return (
         <Grid container spacing={2} columns={12}>
