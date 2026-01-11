@@ -7,43 +7,43 @@ import { LoadingStatus } from "../types/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 
-
 const usePopulateGroups = (): LoadingStatus => {
     const [groupsLoadingStatus, setGroupsLoadingStatus] = useState<LoadingStatus>('pending');
-    const timerRef = useRef<number | null>(null);
+    const loadedRef = useRef<boolean | null>(null);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        if (groups.length > 0) return;
+        if ((groups.length > 0) || (loadedRef.current)) return;
+
+        loadedRef.current = true;
 
         const loadGroups = async () => {
-            const { items } = await trpcClient.groups.list.mutate()
+            try {
+                const { items } = await trpcClient.groups.list.mutate()
 
-            if (items.length < 1) console.error("no groups to dispatch");
-
-            dispatch(getAllGroups(items));
-
-            timerRef.current = window.setTimeout(() => {
-                setGroupsLoadingStatus((items.length > 0)
-                    ? "idle"
-                    : "failed"
+                dispatch(getAllGroups(items));
+                setGroupsLoadingStatus(
+                    (items.length > 0)
+                        ? "idle"
+                        : "failed"
                 );
-                timerRef.current = null
-            }, 1200)
+
+            } catch (err) {
+                console.error(err);
+                setGroupsLoadingStatus("failed");
+            }
+
+
         };
 
         loadGroups();
 
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
-
-    }, [groups, groupsLoadingStatus]);
+    }, [groups.length, dispatch]);
 
     return groupsLoadingStatus;
-};
+}
 
-export { usePopulateGroups };
+export { usePopulateGroups }
 
 

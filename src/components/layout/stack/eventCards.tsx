@@ -8,8 +8,8 @@ import type { RootState } from "@/src/lib/store/root/store";
 
 function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
-    const events = useSelector((s: RootState) => s.events.events);
-    if ((!events) || (events.length === 0)) return null;
+    const eventsPages = useSelector((s: RootState) => s.events.eventPages);
+    const currentPage = useSelector((s: RootState) => s.events.currentPage)
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);
@@ -21,7 +21,7 @@ function EventCards(): JSX.Element | null {
 
     return (
         <Grid container spacing={2} columns={12}>
-            {renderLayout(events, handleBlur, handleFocus, focusedCardIndex)}
+            {renderLayout(eventsPages[currentPage], handleBlur, handleFocus, focusedCardIndex)}
         </Grid>
     )
 }

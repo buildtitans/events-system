@@ -3,7 +3,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
-import { Author } from '@/src/components/layout/box/author';
+import { Author } from '@/src/components/ui/box/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 

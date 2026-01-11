@@ -1,6 +1,5 @@
 "use client"
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { getAllGroups } from "../store/slices/GroupsSlice";
 import {
     useDispatch,
     useSelector
@@ -14,53 +13,39 @@ import type {
     AppDispatch,
     RootState
 } from "@/src/lib/store/root/store";
-import { getEvents } from "@/src/lib/store/slices/EventCategorySlice";
 import type {
     LoadingStatus,
     UsePopulateEventsListHook
 } from "../types/types";
+import { chunkEventPages } from "@/src/lib/store/slices/EventCategorySlice";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
-    const events = useSelector((s: RootState) => s.events.events)
+    const eventsPages = useSelector((s: RootState) => s.events.eventPages)
     const [eventStatus, setEventStatus] = useState<LoadingStatus>('pending');
-    const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
     const loadedRef = useRef<boolean | null>(null);
 
     useEffect(() => {
-        const events_stored = events;
-        if (events_stored.length > 0) return;
-        if (loadedRef.current) return;
+        const events_stored = eventsPages;
+        if ((loadedRef.current) || (events_stored.length > 0)) return;
+
         loadedRef.current = true
 
         const loadEvents = async (): Promise<void> => {
             try {
-                //TODO: seperate these into seperate hooks, or different effects dependant on what UI loads first on spinup
-                const res = await trpcClient.events.list.mutate();
-                const grps = await trpcClient.groups.list.mutate();
+                const eventsRes = await trpcClient.events.list.mutate();
+                const rawEvents = eventsRes.items;
 
-                if ((!res.items) || (!grps.items)) {
-                    setEventStatus("failed")
-                    throw new Error("Failed to fetch")
-                }
+                dispatch(chunkEventPages(rawEvents));
+                setEventStatus((rawEvents.length > 0) ? "idle" : "failed")
 
-                dispatch(getEvents(res.items));
-                dispatch(getAllGroups(grps.items));
-
-                timerRef.current = window.setTimeout(() => {
-                    setEventStatus((res.items.length > 0) ? "idle" : "failed")
-                    timerRef.current = null;
-                }, 1200);
             } catch (err) {
                 console.error("tRPC request failed before reaching the server", err)
+                setEventStatus("failed");
             }
         };
         loadEvents();
-
-        return () => {
-            if (timerRef.current !== null) clearTimeout(timerRef.current);
-        }
-    }, []);
+    }, [eventsPages.length, dispatch]);
 
     return {
         eventLoadingStatus: eventStatus
