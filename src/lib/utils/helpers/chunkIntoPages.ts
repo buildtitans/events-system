@@ -1,11 +1,12 @@
-import type { EventsArraySchemaType } from "@/src/schemas/eventSchema";
+import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import type { EventsPages } from "../../types/types";
 
 function chunkEventsIntoPages(
-    events: EventsArraySchemaType,
-    maxPageLength: number = 6
-): EventsArraySchemaType[] {
+    events: LayoutSlotSchemaType[],
+    maxPageLength: number = 5
+): EventsPages {
 
-    const pages: EventsArraySchemaType[] = [];
+    const pages: LayoutSlotSchemaType[][] = [];
 
     for (let i = 0; i < events.length; i += maxPageLength) {
         pages.push(
@@ -15,9 +16,7 @@ function chunkEventsIntoPages(
             )
         );
     }
-
     return pages;
-
 }
 
 export { chunkEventsIntoPages };

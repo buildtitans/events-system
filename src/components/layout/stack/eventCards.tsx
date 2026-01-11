@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
-import { renderLayout } from '@/src/components/layout/engines/renderLayout';
+import { renderLayout } from '@/src/components/layout/rendering/renderLayout';
 import type { RootState } from "@/src/lib/store/root/store";
 
 function EventCards(): JSX.Element | null {
@@ -11,11 +11,9 @@ function EventCards(): JSX.Element | null {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages);
     const currentPage = useSelector((s: RootState) => s.events.currentPage)
 
-    const handleFocus = useCallback((index: number) => {
-        return () => {  //may remove curried useCallback
-            setFocusedCardIndex(index)
-        }
-    }, []);
+    const handleFocus = (index: number) => {
+        setFocusedCardIndex(index)
+    }
 
     const handleBlur = useCallback(() => {
         setFocusedCardIndex(null);

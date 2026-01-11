@@ -1,4 +1,5 @@
 import type { NextResponse } from "next/server";
+import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 
 type HealthCheck = { ok: boolean };
 
@@ -12,4 +13,7 @@ type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus
 }
 
-export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus }
+type EventsPages = Array<LayoutSlotSchemaType[]>
+
+
+export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages }
