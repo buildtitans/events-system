@@ -1,10 +1,9 @@
 import { designateLayoutSlot } from "@/src/lib/utils/designateLayoutSlot";
 import type { EventSchemaType } from "@/src/schemas/eventSchema";
 import { JSX } from "react";
-import { EventCard, EventCardProps } from "../../layout/box/cards/eventCard";
+import { EventCard, type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
 import { getCardSizing } from "@/src/lib/utils/getCardSizing";
-import { EventStackSlot } from "../../layout/box/slots/eventStackSlot";
-
+import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
 
 function renderLayout(events: EventSchemaType[], handleBlur: EventCardProps["handleBlur"], handleFocus: EventCardProps["handleFocus"], focusedCardIndex: EventCardProps["focusedCardIndex"]) {
 

@@ -1,13 +1,18 @@
 "use client"
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
-import { Author } from '@/src/components/layout/box/author';
-import { EventItemCardProps } from "./eventItemCard";
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
+import { Author } from '@/src/components/ui/box/author';
+import { EventCardProps } from './cards/eventCard';
 
-function EventStackCard({ handleBlur, handleFocus, focusedCardIndex }: EventItemCardProps) {
-    const events = useSelector((s: RootState) => s.categories.events);
+type EventStackCardProps = {
+    handleBlur: EventCardProps["handleBlur"],
+    handleFocus: EventCardProps["handleFocus"],
+    focusedCardIndex: EventCardProps["focusedCardIndex"],
+    event: EventCardProps["event"],
+}
+
+function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event }: EventStackCardProps) {
+
 
     return (
         <StyledCard
@@ -28,21 +33,21 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex }: EventItem
             >
                 <div>
                     <Typography gutterBottom variant="caption" component="div">
-                        {events[3].tag}
+                        {event.tag}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
-                        {events[3].title}
+                        {event.title}
                     </Typography>
                     <StyledTypography
                         variant="body2"
                         color="text.secondary"
                         gutterBottom
                     >
-                        {events[3].description}
+                        {event.description}
                     </StyledTypography>
                 </div>
             </StyledCardContent>
-            <Author authors={events[3].authors} />
+            <Author authors={event.authors} />
         </StyledCard>
     )
 }

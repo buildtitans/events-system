@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { EventStackCard } from '../eventStackCard';
-import { EventCardProps } from '../cards/eventCard';
+import { CardDesignation, EventCardProps } from '../cards/eventCard';
 
 type EventStackSlotProps = {
     handleBlur: EventCardProps["handleBlur"],
@@ -15,7 +15,7 @@ function EventStackSlot({
     handleBlur,
     handleFocus,
     focusedCardIndex,
-    events
+    events,
 }: EventStackSlotProps): React.ReactNode {
 
     return (
@@ -27,13 +27,13 @@ function EventStackSlot({
                     handleBlur={handleBlur}
                     handleFocus={handleFocus}
                     focusedCardIndex={focusedCardIndex}
-                    eventItemProperties={events[0]}
+                    event={events[0]}
                 />
                 <EventStackCard
                     handleBlur={handleBlur}
                     handleFocus={handleFocus}
                     focusedCardIndex={focusedCardIndex}
-                    eventItemProperties={events[1]}
+                    event={events[1]}
                 />
 
             </Box>

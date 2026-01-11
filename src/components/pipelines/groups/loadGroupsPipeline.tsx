@@ -1,8 +1,8 @@
 "use client"
 import type { JSX } from "react";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
-import GroupCards from "../../layout/stack/groupCards";
-import { NoEventsFound } from "../../layout/box/noEventsFound";
+import GroupCards from "../../ui/stack/groupCards";
+import { NoEventsFound } from "../../ui/box/noEventsFound";
 import type { LoadingStatus } from "@/src/lib/types/types"
 
 const loadGroupsPipeline = (groupsLoadingStatus: LoadingStatus): JSX.Element | null => {

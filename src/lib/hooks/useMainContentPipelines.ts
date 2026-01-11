@@ -17,7 +17,7 @@ export const useMainContentPipelines = (tab: MainContentTabType): JSX.Element | 
         case "Events":
             return loadEventsPipeline(eventLoadingStatus);
         default: {
-            return null
+            return loadEventsPipeline(eventLoadingStatus);
         }
     };
 };

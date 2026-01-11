@@ -3,7 +3,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
-import { Author } from '@/src/components/layout/box/author';
+import { Author } from '@/src/components/ui/box/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 
@@ -26,7 +26,7 @@ export type CardDesignation = {
 }
 
 export type EventCardProps = {
-    handleFocus: (index: number) => void,
+    handleFocus: (index: number) => () => void,
     handleBlur: () => void,
     focusedCardIndex: number | null,
     event: EventSchemaType,
@@ -45,7 +45,7 @@ function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant }
 
             <StyledCard
                 variant="outlined"
-                onFocus={() => handleFocus(2)}
+                onFocus={handleFocus(2)}
                 onBlur={handleBlur}
                 tabIndex={0}
                 className={focusedCardIndex === 2 ? 'Mui-focused' : ''}

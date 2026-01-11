@@ -1,8 +1,8 @@
 "use client";
 import type { LoadingStatus } from "@/src/lib/types/types";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
-import { NoEventsFound } from "../../layout/box/noEventsFound";
-import EventCards from "../../layout/stack/eventCards";
+import { NoEventsFound } from "../../ui/box/noEventsFound";
+import EventCards from "../../ui/stack/eventCards";
 import { JSX } from "react";
 
 const loadEventsPipeline = (eventLoadingStatus: LoadingStatus): JSX.Element => {
