@@ -1,70 +1,43 @@
-import { designateLayoutSlot } from "@/src/lib/utils/designateLayoutSlot";
-import type { EventSchemaType } from "@/src/schemas/eventSchema";
 import { JSX } from "react";
 import { EventCard, type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
-import { getCardSizing } from "@/src/lib/utils/getCardSizing";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
+import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 
-function renderLayout(events: EventSchemaType[], handleBlur: EventCardProps["handleBlur"], handleFocus: EventCardProps["handleFocus"], focusedCardIndex: EventCardProps["focusedCardIndex"]) {
+function renderLayout(
+    slots: LayoutSlotSchemaType[],
+    handleBlur: EventCardProps["handleBlur"],
+    handleFocus: EventCardProps["handleFocus"],
+    focusedCardIndex: EventCardProps["focusedCardIndex"]
+): JSX.Element[] {
+    return slots.map((slot, i: number) => {
 
-    const output: JSX.Element[] = [];
-    let i: number = 0;
-
-
-    while (i < events.length) {
-        const slot = designateLayoutSlot(i);
-
-        if (slot.kind === "card") {
-
-            const sizing = getCardSizing(slot.variant)
-
-            output.push(
-                <EventCard
-                    event={events[i]}
-                    key={events[i].id}
-                    variant={{ type: slot.variant, size: sizing }}
-                    handleBlur={handleBlur}
-                    handleFocus={handleFocus}
-                    focusedCardIndex={focusedCardIndex}
-                />
-            )
-            i++
-        } else if (slot.kind === "stack") {
-            const remaining = events.length - i;
-
-            if (remaining < slot.count) {
-                output.push(
+        switch (slot.kind) {
+            case "card":
+                return (
                     <EventCard
-                        key={events[i].id}
-                        event={events[i]}
-                        variant={{ type: "hero", size: getCardSizing("hero") }}
+                        index={i}
+                        key={slot.event.id}
+                        event={slot.event}
+                        variant={slot.variant}
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
                     />
                 )
-                i++
-                continue
+
+            default: {
+                return (
+                    <EventStackSlot
+                        key={slot.events.map(e => e.id).join("+")}
+                        events={slot.events}
+                        handleBlur={handleBlur}
+                        handleFocus={handleFocus}
+                        focusedCardIndex={focusedCardIndex}
+                    />
+                )
             }
-
-
-            const group = events.slice(i, i + slot.count)
-
-            output.push(
-                <EventStackSlot
-                    events={group}
-                    key={group.map((event: EventSchemaType) => event.id).join("+")}
-                    handleBlur={handleBlur}
-                    handleFocus={handleFocus}
-                    focusedCardIndex={focusedCardIndex}
-                />
-            )
-
-            i += slot.count
         }
-    }
-
-    return output
+    });
 }
 
 export { renderLayout }

@@ -1,8 +1,8 @@
+import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { router, publicProcedure } from "../init";
-import { EventsArraySchemaType } from "@/src/schemas/eventSchema";
 
 type EventsResponse = {
-    items: EventsArraySchemaType,
+    items: LayoutSlotSchemaType[],
     meta: {
         total: number
     }

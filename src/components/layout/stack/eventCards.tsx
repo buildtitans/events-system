@@ -11,11 +11,9 @@ function EventCards(): JSX.Element | null {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages);
     const currentPage = useSelector((s: RootState) => s.events.currentPage)
 
-    const handleFocus = useCallback((index: number) => {
-        return () => {  //may remove curried useCallback
-            setFocusedCardIndex(index)
-        }
-    }, []);
+    const handleFocus = (index: number) => {
+        setFocusedCardIndex(index)
+    }
 
     const handleBlur = useCallback(() => {
         setFocusedCardIndex(null);

@@ -35,6 +35,6 @@ type EventsArraySchemaType = Static<typeof EventsArraySchema>;
 
 type EventsReponseSchemaType = Static<typeof EventsReponseSchema>;
 
-export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema };
+export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema, AuthorsSchema };
 
 export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType, AuthorsSchemaType };
