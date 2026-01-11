@@ -7,7 +7,12 @@ export const eventsRoutes: FastifyPluginAsync = async (app) => {
         const rows = await dbClient.getEvents();
         const layout = compileEventsLayout(rows);
 
-        return { items: layout, meta: { total: layout.length } };
+        return {
+            items: layout,
+            meta: {
+                total: layout.length
+            }
+        };
     });
 
     app.get("/groups", async () => {
