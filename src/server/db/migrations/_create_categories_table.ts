@@ -29,4 +29,13 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .notNull()
         ))
         .execute()
+
+
+    await sql`
+    
+  `.execute(db);
+
+    await sql`
+    
+  `.execute(db);
 }

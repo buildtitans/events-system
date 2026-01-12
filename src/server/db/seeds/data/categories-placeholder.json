@@ -1,198 +1,165 @@
 [
     {
-        "id": "c1",
         "slug": "technology",
         "name": "Technology",
         "icon": "code"
     },
     {
-        "id": "c2",
         "slug": "business",
         "name": "Business & Startups",
         "icon": "briefcase"
     },
     {
-        "id": "c3",
         "slug": "career",
         "name": "Careers & Networking",
         "icon": "users"
     },
     {
-        "id": "c4",
         "slug": "finance",
         "name": "Finance & Investing",
         "icon": "dollar-sign"
     },
     {
-        "id": "c5",
         "slug": "design",
         "name": "Design & UX",
         "icon": "palette"
     },
     {
-        "id": "c6",
         "slug": "health",
         "name": "Health & Wellness",
         "icon": "heart"
     },
     {
-        "id": "c7",
         "slug": "fitness",
         "name": "Fitness & Sports",
         "icon": "activity"
     },
     {
-        "id": "c8",
         "slug": "mental-health",
         "name": "Mental Health & Mindfulness",
         "icon": "brain"
     },
     {
-        "id": "c9",
         "slug": "social",
         "name": "Social & Community",
         "icon": "smile"
     },
     {
-        "id": "c10",
         "slug": "dating",
         "name": "Dating & Relationships",
         "icon": "heart-handshake"
     },
     {
-        "id": "c11",
         "slug": "lgbtq",
         "name": "LGBTQ+",
         "icon": "rainbow"
     },
     {
-        "id": "c12",
         "slug": "arts",
         "name": "Arts & Culture",
         "icon": "theater"
     },
     {
-        "id": "c13",
         "slug": "music",
         "name": "Music",
         "icon": "music"
     },
     {
-        "id": "c14",
         "slug": "film",
         "name": "Film & Media",
         "icon": "film"
     },
     {
-        "id": "c15",
         "slug": "photography",
         "name": "Photography",
         "icon": "camera"
     },
     {
-        "id": "c16",
         "slug": "writing",
         "name": "Writing & Literature",
         "icon": "edit"
     },
     {
-        "id": "c17",
         "slug": "gaming",
         "name": "Gaming",
         "icon": "gamepad"
     },
     {
-        "id": "c18",
         "slug": "anime",
         "name": "Anime & Manga",
         "icon": "sparkles"
     },
     {
-        "id": "c19",
         "slug": "tabletop",
         "name": "Tabletop & Board Games",
         "icon": "dice"
     },
     {
-        "id": "c20",
         "slug": "food",
         "name": "Food & Drink",
         "icon": "utensils"
     },
     {
-        "id": "c21",
         "slug": "cooking",
         "name": "Cooking & Baking",
         "icon": "chef-hat"
     },
     {
-        "id": "c22",
         "slug": "coffee",
         "name": "Coffee & Tea",
         "icon": "coffee"
     },
     {
-        "id": "c23",
         "slug": "travel",
         "name": "Travel & Adventure",
         "icon": "map"
     },
     {
-        "id": "c24",
         "slug": "outdoors",
         "name": "Hiking & Outdoors",
         "icon": "mountain"
     },
     {
-        "id": "c25",
         "slug": "education",
         "name": "Education & Learning",
         "icon": "book"
     },
     {
-        "id": "c26",
         "slug": "language",
         "name": "Language Exchange",
         "icon": "globe"
     },
     {
-        "id": "c27",
         "slug": "science",
         "name": "Science",
         "icon": "flask"
     },
     {
-        "id": "c28",
         "slug": "spirituality",
         "name": "Spirituality & Religion",
         "icon": "sparkle"
     },
     {
-        "id": "c29",
         "slug": "philosophy",
         "name": "Philosophy & Discussion",
         "icon": "message-circle"
     },
     {
-        "id": "c30",
         "slug": "volunteering",
         "name": "Volunteering & Causes",
         "icon": "hand-heart"
     },
     {
-        "id": "c31",
         "slug": "environment",
         "name": "Environment & Sustainability",
         "icon": "leaf"
     },
     {
-        "id": "c32",
         "slug": "parenting",
         "name": "Parenting & Families",
         "icon": "baby"
     },
     {
-        "id": "c33",
         "slug": "pets",
         "name": "Pets & Animals",
         "icon": "paw"

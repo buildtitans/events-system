@@ -23,7 +23,9 @@ export async function up(db: Kysely<any>): Promise<void> {
             col.defaultTo(null)
         )
         .addColumn("category_id", "uuid", (col) =>
-            col.defaultTo(null)
+            col
+                .references("categories.id")
+                .onDelete("set null")
         )
         .addColumn("created_at", "timestamptz", (col) =>
             col.notNull().defaultTo(sql`now()`)
