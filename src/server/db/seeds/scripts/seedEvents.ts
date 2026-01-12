@@ -18,7 +18,7 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
             authors: event.authors,
             group_id: groupsBySlug[event.group]
         };
-
+        //TODO figure out which row is throwing (logged 22:26 in powershell)
         const inserted = await db
             .insertInto("events")
             .values(row)

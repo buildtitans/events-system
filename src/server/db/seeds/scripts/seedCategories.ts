@@ -52,10 +52,3 @@ export async function seedCategories(): Promise<Record<string, string>> {
     return categoryBySlug;
 
 }
-
-seedCategories()
-    .then(() => process.exit(0))
-    .catch((err) => {
-        console.error("Seeding failed on table 'categories'", err);
-        process.exit(1);
-    });

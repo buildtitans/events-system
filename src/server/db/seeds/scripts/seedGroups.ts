@@ -12,12 +12,16 @@ export async function seedGroups(
     for (const group of rawGroups) {
         const slug = `${group.name}-${group.location}`.toLowerCase().replace(/\s+/g, "-");
 
+        const categorySlug = group.category.trim().toLowerCase();
+
+        const categoryId = categoryBySlug[categorySlug];
+
         const row: Insertable<Groups> = {
             name: group.name,
             description: group.description,
             location: group.location,
             slug,
-            category_id: categoryBySlug[group.category],
+            category_id: categoryId,
         };
 
         const inserted = await db
