@@ -5,9 +5,9 @@ function LinearIndeterminate() {
     return (
         <Box sx={{
             width: '100%',
-            height: '100%',
+            height: '400px',
             margin: 'auto',
-            paddingTop: '100px'
+            paddingTop: '200px',
         }}>
             <LinearProgress />
         </Box>

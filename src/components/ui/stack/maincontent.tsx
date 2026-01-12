@@ -8,6 +8,9 @@ import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { PaginateEvents } from '../box/pagination/paginateEvents';
+import Latest from './groupsAvailable';
+import { usePopulateGroups } from '@/src/lib/hooks/usePopulateGroups';
+import { loadGroupsPipeline } from '../../pipelines/groups/loadGroupsPipeline';
 
 
 const overrides = {
@@ -29,6 +32,7 @@ const overrides = {
 function MainContent(): JSX.Element {
   const tab = useSelector((s: RootState) => s.rendering.mainContent);
   const content = useMainContentPipelines(tab);
+  const groupsLoadingStatus = usePopulateGroups();
 
   return (
     <Box
@@ -47,7 +51,21 @@ function MainContent(): JSX.Element {
         <PaginateEvents />
       </Box>
 
-      {content}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        {content}
+
+        {loadGroupsPipeline(groupsLoadingStatus)}
+      </Box>
+
+
 
     </Box>
   );

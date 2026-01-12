@@ -52,13 +52,13 @@
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=45",
-        "tag": "Engineering",
-        "title": "Pioneering sustainable engineering solutions",
+        "img": "https://picsum.photos/800/450?random=41",
+        "tag": "DevOps",
+        "title": "Sustainable AI",
         "description": "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
         "authors": [
             {
-                "name": "Agnes Walker",
+                "name": "Anderson Cooper",
                 "avatar": "/static/images/avatar/4.jpg"
             },
             {
@@ -68,9 +68,9 @@
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=6",
-        "tag": "Product",
-        "title": "Maximizing efficiency with our latest product updates",
+        "img": "https://picsum.photos/800/450?random=11",
+        "tag": "Software Solutions",
+        "title": "Maximizing efficiency with our latest products",
         "description": "Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.",
         "authors": [
             {
@@ -80,54 +80,54 @@
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=1",
-        "tag": "Engineering",
-        "title": "Revolutionizing software development with cutting-edge tools",
-        "description": "Our latest engineering tools are designed to streamline workflows and boost productivity. Discover how these innovations are transforming the software development landscape.",
+        "img": "https://picsum.photos/800/450?random=101",
+        "tag": "AI Research",
+        "title": "Inside our next-generation machine learning platform",
+        "description": "A deep dive into the AI infrastructure powering our newest intelligent systems and how it enables faster, more accurate predictions.",
         "authors": [
             {
-                "name": "Remy Sharp",
-                "avatar": "/static/images/avatar/1.jpg"
+                "name": "Lena Patel",
+                "avatar": "/static/images/avatar/8.jpg"
             },
             {
-                "name": "Travis Howard",
-                "avatar": "/static/images/avatar/2.jpg"
+                "name": "Marco Ruiz",
+                "avatar": "/static/images/avatar/9.jpg"
             }
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=2",
-        "tag": "Product",
-        "title": "Innovative product features that drive success",
-        "description": "Explore the key features of our latest product release that are helping businesses achieve their goals. From user-friendly interfaces to robust functionality, learn why our product stands out.",
+        "img": "https://picsum.photos/800/450?random=102",
+        "tag": "Growth",
+        "title": "How data-driven strategy is scaling our customer success",
+        "description": "See how analytics and experimentation are driving measurable improvements in customer engagement and retention.",
         "authors": [
             {
-                "name": "Erica Johns",
-                "avatar": "/static/images/avatar/6.jpg"
+                "name": "Nina Flores",
+                "avatar": "/static/images/avatar/10.jpg"
             }
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=3",
-        "tag": "Design",
-        "title": "Designing for the future: trends and insights",
-        "description": "Stay ahead of the curve with the latest design trends and insights. Our design team shares their expertise on creating intuitive and visually stunning user experiences.",
+        "img": "https://picsum.photos/800/450?random=103",
+        "tag": "UX",
+        "title": "Crafting delightful interfaces through user research",
+        "description": "Our UX team explains how real-world user insights shape the interfaces people love to use every day.",
         "authors": [
             {
-                "name": "Kate Morrison",
-                "avatar": "/static/images/avatar/7.jpg"
+                "name": "Oliver Grant",
+                "avatar": "/static/images/avatar/11.jpg"
             }
         ]
     },
     {
-        "img": "https://picsum.photos/800/450?random=4",
-        "tag": "Company",
-        "title": "Our company's journey: milestones and achievements",
-        "description": "Take a look at our company's journey and the milestones we've achieved along the way. From humble beginnings to industry leader, discover our story of growth and success.",
+        "img": "https://picsum.photos/800/450?random=104",
+        "tag": "Culture",
+        "title": "Building a company culture that fuels innovation",
+        "description": "An inside look at how collaboration, transparency, and curiosity define the way our teams work together.",
         "authors": [
             {
-                "name": "Cindy Baker",
-                "avatar": "/static/images/avatar/3.jpg"
+                "name": "Priya Shah",
+                "avatar": "/static/images/avatar/12.jpg"
             }
         ]
     },

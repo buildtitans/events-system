@@ -12,8 +12,6 @@ function renderLayout(
 
     return slots.map((slot, i: number) => {
 
-        console.log(slot.kind);
-
         switch (slot.kind) {
             case "card":
                 return (
