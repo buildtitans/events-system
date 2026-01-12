@@ -1,9 +1,11 @@
 import type { CardType } from "@/src/components/ui/box/cards/eventCard";
-import type { CardVariantTypeSchemaType } from "@/src/schemas/layoutSlotSchema";
 
 export type LayoutSlot =
     | { kind: "card", variant: CardType }
     | { kind: "stack", count: number }
+
+//TODO: implement logic for arrays that vary from 1 to 6 in length 
+// -> (index) to -> (index, pageSize) for parameters
 
 function designateLayoutSlot(index: number): LayoutSlot {
 
