@@ -1,8 +1,8 @@
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { router, publicProcedure } from "../init";
-
+import { EventsPages } from "@/src/lib/types/types";
+import type { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
 type EventsResponse = {
-    items: LayoutSlotSchemaType[],
+    items: PaginatedLayoutSchemaType,
     meta: {
         total: number
     }

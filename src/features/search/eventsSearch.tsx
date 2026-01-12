@@ -13,7 +13,8 @@ export function EventsSearch() {
                 flexDirection: 'row',
                 gap: 1,
                 width: { xs: '100%', md: 'fit-content' },
-                overflow: 'auto',
+                overflow: 'hidden',
+
             }}
         >
             <Search />

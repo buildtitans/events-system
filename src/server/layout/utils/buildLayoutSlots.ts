@@ -2,48 +2,60 @@ import type { CardType } from "@/src/components/ui/box/cards/eventCard";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { getCardSizing, designateLayoutSlot } from "@/src/server/layout/utils";
+import { chunkEventsIntoPages } from "./chunkIntoPages";
 
 export type LayoutSlot =
     | { kind: "card", variant: CardType }
     | { kind: "stack", count: number }
 
-function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[] {
-    const slots: LayoutSlotSchemaType[] = [];
+function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[][] {
 
-    let i = 0;
+    const paginatedEvents = chunkEventsIntoPages(events);
 
-    while (i < events.length) {
-        const slot = designateLayoutSlot(i);
+    const paginatedLayoutSlots = []
 
-        if (slot.kind === "card") {
-            const size = getCardSizing(slot.variant);
+    for (const page of paginatedEvents) {
+        const slots: LayoutSlotSchemaType[] = [];
 
-            slots.push({
-                kind: "card",
-                variant: {
-                    type: slot.variant,
-                    size,
-                },
-                event: events[i],
-            });
+        let i = 0;
 
-            i++;
+        while (i < page.length) {
+            const slot = designateLayoutSlot(i);
+
+            if (slot.kind === "card") {
+                const size = getCardSizing(slot.variant);
+
+                slots.push({
+                    kind: "card",
+                    variant: {
+                        type: slot.variant,
+                        size,
+                    },
+                    event: page[i],
+                });
+
+                i += 1;
+            }
+
+            else {
+                const remaining = page.length - i;
+                const count = Math.min(slot.count, remaining);
+
+
+                slots.push({
+                    kind: "stack",
+                    events: page.slice(i, i + count),
+                });
+
+                i += count;
+            }
         }
 
-        else {
-            const remaining = events.length - i;
-            const count = Math.min(slot.count, remaining);
+        paginatedLayoutSlots.push(slots)
 
-            slots.push({
-                kind: "stack",
-                events: events.slice(i, i + count),
-            });
-
-            i += count;
-        }
     }
+    return paginatedLayoutSlots
 
-    return slots;
 }
 
 

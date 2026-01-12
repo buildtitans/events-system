@@ -1,10 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { chunkEventsIntoPages } from "../../utils/helpers/chunkIntoPages";
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import type { EventsPages } from "../../types/types";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
-
 
 type EventCategoryState = {
     displayed: PresentedCategory,
@@ -25,8 +22,8 @@ export const EventCategorySlice = createSlice({
         selectCategory: (state: EventCategoryState, action: PayloadAction<PresentedCategory>) => {
             state.displayed = action.payload
         },
-        chunkEventPages: (state: EventCategoryState, action: PayloadAction<LayoutSlotSchemaType[]>) => {
-            state.eventPages = chunkEventsIntoPages(action.payload, 5);
+        chunkEventPages: (state: EventCategoryState, action: PayloadAction<EventsPages>) => {
+            state.eventPages = action.payload
             state.currentPage = 0;
         },
         nextEventsPage: (state: EventCategoryState) => {

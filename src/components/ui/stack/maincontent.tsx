@@ -7,6 +7,7 @@ import { ActiveCategory } from '@/src/features/events/activeCategory';
 import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
+import { PaginateEvents } from '../box/pagination/paginateEvents';
 
 
 const overrides = {
@@ -43,6 +44,7 @@ function MainContent(): JSX.Element {
         sx={overrides}
       >
         <ActiveCategory />
+        <PaginateEvents />
       </Box>
 
       {content}

@@ -16,8 +16,8 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
             title: row.title,
             description: row.description,
             authors: row.authors,
-            created_at: String(row.created_at),
-            updated_at: String(row.updated_at),
+            created_at: row.created_at.toISOString(),
+            updated_at: row.created_at.toISOString(),
         };
     });
 }

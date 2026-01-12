@@ -22,12 +22,18 @@ const LayoutSlotSchema = Type.Union([
     }),
     Type.Object({
         kind: Type.Literal("stack"),
-        events: Type.Array(EventSchema, { minItems: 2 })
+        events: Type.Array(EventSchema, { minItems: 1 })
     })
 ]);
 
 
+
 const LayoutSlotSchemaArray = Type.Array(LayoutSlotSchema);
+
+const PaginatedLayoutSchema = Type.Array(LayoutSlotSchemaArray)
+
+
+type PaginatedLayoutSchemaType = Static<typeof PaginatedLayoutSchema>;
 
 type LayoutSlotSchemaArrayType = Static<typeof LayoutSlotSchemaArray>;
 
@@ -38,6 +44,6 @@ type SlotSizeSchemaType = Static<typeof SlotSizeSchema>;
 type CardVariantTypeSchemaType = Static<typeof CardVariantTypeSchema>
 
 
-export type { LayoutSlotSchemaType, SlotSizeSchemaType, CardVariantTypeSchemaType, LayoutSlotSchemaArrayType };
+export type { LayoutSlotSchemaType, SlotSizeSchemaType, CardVariantTypeSchemaType, LayoutSlotSchemaArrayType, PaginatedLayoutSchemaType };
 
-export { LayoutSlotSchema, LayoutSlotSchemaArray };
+export { LayoutSlotSchema, LayoutSlotSchemaArray, PaginatedLayoutSchema };

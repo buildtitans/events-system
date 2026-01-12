@@ -2,7 +2,7 @@ import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import { Static } from "@sinclair/typebox";
 import { AuthorsSchema, EventsArraySchema } from "@/src/schemas/eventSchema";
-import { LayoutSlotSchemaArray } from "@/src/schemas/layoutSlotSchema";
+import { LayoutSlotSchemaArray, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 
 export function createValidator<T extends TSchema>(schema: T) {
     const compiled = TypeCompiler.Compile(schema);
@@ -27,7 +27,7 @@ export function createValidator<T extends TSchema>(schema: T) {
 
 const eventsValidator = createValidator(EventsArraySchema);
 
-const layoutSlotValidator = createValidator(LayoutSlotSchemaArray);
+const layoutSlotValidator = createValidator(PaginatedLayoutSchema);
 
 
 const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);

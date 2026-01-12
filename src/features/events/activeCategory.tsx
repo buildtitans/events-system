@@ -21,6 +21,7 @@ function ActiveCategory(): JSX.Element {
     return (
         <Box
             sx={{
+
                 display: 'flex',
                 flexDirection: {
                     xs: 'column-reverse',
@@ -32,7 +33,7 @@ function ActiveCategory(): JSX.Element {
                     xs: 'start',
                     md: 'center'
                 },
-                gap: 4,
+                gap: 2,
                 overflow: 'auto',
             }}
         >

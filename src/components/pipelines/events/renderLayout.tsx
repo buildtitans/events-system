@@ -9,7 +9,10 @@ function renderLayout(
     handleFocus: EventCardProps["handleFocus"],
     focusedCardIndex: EventCardProps["focusedCardIndex"]
 ): JSX.Element[] {
+
     return slots.map((slot, i: number) => {
+
+        console.log(slot.kind);
 
         switch (slot.kind) {
             case "card":
