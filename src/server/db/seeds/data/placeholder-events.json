@@ -4,6 +4,7 @@
         "tag": "Engineering",
         "title": "Revolutionizing software development with cutting-edge tools",
         "description": "Our latest engineering tools are designed to streamline workflows and boost productivity. Discover how these innovations are transforming the software development landscape.",
+        "group": "blono-devs-bloomington,-il",
         "authors": [
             {
                 "name": "Remy Sharp",
@@ -20,6 +21,7 @@
         "tag": "Product",
         "title": "Innovative product features that drive success",
         "description": "Explore the key features of our latest product release that are helping businesses achieve their goals. From user-friendly interfaces to robust functionality, learn why our product stands out.",
+        "group": "bloomington-normal-startup-circle-bloomington,-il",
         "authors": [
             {
                 "name": "Erica Johns",
@@ -32,6 +34,7 @@
         "tag": "Design",
         "title": "Designing for the future: trends and insights",
         "description": "Stay ahead of the curve with the latest design trends and insights. Our design team shares their expertise on creating intuitive and visually stunning user experiences.",
+        "group": "ui/ux-&-frontend-design-lab-normal,-il",
         "authors": [
             {
                 "name": "Kate Morrison",
@@ -44,6 +47,7 @@
         "tag": "Company",
         "title": "Our company's journey: milestones and achievements",
         "description": "Take a look at our company's journey and the milestones we've achieved along the way. From humble beginnings to industry leader, discover our story of growth and success.",
+        "group": "bloomington-normal-startup-circle-bloomington,-il",
         "authors": [
             {
                 "name": "Cindy Baker",
@@ -56,6 +60,7 @@
         "tag": "DevOps",
         "title": "Sustainable AI",
         "description": "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
+        "group": "devops-&-cloud-illinois-online",
         "authors": [
             {
                 "name": "Anderson Cooper",
@@ -72,6 +77,7 @@
         "tag": "Software Solutions",
         "title": "Maximizing efficiency with our latest products",
         "description": "Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.",
+        "group": "midwest-full-stack-collective-online",
         "authors": [
             {
                 "name": "Travis Howard",
@@ -84,6 +90,7 @@
         "tag": "AI Research",
         "title": "Inside our next-generation machine learning platform",
         "description": "A deep dive into the AI infrastructure powering our newest intelligent systems and how it enables faster, more accurate predictions.",
+        "group": "data-&-ai-central-il-normal,-il",
         "authors": [
             {
                 "name": "Lena Patel",
@@ -100,6 +107,7 @@
         "tag": "Growth",
         "title": "How data-driven strategy is scaling our customer success",
         "description": "See how analytics and experimentation are driving measurable improvements in customer engagement and retention.",
+        "group": "backend-engineering-guild-online",
         "authors": [
             {
                 "name": "Nina Flores",
@@ -112,6 +120,7 @@
         "tag": "UX",
         "title": "Crafting delightful interfaces through user research",
         "description": "Our UX team explains how real-world user insights shape the interfaces people love to use every day.",
+        "group": "ui/ux-&-frontend-design-lab-normal,-il",
         "authors": [
             {
                 "name": "Oliver Grant",
@@ -124,6 +133,7 @@
         "tag": "Culture",
         "title": "Building a company culture that fuels innovation",
         "description": "An inside look at how collaboration, transparency, and curiosity define the way our teams work together.",
+        "group": "women-in-tech-bloomington-normal-bloomington,-il",
         "authors": [
             {
                 "name": "Priya Shah",
@@ -136,6 +146,7 @@
         "tag": "Engineering",
         "title": "Pioneering sustainable engineering solutions",
         "description": "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
+        "group": "blono-devs-bloomington,-il",
         "authors": [
             {
                 "name": "Agnes Walker",
@@ -152,6 +163,7 @@
         "tag": "Product",
         "title": "Maximizing efficiency with our latest product updates",
         "description": "Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.",
+        "group": "central-illinois-react-normal,-il-61761",
         "authors": [
             {
                 "name": "Travis Howard",

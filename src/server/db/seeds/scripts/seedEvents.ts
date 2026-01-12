@@ -3,7 +3,7 @@ import type { Insertable } from "kysely";
 import type { Events } from "@/src/server/db/types/db";
 import rawEvents from "@/src/server/db/seeds/data/placeholder-events.json";
 
-async function seedEvents() {
+export async function seedEvents(groupsBySlug: Record<string, string>) {
 
     if (process.env.NODE_ENV === 'production') {
         throw new Error('Seeding disabled in production');
@@ -16,6 +16,7 @@ async function seedEvents() {
             tag: event.tag,
             img: event.img ?? null,
             authors: JSON.stringify(event.authors),
+            group_id: groupsBySlug[event.group]
         };
 
         await db
@@ -27,11 +28,4 @@ async function seedEvents() {
 
     console.log(`Seeded ${rawEvents.length} events from placeholder-events.json`);
 }
-
-seedEvents()
-    .then(() => process.exit(0))
-    .catch((err) => {
-        console.error("❌ Seeding failed", err);
-        process.exit(1);
-    });
 

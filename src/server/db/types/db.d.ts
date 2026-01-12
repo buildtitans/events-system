@@ -34,6 +34,7 @@ export interface Events {
   authors: Json;
   created_at: Generated<Timestamp>;
   description: string;
+  group_id: string;
   id: Generated<string>;
   img: string | null;
   tag: string;
