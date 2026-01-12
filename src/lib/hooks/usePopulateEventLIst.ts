@@ -35,6 +35,7 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
             try {
                 const eventsRes = await trpcClient.events.list.mutate();
                 const rawEvents = eventsRes.items;
+                console.log(rawEvents)
 
                 dispatch(chunkEventPages(rawEvents));
                 setEventStatus((rawEvents.length > 0) ? "idle" : "failed")

@@ -15,6 +15,7 @@ const EventSchema = Type.Object({
     tag: Type.String(),
     title: Type.String(),
     description: Type.String(),
+    group_id: Type.String(),
     authors: AuthorsSchema,
     created_at: Type.String(),
     updated_at: Type.String()

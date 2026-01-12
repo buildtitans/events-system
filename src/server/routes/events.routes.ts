@@ -5,7 +5,9 @@ export const eventsRoutes: FastifyPluginAsync = async (app) => {
     const dbClient = app.db
     app.get("/events", async () => {
         const rows = await dbClient.getEvents();
+        console.log(rows)
         const layout = compileEventsLayout(rows);
+        console.log(layout);
 
         return {
             items: layout,

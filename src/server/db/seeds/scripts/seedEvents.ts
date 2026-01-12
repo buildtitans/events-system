@@ -15,15 +15,27 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
             description: event.description,
             tag: event.tag,
             img: event.img ?? null,
-            authors: JSON.stringify(event.authors),
+            authors: event.authors,
             group_id: groupsBySlug[event.group]
         };
 
-        await db
+        const inserted = await db
             .insertInto("events")
             .values(row)
-            .onConflict((conflict) => conflict.column("id").doNothing())
+            .onConflict((c) =>
+                c.columns(["group_id", "title"]).doUpdateSet({
+                    description: row.description,
+                    tag: row.tag,
+                    img: row.img,
+                    authors: row.authors,
+                })
+            )
+            .returning("id")
             .execute();
+
+        if (inserted.length === 0) {
+            throw new Error(`Event insert failed: ${event.title}`);
+        }
     }
 
     console.log(`Seeded ${rawEvents.length} events from placeholder-events.json`);
