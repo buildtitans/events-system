@@ -23,6 +23,13 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface Categories {
+  icon: string;
+  id: Generated<string>;
+  name: string;
+  slug: string;
+}
+
 export interface Events {
   authors: Json;
   created_at: Generated<Timestamp>;
@@ -47,6 +54,7 @@ export interface Groups {
 }
 
 export interface DB {
+  categories: Categories;
   events: Events;
   groups: Groups;
 }
