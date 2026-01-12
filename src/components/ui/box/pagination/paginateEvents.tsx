@@ -27,7 +27,7 @@ function PaginateEvents(): JSX.Element {
             <Button
                 sx={{ backgroundColor: "rgba(255, 255, 255, 0.1)", color: "white", fontWeight: 'light', borderRadius: 2 }}
                 onClick={() => dispatch(nextEventsPage())}>
-                Previous
+                next
             </Button>
         </Box>
     )

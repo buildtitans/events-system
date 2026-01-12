@@ -4,26 +4,19 @@ export type LayoutSlot =
     | { kind: "card", variant: CardType }
     | { kind: "stack", count: number }
 
-//TODO: implement logic for arrays that vary from 1 to 6 in length 
-// -> (index) to -> (index, pageSize) for parameters
 
-function designateLayoutSlot(index: number): LayoutSlot {
+function designateLayoutSlot(index: number, pageLength: number): LayoutSlot {
 
-
-    switch (index) {
-        case 2:
-            return { kind: "card", variant: "thumbnail" }
-
-        case 3:
-            return { kind: "stack", count: 2 }
-
-        case 5:
-            return { kind: "card", variant: "thumbnail" }
-
-        default:
-            return { kind: "card", variant: "hero" }
-
+    if (index === 3 && pageLength - index >= 2) {
+        return { kind: "stack", count: 2 };
     }
+
+    if (index === 2 || index === 5) {
+        return { kind: "card", variant: "thumbnail" };
+    }
+
+    return { kind: "card", variant: "hero" };
+
 }
 
 export { designateLayoutSlot };

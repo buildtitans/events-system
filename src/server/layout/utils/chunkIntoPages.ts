@@ -1,10 +1,8 @@
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
-import type { EventsPages } from "../../../lib/types/types";
 import { EventsArraySchemaType } from "@/src/schemas/eventSchema";
 
 function chunkEventsIntoPages(
     events: EventsArraySchemaType,
-    maxPageLength: number = 5
+    maxPageLength: number = 6
 ): EventsArraySchemaType[] {
 
     const pages: EventsArraySchemaType[] = [];

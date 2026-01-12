@@ -20,7 +20,7 @@ function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[][] {
         let i = 0;
 
         while (i < page.length) {
-            const slot = designateLayoutSlot(i);
+            const slot = designateLayoutSlot(i, page.length);
 
             if (slot.kind === "card") {
                 const size = getCardSizing(slot.variant);
