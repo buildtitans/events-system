@@ -5,9 +5,9 @@ function LandingHeader() {
     return (
         <div >
             <Typography variant="h2" gutterBottom>
-                Events System
+                Events
             </Typography>
-            <Typography>Stay in the loop with the latest about our products</Typography>
+            {/* <Typography>Stay in the loop with the latest about our products</Typography> */}
         </div>
 
     )
