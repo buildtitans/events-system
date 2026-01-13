@@ -12,9 +12,12 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .primaryKey()
                 .defaultTo(sql`gen_random_uuid()`)
         )
-        //.addColumn("group_id", "uuid", (col) =>
-        //    col.references("groups.id").onDelete('cascade').notNull()
-        //)
+        .addColumn("group_id", "uuid", (col) =>
+            col
+                .references("groups.id")
+                .onDelete('cascade')
+                .notNull()
+        )
         .addColumn("img", "text", (col) =>
             col
                 .defaultTo(null)
@@ -35,6 +38,9 @@ export async function up(db: Kysely<any>): Promise<void> {
             col
                 .notNull()
         )
+        .addColumn("starts_at", "timestamptz", (col) =>
+            col.notNull())
+
         .addColumn("created_at", "timestamptz", (col) =>
             col
                 .notNull()
@@ -45,7 +51,9 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .notNull()
                 .defaultTo(sql`now()`)
         )
+        .addUniqueConstraint("events_group_start_unique", ["group_id", "starts_at"])
         .execute();
+
 
     await sql`
     create or replace function set_events_updated_at()

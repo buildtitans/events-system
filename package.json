@@ -8,10 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:codegen": "dotenv -- kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
+    "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
     "db:migrate": "tsx src/server/db/migrations/migrate.ts",
-    "db:seedEvents": "tsx src/server/db/seeds/scripts/seedEvents.ts",
-    "db:seedGroups": "tsx src/server/db/seeds/scripts/seedGroups.ts"
+    "db:seed": "tsx src/server/db/seeds/scripts/seedDB.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

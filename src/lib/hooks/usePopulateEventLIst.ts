@@ -1,5 +1,6 @@
 "use client"
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { TRPCClientError } from "@trpc/client";
 import {
     useDispatch,
     useSelector
@@ -33,14 +34,28 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
 
         const loadEvents = async (): Promise<void> => {
             try {
-                const eventsRes = await trpcClient.events.list.mutate();
+                const eventsRes = await trpcClient.events.list.mutate()
                 const rawEvents = eventsRes.items;
+                console.log(rawEvents)
 
                 dispatch(chunkEventPages(rawEvents));
                 setEventStatus((rawEvents.length > 0) ? "idle" : "failed")
 
             } catch (err) {
-                console.error("tRPC request failed before reaching the server", err)
+                if (err instanceof TRPCClientError) {
+                    console.error("tRPC error", {
+                        message: err.message,
+                        code: err.data?.code,
+                        httpStatus: err.data?.httpStatus,
+                        path: err.data?.path,
+                        cause: err.cause,
+                        shape: err.shape,
+                        stack: err.data?.stack
+                    });
+                } else {
+                    console.error("Unknown error", err);
+                }
+
                 setEventStatus("failed");
             }
         };

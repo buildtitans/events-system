@@ -11,13 +11,15 @@ type AuthorsSchemaType = Static<typeof AuthorsSchema>
 
 const EventSchema = Type.Object({
     id: Type.String(),
-    img: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-    tag: Type.String(),
+    group_id: Type.String(),
+    starts_at: Type.String({ format: "date-time" }),
+    img: Type.Union([Type.String(), Type.Null()]),
+    tag: Type.Union([Type.String(), Type.Null()]),
     title: Type.String(),
     description: Type.String(),
     authors: AuthorsSchema,
-    created_at: Type.String(),
-    updated_at: Type.String()
+    created_at: Type.String({ format: "date-time" }),
+    updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()])
 });
 
 const EventsArraySchema = Type.Array(EventSchema);

@@ -6,12 +6,14 @@ const CardVariantTypeSchema = Type.Union([Type.Literal("hero"), Type.Literal("th
 const SlotSizeSchema = Type.Object({
     xs: Type.Literal(12),
     md: Type.Union([Type.Literal(6), Type.Literal(4)])
-})
+},
+)
 
 const CardDesignationSchema = Type.Object({
     size: SlotSizeSchema,
     type: CardVariantTypeSchema
-})
+},
+)
 
 
 const LayoutSlotSchema = Type.Union([
@@ -19,12 +21,14 @@ const LayoutSlotSchema = Type.Union([
         kind: Type.Literal("card"),
         variant: CardDesignationSchema,
         event: EventSchema
-    }),
+    },
+    ),
     Type.Object({
         kind: Type.Literal("stack"),
-        events: Type.Array(EventSchema, { minItems: 1 })
-    })
-]);
+        events: Type.Array(EventSchema)
+    }),
+],
+);
 
 const LayoutSlotSchemaArray = Type.Array(LayoutSlotSchema);
 
@@ -41,17 +45,21 @@ type SlotSizeSchemaType = Static<typeof SlotSizeSchema>;
 
 type CardVariantTypeSchemaType = Static<typeof CardVariantTypeSchema>
 
+type CardDesignationSchemaType = Static<typeof CardDesignationSchema>;
 
 export type {
     LayoutSlotSchemaType,
     SlotSizeSchemaType,
     CardVariantTypeSchemaType,
     LayoutSlotSchemaArrayType,
-    PaginatedLayoutSchemaType
+    PaginatedLayoutSchemaType,
+    CardDesignationSchemaType
 };
 
 export {
     LayoutSlotSchema,
     LayoutSlotSchemaArray,
-    PaginatedLayoutSchema
+    PaginatedLayoutSchema,
+    CardVariantTypeSchema,
+    CardDesignationSchema
 };

@@ -1,0 +1,167 @@
+[
+    {
+        "slug": "technology",
+        "name": "Technology",
+        "icon": "code"
+    },
+    {
+        "slug": "business",
+        "name": "Business & Startups",
+        "icon": "briefcase"
+    },
+    {
+        "slug": "career",
+        "name": "Careers & Networking",
+        "icon": "users"
+    },
+    {
+        "slug": "finance",
+        "name": "Finance & Investing",
+        "icon": "dollar-sign"
+    },
+    {
+        "slug": "design",
+        "name": "Design & UX",
+        "icon": "palette"
+    },
+    {
+        "slug": "health",
+        "name": "Health & Wellness",
+        "icon": "heart"
+    },
+    {
+        "slug": "fitness",
+        "name": "Fitness & Sports",
+        "icon": "activity"
+    },
+    {
+        "slug": "mental-health",
+        "name": "Mental Health & Mindfulness",
+        "icon": "brain"
+    },
+    {
+        "slug": "social",
+        "name": "Social & Community",
+        "icon": "smile"
+    },
+    {
+        "slug": "dating",
+        "name": "Dating & Relationships",
+        "icon": "heart-handshake"
+    },
+    {
+        "slug": "lgbtq",
+        "name": "LGBTQ+",
+        "icon": "rainbow"
+    },
+    {
+        "slug": "arts",
+        "name": "Arts & Culture",
+        "icon": "theater"
+    },
+    {
+        "slug": "music",
+        "name": "Music",
+        "icon": "music"
+    },
+    {
+        "slug": "film",
+        "name": "Film & Media",
+        "icon": "film"
+    },
+    {
+        "slug": "photography",
+        "name": "Photography",
+        "icon": "camera"
+    },
+    {
+        "slug": "writing",
+        "name": "Writing & Literature",
+        "icon": "edit"
+    },
+    {
+        "slug": "gaming",
+        "name": "Gaming",
+        "icon": "gamepad"
+    },
+    {
+        "slug": "anime",
+        "name": "Anime & Manga",
+        "icon": "sparkles"
+    },
+    {
+        "slug": "tabletop",
+        "name": "Tabletop & Board Games",
+        "icon": "dice"
+    },
+    {
+        "slug": "food",
+        "name": "Food & Drink",
+        "icon": "utensils"
+    },
+    {
+        "slug": "cooking",
+        "name": "Cooking & Baking",
+        "icon": "chef-hat"
+    },
+    {
+        "slug": "coffee",
+        "name": "Coffee & Tea",
+        "icon": "coffee"
+    },
+    {
+        "slug": "travel",
+        "name": "Travel & Adventure",
+        "icon": "map"
+    },
+    {
+        "slug": "outdoors",
+        "name": "Hiking & Outdoors",
+        "icon": "mountain"
+    },
+    {
+        "slug": "education",
+        "name": "Education & Learning",
+        "icon": "book"
+    },
+    {
+        "slug": "language",
+        "name": "Language Exchange",
+        "icon": "globe"
+    },
+    {
+        "slug": "science",
+        "name": "Science",
+        "icon": "flask"
+    },
+    {
+        "slug": "spirituality",
+        "name": "Spirituality & Religion",
+        "icon": "sparkle"
+    },
+    {
+        "slug": "philosophy",
+        "name": "Philosophy & Discussion",
+        "icon": "message-circle"
+    },
+    {
+        "slug": "volunteering",
+        "name": "Volunteering & Causes",
+        "icon": "hand-heart"
+    },
+    {
+        "slug": "environment",
+        "name": "Environment & Sustainability",
+        "icon": "leaf"
+    },
+    {
+        "slug": "parenting",
+        "name": "Parenting & Families",
+        "icon": "baby"
+    },
+    {
+        "slug": "pets",
+        "name": "Pets & Animals",
+        "icon": "paw"
+    }
+]

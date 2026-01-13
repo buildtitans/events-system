@@ -113,9 +113,10 @@ export default function GroupCards() {
                 Groups
             </Typography>
             <Grid container spacing={8} columns={12} sx={{ my: 4 }}>
-                {articleInfo.map((article, index) => (
+                {groups.map((group, index) => (
                     <Group
-                        article={article}
+                        key={group.id}
+                        group={group}
                         index={index}
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}

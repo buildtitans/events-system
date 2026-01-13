@@ -1,6 +1,6 @@
 import type { CardType } from "@/src/components/ui/box/cards/eventCard";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { LayoutSlotSchemaType, PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { getCardSizing, designateLayoutSlot } from "@/src/server/layout/utils";
 import { chunkEventsIntoPages } from "./chunkIntoPages";
 
@@ -8,7 +8,7 @@ export type LayoutSlot =
     | { kind: "card", variant: CardType }
     | { kind: "stack", count: number }
 
-function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[][] {
+function buildLayoutSlots(events: EventSchemaType[]): PaginatedLayoutSchemaType {
 
     const paginatedEvents = chunkEventsIntoPages(events);
 
@@ -23,14 +23,10 @@ function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[][] {
             const slot = designateLayoutSlot(i, page.length);
 
             if (slot.kind === "card") {
-                const size = getCardSizing(slot.variant);
 
                 slots.push({
                     kind: "card",
-                    variant: {
-                        type: slot.variant,
-                        size,
-                    },
+                    variant: slot.variant,
                     event: page[i],
                 });
 
@@ -53,6 +49,9 @@ function buildLayoutSlots(events: EventSchemaType[]): LayoutSlotSchemaType[][] {
 
         paginatedLayoutSlots.push(slots)
 
+        console.log({
+            LayoutSlotsPage: paginatedLayoutSlots
+        })
     }
     return paginatedLayoutSlots
 

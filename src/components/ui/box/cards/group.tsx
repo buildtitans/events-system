@@ -8,6 +8,10 @@ import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { Author } from '../author';
+import type { GroupSchemaType } from '@/src/schemas/groupSchema';
+
+
+
 
 
 const StyledTypography = styled(Typography)({
@@ -55,22 +59,20 @@ const TitleTypography = styled(Typography)(({ theme }) => ({
     },
 }));
 
-
-type GroupProps = {
+type GroupCardProps = {
+    group: GroupSchemaType,
     index: number,
-    article: any,
     handleFocus: (index: number) => void,
     handleBlur: () => void,
     focusedCardIndex: number | null
 }
 
 
-function Group({ index, article, handleFocus, handleBlur, focusedCardIndex }: GroupProps): React.JSX.Element {
+function Group({ index, group, handleFocus, handleBlur, focusedCardIndex }: GroupCardProps): React.JSX.Element {
 
-    //TODO: change the cards for groups to map with db groups data 
 
     return (
-        <Grid key={index} size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
             <Box
                 sx={{
                     display: 'flex',
@@ -81,7 +83,7 @@ function Group({ index, article, handleFocus, handleBlur, focusedCardIndex }: Gr
                 }}
             >
                 <Typography gutterBottom variant="caption" component="div">
-                    {article.tag}
+                    {group.slug}
                 </Typography>
                 <TitleTypography
                     gutterBottom
@@ -91,17 +93,17 @@ function Group({ index, article, handleFocus, handleBlur, focusedCardIndex }: Gr
                     tabIndex={0}
                     className={focusedCardIndex === index ? 'Mui-focused' : ''}
                 >
-                    {article.title}
+                    {group.name}
                     <NavigateNextRoundedIcon
                         className="arrow"
                         sx={{ fontSize: '1rem' }}
                     />
                 </TitleTypography>
                 <StyledTypography variant="body2" color="text.secondary" gutterBottom>
-                    {article.description}
+                    {group.description}
                 </StyledTypography>
 
-                <Author authors={article.authors} />
+                <Author authors={[{ name: group.location ?? "Bloomington IL", avatar: "@/public/next.svg" }]} />
             </Box>
         </Grid>
     )

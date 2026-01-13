@@ -1,9 +1,11 @@
 [
     {
+        "starts_at": "2026-02-01T18:00:00Z",
         "img": "https://picsum.photos/800/450?random=1",
         "tag": "Engineering",
         "title": "Revolutionizing software development with cutting-edge tools",
         "description": "Our latest engineering tools are designed to streamline workflows and boost productivity. Discover how these innovations are transforming the software development landscape.",
+        "group": "blono-devs-bloomington,-il",
         "authors": [
             {
                 "name": "Remy Sharp",
@@ -16,10 +18,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-03T19:00:00Z",
         "img": "https://picsum.photos/800/450?random=2",
         "tag": "Product",
         "title": "Innovative product features that drive success",
         "description": "Explore the key features of our latest product release that are helping businesses achieve their goals. From user-friendly interfaces to robust functionality, learn why our product stands out.",
+        "group": "bloomington-normal-startup-circle-bloomington,-il",
         "authors": [
             {
                 "name": "Erica Johns",
@@ -28,10 +32,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-05T17:30:00Z",
         "img": "https://picsum.photos/800/450?random=3",
         "tag": "Design",
         "title": "Designing for the future: trends and insights",
         "description": "Stay ahead of the curve with the latest design trends and insights. Our design team shares their expertise on creating intuitive and visually stunning user experiences.",
+        "group": "ui/ux-&-frontend-design-lab-normal,-il",
         "authors": [
             {
                 "name": "Kate Morrison",
@@ -40,10 +46,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-07T18:00:00Z",
         "img": "https://picsum.photos/800/450?random=4",
         "tag": "Company",
         "title": "Our company's journey: milestones and achievements",
         "description": "Take a look at our company's journey and the milestones we've achieved along the way. From humble beginnings to industry leader, discover our story of growth and success.",
+        "group": "bloomington-normal-startup-circle-bloomington,-il",
         "authors": [
             {
                 "name": "Cindy Baker",
@@ -52,10 +60,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-10T20:00:00Z",
         "img": "https://picsum.photos/800/450?random=41",
         "tag": "DevOps",
         "title": "Sustainable AI",
         "description": "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
+        "group": "devops-&-cloud-illinois-online",
         "authors": [
             {
                 "name": "Anderson Cooper",
@@ -68,10 +78,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-12T18:30:00Z",
         "img": "https://picsum.photos/800/450?random=11",
         "tag": "Software Solutions",
         "title": "Maximizing efficiency with our latest products",
         "description": "Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.",
+        "group": "midwest-full-stack-collective-online",
         "authors": [
             {
                 "name": "Travis Howard",
@@ -80,10 +92,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-15T19:00:00Z",
         "img": "https://picsum.photos/800/450?random=101",
         "tag": "AI Research",
         "title": "Inside our next-generation machine learning platform",
         "description": "A deep dive into the AI infrastructure powering our newest intelligent systems and how it enables faster, more accurate predictions.",
+        "group": "data-&-ai-central-il-normal,-il",
         "authors": [
             {
                 "name": "Lena Patel",
@@ -96,10 +110,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-18T18:00:00Z",
         "img": "https://picsum.photos/800/450?random=102",
         "tag": "Growth",
         "title": "How data-driven strategy is scaling our customer success",
         "description": "See how analytics and experimentation are driving measurable improvements in customer engagement and retention.",
+        "group": "backend-engineering-guild-online",
         "authors": [
             {
                 "name": "Nina Flores",
@@ -108,10 +124,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-20T17:00:00Z",
         "img": "https://picsum.photos/800/450?random=103",
         "tag": "UX",
         "title": "Crafting delightful interfaces through user research",
         "description": "Our UX team explains how real-world user insights shape the interfaces people love to use every day.",
+        "group": "ui/ux-&-frontend-design-lab-normal,-il",
         "authors": [
             {
                 "name": "Oliver Grant",
@@ -120,10 +138,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-22T18:00:00Z",
         "img": "https://picsum.photos/800/450?random=104",
         "tag": "Culture",
         "title": "Building a company culture that fuels innovation",
         "description": "An inside look at how collaboration, transparency, and curiosity define the way our teams work together.",
+        "group": "women-in-tech-bloomington-normal-bloomington,-il",
         "authors": [
             {
                 "name": "Priya Shah",
@@ -132,10 +152,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-25T18:00:00Z",
         "img": "https://picsum.photos/800/450?random=45",
         "tag": "Engineering",
         "title": "Pioneering sustainable engineering solutions",
         "description": "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
+        "group": "blono-devs-bloomington,-il",
         "authors": [
             {
                 "name": "Agnes Walker",
@@ -148,10 +170,12 @@
         ]
     },
     {
+        "starts_at": "2026-02-28T19:00:00Z",
         "img": "https://picsum.photos/800/450?random=6",
         "tag": "Product",
         "title": "Maximizing efficiency with our latest product updates",
         "description": "Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.",
+        "group": "central-illinois-react-normal,-il-61761",
         "authors": [
             {
                 "name": "Travis Howard",

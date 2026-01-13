@@ -1,7 +1,8 @@
-import type { CardType } from "@/src/components/ui/box/cards/eventCard";
+import { CardDesignationSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { getCardSizing } from "./getCardSizing";
 
 export type LayoutSlot =
-    | { kind: "card", variant: CardType }
+    | { kind: "card", variant: CardDesignationSchemaType }
     | { kind: "stack", count: number }
 
 
@@ -12,10 +13,19 @@ function designateLayoutSlot(index: number, pageLength: number): LayoutSlot {
     }
 
     if (index === 2 || index === 5) {
-        return { kind: "card", variant: "thumbnail" };
+        const cardSize = getCardSizing("thumbnail")
+        return {
+            kind: "card", variant: {
+                type: "thumbnail", size: cardSize
+            }
+        };
     }
 
-    return { kind: "card", variant: "hero" };
+    return {
+        kind: "card", variant: {
+            type: "hero", size: getCardSizing("hero")
+        }
+    };
 
 }
 
