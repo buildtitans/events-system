@@ -22,6 +22,10 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn("organizer_id", "uuid", (col) =>
             col.defaultTo(null)
         )
+        .addColumn("organizer_email", "text", (col) => (
+
+            col.defaultTo(null)
+        ))
         .addColumn("category_id", "uuid", (col) =>
             col
                 .references("categories.id")
