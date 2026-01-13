@@ -38,6 +38,9 @@ export async function up(db: Kysely<any>): Promise<void> {
             col
                 .notNull()
         )
+        .addColumn("starts_at", "timestamptz", (col) =>
+            col.notNull())
+
         .addColumn("created_at", "timestamptz", (col) =>
             col
                 .notNull()

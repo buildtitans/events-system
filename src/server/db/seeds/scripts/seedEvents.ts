@@ -10,26 +10,30 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
     }
 
     for (const event of rawEvents) {
+        const groupID = groupsBySlug[rawEvents[1].group];
+
         const row: Insertable<Events> = {
             title: event.title,
             description: event.description,
             tag: event.tag,
             img: event.img ?? null,
-            authors: event.authors,
-            group_id: groupsBySlug[event.group]
+            authors: JSON.stringify(event.authors),
+            group_id: groupID,
+            starts_at: event.starts_at
         };
-        //TODO figure out which row is throwing (logged 22:26 in powershell)
         const inserted = await db
             .insertInto("events")
             .values(row)
-            .onConflict((c) =>
-                c.columns(["group_id", "title"]).doUpdateSet({
+            .onConflict(c =>
+                c.columns(["group_id", "starts_at"]).doUpdateSet({
+                    title: row.title,
                     description: row.description,
                     tag: row.tag,
                     img: row.img,
                     authors: row.authors,
                 })
             )
+
             .returning("id")
             .execute();
 
