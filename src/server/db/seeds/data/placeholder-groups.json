@@ -3,72 +3,84 @@
         "name": "Blono Devs",
         "description": "Meetup for software developers in the Bloomington-Normal IL area",
         "location": "Bloomington, IL",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "alice@example.com"
     },
     {
         "name": "Central Illinois React",
         "description": "A community for React and frontend engineers to share knowledge, projects, and best practices",
         "location": "Normal, IL 61761",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "alice@example.com"
     },
     {
         "name": "Midwest Full Stack Collective",
         "description": "Full stack developers discussing modern web apps, APIs, databases, and deployment strategies",
         "location": "Online",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "bob@example.com"
     },
     {
         "name": "Illinois TypeScript Enthusiasts",
         "description": "Focused on TypeScript, type safety, and scalable application architecture",
         "location": "Online",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "bob@example.com"
     },
     {
         "name": "Bloomington-Normal Startup Circle",
         "description": "Entrepreneurs, engineers, and designers collaborating on startup ideas and early-stage products",
         "location": "Bloomington, IL",
-        "category": "business"
+        "category": "business",
+        "organizer_email": "carol@example.com"
     },
     {
         "name": "DevOps & Cloud Illinois",
         "description": "Meetups covering Docker, AWS, CI/CD, infrastructure as code, and cloud-native tooling",
         "location": "Online",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "bob@example.com"
     },
     {
         "name": "Data & AI Central IL",
         "description": "Discussions around data engineering, machine learning, and applied AI use cases",
         "location": "Normal, IL",
-        "category": "science"
+        "category": "science",
+        "organizer_email": "alice@example.com"
     },
     {
         "name": "Open Source Contributors Hub",
         "description": "A group for developers interested in contributing to open source projects and learning collaboration workflows",
         "location": "Online",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "dave@example.com"
     },
     {
         "name": "Women in Tech Bloomington-Normal",
         "description": "A supportive space for women in technology to network, mentor, and grow their careers",
         "location": "Bloomington, IL",
-        "category": "career"
+        "category": "career",
+        "organizer_email": "carol@example.com"
     },
     {
         "name": "Junior Dev Career Builders",
         "description": "Early-career developers sharing interview prep, portfolio reviews, and learning resources",
         "location": "Online",
-        "category": "career"
+        "category": "career",
+        "organizer_email": "dave@example.com"
     },
     {
         "name": "Backend Engineering Guild",
         "description": "Deep dives into backend systems, databases, performance, and distributed systems",
         "location": "Online",
-        "category": "technology"
+        "category": "technology",
+        "organizer_email": "bob@example.com"
     },
     {
         "name": "UI/UX & Frontend Design Lab",
         "description": "Design-minded frontend developers exploring accessibility, design systems, and interaction patterns",
         "location": "Normal, IL",
-        "category": "design"
+        "category": "design",
+        "organizer_email": "alice@example.com"
     }
 ]

@@ -6,35 +6,51 @@ export async function up(db: Kysely<any>): Promise<void> {
 
     await db.schema
         .createTable("groups").ifNotExists()
+
         .addColumn("id", "uuid", (col) =>
             col.primaryKey()
                 .defaultTo(sql`gen_random_uuid()`)
         )
         .addColumn("name", "text", (col) =>
-            col.notNull()
+            col
+                .notNull()
         )
         .addColumn("description", "text", (col) =>
-            col.defaultTo(null)
+            col
+                .defaultTo(null)
         )
         .addColumn("location", "text", (col) =>
-            col.defaultTo(null)
+            col
+                .defaultTo(null)
         )
         .addColumn("organizer_id", "uuid", (col) =>
-            col.defaultTo(null)
+            col
+                .references("users.id")
+                .onDelete("set null")
         )
+        .addColumn("organizer_email", "text", (col) => (
+
+            col.defaultTo(null)
+        ))
         .addColumn("category_id", "uuid", (col) =>
             col
                 .references("categories.id")
                 .onDelete("set null")
         )
         .addColumn("created_at", "timestamptz", (col) =>
-            col.notNull().defaultTo(sql`now()`)
+            col
+                .notNull()
+                .defaultTo(sql`now()`)
         )
         .addColumn("updated_at", "timestamptz", (col) =>
-            col.notNull().defaultTo(sql`now()`)
+            col
+                .notNull()
+                .defaultTo(sql`now()`)
         )
         .addColumn("slug", "text", (col) =>
-            col.notNull().unique()
+            col
+                .notNull()
+                .unique()
         )
         .execute()
 

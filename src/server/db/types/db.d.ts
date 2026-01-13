@@ -50,13 +50,22 @@ export interface Groups {
   id: Generated<string>;
   location: string | null;
   name: string;
+  organizer_email: string | null;
   organizer_id: string | null;
   slug: string;
   updated_at: Generated<Timestamp>;
+}
+
+export interface Users {
+  created_at: Generated<Timestamp>;
+  email: string;
+  id: Generated<string>;
+  password_hash: string;
 }
 
 export interface DB {
   categories: Categories;
   events: Events;
   groups: Groups;
+  users: Users;
 }

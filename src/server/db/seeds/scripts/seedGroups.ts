@@ -4,7 +4,8 @@ import type { Groups } from "../../types/db";
 import rawGroups from "@/src/server/db/seeds/data/placeholder-groups.json";
 
 export async function seedGroups(
-    categoryBySlug: Record<string, string>
+    categoryBySlug: Record<string, string>,
+    usersByEmail: Record<string, string>
 ): Promise<Record<string, string>> {
 
     const groupBySlug: Record<string, string> = {};
@@ -16,12 +17,15 @@ export async function seedGroups(
 
         const categoryId = categoryBySlug[categorySlug];
 
+        const organizer_email = usersByEmail[group.organizer_email];
+
         const row: Insertable<Groups> = {
             name: group.name,
             description: group.description,
             location: group.location,
             slug,
             category_id: categoryId,
+            organizer_email: organizer_email
         };
 
         const inserted = await db
