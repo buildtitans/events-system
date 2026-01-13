@@ -1,3 +1,4 @@
+import { TypeSystem } from "@sinclair/typebox/system";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
@@ -5,6 +6,15 @@ import type { ValueError } from "@sinclair/typebox/compiler";
 import { EventsArraySchema } from "@/src/schemas/eventSchema";
 import { CardVariantTypeSchema, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/eventSchema";
+
+TypeSystem.Format("date-time", (value) => {
+    if (typeof value !== "string") return false;
+    const t = Date.parse(value);
+    if (!Number.isFinite(t)) return false;
+
+    return /(?:Z|[+-]\d{2}:\d{2})$/.test(value);
+});
+
 
 function preview(value: unknown, max = 160) {
     if (value == null) return String(value);
