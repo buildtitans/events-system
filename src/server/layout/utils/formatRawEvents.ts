@@ -9,15 +9,19 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
             throw new Error("Invalid authors JSON");
         }
 
+        const parsed_authors = typeof row.authors === "string" ? JSON.parse(row.authors) : row.authors
+
         return {
             id: String(row.id),
             img: row.img,
             tag: row.tag,
             title: row.title,
             description: row.description,
-            authors: row.authors,
+            starts_at: row.starts_at.toISOString(),
+            group_id: row.group_id,
+            authors: parsed_authors,
             created_at: row.created_at.toISOString(),
-            updated_at: row.created_at.toISOString(),
+            updated_at: row.updated_at ? row.updated_at.toISOString() : null,
         };
     });
 }

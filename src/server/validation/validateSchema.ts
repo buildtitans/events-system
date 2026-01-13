@@ -1,23 +1,49 @@
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
-import { Static } from "@sinclair/typebox";
-import { AuthorsSchema, EventsArraySchema } from "@/src/schemas/eventSchema";
-import { LayoutSlotSchemaArray, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
+import type { Static } from "@sinclair/typebox";
+import type { ValueError } from "@sinclair/typebox/compiler";
+import { EventsArraySchema } from "@/src/schemas/eventSchema";
+import { CardVariantTypeSchema, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
+import { AuthorsSchema } from "@/src/schemas/eventSchema";
 
-export function createValidator<T extends TSchema>(schema: T) {
+function preview(value: unknown, max = 160) {
+    if (value == null) return String(value);
+    try {
+        const s = typeof value === "string" ? value : JSON.stringify(value);
+        return s.length > max ? s.slice(0, max) + "…(truncated)" : s;
+    } catch {
+        return "[unserializable]";
+    }
+}
+
+function formatErrors(errors: ValueError[]) {
+    return errors
+        .map((e, i) => {
+            const path = e.path || "(root)";
+            return [
+                `#${i + 1} ${path}`,
+                `  message: ${e.message}`,
+                `  value:   ${preview(e.value)}`,
+            ].join("\n");
+        })
+        .join("\n");
+}
+
+export function createValidator<T extends TSchema>(schema: T, schemaName = "Schema") {
     const compiled = TypeCompiler.Compile(schema);
 
     return (data: unknown): Static<T> => {
         if (!compiled.Check(data)) {
-            const errors = [...compiled.Errors(data)].map(err => ({
-                path: err.path,
-                message: err.message,
-                value: err.value,
-            }));
+            const errs = [...compiled.Errors(data)];
 
+            // readable console output
+            console.error(
+                `\n❌ ${schemaName} validation failed (${errs.length} errors)\n${formatErrors(errs)}\n`
+            );
+
+            // keep thrown error short so it doesn't spam
             throw new Error(
-                "Schema validation failed:\n" +
-                JSON.stringify(errors, null, 2)
+                `${schemaName} validation failed (${errs.length} errors). See console for details.`
             );
         }
 
@@ -25,12 +51,14 @@ export function createValidator<T extends TSchema>(schema: T) {
     };
 }
 
-const eventsValidator = createValidator(EventsArraySchema);
 
-const layoutSlotValidator = createValidator(PaginatedLayoutSchema);
+const eventsValidator = createValidator(EventsArraySchema, "EventsArraySchema");
 
+const layoutSlotValidator = createValidator(PaginatedLayoutSchema, "PaginatedLayoutSchema");
 
 const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);
+
+const CardTypeValidator = createValidator(CardVariantTypeSchema, "CardVariantTypeSchema")
 
 
 export { AuthorsValidator, eventsValidator, layoutSlotValidator };

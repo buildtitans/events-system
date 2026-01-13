@@ -10,16 +10,16 @@ const AuthorsSchema = Type.Array(AuthorSchema);
 type AuthorsSchemaType = Static<typeof AuthorsSchema>
 
 const EventSchema = Type.Object({
-    id: Type.String({ format: "uuid" }),
-    group_id: Type.String({ format: "uuid" }),
-    starts_at: Type.String({ format: "date-time" }),
+    id: Type.String(),
+    group_id: Type.String(),
+    starts_at: Type.String(),
     img: Type.Union([Type.String(), Type.Null()]),
-    tag: Type.String(),
+    tag: Type.Union([Type.String(), Type.Null()]),
     title: Type.String(),
     description: Type.String(),
-    authors: Type.Array(AuthorsSchema),
-    created_at: Type.String({ format: "date-time" }),
-    updated_at: Type.String({ format: "date-time" })
+    authors: AuthorsSchema,
+    created_at: Type.String(),
+    updated_at: Type.Union([Type.String(), Type.Null()])
 });
 
 const EventsArraySchema = Type.Array(EventSchema);
