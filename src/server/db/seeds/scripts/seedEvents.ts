@@ -10,7 +10,7 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
     }
 
     for (const event of rawEvents) {
-        const groupID = groupsBySlug[rawEvents[1].group];
+        const groupID = groupsBySlug[event.group];
 
         const row: Insertable<Events> = {
             title: event.title,

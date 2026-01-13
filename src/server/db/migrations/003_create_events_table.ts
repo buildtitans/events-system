@@ -51,7 +51,9 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .notNull()
                 .defaultTo(sql`now()`)
         )
+        .addUniqueConstraint("events_group_start_unique", ["group_id", "starts_at"])
         .execute();
+
 
     await sql`
     create or replace function set_events_updated_at()

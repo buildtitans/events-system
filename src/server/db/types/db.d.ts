@@ -37,6 +37,7 @@ export interface Events {
   group_id: string;
   id: Generated<string>;
   img: string | null;
+  starts_at: Timestamp;
   tag: string;
   title: string;
   updated_at: Generated<Timestamp>;
