@@ -4,7 +4,7 @@ import { compileEventsLayout } from "@/src/server/layout/compileEventsLayout";
 export const eventsRoutes: FastifyPluginAsync = async (app) => {
     const dbClient = app.db
     app.get("/getEvents", async () => {
-        const rows = await dbClient.getEvents();
+        const rows = await dbClient.events.getEvents();
         const layout = compileEventsLayout(rows);
 
         return {

@@ -6,7 +6,7 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
 
     app.get('/getGroups', async () => {
 
-        const rows = await dbClient.getGroups();
+        const rows = await dbClient.groups.getGroups();
 
         return {
             items: rows,
@@ -15,6 +15,4 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
             }
         }
     })
-
-
 }
