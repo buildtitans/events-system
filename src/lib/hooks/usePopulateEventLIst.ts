@@ -34,7 +34,7 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
 
         const loadEvents = async (): Promise<void> => {
             try {
-                const eventsRes = await trpcClient.events.list.mutate();
+                const eventsRes = await trpcClient.events.list.mutate()
                 const rawEvents = eventsRes.items;
                 console.log(rawEvents)
 

@@ -1,35 +1,27 @@
+import { Endpoints } from "../types/types";
+import { EventsClient } from "./createFastifyEventsClient"
+import { GroupsClient } from "./createFastifyGroupsClient";
 
 export class FastifyApiClient {
-    constructor(private baseUrl: string) {
+    private readonly baseUrl;
+    public readonly events: EventsClient
+    public readonly groups: GroupsClient
+    constructor(baseUrl: string) {
         this.baseUrl = baseUrl
+        this.events = new EventsClient(this);
+        this.groups = new GroupsClient(this);
     }
 
-    async getEvents() {
-        const res = await fetch(`
-            ${this.baseUrl}/api/events`,
-            {
-                method: "GET"
-            }
-        );
-        if (!res.ok) {
-            console.error(res.status, res.statusText)
-            throw new Error(`GET to ${this.baseUrl}/api/events failed: ${res.status} ${res.statusText}`);
-        }
-        return res.json();
-    }
+    async get<T>(path: Endpoints) {
 
-    async getGroups() {
-        const res = await fetch(`
-            ${this.baseUrl}/api/groups`,
-            {
-                method: "GET"
-            }
-        );
+        const url = `${this.baseUrl}${path}`;
+        const res = await fetch(url, { method: "GET" });
 
         if (!res.ok) {
-            console.error(res.status, res.statusText, `Queried URL:${this.baseUrl}/api/events`);
-            throw new Error(`GET to ${this.baseUrl}/api/events failed: ${res.status} ${res.statusText}`);
+
+            throw new Error(`GET to ${url} failed: ${res.status} - ${res.statusText} `);
         }
-        return res.json();
-    }
+
+        return res.json() as Promise<T>
+    };
 };

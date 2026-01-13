@@ -8,7 +8,6 @@ export class DBClient {
         this.db = db
     }
 
-
     async getEvents() {
         return this.db
             .selectFrom("events")
@@ -17,7 +16,6 @@ export class DBClient {
             .execute();
     }
 
-
     async getGroups() {
         return this.db
             .selectFrom("groups")
@@ -25,9 +23,4 @@ export class DBClient {
             .orderBy("created_at", "desc")
             .execute()
     }
-
-
-    //TODO: add handler to create new events from user input
-
-
 };
