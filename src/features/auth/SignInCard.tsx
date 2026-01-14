@@ -1,5 +1,4 @@
 "use client"
-import { useState } from 'react';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -15,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '@/src/components/ui/icons/CustomIcons';
-import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -35,16 +33,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
     }),
 }));
 
-export default function SignInCard() {
-    const { isSubmittable,
-        emailErrorMessage,
-        emailError,
-        passwordError,
-        passwordErrorMessage,
-        handleEmail,
-        handlePassword } = useValidateCredentials();
+export default function SignInCard({
+    isSubmittable,
+    emailErrorMessage,
+    emailError,
+    passwordError,
+    passwordErrorMessage,
+    handleEmail,
+    handlePassword,
+    handleSubmit
+}: any) {
     const [open, setOpen] = React.useState(false);
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -54,21 +53,10 @@ export default function SignInCard() {
         setOpen(false);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
-            event.preventDefault();
-            return;
-        }
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
-
 
     return (
         <Card variant="outlined">
+
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                 <SitemarkIcon />
             </Box>
@@ -81,8 +69,9 @@ export default function SignInCard() {
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleSubmit}
+                method="POST"
                 noValidate
+                onSubmit={(e) => handleSubmit(e)}
                 sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
             >
                 <FormControl>

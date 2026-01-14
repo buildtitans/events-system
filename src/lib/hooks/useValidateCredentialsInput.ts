@@ -13,7 +13,8 @@ type ValidateCredentialsHook = {
     passwordError: boolean,
     passwordErrorMessage: string,
     handleEmail: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
-    handlePassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    handlePassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    credentials: LoginCredentials
 }
 
 const useValidateCredentials = (): ValidateCredentialsHook => {
@@ -92,6 +93,7 @@ const useValidateCredentials = (): ValidateCredentialsHook => {
         emailErrorMessage,
         emailError,
         passwordError,
+        credentials,
         passwordErrorMessage,
         handleEmail,
         handlePassword

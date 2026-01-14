@@ -1,9 +1,28 @@
 import Stack from '@mui/material/Stack';
 import SignInCard from '@/src/features/auth/SignInCard';
 import Content from '@/src/features/auth/LoginCopy';
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
+import { useLogin } from '@/src/lib/hooks/useLogin';
+import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
+import { AnimatePresence } from 'framer-motion';
+import LoginSnackbar from '../feedback/pending/loginStatus';
 
-export default function SignInSide(): JSX.Element {
+export default function SignInForm(): JSX.Element {
+    const {
+        isSubmittable,
+        emailErrorMessage,
+        emailError,
+        passwordError,
+        passwordErrorMessage,
+        credentials,
+        handleEmail,
+        handlePassword } = useValidateCredentials();
+    const { loginStatus, handleSubmit, setLoginStatus } = useLogin(credentials);
+
+
+    const handleClose = () => { }
+
+
     return (
 
         <Stack
@@ -34,6 +53,14 @@ export default function SignInSide(): JSX.Element {
                 }),
             ]}
         >
+            <AnimatePresence>
+                <LoginSnackbar
+                    setLoginStatus={setLoginStatus}
+                    handleClose={handleClose}
+                    status={loginStatus}
+                />
+            </AnimatePresence>
+
             <Stack
                 direction={{ xs: 'column-reverse', md: 'row' }}
                 sx={{
@@ -53,7 +80,17 @@ export default function SignInSide(): JSX.Element {
                     }}
                 >
                     <Content />
-                    <SignInCard />
+                    <SignInCard
+                        isSubmittable={isSubmittable}
+                        emailErrorMessage={emailErrorMessage}
+                        emailError={emailError}
+                        passwordError={passwordError}
+                        passwordErrorMessage={passwordErrorMessage}
+                        handleEmail={handleEmail}
+                        handleSubmit={handleSubmit}
+                        handlePassword={handlePassword}
+                        setLoginStatus={setLoginStatus}
+                    />
                 </Stack>
             </Stack>
         </Stack>

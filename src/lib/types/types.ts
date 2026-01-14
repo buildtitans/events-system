@@ -1,5 +1,6 @@
 import type { NextResponse } from "next/server";
 import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import type { SetStateAction } from "react";
 
 type HealthCheck = { ok: boolean };
 
@@ -9,11 +10,19 @@ type MountStatus = 'active' | 'idle';
 
 type LoadingStatus = 'idle' | 'pending' | 'failed';
 
+type LoginStatus = 'idle' | 'success' | 'pending' | 'failed';
+
 type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus
+}
+
+type UseLoginHook = {
+    loginStatus: LoginStatus,
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
+    setLoginStatus: React.Dispatch<SetStateAction<LoginStatus>>
 }
 
 type EventsPages = Array<LayoutSlotSchemaType[]>
 
 
-export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages }
+export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages, UseLoginHook }

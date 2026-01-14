@@ -11,9 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SitemarkIcon from './Sitemark';
 import ColorModeIconDropdown from './ColorModelIconDropdown';
+import Link from 'next/link';
 
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -39,6 +40,11 @@ export default function AppAppBar() {
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
+
+    const logClick = () => {
+        console.log('Sign in Clicked!')
+
+    }
 
     return (
         <AppBar
@@ -69,7 +75,7 @@ export default function AppAppBar() {
                             alignItems: 'center',
                         }}
                     >
-                        <Button color="info" variant="text" size="small">
+                        <Button onClick={logClick} component={Link} href='/login' color="info" variant="text" size="small">
                             Sign in
                         </Button>
                         <Button color="info" variant="contained" size="small">
@@ -110,16 +116,14 @@ export default function AppAppBar() {
                                 <MenuItem>FAQ</MenuItem>
                                 <MenuItem>Blog</MenuItem>
                                 <Divider sx={{ my: 3 }} />
-                                <MenuItem>
-                                    <Button color="primary" variant="contained" fullWidth>
-                                        Sign up
-                                    </Button>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Button color="primary" variant="outlined" fullWidth>
-                                        Sign in
-                                    </Button>
-                                </MenuItem>
+                                <Button
+                                    color="primary" variant="contained" fullWidth>
+                                    Sign up
+                                </Button>
+
+                                <Button onClick={logClick} component={Link} href='/login' color="primary" variant="outlined" fullWidth>
+                                    Sign in
+                                </Button>
                             </Box>
                         </Drawer>
                     </Box>
