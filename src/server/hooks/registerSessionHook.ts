@@ -5,10 +5,10 @@ export async function registerSessionHook(app: FastifyInstance) {
         const token = req.cookies.session;
         if (!token) return;
 
-        const session = await app.db.auth.getSession(token);
+        const validated_user = await app.db.auth.authenticate(token);
 
-        if (session) {
-            req.user = { id: session.user_id };
+        if (validated_user) {
+            req.user = { id: validated_user.id };
         }
     });
 }

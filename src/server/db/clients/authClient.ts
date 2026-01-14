@@ -7,12 +7,22 @@ import type { StoredSession, AuthClientLoginResponse } from "./types/types";
 
 export class AuthClient {
 
-    constructor(private readonly db: Kysely<DB>) {
-        this.db = db;
-    }
+    constructor(private readonly db: Kysely<DB>) { }
 
-    async authenticate(token: string) {
-        //TODO: finish building authentication handler for request verification
+    async authenticate(token: string): Promise<PublicUserSchemaType | null> {
+
+        const session = await this.getSession(token);
+        if (!session) return null;
+
+        const user = await this.db
+            .selectFrom("users")
+            .select(["id", "email"])
+            .where("id", "=", session.user_id)
+            .executeTakeFirst();
+
+        if (!user) return null;
+
+        return user;
     }
 
 
@@ -76,14 +86,21 @@ export class AuthClient {
     };
 
 
-    async getSession(token: string) {
-        return this.db
+    async getSession(
+        token?: string
+    ): Promise<StoredSession | null> {
+
+        if (!token) return null;
+
+        const session = await this.db
             .selectFrom("sessions")
             .select(["id", "user_id", "expires_at"])
             .where("id", "=", token)
             .where("expires_at", ">", new Date())
             .executeTakeFirst();
+
+        if (!session) return null;
+
+        return session;
     }
-
-
 }
