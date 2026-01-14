@@ -14,8 +14,15 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         req: FastifyRequest<{ Body: LoginBody }>,
         reply: FastifyReply
     ) => {
-        const { input_email, input_password } = req.body;
-        const { user, session } = await dbClient.auth.login(input_email, input_password);
+        const {
+            input_email,
+            input_password
+        } = req.body;
+
+        const {
+            user,
+            session
+        } = await dbClient.auth.login(input_email, input_password);
 
         reply.setCookie("session", session.id, {
             httpOnly: true,
@@ -26,7 +33,10 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         });
 
         return {
-            user
+            user: {
+                id: user.id,
+                email: user.email
+            }
         }
     })
 

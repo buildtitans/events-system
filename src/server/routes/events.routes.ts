@@ -14,5 +14,4 @@ export const eventsRoutes: FastifyPluginAsync = async (app) => {
             }
         };
     });
-
 };
