@@ -56,6 +56,13 @@ export interface Groups {
   updated_at: Generated<Timestamp>;
 }
 
+export interface Sessions {
+  created_at: Generated<Timestamp>;
+  expires_at: Timestamp;
+  id: string;
+  user_id: string;
+}
+
 export interface Users {
   created_at: Generated<Timestamp>;
   email: string;
@@ -67,5 +74,6 @@ export interface DB {
   categories: Categories;
   events: Events;
   groups: Groups;
+  sessions: Sessions;
   users: Users;
 }

@@ -3,6 +3,12 @@ import { DBClient } from "@/src/server/db";
 
 declare module "fastify" {
     interface FastifyInstance {
-        db: DBClient
+        db: DBClient,
+    }
+
+    interface FastifyRequest {
+        user?: {
+            id: string
+        }
     }
 }
