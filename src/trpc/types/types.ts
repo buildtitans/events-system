@@ -1,5 +1,6 @@
 import type { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
 import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import { PublicUserSchemaType } from "@/src/schemas/userSchema";
 
 type ApiPath = "/api";
 
@@ -7,6 +8,8 @@ type RouteToMethods = {
     "/events": "/getEvents"; //extend to other endpoints as new db transactions 
     // are created on the '/events' route (i.e. -> '/events': '/getEvents' | '/newEndpoint'...)
     "/groups": "/getGroups";
+
+    "/auth": "/login"
 };
 
 type Endpoints = {
@@ -30,4 +33,12 @@ type GroupsResponse = {
     }
 }
 
-export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse }
+
+type LoginBody = {
+    input_email: string,
+    input_password: string
+}
+
+type LoginResponse = PublicUserSchemaType | null;
+
+export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse, LoginBody, LoginResponse }
