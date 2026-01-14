@@ -11,6 +11,11 @@ export class AuthClient {
         this.db = db;
     }
 
+    async authenticate(token: string) {
+        //TODO: finish building authentication handler for request verification
+    }
+
+
     async login(
         input_email: string,
         input_password: string
