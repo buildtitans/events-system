@@ -41,10 +41,6 @@ export default function AppAppBar() {
         setOpen(newOpen);
     };
 
-    const logClick = () => {
-        console.log('Sign in Clicked!')
-
-    }
 
     return (
         <AppBar
@@ -75,7 +71,7 @@ export default function AppAppBar() {
                             alignItems: 'center',
                         }}
                     >
-                        <Button onClick={logClick} component={Link} href='/login' color="info" variant="text" size="small">
+                        <Button component={Link} href='/login' color="info" variant="text" size="small">
                             Sign in
                         </Button>
                         <Button color="info" variant="contained" size="small">
@@ -121,7 +117,7 @@ export default function AppAppBar() {
                                     Sign up
                                 </Button>
 
-                                <Button onClick={logClick} component={Link} href='/login' color="primary" variant="outlined" fullWidth>
+                                <Button component={Link} href='/login' color="primary" variant="outlined" fullWidth>
                                     Sign in
                                 </Button>
                             </Box>

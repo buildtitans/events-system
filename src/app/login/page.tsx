@@ -1,11 +1,9 @@
 "use client"
-
-import SignInForm from "@/src/components/ui/stack/SignInForm";
+import SignInForm from "@/src/components/sections/forms/SignInForm"
 
 
 export default function LoginPage() {
 
-    console.log("LOGIN PAGE RENDERED")
 
-    return (<SignInForm />)
+    return <SignInForm />
 }

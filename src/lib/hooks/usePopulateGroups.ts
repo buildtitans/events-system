@@ -20,8 +20,8 @@ const usePopulateGroups = (): LoadingStatus => {
 
         const loadGroups = async () => {
             try {
-                const { items } = await trpcClient.groups.list.mutate()
-
+                const result = await trpcClient.groups.list.mutate()
+                const { items } = result;
                 dispatch(getAllGroups(items));
                 setGroupsLoadingStatus(
                     (items.length > 0)

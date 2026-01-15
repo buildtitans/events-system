@@ -32,12 +32,28 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
             expires: session.expires_at,
         });
 
+        const success = Boolean(user);
+
         return {
-            user: {
-                id: user.id,
-                email: user.email
-            }
+            success: success
         }
+
+
+
+    })
+
+    app.post('/logout', async (
+        req: FastifyRequest,
+        reply: FastifyReply
+    ) => {
+        const token = req.cookies.session;
+        await dbClient.auth.logOut(token);
+
+        reply.clearCookie("session", {
+            path: "/"
+        })
+
+        return { success: true }
     })
 
 }

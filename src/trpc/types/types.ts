@@ -39,6 +39,6 @@ type LoginBody = {
     input_password: string
 }
 
-type LoginResponse = PublicUserSchemaType | null;
+type LoginResponse = boolean;
 
 export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse, LoginBody, LoginResponse }

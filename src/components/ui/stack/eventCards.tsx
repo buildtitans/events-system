@@ -16,7 +16,6 @@ function EventCards(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const page = eventsPages?.[currentPage];
     if (!page) return null;
-    console.log(page)
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);

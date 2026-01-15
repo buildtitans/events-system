@@ -20,7 +20,7 @@ function Author({ authors }: { authors: { name: string; avatar: string }[] }): J
             <Box
                 sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}
             >
-                <AvatarGroup max={3}>
+                {authors[0].avatar && <AvatarGroup max={3}>
                     {authors.map((author, index) => (
                         <Avatar
                             key={index}
@@ -29,7 +29,7 @@ function Author({ authors }: { authors: { name: string; avatar: string }[] }): J
                             sx={{ width: 24, height: 24 }}
                         />
                     ))}
-                </AvatarGroup>
+                </AvatarGroup>}
                 <Typography variant="caption">
                     {authors.map((author) => author.name).join(', ')}
                 </Typography>

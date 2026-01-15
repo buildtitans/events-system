@@ -42,6 +42,19 @@ export class AuthClient {
         return { user: publicUser, session };
     }
 
+
+    async logOut(token?: string) {
+        if (!token) return;
+
+        await this.db
+            .deleteFrom("sessions")
+            .where("id", "=", token)
+            .execute();
+    }
+
+
+
+
     async verifyCredentials(
         input_email: string,
         input_password: string

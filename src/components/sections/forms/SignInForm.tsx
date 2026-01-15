@@ -1,11 +1,11 @@
 import Stack from '@mui/material/Stack';
 import SignInCard from '@/src/features/auth/SignInCard';
 import Content from '@/src/features/auth/LoginCopy';
-import { JSX, useState } from 'react';
+import type { JSX } from 'react';
 import { useLogin } from '@/src/lib/hooks/useLogin';
 import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
 import { AnimatePresence } from 'framer-motion';
-import LoginSnackbar from '../feedback/pending/loginStatus';
+import LoginSnackbar from '@/src/components/ui/feedback/pending/loginStatus';
 
 export default function SignInForm(): JSX.Element {
     const {

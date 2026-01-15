@@ -4,7 +4,7 @@ import { CompiledLoginCredentials } from "@/src/schemas/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
 export const authRouter = router({
-    userByCredentials:
+    login:
         publicProcedure
             .input(
                 typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials)

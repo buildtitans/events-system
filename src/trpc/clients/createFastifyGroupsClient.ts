@@ -1,3 +1,4 @@
+import { GroupsResponse } from "../types/types";
 import { FastifyApiClient } from "./createFastifyApiClient";
 
 export class GroupsClient {
@@ -6,7 +7,7 @@ export class GroupsClient {
         this.api = api
     }
 
-    getGroups() {
+    getGroups(): Promise<GroupsResponse> {
         return this.api.get("/api/groups/getGroups");
     }
 }

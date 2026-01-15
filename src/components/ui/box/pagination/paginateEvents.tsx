@@ -8,8 +8,6 @@ import type { JSX } from "react";
 function PaginateEvents(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
 
-    console.log("paginate events mounted")
-
     return (
         <Box sx={{
             display: 'flex',
