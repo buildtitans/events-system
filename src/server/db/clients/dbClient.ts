@@ -9,7 +9,6 @@ export class DBClient {
     public readonly groups: GroupsClient;
     public readonly auth: AuthClient;
     constructor(private db: Kysely<DB>) {
-
         this.db = db;
         this.events = new EventsClient(this.db);
         this.groups = new GroupsClient(db);
