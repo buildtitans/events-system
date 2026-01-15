@@ -8,7 +8,7 @@ export async function registerSessionHook(app: FastifyInstance) {
         const validated_user = await app.db.auth.authenticate(token);
 
         if (validated_user) {
-            req.user = { id: validated_user.id };
+            req.user = { id: validated_user.id, role: "user" };
         }
     });
 }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 type GroupsInitialState = {
     communities: GroupsSchemaType
@@ -15,11 +15,14 @@ const GroupsSlice = createSlice({
     reducers: {
         getAllGroups: (state: GroupsInitialState, action: PayloadAction<GroupsInitialState["communities"]>) => {
             state.communities = action.payload
+        },
+        addGroup: (state: GroupsInitialState, action: PayloadAction<GroupSchemaType>) => {
+            state.communities.push(action.payload);
         }
     }
 });
 
-export const { getAllGroups } = GroupsSlice.actions;
+export const { getAllGroups, addGroup } = GroupsSlice.actions;
 
 type GroupsSliceType = ReturnType<typeof GroupsSlice.reducer>;
 

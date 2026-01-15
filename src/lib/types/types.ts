@@ -12,6 +12,8 @@ type LoadingStatus = 'idle' | 'pending' | 'failed';
 
 type LoginStatus = 'idle' | 'success' | 'pending' | 'failed';
 
+type RequestStatus = 'idle' | 'success' | 'pending' | 'failed';
+
 type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus
 }
@@ -25,4 +27,4 @@ type UseLoginHook = {
 type EventsPages = Array<LayoutSlotSchemaType[]>
 
 
-export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages, UseLoginHook }
+export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages, UseLoginHook, RequestStatus }

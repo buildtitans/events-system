@@ -1,7 +1,8 @@
-import { Kysely, Selectable } from "kysely";
+import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Groups } from "@/src/server/db/types/db";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
 import { GroupSchemaValidator } from "@/src/server/validation/validateSchema";
+import { slugify } from "@/src/lib/utils/helpers/slugify";
 
 export class GroupsClient {
     constructor(private readonly db: Kysely<DB>) { }
@@ -14,13 +15,26 @@ export class GroupsClient {
             .execute()
     }
 
-    async createGroup(newGroup: GroupSchemaType): Promise<GroupSchemaType | null> {
-        const inserted = await this.insertNewGroup(newGroup);
+    async createGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Promise<GroupSchemaType | null> {
+        const insertableGroup = this.parseNewGroup(newGroup, organizer_id)
+        const inserted = await this.insertNewGroup(insertableGroup);
         return this.toGroupSchema(inserted);
     }
 
+    parseNewGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Insertable<Groups> {
 
-    async insertNewGroup(newGroup: GroupSchemaType): Promise<Selectable<Groups>> {
+        return {
+            name: newGroup.name,
+            slug: slugify(newGroup.name),
+            description: newGroup.description,
+            location: newGroup.location,
+            category_id: newGroup.category_id,
+            organizer_id: organizer_id
+        }
+    }
+
+
+    async insertNewGroup(newGroup: Insertable<Groups>): Promise<Selectable<Groups>> {
         return this.db
             .insertInto("groups")
             .values(newGroup)

@@ -7,6 +7,7 @@ import { EventsArraySchema } from "@/src/schemas/eventSchema";
 import { CardVariantTypeSchema, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/eventSchema";
 import { GroupSchema } from "@/src/schemas/groupSchema";
+import { NewGroupInputSchema } from "@/src/schemas/groupSchema";
 
 TypeSystem.Format("date-time", (value) => {
     if (typeof value !== "string") return false;
@@ -47,12 +48,10 @@ export function createValidator<T extends TSchema>(schema: T, schemaName = "Sche
         if (!compiled.Check(data)) {
             const errs = [...compiled.Errors(data)];
 
-            // readable console output
             console.error(
                 `\n❌ ${schemaName} validation failed (${errs.length} errors)\n${formatErrors(errs)}\n`
             );
 
-            // keep thrown error short so it doesn't spam
             throw new Error(
                 `${schemaName} validation failed (${errs.length} errors). See console for details.`
             );
@@ -70,8 +69,6 @@ const layoutSlotValidator = createValidator(PaginatedLayoutSchema, "PaginatedLay
 const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);
 
 const GroupSchemaValidator = createValidator(GroupSchema, "GroupsSchema");
-
-const CardTypeValidator = createValidator(CardVariantTypeSchema, "CardVariantTypeSchema")
 
 
 export { AuthorsValidator, eventsValidator, layoutSlotValidator, GroupSchemaValidator };
