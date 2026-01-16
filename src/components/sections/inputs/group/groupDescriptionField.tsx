@@ -12,11 +12,14 @@ export default function GroupDescriptionField({
 }: GroupNameFieldProps): JSX.Element {
 
     return (
-        <TextField
-            onChange={(e) => handleGroupDescription(e)}
-            id="group-description"
-            label="Group Description"
-            variant="outlined"
-        />
+        <>
+            <TextField
+                onChange={(e) => handleGroupDescription(e)}
+                id="group-description"
+                label="Group Description"
+                variant="outlined"
+            />
+        </>
+
     )
 };

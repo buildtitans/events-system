@@ -10,9 +10,11 @@ export const modalPipeline = (activeModal: ActiveModal): JSX.Element | null => {
     switch (activeModal) {
         case "new group":
             return (
-                <CreateNewGroupModal open={activeModal === "new group"} handleClose={null} />
+                <CreateNewGroupModal open={activeModal === "new group"} handleClose={() => { console.log('closing') }} />
             )
 
+        case null:
+            return null;
         default: {
             return null;
         }

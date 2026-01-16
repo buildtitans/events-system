@@ -6,7 +6,7 @@ export type Context = {
     api: FastifyApiClient,
 };
 
-export function createContext(req: FastifyRequest): Context {
+export function createContext(req: Request): Context {
     const baseUrl = getEnv("fastifyUrl");
     return {
         api: new FastifyApiClient(baseUrl)

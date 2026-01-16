@@ -14,8 +14,8 @@ export type CreateNewGroupHook = {
     handleGroupName: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     handleGroupDescription: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     handleGroupLocation: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
-    handleGroupCategory: (category_id: string) => () => void,
-    submitNewGroup: (e: React.FormEvent<HTMLFormControlsCollection | HTMLFormElement>) => Promise<void>,
+    handleGroupCategory: (category_id: string | null) => void,
+    submitNewGroup: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>,
     isSubmittable: boolean,
 }
 
@@ -67,20 +67,19 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         }));
     };
 
-    const handleGroupCategory = useCallback((category_id: string) => {
-        return () => {
-            setNewGroup((prev: NewGroupInputType) => ({
-                ...prev,
-                category_id: category_id
-            }));
-        }
+    const handleGroupCategory = useCallback((category_id: string | null) => {
+        console.log(category_id)
+        setNewGroup((prev: NewGroupInputType) => ({
+            ...prev,
+            category_id: category_id
+        }));
     }, [])
 
     async function createGroup(group: NewGroupInputSchemaType): Promise<GroupSchemaType | null> {
         const result = await trpcClient.groups.createNewGroup.mutate(group);
 
         const { items } = result;
-
+        console.log(result);
         return items;
     }
 
@@ -95,10 +94,11 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     }
 
 
-    const submitNewGroup = async (e: React.FormEvent<HTMLFormControlsCollection | HTMLFormElement>) => {
+    const submitNewGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dispatch(changeNewGroupStatus("pending"))
         const insertData = parseNewGroupForSubmit(newGroup);
+        console.log(insertData);
         const createdGroup = await createGroup(insertData);
         handleNewGroupResult(createdGroup);
     }

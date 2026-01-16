@@ -23,8 +23,8 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
         >
     ) => {
 
-        const organizer_id = req?.user?.id;
-
+        const organizer_id = req.cookies.session
+        console.log(organizer_id ?? "no user set")
         if (!organizer_id) {
             return {
                 group: null,

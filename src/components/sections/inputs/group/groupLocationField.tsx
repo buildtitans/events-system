@@ -11,11 +11,14 @@ export default function GroupLocationField({ handleGroupLocation }: GroupLocatio
 
 
     return (
-        <TextField
-            onChange={(e) => handleGroupLocation(e)}
-            id="group-location"
-            label="Location"
-            variant="outlined"
-        />
+        <>
+            <TextField
+                onChange={(e) => handleGroupLocation(e)}
+                id="group-location"
+                label="Location"
+                variant="outlined"
+            />
+        </>
+
     )
 }

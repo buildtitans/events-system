@@ -23,6 +23,8 @@ import { currentLougoutStatus, showModal } from '@/src/lib/store/slices/Renderin
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import AuthenticatonSnackbar from '../feedback/pending/authenticationSnackbar';
 import { AnimatePresence } from 'framer-motion';
+import { modalPipeline } from '../../pipelines/modals/modalPipeline';
+import CreateNewGroupModal from '../../sections/forms/createNewGroupForm';
 
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -48,9 +50,12 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 export default function AppAppBar() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const logoutStatus = useSelector((s: RootState) => s.rendering.logoutStatus);
+    const modal = useSelector((s: RootState) => s.rendering.modal);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
+
+    console.log(modal)
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
@@ -93,6 +98,7 @@ export default function AppAppBar() {
                 mt: 'calc(var(--template-frame-height, 0px) + 28px)',
             }}
         >
+            <CreateNewGroupModal open={modal === "new group"} handleClose={null} />
             <AnimatePresence>
                 {(logoutStatus !== "idle") &&
                     <AuthenticatonSnackbar action={currentLougoutStatus} status={logoutStatus} statusKind='logout' />

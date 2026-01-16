@@ -8,7 +8,11 @@ import { useCreateNewGroup } from "@/src/lib/hooks/useCreateNewGroup";
 import GroupNameField from "../inputs/group/groupName";
 import GroupLocationField from "../inputs/group/groupLocationField";
 import GroupDescriptionField from "../inputs/group/groupDescriptionField";
-const MotionModal = motion(Modal);
+import { useSelector } from "react-redux";
+import type { RootState } from "@/src/lib/store";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+const MotionModal = motion.create(Modal)
 
 type CreateNewGroupModalProps = {
     open: boolean,
@@ -25,7 +29,10 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    height: 'auto', display: 'flex', flexDirection: 'column', gap: 4
 };
+
+
 
 export default function CreateNewGroupModal({
     open,
@@ -36,12 +43,10 @@ export default function CreateNewGroupModal({
         handleGroupDescription,
         handleGroupLocation,
         handleGroupName,
+        submitNewGroup,
         isSubmittable,
         newGroup,
     } = useCreateNewGroup();
-
-
-
 
 
     return (
@@ -50,14 +55,19 @@ export default function CreateNewGroupModal({
             initial="initial"
             animate="animate"
             exit="exit"
-            open={open}
             onClose={handleClose}
-            sx={{ ...style }}
+            open={open}
         >
-            <GroupNameField handleGroupName={handleGroupName} />
-            <GroupDescriptionField handleGroupDescription={handleGroupDescription} />
-            <GroupLocationField handleGroupLocation={handleGroupLocation} />
-            <SelectCategory handleGroupCategory={handleGroupCategory} />
+            <Box sx={{ ...style }}>
+                <GroupNameField handleGroupName={handleGroupName} />
+                <GroupDescriptionField handleGroupDescription={handleGroupDescription} />
+                <GroupLocationField handleGroupLocation={handleGroupLocation} />
+                <SelectCategory handleGroupCategory={handleGroupCategory} chosen={newGroup.category_id} />
+                <Button sx={{ height: 'auto', width: 'auto', padding: '12px', bgcolor: "transparent", color: 'text.primary' }} disabled={!isSubmittable} type="button" onClick={submitNewGroup} >
+                    Create Group
+                </Button>
+            </Box>
+
 
         </MotionModal>
     )
