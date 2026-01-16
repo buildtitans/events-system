@@ -1,7 +1,8 @@
+import { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type CategoriesSliceInitialState = {
-    categories: string[]
+    categories: CategoriesSchemaType
 }
 
 const initialState: CategoriesSliceInitialState = {
@@ -12,7 +13,7 @@ const CategoriesSlice = createSlice({
     name: "Categories",
     initialState: initialState,
     reducers: {
-        getAllCategories: (state: CategoriesSliceInitialState, action: PayloadAction<string[]>) => {
+        getAllCategories: (state: CategoriesSliceInitialState, action: PayloadAction<CategoriesSchemaType>) => {
             state.categories = action.payload;
         }
     }
