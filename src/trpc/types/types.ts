@@ -8,7 +8,8 @@ type RouteToMethods = {
     // are created on the '/events' route (i.e. -> '/events': '/getEvents' | '/newEndpoint'...)
     "/groups": "/getGroups" | "/createGroup";
 
-    "/auth": "/login" | "/logout"
+    "/auth": "/login" | "/logout";
+    "/categories": "/getAllCategories"
 };
 
 type Endpoints = {

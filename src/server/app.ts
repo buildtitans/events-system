@@ -9,6 +9,7 @@ import {
 import { getEnv } from '../lib/utils/getEnv';
 import { registerSessionHook } from './hooks/registerSessionHook';
 import { authRoutes } from './routes/auth.routes';
+import { categoriesRoutes } from './routes/categories.routes';
 
 function buildServer() {
     const app = Fastify({
@@ -23,7 +24,8 @@ function buildServer() {
     registerSessionHook(app);
     app.register(eventsRoutes, { prefix: "/api/events" });
     app.register(groupsRoutes, { prefix: "/api/groups" });
-    app.register(authRoutes, { prefix: '/api/auth' });
+    app.register(authRoutes, { prefix: "/api/auth" });
+    app.register(categoriesRoutes, { prefix: "/api/categories" })
     return app;
 }
 

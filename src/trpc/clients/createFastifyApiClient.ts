@@ -1,5 +1,6 @@
 import { Endpoints, LoginBody } from "../types/types";
 import { AuthClient } from "./createAuthClient";
+import { CategoriesClient } from "./createFastifyCategoriesClient";
 import { EventsClient } from "./createFastifyEventsClient"
 import { GroupsClient } from "./createFastifyGroupsClient";
 
@@ -8,11 +9,13 @@ export class FastifyApiClient {
     public readonly events: EventsClient
     public readonly groups: GroupsClient
     public readonly auth: AuthClient
+    public readonly categories: CategoriesClient
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl
         this.events = new EventsClient(this);
         this.groups = new GroupsClient(this);
         this.auth = new AuthClient(this);
+        this.categories = new CategoriesClient(this)
     }
 
     async get<T>(path: Endpoints): Promise<T> {
