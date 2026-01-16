@@ -1,4 +1,5 @@
-import type { FastifyPluginAsync } from "fastify";
+import { NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
+import type { FastifyPluginAsync, FastifyRequest } from "fastify";
 
 export const groupsRoutes: FastifyPluginAsync = async (app) => {
 
@@ -15,4 +16,33 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
             }
         }
     })
-}
+
+    app.post('/createGroup', async (
+        req: FastifyRequest<
+            { Body: NewGroupInputSchemaType }
+        >
+    ) => {
+
+        const organizer_id = req?.user?.id;
+
+        if (!organizer_id) {
+            return {
+                group: null,
+                meta: {
+                    error: "unauthorized",
+                    message: "Sign up to create a new group"
+                }
+            }
+        }
+
+        const group = await dbClient.groups.createGroup(req.body, organizer_id);
+
+        return {
+            group: group,
+            meta: {
+                error: null,
+                message: `New group — ${group?.name} created on ${group?.created_at}`
+            }
+        };
+    })
+};

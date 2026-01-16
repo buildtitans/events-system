@@ -1,12 +1,15 @@
 import type { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
-import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupsSchemaType, GroupSchemaType } from "@/src/schemas/groupSchema";
 
 type ApiPath = "/api";
 
 type RouteToMethods = {
     "/events": "/getEvents"; //extend to other endpoints as new db transactions 
     // are created on the '/events' route (i.e. -> '/events': '/getEvents' | '/newEndpoint'...)
-    "/groups": "/getGroups";
+    "/groups": "/getGroups" | "/createGroup";
+
+    "/auth": "/login" | "/logout";
+    "/categories": "/getAllCategories"
 };
 
 type Endpoints = {
@@ -24,10 +27,25 @@ type EventsResponse = {
 }
 
 type GroupsResponse = {
-    items: GroupsSchemaType,
+    items: GroupsSchemaType | null,
     meta: {
         total: number
     }
 }
 
-export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse }
+
+type GroupResponse = {
+    items: GroupSchemaType | null,
+    meta: {
+        total: number
+    }
+}
+
+type LoginBody = {
+    input_email: string,
+    input_password: string
+}
+
+type LoginResponse = boolean;
+
+export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse, LoginBody, LoginResponse, GroupResponse }

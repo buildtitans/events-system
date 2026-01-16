@@ -9,11 +9,11 @@
         "authors": [
             {
                 "name": "Remy Sharp",
-                "avatar": "/static/images/avatar/1.jpg"
+                "avatar": "/next.svg"
             },
             {
                 "name": "Travis Howard",
-                "avatar": "/static/images/avatar/2.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -27,7 +27,7 @@
         "authors": [
             {
                 "name": "Erica Johns",
-                "avatar": "/static/images/avatar/6.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -41,7 +41,7 @@
         "authors": [
             {
                 "name": "Kate Morrison",
-                "avatar": "/static/images/avatar/7.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -55,7 +55,7 @@
         "authors": [
             {
                 "name": "Cindy Baker",
-                "avatar": "/static/images/avatar/3.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -69,11 +69,11 @@
         "authors": [
             {
                 "name": "Anderson Cooper",
-                "avatar": "/static/images/avatar/4.jpg"
+                "avatar": "/next.svg"
             },
             {
                 "name": "Trevor Henderson",
-                "avatar": "/static/images/avatar/5.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -87,7 +87,7 @@
         "authors": [
             {
                 "name": "Travis Howard",
-                "avatar": "/static/images/avatar/2.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -101,11 +101,11 @@
         "authors": [
             {
                 "name": "Lena Patel",
-                "avatar": "/static/images/avatar/8.jpg"
+                "avatar": "/next.svg"
             },
             {
                 "name": "Marco Ruiz",
-                "avatar": "/static/images/avatar/9.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -119,7 +119,7 @@
         "authors": [
             {
                 "name": "Nina Flores",
-                "avatar": "/static/images/avatar/10.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -133,7 +133,7 @@
         "authors": [
             {
                 "name": "Oliver Grant",
-                "avatar": "/static/images/avatar/11.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -147,7 +147,7 @@
         "authors": [
             {
                 "name": "Priya Shah",
-                "avatar": "/static/images/avatar/12.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -161,11 +161,11 @@
         "authors": [
             {
                 "name": "Agnes Walker",
-                "avatar": "/static/images/avatar/4.jpg"
+                "avatar": "/next.svg"
             },
             {
                 "name": "Trevor Henderson",
-                "avatar": "/static/images/avatar/5.jpg"
+                "avatar": "/next.svg"
             }
         ]
     },
@@ -179,7 +179,7 @@
         "authors": [
             {
                 "name": "Travis Howard",
-                "avatar": "/static/images/avatar/2.jpg"
+                "avatar": "/next.svg"
             }
         ]
     }

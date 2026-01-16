@@ -22,7 +22,7 @@ import { chunkEventPages } from "@/src/lib/store/slices/EventCategorySlice";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages)
-    const [eventStatus, setEventStatus] = useState<LoadingStatus>('pending');
+    const [eventStatus, setEventStatus] = useState<LoadingStatus>('idle');
     const dispatch = useDispatch<AppDispatch>();
     const loadedRef = useRef<boolean | null>(null);
 
@@ -33,10 +33,11 @@ const usePopulateEventsList = (): UsePopulateEventsListHook => {
         loadedRef.current = true
 
         const loadEvents = async (): Promise<void> => {
+            setEventStatus("pending");
+
             try {
                 const eventsRes = await trpcClient.events.list.mutate()
                 const rawEvents = eventsRes.items;
-                console.log(rawEvents)
 
                 dispatch(chunkEventPages(rawEvents));
                 setEventStatus((rawEvents.length > 0) ? "idle" : "failed")

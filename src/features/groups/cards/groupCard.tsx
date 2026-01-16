@@ -4,7 +4,7 @@ import type { GroupSchemaType } from "@/src/schemas/groupSchema";
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledCard';
+import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from "@/src/components/ui/box/author";
 
 type GroupCardProps = {

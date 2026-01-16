@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import EventCategories from '@/src/lib/store/slices/EventCategorySlice';
 import GroupsSlice from "@/src/lib/store/slices/GroupsSlice"
 import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
+import AuthSlice from "@/src/lib/store/slices/AuthSlice";
 
 const store = configureStore({
     reducer: {
         events: EventCategories,
         groups: GroupsSlice,
-        rendering: RenderingSlice
+        rendering: RenderingSlice,
+        auth: AuthSlice
     }
 });
 
