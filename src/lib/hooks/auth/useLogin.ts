@@ -8,16 +8,17 @@ import { LoginCredentials } from "../useValidateCredentialsInput"
 import type { UseLoginHook } from "../../types/types"
 import { useRouter } from "next/navigation";
 import { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema"
+import { currentLoginStatus } from "../../store/slices/RenderingSlice"
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const [loginStatus, setLoginStatus] = useState<UseLoginHook["loginStatus"]>('idle');
+    const loginStatus = useSelector((s: RootState) => s.rendering.loginStatus);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
     const handleLoginResult = (result: AuthenticationSchemaType): void => {
         const { success } = result
-        setLoginStatus(success ? "success" : "failed");
+        dispatch(currentLoginStatus(success ? "success" : "failed"));
 
         if (success) {
             dispatch(loginSuccess());
@@ -47,7 +48,7 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
         const { email, password } = credentials;
         if ((!email) || (!password)) return;
 
-        setLoginStatus('pending');
+        dispatch(currentLoginStatus("pending"));
         const result = await login(email, password);
         handleLoginResult(result);
 
@@ -67,7 +68,6 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     return {
         loginStatus,
         handleSubmit,
-        setLoginStatus
     }
 };
 

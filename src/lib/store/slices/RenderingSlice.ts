@@ -27,12 +27,15 @@ const RenderingSlice = createSlice({
         },
         currentLougoutStatus: (state: RenderingInitialState, action: PayloadAction<RequestStatus>) => {
             state.logoutStatus = action.payload;
+        },
+        currentLoginStatus: (state: RenderingInitialState, action: PayloadAction<RequestStatus>) => {
+            state.loginStatus = action.payload;
         }
     }
 });
 
 
-export const { chooseActiveTab, currentLougoutStatus } = RenderingSlice.actions;
+export const { chooseActiveTab, currentLoginStatus, currentLougoutStatus } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;
 

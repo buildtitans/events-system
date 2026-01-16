@@ -6,6 +6,7 @@ import { useLogin } from '@/src/lib/hooks/auth/useLogin';
 import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
 import { AnimatePresence } from 'framer-motion';
 import LoginSnackbar from '@/src/components/ui/feedback/pending/loginStatus';
+import AuthenticatonSnackbar from '../../ui/feedback/pending/authenticationSnackbar';
 
 export default function SignInForm(): JSX.Element {
     const {
@@ -16,11 +17,9 @@ export default function SignInForm(): JSX.Element {
         passwordErrorMessage,
         credentials,
         handleEmail,
-        handlePassword } = useValidateCredentials();
-    const { loginStatus, handleSubmit, setLoginStatus } = useLogin(credentials);
-
-
-    const handleClose = () => { }
+        handlePassword,
+    } = useValidateCredentials();
+    const { handleSubmit, loginStatus } = useLogin(credentials);
 
 
     return (
@@ -54,11 +53,7 @@ export default function SignInForm(): JSX.Element {
             ]}
         >
             <AnimatePresence>
-                <LoginSnackbar
-                    setLoginStatus={setLoginStatus}
-                    handleClose={handleClose}
-                    status={loginStatus}
-                />
+                <AuthenticatonSnackbar status={loginStatus} statusKind="login" />
             </AnimatePresence>
 
             <Stack
@@ -89,7 +84,6 @@ export default function SignInForm(): JSX.Element {
                         handleEmail={handleEmail}
                         handleSubmit={handleSubmit}
                         handlePassword={handlePassword}
-                        setLoginStatus={setLoginStatus}
                     />
                 </Stack>
             </Stack>

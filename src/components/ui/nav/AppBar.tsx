@@ -91,7 +91,7 @@ export default function AppAppBar() {
         >
             <AnimatePresence>
                 {(logoutStatus !== "idle") &&
-                    <AuthenticatonSnackbar status={logoutStatus} />
+                    <AuthenticatonSnackbar status={logoutStatus} statusKind='logout' />
                 }
             </AnimatePresence>
 

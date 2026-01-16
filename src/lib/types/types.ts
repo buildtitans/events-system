@@ -31,9 +31,8 @@ type createSnackbarMessageTypes = {
 }
 
 type UseLoginHook = {
-    loginStatus: LoginStatus,
+    loginStatus: RequestStatus,
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
-    setLoginStatus: React.Dispatch<SetStateAction<LoginStatus>>
 }
 
 type EventsPages = Array<LayoutSlotSchemaType[]>
