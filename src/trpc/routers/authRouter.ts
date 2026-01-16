@@ -1,6 +1,6 @@
 import { router, publicProcedure } from "../init";
-import type { LoginCredentialsSchemaType } from "@/src/schemas/loginCredentialsSchema";
-import { CompiledLoginCredentials } from "@/src/schemas/loginCredentialsSchema";
+import type { LoginCredentialsSchemaType, AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
+import { CompiledLoginCredentials, AuthenticationSchemaValidator } from "@/src/schemas/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
 export const authRouter = router({
@@ -8,6 +8,9 @@ export const authRouter = router({
         publicProcedure
             .input(
                 typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials)
+            )
+            .output(
+                typeboxInput<AuthenticationSchemaType>(AuthenticationSchemaValidator)
             )
             .mutation(async ({ ctx, input }) => {
 
@@ -17,5 +20,12 @@ export const authRouter = router({
                         input_password: input.password
                     }
                 )
-            })
+            }),
+
+    signout: publicProcedure
+        .output(typeboxInput<AuthenticationSchemaType>(AuthenticationSchemaValidator))
+        .mutation(async ({ ctx }) => {
+
+            return ctx.api.auth.logout()
+        })
 })

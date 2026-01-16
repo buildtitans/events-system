@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react"
 import { trpcClient } from "@/src/trpc/trpcClient"
 import { useDispatch, useSelector } from "react-redux"
-import { loginSuccess } from "../store/slices/AuthSlice"
-import { AppDispatch, RootState } from "../store"
-import { LoginCredentials } from "./useValidateCredentialsInput"
-import type { UseLoginHook } from "../types/types"
+import { loginSuccess } from "@/src/lib/store/slices/AuthSlice"
+import { AppDispatch, RootState } from "@/src/lib/store"
+import { LoginCredentials } from "../useValidateCredentialsInput"
+import type { UseLoginHook } from "../../types/types"
 import { useRouter } from "next/navigation";
+import { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema"
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -14,10 +15,11 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
-    const handleLoginResult = (isLoggedIn: boolean): void => {
-        setLoginStatus(isLoggedIn ? "success" : "failed");
+    const handleLoginResult = (result: AuthenticationSchemaType): void => {
+        const { success } = result
+        setLoginStatus(success ? "success" : "failed");
 
-        if (isLoggedIn) {
+        if (success) {
             dispatch(loginSuccess());
         }
     };
@@ -25,7 +27,7 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const login = async (
         email: string,
         password: string
-    ): Promise<boolean> => {
+    ): Promise<AuthenticationSchemaType> => {
 
         const result = await trpcClient
             .auth

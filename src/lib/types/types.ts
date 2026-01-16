@@ -18,6 +18,18 @@ type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus
 }
 
+type SnackbarMessages = {
+    logout: Record<RequestStatus, string>;
+    login: Record<RequestStatus, string>;
+    // register?: ...
+};
+
+
+type createSnackbarMessageTypes = {
+    logout: Record<RequestStatus, string>,
+    login: Record<RequestStatus, string>
+}
+
 type UseLoginHook = {
     loginStatus: LoginStatus,
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
@@ -27,4 +39,4 @@ type UseLoginHook = {
 type EventsPages = Array<LayoutSlotSchemaType[]>
 
 
-export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages, UseLoginHook, RequestStatus }
+export type { LoadingStatus, UsePopulateEventsListHook, HealthCheck, HealthCheckResponse, MountStatus, EventsPages, UseLoginHook, RequestStatus, SnackbarMessages }

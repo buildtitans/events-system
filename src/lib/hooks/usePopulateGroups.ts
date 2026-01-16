@@ -27,13 +27,13 @@ const usePopulateGroups = (): LoadingStatus => {
     }
 
     useEffect(() => {
-        if ((groups.length > 0) || (loadedRef.current)) return;
+        if ((loadedRef.current)) return;
 
-        loadedRef.current = true;
+        if (groups.length > 0) loadedRef.current = true;
 
         const loadGroups = async () => {
             try {
-                const result = await trpcClient.groups.list.query()
+                const result = await trpcClient.groups.list.mutate()
                 handleGroupsResults(result);
 
             } catch (err) {

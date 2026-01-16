@@ -5,7 +5,7 @@ import { CompiledGroupSchema, NewGroupInputSchemaType } from "@/src/schemas/grou
 
 export const groupsRouter = router({
     list: publicProcedure
-        .query(async ({ ctx }) => {
+        .mutation(async ({ ctx }) => {
             const results = await ctx.api.groups.getGroups();
 
             return results;

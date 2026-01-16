@@ -2,15 +2,20 @@ import {
     createSlice,
     PayloadAction
 } from "@reduxjs/toolkit";
+import type { RequestStatus } from "@/src/lib/types/types";
 
 type MainContentTabType = 'Groups' | 'Events'
 
 type RenderingInitialState = {
-    mainContent: MainContentTabType
+    mainContent: MainContentTabType,
+    loginStatus: RequestStatus,
+    logoutStatus: RequestStatus
 };
 
 const initialState: RenderingInitialState = {
-    mainContent: "Events"
+    mainContent: "Events",
+    loginStatus: 'idle',
+    logoutStatus: 'idle'
 }
 
 const RenderingSlice = createSlice({
@@ -19,12 +24,15 @@ const RenderingSlice = createSlice({
     reducers: {
         chooseActiveTab: (state: RenderingInitialState, action: PayloadAction<RenderingInitialState["mainContent"]>) => {
             state.mainContent = action.payload
+        },
+        currentLougoutStatus: (state: RenderingInitialState, action: PayloadAction<RequestStatus>) => {
+            state.logoutStatus = action.payload;
         }
     }
 });
 
 
-export const { chooseActiveTab } = RenderingSlice.actions;
+export const { chooseActiveTab, currentLougoutStatus } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;
 

@@ -14,7 +14,7 @@ type LoginSnackbarProps = {
     setLoginStatus: React.Dispatch<SetStateAction<UseLoginHook["loginStatus"]>>
 }
 
-function createLoginSnackbarMessage(loginStatus: UseLoginHook["loginStatus"]): string | null {
+function createSnackbarMessage(loginStatus: UseLoginHook["loginStatus"]): string | null {
 
     switch (loginStatus) {
         case "success":
@@ -52,7 +52,7 @@ function LoginSnackbar({ handleClose, status, setLoginStatus }: LoginSnackbarPro
             exit="exit"
             autoHideDuration={6000}
 
-            message={createLoginSnackbarMessage(status)}
+            message={createSnackbarMessage(status)}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         />
     );

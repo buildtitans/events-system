@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack';
 import SignInCard from '@/src/features/auth/SignInCard';
 import Content from '@/src/features/auth/LoginCopy';
 import type { JSX } from 'react';
-import { useLogin } from '@/src/lib/hooks/useLogin';
+import { useLogin } from '@/src/lib/hooks/auth/useLogin';
 import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
 import { AnimatePresence } from 'framer-motion';
 import LoginSnackbar from '@/src/components/ui/feedback/pending/loginStatus';
