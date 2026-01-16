@@ -6,6 +6,7 @@ import { useLogin } from '@/src/lib/hooks/auth/useLogin';
 import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
 import { AnimatePresence } from 'framer-motion';
 import AuthenticatonSnackbar from '../../ui/feedback/pending/authenticationSnackbar';
+import { currentLoginStatus } from '@/src/lib/store/slices/RenderingSlice';
 
 export default function SignInForm(): JSX.Element {
     const {
@@ -52,7 +53,7 @@ export default function SignInForm(): JSX.Element {
             ]}
         >
             <AnimatePresence>
-                <AuthenticatonSnackbar status={loginStatus} statusKind="login" />
+                <AuthenticatonSnackbar action={currentLoginStatus} status={loginStatus} statusKind="login" />
             </AnimatePresence>
 
             <Stack

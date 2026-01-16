@@ -6,23 +6,24 @@ import { JSX, useEffect } from "react";
 import type { RequestStatus, SnackbarMessages } from "@/src/lib/types/types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
-import { currentLougoutStatus } from "@/src/lib/store/slices/RenderingSlice";
 import { createSnackbarMessages } from "@/src/lib/utils/createSnackbarMessage";
+import { ActionCreatorWithPayload, PayloadActionCreator } from "@reduxjs/toolkit";
 const MotionSnackbar = motion(Snackbar);
 
 type AuthenticatonSnackbarProps = {
     status: RequestStatus,
-    statusKind: keyof SnackbarMessages
+    statusKind: keyof SnackbarMessages,
+    action: ActionCreatorWithPayload<RequestStatus>
 }
 
-function AuthenticatonSnackbar({ status, statusKind }: AuthenticatonSnackbarProps): JSX.Element {
+function AuthenticatonSnackbar({ status, statusKind, action }: AuthenticatonSnackbarProps): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         if (status === "pending") return;
 
         const timer = window.setTimeout(() => {
-            dispatch(currentLougoutStatus("idle"));
+            dispatch(action("idle"));
 
         }, 2500);
 

@@ -3,11 +3,11 @@ import { useCallback, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState, AppDispatch } from "@/src/lib/store";
 import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
-import { RequestStatus } from "../types/types";
 import { validateNewGroupInput } from "../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../store/slices/GroupsSlice";
 import { parseNewGroupForSubmit } from "../utils/helpers/parseNewGroupForSubmit";
+import { changeNewGroupStatus } from "../store/slices/RenderingSlice";
 
 export type CreateNewGroupHook = {
     newGroup: NewGroupInputType,
@@ -17,7 +17,6 @@ export type CreateNewGroupHook = {
     handleGroupCategory: (category_id: string) => () => void,
     submitNewGroup: (e: React.FormEvent<HTMLFormControlsCollection | HTMLFormElement>) => Promise<void>,
     isSubmittable: boolean,
-    groupCreationStatus: RequestStatus
 }
 
 export type NewGroupInputType = {
@@ -28,9 +27,8 @@ export type NewGroupInputType = {
 }
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
     const dispatch = useDispatch<AppDispatch>();
-    const [groupCreationStatus, setNewGroupCreationStatus] = useState<RequestStatus>('idle');
+    const groupCreationStatus = useSelector((s: RootState) => s.rendering.newGroupStatus);
     const [newGroup, setNewGroup] = useState<NewGroupInputType>({
         name: null,
         description: null,
@@ -89,9 +87,9 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     function handleNewGroupResult(created: GroupSchemaType | null): void {
         if (created) {
             dispatch(addGroup(created))
-            setNewGroupCreationStatus("success")
+            dispatch(changeNewGroupStatus("success"))
         } else {
-            setNewGroupCreationStatus("failed")
+            dispatch(changeNewGroupStatus("failed"))
         }
 
     }
@@ -99,12 +97,11 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
 
     const submitNewGroup = async (e: React.FormEvent<HTMLFormControlsCollection | HTMLFormElement>) => {
         e.preventDefault();
-        setNewGroupCreationStatus('pending');
+        dispatch(changeNewGroupStatus("pending"))
         const insertData = parseNewGroupForSubmit(newGroup);
         const createdGroup = await createGroup(insertData);
         handleNewGroupResult(createdGroup);
     }
-
 
     return {
         newGroup,
@@ -114,7 +111,6 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         handleGroupLocation,
         submitNewGroup,
         isSubmittable,
-        groupCreationStatus
     };
 }
 

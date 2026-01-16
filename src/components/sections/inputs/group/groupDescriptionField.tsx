@@ -4,18 +4,18 @@ import TextField from "@mui/material/TextField";
 import { JSX } from "react";
 
 type GroupNameFieldProps = {
-    handleGroupName: CreateNewGroupHook["handleGroupName"]
+    handleGroupDescription: CreateNewGroupHook["handleGroupDescription"]
 }
 
-export default function GroupNameField({
-    handleGroupName
+export default function GroupDescriptionField({
+    handleGroupDescription
 }: GroupNameFieldProps): JSX.Element {
 
     return (
         <TextField
-            onChange={(e) => handleGroupName(e)}
-            id="group-name"
-            label="Group Name"
+            onChange={(e) => handleGroupDescription(e)}
+            id="group-description"
+            label="Group Description"
             variant="outlined"
         />
     )

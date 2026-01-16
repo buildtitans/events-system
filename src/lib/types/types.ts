@@ -21,6 +21,7 @@ type UsePopulateEventsListHook = {
 type SnackbarMessages = {
     logout: Record<RequestStatus, string>;
     login: Record<RequestStatus, string>;
+    newGroup: Record<RequestStatus, string>;
     // register?: ...
 };
 

@@ -12,6 +12,7 @@ type RenderingInitialState = {
     mainContent: MainContentTabType,
     loginStatus: RequestStatus,
     logoutStatus: RequestStatus,
+    newGroupStatus: RequestStatus,
     modal: ActiveModal
 };
 
@@ -19,6 +20,7 @@ const initialState: RenderingInitialState = {
     mainContent: "Events",
     loginStatus: 'idle',
     logoutStatus: 'idle',
+    newGroupStatus: "idle",
     modal: null
 }
 
@@ -35,6 +37,9 @@ const RenderingSlice = createSlice({
         currentLoginStatus: (state: RenderingInitialState, action: PayloadAction<RequestStatus>) => {
             state.loginStatus = action.payload;
         },
+        changeNewGroupStatus: (state: RenderingInitialState, action: PayloadAction<RequestStatus>) => {
+            state.newGroupStatus = action.payload
+        },
         showModal: (state: RenderingInitialState, action: PayloadAction<ActiveModal>) => {
             state.modal = action.payload;
         }
@@ -42,7 +47,7 @@ const RenderingSlice = createSlice({
 });
 
 
-export const { chooseActiveTab, currentLoginStatus, currentLougoutStatus, showModal } = RenderingSlice.actions;
+export const { chooseActiveTab, currentLoginStatus, currentLougoutStatus, showModal, changeNewGroupStatus } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;
 

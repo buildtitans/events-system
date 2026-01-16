@@ -5,6 +5,9 @@ import Modal from "@mui/material/Modal";
 import { JSX } from "react";
 import SelectCategory from "../inputs/group/selectCategory";
 import { useCreateNewGroup } from "@/src/lib/hooks/useCreateNewGroup";
+import GroupNameField from "../inputs/group/groupName";
+import GroupLocationField from "../inputs/group/groupLocationField";
+import GroupDescriptionField from "../inputs/group/groupDescriptionField";
 const MotionModal = motion(Modal);
 
 type CreateNewGroupModalProps = {
@@ -35,7 +38,6 @@ export default function CreateNewGroupModal({
         handleGroupName,
         isSubmittable,
         newGroup,
-        groupCreationStatus
     } = useCreateNewGroup();
 
 
@@ -52,6 +54,9 @@ export default function CreateNewGroupModal({
             onClose={handleClose}
             sx={{ ...style }}
         >
+            <GroupNameField handleGroupName={handleGroupName} />
+            <GroupDescriptionField handleGroupDescription={handleGroupDescription} />
+            <GroupLocationField handleGroupLocation={handleGroupLocation} />
             <SelectCategory handleGroupCategory={handleGroupCategory} />
 
         </MotionModal>
