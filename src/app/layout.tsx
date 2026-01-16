@@ -5,6 +5,7 @@ import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import "./globals.css";
+import ModalLayer from "../components/layers/modalLayer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ function RootLayout({ children }: RootLayoutType): React.ReactNode {
         }>
         <AppRouterCacheProvider>
           <Providers>
+            <ModalLayer />
             {children}
           </Providers>
         </AppRouterCacheProvider>

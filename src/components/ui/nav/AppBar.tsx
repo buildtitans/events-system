@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/lib/store';
 import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/AuthSlice';
-import { currentLougoutStatus } from '@/src/lib/store/slices/RenderingSlice';
+import { currentLougoutStatus, showModal } from '@/src/lib/store/slices/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import AuthenticatonSnackbar from '../feedback/pending/authenticationSnackbar';
 import { AnimatePresence } from 'framer-motion';
@@ -67,6 +67,10 @@ export default function AppAppBar() {
 
     };
 
+    const handleAddGroup = () => {
+        dispatch(showModal('new group'))
+    };
+
     const handleSignout = async (): Promise<void> => {
         dispatch(currentLougoutStatus("pending"));
         const res = await trpcClient.auth.signout.mutate();
@@ -100,8 +104,8 @@ export default function AppAppBar() {
                     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
                         <SitemarkIcon />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <Button variant="text" color="info" size="small">
-                                Features
+                            <Button onClick={handleAddGroup} variant="text" color="info" size="small">
+                                Create Group
                             </Button>
                         </Box>
                     </Box>

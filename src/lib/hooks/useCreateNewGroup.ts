@@ -1,5 +1,5 @@
 "use client"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState, AppDispatch } from "@/src/lib/store";
 import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
@@ -9,12 +9,12 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../store/slices/GroupsSlice";
 import { parseNewGroupForSubmit } from "../utils/helpers/parseNewGroupForSubmit";
 
-type CreateNewGroupHook = {
+export type CreateNewGroupHook = {
     newGroup: NewGroupInputType,
     handleGroupName: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     handleGroupDescription: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     handleGroupLocation: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
-    handleGroupCategory: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    handleGroupCategory: (category_id: string) => () => void,
     submitNewGroup: (e: React.FormEvent<HTMLFormControlsCollection | HTMLFormElement>) => Promise<void>,
     isSubmittable: boolean,
     groupCreationStatus: RequestStatus
@@ -24,7 +24,7 @@ export type NewGroupInputType = {
     name: GroupSchemaType["name"] | null,
     description: GroupSchemaType["description"] | null,
     location: GroupSchemaType["location"] | null,
-    category_id: GroupSchemaType["category_id"]
+    category_id: GroupSchemaType["category_id"] | null
 }
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
@@ -69,14 +69,14 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         }));
     };
 
-
-    const handleGroupCategory = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        const value = e.target.value;
-        setNewGroup((prev: NewGroupInputType) => ({
-            ...prev,
-            category_id: value
-        }));
-    };
+    const handleGroupCategory = useCallback((category_id: string) => {
+        return () => {
+            setNewGroup((prev: NewGroupInputType) => ({
+                ...prev,
+                category_id: category_id
+            }));
+        }
+    }, [])
 
     async function createGroup(group: NewGroupInputSchemaType): Promise<GroupSchemaType | null> {
         const result = await trpcClient.groups.createNewGroup.mutate(group);
