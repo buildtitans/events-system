@@ -18,6 +18,7 @@ function GroupCard({ focusedCardIndex, group, handleFocus }: GroupCardProps): JS
 
     const { name, description, location } = group;
 
+
     const placeholder = [{
         name: name,
         avatar: "@/next.svg"

@@ -64,11 +64,12 @@ type GroupCardProps = {
     index: number,
     handleFocus: (index: number) => void,
     handleBlur: () => void,
-    focusedCardIndex: number | null
+    focusedCardIndex: number | null,
+    categoryName?: string | null
 }
 
 
-function Group({ index, group, handleFocus, handleBlur, focusedCardIndex }: GroupCardProps): React.JSX.Element {
+function Group({ index, group, handleFocus, handleBlur, focusedCardIndex, categoryName }: GroupCardProps): React.JSX.Element {
 
 
     return (
@@ -83,7 +84,7 @@ function Group({ index, group, handleFocus, handleBlur, focusedCardIndex }: Grou
                 }}
             >
                 <Typography gutterBottom variant="caption" component="div">
-                    {group.slug}
+                    {categoryName}
                 </Typography>
                 <TitleTypography
                     gutterBottom

@@ -11,8 +11,6 @@ const useGetCategories = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        const curr = categories
-        console.log(curr);
         if (Array.isArray(categories) && (categories.length > 0)) return;
 
         const executeGetCategories = async () => {
