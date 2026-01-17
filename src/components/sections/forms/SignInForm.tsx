@@ -4,9 +4,12 @@ import Content from '@/src/features/auth/LoginCopy';
 import type { JSX } from 'react';
 import { useLogin } from '@/src/lib/hooks/auth/useLogin';
 import { useValidateCredentials } from '@/src/lib/hooks/useValidateCredentialsInput';
+<<<<<<< HEAD
 import { AnimatePresence } from 'framer-motion';
 import AuthenticatonSnackbar from '../../ui/feedback/pending/authenticationSnackbar';
 import { currentLoginStatus } from '@/src/lib/store/slices/RenderingSlice';
+=======
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
 export default function SignInForm(): JSX.Element {
     const {
@@ -19,7 +22,11 @@ export default function SignInForm(): JSX.Element {
         handleEmail,
         handlePassword,
     } = useValidateCredentials();
+<<<<<<< HEAD
     const { handleSubmit, loginStatus } = useLogin(credentials);
+=======
+    const { handleSubmit } = useLogin(credentials);
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
 
     return (
@@ -52,10 +59,13 @@ export default function SignInForm(): JSX.Element {
                 }),
             ]}
         >
+<<<<<<< HEAD
             <AnimatePresence>
                 <AuthenticatonSnackbar action={currentLoginStatus} status={loginStatus} statusKind="login" />
             </AnimatePresence>
 
+=======
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
             <Stack
                 direction={{ xs: 'column-reverse', md: 'row' }}
                 sx={{
