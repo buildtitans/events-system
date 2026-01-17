@@ -1,18 +1,37 @@
 import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Groups } from "@/src/server/db/types/db";
-import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
-import { GroupSchemaValidator } from "@/src/server/validation/validateSchema";
+import { GroupSchemaType, GroupsSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaValidator, GroupsSchemaValidator } from "@/src/server/validation/validateSchema";
 import { slugify } from "@/src/lib/utils/helpers/slugify";
 
 export class GroupsClient {
     constructor(private readonly db: Kysely<DB>) { }
 
-    async getGroups() {
+    async getGroups(): Promise<GroupsSchemaType> {
+        const raw = await this.getRawGroups();
+        const formatted = this.formatRawGroups(raw);
+        return formatted
+    }
+
+    async getRawGroups(): Promise<Selectable<Groups>[]> {
         return this.db
             .selectFrom("groups")
             .selectAll()
             .orderBy("created_at", "desc")
             .execute()
+
+    }
+
+    formatRawGroups(groups: Selectable<Groups>[]): GroupsSchemaType {
+        const formatted = [];
+
+        for (const group of groups) {
+            let parsed = this.formatGroup(group);
+            formatted.push(parsed);
+        }
+
+        const validGroups = GroupsSchemaValidator(formatted);
+        return validGroups;
     }
 
     async createGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Promise<GroupSchemaType | null> {

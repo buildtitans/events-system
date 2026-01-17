@@ -1,6 +1,9 @@
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { NewGroupInputSchema } from "@/src/schemas/groupSchema";
+import { AuthorsSchema } from "@/src/schemas/eventSchema";
 
 const NewGroupInputSchemaValidator = TypeCompiler.Compile(NewGroupInputSchema);
 
-export { NewGroupInputSchemaValidator };
+const AuthorsSchemaValidator = TypeCompiler.Compile(AuthorsSchema);
+
+export { NewGroupInputSchemaValidator, AuthorsSchemaValidator };

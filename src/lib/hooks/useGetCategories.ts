@@ -14,9 +14,9 @@ const useGetCategories = () => {
         if (Array.isArray(categories) && (categories.length > 0)) return;
 
         const executeGetCategories = async () => {
-            const { items } = await trpcClient.categories.getAllCategories.mutate();
+            const result = await trpcClient.categories.getAllCategories.mutate();
 
-            dispatch(getAllCategories(items));
+            dispatch(getAllCategories(result));
         };
 
         executeGetCategories();

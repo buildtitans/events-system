@@ -14,6 +14,8 @@ export const groupsRouter = router({
     createNewGroup: publicProcedure
         .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
         .mutation(async ({ ctx, input }) => {
-            return ctx.api.groups.createGroup(input)
+            const user_id = ctx.user?.id;
+            if (!user_id) return null;
+            return ctx.api.groups.createGroup(input, user_id)
         })
 })

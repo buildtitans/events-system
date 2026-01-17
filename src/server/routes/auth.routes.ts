@@ -24,7 +24,6 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
             session
         } = await dbClient.auth.login(input_email, input_password);
 
-
         reply.setCookie("session", session.id, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

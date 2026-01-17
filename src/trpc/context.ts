@@ -1,14 +1,17 @@
-import { FastifyRequest } from "fastify";
-import { getEnv } from "../lib/utils/getEnv";
-import { FastifyApiClient } from "./clients/createFastifyApiClient";
+import { DBClient } from "../server/db";
+import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 export type Context = {
-    api: FastifyApiClient,
+    api: DBClient,
+    user: FastifyRequest["user"] | null,
+    reply: FastifyReply
 };
 
-export function createContext(req: Request): Context {
-    const baseUrl = getEnv("fastifyUrl");
+export function createContext({ req, res }: CreateFastifyContextOptions): Context {
     return {
-        api: new FastifyApiClient(baseUrl)
+        api: req.server.db,
+        user: req.user ?? null,
+        reply: res
     };
 }
