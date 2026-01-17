@@ -34,6 +34,10 @@ export const authRouter = router({
     signout: publicProcedure
         .mutation(async ({ ctx }) => {
 
-            return ctx.api.auth.logOut()
+            const token = ctx.req.cookies.session;
+
+            if (!token) return null;
+
+            return ctx.api.auth.logOut(token)
         })
 })

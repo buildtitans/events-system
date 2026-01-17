@@ -1,9 +1,12 @@
-import { DeleteResult, Kysely } from "kysely";
+import { DeleteResult, Kysely, Selectable } from "kysely";
 import { DB } from "../types/db";
 import argon2 from "argon2";
 import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/userSchema";
 import crypto from "crypto";
 import type { StoredSession, AuthClientLoginResponse } from "./types/types";
+
+
+type DeletedUser = Selectable<DB["users"]>;
 
 export class AuthClient {
 
@@ -44,14 +47,14 @@ export class AuthClient {
     }
 
 
-    async logOut(token: string): Promise<DeleteResult[]> {
+    async logOut(token: string): Promise<boolean> {
 
         const result = await this.db
             .deleteFrom("sessions")
             .where("id", "=", token)
             .execute();
 
-        return result
+        return Number(result[0].numDeletedRows ?? 0) > 0;
     }
 
     async verifyCredentials(
