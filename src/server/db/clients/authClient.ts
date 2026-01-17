@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Kysely } from "kysely";
+=======
+import { DeleteResult, Kysely } from "kysely";
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 import { DB } from "../types/db";
 import argon2 from "argon2";
 import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/userSchema";
@@ -45,6 +49,7 @@ export class AuthClient {
     }
 
 
+<<<<<<< HEAD
     async logOut(token?: string) {
         if (!token) return;
 
@@ -52,6 +57,16 @@ export class AuthClient {
             .deleteFrom("sessions")
             .where("id", "=", token)
             .execute();
+=======
+    async logOut(token: string): Promise<DeleteResult[]> {
+
+        const result = await this.db
+            .deleteFrom("sessions")
+            .where("id", "=", token)
+            .execute();
+
+        return result
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     }
 
 

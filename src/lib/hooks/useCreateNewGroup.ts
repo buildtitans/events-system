@@ -1,13 +1,23 @@
 "use client"
+<<<<<<< HEAD
 import { useCallback, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState, AppDispatch } from "@/src/lib/store";
+=======
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/src/lib/store";
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
 import { validateNewGroupInput } from "../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../store/slices/GroupsSlice";
 import { parseNewGroupForSubmit } from "../utils/helpers/parseNewGroupForSubmit";
+<<<<<<< HEAD
 import { changeNewGroupStatus } from "../store/slices/RenderingSlice";
+=======
+import { enqueueSnackbar, showModal } from "../store/slices/RenderingSlice";
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
 export type CreateNewGroupHook = {
     newGroup: NewGroupInputType,
@@ -28,7 +38,11 @@ export type NewGroupInputType = {
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
     const dispatch = useDispatch<AppDispatch>();
+<<<<<<< HEAD
     const groupCreationStatus = useSelector((s: RootState) => s.rendering.newGroupStatus);
+=======
+    const timerRef = useRef<number | null>(null);
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     const [newGroup, setNewGroup] = useState<NewGroupInputType>({
         name: null,
         description: null,
@@ -83,16 +97,30 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     function handleNewGroupResult(created: GroupSchemaType | null): void {
         if (created) {
             dispatch(addGroup(created))
+<<<<<<< HEAD
             dispatch(changeNewGroupStatus("success"))
         } else {
             dispatch(changeNewGroupStatus("failed"))
         }
 
+=======
+            dispatch(enqueueSnackbar({ kind: 'newGroup', status: 'success' }));
+
+            timerRef.current = window.setTimeout(() => {
+                dispatch(showModal(null));
+                timerRef.current = null;
+            }, 1500);
+
+        } else {
+            dispatch(enqueueSnackbar({ kind: 'newGroup', status: 'failed' }))
+        }
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     }
 
 
     const submitNewGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+<<<<<<< HEAD
         dispatch(changeNewGroupStatus("pending"))
         const insertData = parseNewGroupForSubmit(newGroup);
         const createdGroup = await createGroup(insertData);
@@ -100,6 +128,25 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         handleNewGroupResult(createdGroup);
     }
 
+=======
+        dispatch(enqueueSnackbar({ kind: 'newGroup', status: 'pending' }))
+        const insertData = parseNewGroupForSubmit(newGroup);
+        const createdGroup = await createGroup(insertData);
+        handleNewGroupResult(createdGroup);
+    }
+
+
+    useEffect(() => {
+
+        return () => {
+            if (timerRef.current !== null) {
+                clearTimeout(timerRef.current);
+            }
+        }
+    }, []);
+
+
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     return {
         newGroup,
         handleGroupName,

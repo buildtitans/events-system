@@ -1,6 +1,10 @@
 "use client";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
 import { fadeInOut } from "@/src/styles/motion/variants";
+=======
+import type { ModalProps } from "@mui/material/Modal";
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 import Modal from "@mui/material/Modal";
 import { JSX } from "react";
 import SelectCategory from "../inputs/group/selectCategory";
@@ -8,6 +12,7 @@ import { useCreateNewGroup } from "@/src/lib/hooks/useCreateNewGroup";
 import GroupNameField from "../inputs/group/groupName";
 import GroupLocationField from "../inputs/group/groupLocationField";
 import GroupDescriptionField from "../inputs/group/groupDescriptionField";
+<<<<<<< HEAD
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import Box from "@mui/material/Box";
@@ -17,6 +22,14 @@ const MotionModal = motion.create(Modal)
 type CreateNewGroupModalProps = {
     open: boolean,
     handleClose: any
+=======
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+
+type CreateNewGroupModalProps = {
+    open: boolean,
+    handleClose: ModalProps["onClose"]
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 };
 
 const style = {
@@ -32,8 +45,11 @@ const style = {
     height: 'auto', display: 'flex', flexDirection: 'column', gap: 4
 };
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 export default function CreateNewGroupModal({
     open,
     handleClose
@@ -50,6 +66,7 @@ export default function CreateNewGroupModal({
 
 
     return (
+<<<<<<< HEAD
         <MotionModal
             variants={fadeInOut}
             initial="initial"
@@ -58,6 +75,13 @@ export default function CreateNewGroupModal({
             onClose={handleClose}
             open={open}
         >
+=======
+        <Modal
+            onClose={handleClose}
+            open={open}
+        >
+
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
             <Box sx={{ ...style }}>
                 <GroupNameField handleGroupName={handleGroupName} />
                 <GroupDescriptionField handleGroupDescription={handleGroupDescription} />
@@ -69,6 +93,10 @@ export default function CreateNewGroupModal({
             </Box>
 
 
+<<<<<<< HEAD
         </MotionModal>
+=======
+        </Modal>
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     )
 }

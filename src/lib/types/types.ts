@@ -1,6 +1,14 @@
 import type { NextResponse } from "next/server";
 import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+<<<<<<< HEAD
 import type { SetStateAction } from "react";
+=======
+<<<<<<< Updated upstream
+=======
+import type { SetStateAction } from "react";
+import { SnackbarStatusAndKind } from "../store/slices/RenderingSlice";
+>>>>>>> Stashed changes
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
 type HealthCheck = { ok: boolean };
 
@@ -18,10 +26,16 @@ type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 type SnackbarMessages = {
     logout: Record<RequestStatus, string>;
     login: Record<RequestStatus, string>;
     newGroup: Record<RequestStatus, string>;
+<<<<<<< HEAD
     // register?: ...
 };
 
@@ -36,6 +50,15 @@ type UseLoginHook = {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
 }
 
+=======
+};
+
+type UseLoginHook = {
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
+}
+
+>>>>>>> Stashed changes
+>>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 type EventsPages = Array<LayoutSlotSchemaType[]>
 
 
