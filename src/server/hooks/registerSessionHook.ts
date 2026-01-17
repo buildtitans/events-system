@@ -4,7 +4,7 @@ export async function registerSessionHook(app: FastifyInstance) {
     app.addHook("preHandler", async (req) => {
         const token = req.cookies.session;
         if (!token) {
-            console.error("*************** NO COOKIE FOR REQUEST FOUND ************************");
+            console.log(`********** NO COOKIE ***************`)
             return;
         };
 

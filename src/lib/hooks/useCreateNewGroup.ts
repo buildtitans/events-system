@@ -77,10 +77,7 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
 
     async function createGroup(group: NewGroupInputSchemaType): Promise<GroupSchemaType | null> {
         const result = await trpcClient.groups.createNewGroup.mutate(group);
-
-        const { items } = result;
-        console.log(result);
-        return items;
+        return result;
     }
 
     function handleNewGroupResult(created: GroupSchemaType | null): void {
@@ -98,8 +95,8 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         e.preventDefault();
         dispatch(changeNewGroupStatus("pending"))
         const insertData = parseNewGroupForSubmit(newGroup);
-        console.log(insertData);
         const createdGroup = await createGroup(insertData);
+        console.log(createdGroup)
         handleNewGroupResult(createdGroup);
     }
 

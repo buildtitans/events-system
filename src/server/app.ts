@@ -30,16 +30,18 @@ function buildServer() {
         secret: cookie_secret
     })
     registerSessionHook(app);
+
     app.register(fastifyTRPCPlugin, {
         prefix: "/trpc",
         trpcOptions: {
             router: appRouter,
             createContext,
             onError({ path, error }) {
-                console.error(`Error in tRPC handler on path ${path}`)
+                console.error(`Error in tRPC handler on path ${path} — ${error}`)
             }
         } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions']
     })
+
     return app;
 }
 

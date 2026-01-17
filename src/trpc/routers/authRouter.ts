@@ -1,6 +1,6 @@
 import { router, publicProcedure } from "../init";
-import type { LoginCredentialsSchemaType, AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
-import { CompiledLoginCredentials, AuthenticationSchemaValidator } from "@/src/schemas/loginCredentialsSchema";
+import type { LoginCredentialsSchemaType } from "@/src/schemas/loginCredentialsSchema";
+import { CompiledLoginCredentials } from "@/src/schemas/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
 export const authRouter = router({
@@ -9,23 +9,31 @@ export const authRouter = router({
             .input(
                 typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials)
             )
-            .output(
-                typeboxInput<AuthenticationSchemaType>(AuthenticationSchemaValidator)
-            )
             .mutation(async ({ ctx, input }) => {
 
-                return ctx.api.auth.login(
-                    {
-                        input_email: input.email,
-                        input_password: input.password
-                    }
-                )
+
+                const res = await ctx.api.auth.login(
+                    input.email,
+                    input.password
+                );
+                const { session, user } = res;
+
+                ctx.reply.setCookie("session", session.id, {
+                    httpOnly: true,
+                    path: "/",
+                    sameSite: "lax",
+                    secure: process.env.NODE_ENV === "production",
+                    expires: new Date(session.expires_at),
+                })
+
+                ctx.user = { id: user.id, role: "user" }
+
+                return res ? { success: true } : { success: false }
             }),
 
     signout: publicProcedure
-        .output(typeboxInput<AuthenticationSchemaType>(AuthenticationSchemaValidator))
         .mutation(async ({ ctx }) => {
 
-            return ctx.api.auth.logout()
+            return ctx.api.auth.logOut()
         })
 })

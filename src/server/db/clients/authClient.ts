@@ -4,6 +4,7 @@ import argon2 from "argon2";
 import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/userSchema";
 import crypto from "crypto";
 import type { StoredSession, AuthClientLoginResponse } from "./types/types";
+import { Console } from "console";
 
 export class AuthClient {
 
@@ -38,6 +39,7 @@ export class AuthClient {
             id: dbUser.id,
             email: dbUser.email
         }
+        console.log(publicUser ? publicUser : "****************INVALID CREDENTIALS************************")
 
         return { user: publicUser, session };
     }
@@ -71,7 +73,7 @@ export class AuthClient {
         }
 
         const ok = await argon2.verify(user?.password_hash, input_password);
-
+        console.log(`************ ${ok} ******************`)
         if (!ok) {
             throw new Error(`Invalid email or password`)
         }
