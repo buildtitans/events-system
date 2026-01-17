@@ -6,7 +6,7 @@ import AppAppBar from '@/src/components/ui/nav/AppBar';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { useEffect, useState } from 'react';
 import type { MountStatus } from '@/src/lib/types/types';
-import { ReduxProvider, RootState } from '@/src/lib/store';
+import { ReduxProvider } from '@/src/lib/store';
 import TopLayerHost from '../components/layers/topLayerHost';
 
 const theme = createTheme({

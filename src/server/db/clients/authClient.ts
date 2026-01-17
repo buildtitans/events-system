@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import { Kysely } from "kysely";
-=======
 import { DeleteResult, Kysely } from "kysely";
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 import { DB } from "../types/db";
 import argon2 from "argon2";
 import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/userSchema";
 import crypto from "crypto";
 import type { StoredSession, AuthClientLoginResponse } from "./types/types";
-import { Console } from "console";
 
 export class AuthClient {
 
@@ -49,15 +44,6 @@ export class AuthClient {
     }
 
 
-<<<<<<< HEAD
-    async logOut(token?: string) {
-        if (!token) return;
-
-        await this.db
-            .deleteFrom("sessions")
-            .where("id", "=", token)
-            .execute();
-=======
     async logOut(token: string): Promise<DeleteResult[]> {
 
         const result = await this.db
@@ -66,11 +52,7 @@ export class AuthClient {
             .execute();
 
         return result
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     }
-
-
-
 
     async verifyCredentials(
         input_email: string,

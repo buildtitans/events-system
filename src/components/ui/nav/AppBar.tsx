@@ -14,28 +14,13 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useEffect, useRef, useState } from 'react';
 import SitemarkIcon from './Sitemark';
 import ColorModeIconDropdown from './ColorModelIconDropdown';
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/lib/store';
 import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/AuthSlice';
-<<<<<<< HEAD
-import { currentLougoutStatus, showModal } from '@/src/lib/store/slices/RenderingSlice';
-import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
-import AuthenticatonSnackbar from '../feedback/pending/authenticationSnackbar';
-import { AnimatePresence } from 'framer-motion';
-import { modalPipeline } from '../../pipelines/modals/modalPipeline';
-import CreateNewGroupModal from '../../sections/forms/createNewGroupForm';
-=======
 import { enqueueSnackbar, showModal } from '@/src/lib/store/slices/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
->>>>>>> Stashed changes
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -59,52 +44,26 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 
 export default function AppAppBar() {
-<<<<<<< HEAD
     const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const logoutStatus = useSelector((s: RootState) => s.rendering.logoutStatus);
     const modal = useSelector((s: RootState) => s.rendering.modal);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
 
-    console.log(modal)
-=======
-<<<<<<< Updated upstream
-    const [open, setOpen] = useState(false);
-=======
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const [open, setOpen] = useState(false);
-    const dispatch = useDispatch<AppDispatch>();
-    const timerRef = useRef<number | null>(null);
-
->>>>>>> Stashed changes
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
 
-<<<<<<< HEAD
-    function handleLogoutResponse(success: AuthenticationSchemaType["success"]) {
 
-        timerRef.current = window.setTimeout(() => {
-            dispatch(currentLougoutStatus(success ? "success" : "failed"))
-=======
-<<<<<<< Updated upstream
-=======
     function handleLogoutResponse(success: AuthenticationSchemaType["success"]) {
 
         timerRef.current = window.setTimeout(() => {
             dispatch(enqueueSnackbar({ kind: 'logout', status: 'success' }))
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
             dispatch(logout());
             timerRef.current = null;
         }, 1500)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     };
 
     const handleAddGroup = () => {
@@ -112,17 +71,6 @@ export default function AppAppBar() {
     };
 
     const handleSignout = async (): Promise<void> => {
-<<<<<<< HEAD
-        dispatch(currentLougoutStatus("pending"));
-        const res = await trpcClient.auth.signout.mutate();
-        handleLogoutResponse(res.success);
-    };
-
-
-    useEffect(() => { return () => { if (timerRef.current !== null) clearTimeout(timerRef.current) } }, [])
-
-
-=======
         dispatch(enqueueSnackbar({ kind: 'logout', status: 'pending' }));
         const res = await trpcClient.auth.signout.mutate();
         handleLogoutResponse(res ? true : false);
@@ -137,9 +85,6 @@ export default function AppAppBar() {
 
     }, []);
 
-
->>>>>>> Stashed changes
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
     return (
         <AppBar
             component={"nav"}
@@ -152,21 +97,6 @@ export default function AppAppBar() {
                 mt: 'calc(var(--template-frame-height, 0px) + 28px)',
             }}
         >
-<<<<<<< HEAD
-            <CreateNewGroupModal open={modal === "new group"} handleClose={null} />
-            <AnimatePresence>
-                {(logoutStatus !== "idle") &&
-                    <AuthenticatonSnackbar action={currentLougoutStatus} status={logoutStatus} statusKind='logout' />
-                }
-            </AnimatePresence>
-
-=======
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
->>>>>>> 97a54ef (rendering pipeline for snackbars + modals in <TopLayerHost/>)
             <Container maxWidth="lg">
                 <StyledToolbar variant="dense" disableGutters>
                     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
