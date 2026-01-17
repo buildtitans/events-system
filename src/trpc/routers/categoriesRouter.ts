@@ -1,6 +1,4 @@
 import { router, publicProcedure } from "../init";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { GetAllCategoriesResponseType, GetAllCategoriesResponseValidator } from "@/src/schemas/categoriesSchema";
 
 export const categoriesRouter = router({
     getAllCategories: publicProcedure

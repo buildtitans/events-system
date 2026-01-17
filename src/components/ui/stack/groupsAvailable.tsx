@@ -8,10 +8,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { Group } from '../box/cards/group';
 import { useMemo, useState } from 'react';
+import { GroupSchemaType } from '@/src/schemas/groupSchema';
 
 type CategoryMap = Map<string, string>;
 
-function getCategoryName(category_id: string, map: CategoryMap): string | null {
+function getCategoryName(category_id: GroupSchemaType["category_id"], map: CategoryMap): string | null {
+    if (!category_id) return null;
     const name = map.get(category_id) ?? null;
     return name
 };

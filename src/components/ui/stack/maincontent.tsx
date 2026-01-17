@@ -11,9 +11,6 @@ import { PaginateEvents } from '../box/pagination/paginateEvents';
 import { usePopulateGroups } from '@/src/lib/hooks/usePopulateGroups';
 import { loadGroupsPipeline } from '../../pipelines/groups/loadGroupsPipeline';
 import { useGetCategories } from '@/src/lib/hooks/useGetCategories';
-import ModalLayer from '../../layers/modalLayer';
-import { AnimatePresence } from 'framer-motion';
-import { modalPipeline } from '../../pipelines/modals/modalPipeline';
 
 const overrides = {
   display: 'flex',
