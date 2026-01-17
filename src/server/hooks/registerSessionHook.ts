@@ -3,7 +3,10 @@ import type { FastifyInstance } from "fastify";
 export async function registerSessionHook(app: FastifyInstance) {
     app.addHook("preHandler", async (req) => {
         const token = req.cookies.session;
-        if (!token) return;
+        if (!token) {
+            console.log(`********** NO COOKIE ***************`)
+            return;
+        };
 
         const validated_user = await app.db.auth.authenticate(token);
 

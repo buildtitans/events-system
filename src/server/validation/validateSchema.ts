@@ -6,7 +6,7 @@ import type { ValueError } from "@sinclair/typebox/compiler";
 import { EventsArraySchema } from "@/src/schemas/eventSchema";
 import { CardVariantTypeSchema, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/eventSchema";
-import { GroupSchema } from "@/src/schemas/groupSchema";
+import { GroupSchema, GroupsSchema } from "@/src/schemas/groupSchema";
 import { NewGroupInputSchema } from "@/src/schemas/groupSchema";
 
 TypeSystem.Format("date-time", (value) => {
@@ -70,5 +70,9 @@ const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);
 
 const GroupSchemaValidator = createValidator(GroupSchema, "GroupsSchema");
 
+const GroupsSchemaValidator = createValidator(GroupsSchema, "GroupsSchema");
 
-export { AuthorsValidator, eventsValidator, layoutSlotValidator, GroupSchemaValidator };
+const AuthorsParsingValidator = createValidator(AuthorsSchema, "AuthorsShchema");
+
+
+export { AuthorsValidator, eventsValidator, layoutSlotValidator, GroupSchemaValidator, GroupsSchemaValidator };

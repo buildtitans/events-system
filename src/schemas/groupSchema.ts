@@ -20,6 +20,8 @@ export const NewGroupInputSchema = Type.Object({
     category_id: Type.Union([Type.String(), Type.Null()]),
 });
 
+export const NewGroupInputSchemaValidator = TypeCompiler.Compile(NewGroupInputSchema);
+
 export type NewGroupInputSchemaType = Static<typeof NewGroupInputSchema>;
 
 export const GroupsSchema = Type.Array(GroupSchema);

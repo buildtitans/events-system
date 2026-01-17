@@ -4,9 +4,6 @@ import { GetAllCategoriesResponseType, GetAllCategoriesResponseValidator } from 
 
 export const categoriesRouter = router({
     getAllCategories: publicProcedure
-        .output(
-            typeboxInput<GetAllCategoriesResponseType>(GetAllCategoriesResponseValidator)
-        )
         .mutation(async ({ ctx }) => {
 
             return await ctx.api.categories.getAllCategories()

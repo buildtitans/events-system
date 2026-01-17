@@ -14,6 +14,12 @@ const snackbarMessages: SnackbarMessages = {
         success: "Logged in successfully",
         failed: "Invalid credentials",
     },
+    newGroup: {
+        idle: "",
+        pending: "Creating new group",
+        success: "Group created successfully",
+        failed: "Failed to create new group"
+    }
 };
 
 export { snackbarMessages }

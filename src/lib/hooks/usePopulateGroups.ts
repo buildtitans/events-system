@@ -6,6 +6,7 @@ import type { RootState, AppDispatch } from "../store";
 import { LoadingStatus } from "../types/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupsResponse } from "@/src/trpc/types/types";
+import { GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 const usePopulateGroups = (): LoadingStatus => {
     const [groupsLoadingStatus, setGroupsLoadingStatus] = useState<LoadingStatus>('pending');
@@ -13,14 +14,13 @@ const usePopulateGroups = (): LoadingStatus => {
     const groups = useSelector((s: RootState) => s.groups.communities);
     const dispatch = useDispatch<AppDispatch>();
 
-    function handleGroupsResults(result: GroupsResponse) {
-        const { items } = result;
-        if (items) {
-            dispatch(getAllGroups(items));
+    function handleGroupsResults(result: GroupsSchemaType) {
+        if (result) {
+            dispatch(getAllGroups(result));
 
         }
         setGroupsLoadingStatus(
-            ((Array.isArray(items)) && (items.length > 0))
+            ((Array.isArray(result)) && (result.length > 0))
                 ? "idle"
                 : "failed"
         );
@@ -33,7 +33,7 @@ const usePopulateGroups = (): LoadingStatus => {
 
         const loadGroups = async () => {
             try {
-                const result = await trpcClient.groups.list.mutate()
+                const result = await trpcClient.groups.list.mutate();
                 handleGroupsResults(result);
 
             } catch (err) {

@@ -49,9 +49,6 @@ function buildLayoutSlots(events: EventSchemaType[]): PaginatedLayoutSchemaType 
 
         paginatedLayoutSlots.push(slots)
 
-        console.log({
-            LayoutSlotsPage: paginatedLayoutSlots
-        })
     }
     return paginatedLayoutSlots
 

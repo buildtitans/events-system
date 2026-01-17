@@ -1,20 +1,28 @@
+import cors from "@fastify/cors";
 import Fastify from 'fastify';
 import fastifyCookie from "@fastify/cookie";
-import { eventsRoutes } from '@/src/server/routes/events.routes';
-import { groupsRoutes } from './routes/groups.routes';
+import {
+    fastifyTRPCPlugin,
+    FastifyTRPCPluginOptions,
+} from '@trpc/server/adapters/fastify';
 import {
     db,
     DBClient
 } from '@/src/server/db';
 import { getEnv } from '../lib/utils/getEnv';
 import { registerSessionHook } from './hooks/registerSessionHook';
-import { authRoutes } from './routes/auth.routes';
-import { categoriesRoutes } from './routes/categories.routes';
+import { type AppRouter, appRouter } from "../trpc/router";
+import { createContext } from "../trpc/context";
 
 function buildServer() {
     const app = Fastify({
         logger: true
     });
+    app.register(cors, {
+        origin: "http://localhost:3000",
+        credentials: true,
+    });
+
     const cookie_secret = getEnv("cookies_secret");
 
     app.decorate("db", new DBClient(db));
@@ -22,10 +30,18 @@ function buildServer() {
         secret: cookie_secret
     })
     registerSessionHook(app);
-    app.register(eventsRoutes, { prefix: "/api/events" });
-    app.register(groupsRoutes, { prefix: "/api/groups" });
-    app.register(authRoutes, { prefix: "/api/auth" });
-    app.register(categoriesRoutes, { prefix: "/api/categories" })
+
+    app.register(fastifyTRPCPlugin, {
+        prefix: "/trpc",
+        trpcOptions: {
+            router: appRouter,
+            createContext,
+            onError({ path, error }) {
+                console.error(`Error in tRPC handler on path ${path} — ${error}`)
+            }
+        } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions']
+    })
+
     return app;
 }
 
