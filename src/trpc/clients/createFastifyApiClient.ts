@@ -49,6 +49,7 @@ export class FastifyApiClient {
         const url = `${this.baseUrl}${path}`;
         const res = await fetch(url, {
             method: "POST",
+            credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
             },

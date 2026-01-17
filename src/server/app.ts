@@ -1,3 +1,4 @@
+import cors from "@fastify/cors";
 import Fastify from 'fastify';
 import fastifyCookie from "@fastify/cookie";
 import { eventsRoutes } from '@/src/server/routes/events.routes';
@@ -15,6 +16,12 @@ function buildServer() {
     const app = Fastify({
         logger: true
     });
+    app.register(cors, {
+        origin: "http://localhost:3000",
+        credentials: true,
+    });
+
+
     const cookie_secret = getEnv("cookies_secret");
 
     app.decorate("db", new DBClient(db));

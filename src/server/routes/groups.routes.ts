@@ -23,9 +23,9 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
         >
     ) => {
 
-        const organizer_id = req.cookies.session
-        console.log(organizer_id ?? "no user set")
-        if (!organizer_id) {
+        const token = req.cookies.session;
+
+        if (!token) {
             return {
                 group: null,
                 meta: {
@@ -34,8 +34,17 @@ export const groupsRoutes: FastifyPluginAsync = async (app) => {
                 }
             }
         }
+        const user = await dbClient.auth.getSession(token);
 
-        const group = await dbClient.groups.createGroup(req.body, organizer_id);
+        if (!user) return {
+            group: null,
+            meta: {
+                error: "unauthorized",
+                message: "Sign up to create a new group"
+            }
+        }
+
+        const group = await dbClient.groups.createGroup(req.body, user?.user_id);
 
         return {
             group: group,
