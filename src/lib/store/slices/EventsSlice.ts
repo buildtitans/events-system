@@ -15,7 +15,7 @@ const initialState: EventCategoryState = {
     currentPage: 0
 };
 
-export const EventCategorySlice = createSlice({
+export const EventsSlice = createSlice({
     name: 'Events/Categories',
     initialState: initialState,
     reducers: {
@@ -48,10 +48,10 @@ export const {
     nextEventsPage,
     prevEventsPage,
     goToEventsPage
-} = EventCategorySlice.actions;
+} = EventsSlice.actions;
 
-export default EventCategorySlice.reducer;
+export default EventsSlice.reducer;
 
-export type EventCategorySliceType = ReturnType<typeof EventCategorySlice.reducer>;
+export type EventCategorySliceType = ReturnType<typeof EventsSlice.reducer>;
 
 export type { PresentedCategory };

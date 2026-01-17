@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import { useSelector } from "react-redux"
 import type { RootState } from "@/src/lib/store"
-import { PresentedCategory } from "@/src/lib/store/slices/EventCategorySlice";
+import { PresentedCategory } from "@/src/lib/store/slices/EventsSlice";
 
 type EventCategoriesProps = {
     handleClick: (category: PresentedCategory) => () => void

@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/src/lib/store";
-import { nextEventsPage, prevEventsPage } from "@/src/lib/store/slices/EventCategorySlice";
+import { nextEventsPage, prevEventsPage } from "@/src/lib/store/slices/EventsSlice";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";

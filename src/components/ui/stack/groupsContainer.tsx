@@ -18,13 +18,12 @@ function getCategoryName(category_id: GroupSchemaType["category_id"], map: Categ
     return name
 };
 
-
 export default function GroupCards(): React.JSX.Element {
     const groups = useSelector((s: RootState) => s.groups.communities);
     const categories = useSelector((s: RootState) => s.categories.categories);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const categoryMap: CategoryMap = useMemo(() => {
-        let map = new Map();
+        let map: CategoryMap = new Map();
         categories.forEach((category) => {
             map.set(category.id, category.name)
         })

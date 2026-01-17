@@ -1,15 +1,12 @@
 "use client"
-import Grid from '@mui/material/Grid';
 import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { GroupSchemaType } from '@/src/schemas/groupSchema';
-import { GroupCard } from '@/src/features/groups/cards/groupCard';
-import Latest from './groupsAvailable';
+import Latest from './groupsContainer';
 
 
-function GroupCards(): JSX.Element | null {
+function GroupsContainer(): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const groups = useSelector((s: RootState) => s.groups.communities);
 
@@ -30,4 +27,4 @@ function GroupCards(): JSX.Element | null {
     )
 };
 
-export default GroupCards;
+export default GroupsContainer;

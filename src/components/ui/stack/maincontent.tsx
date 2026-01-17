@@ -61,7 +61,6 @@ function MainContent(): JSX.Element {
         }}
       >
         {content}
-
         {loadGroupsPipeline(groupsLoadingStatus)}
       </Box>
 

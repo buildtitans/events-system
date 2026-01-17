@@ -6,7 +6,7 @@ import { useCallback, type JSX } from "react";
 import Box from '@mui/material/Box';
 import { EventCategories } from "./categories";
 import { EventsSearch } from "../search/eventsSearch";
-import { selectCategory, type PresentedCategory } from "@/src/lib/store/slices/EventCategorySlice";
+import { selectCategory, type PresentedCategory } from "@/src/lib/store/slices/EventsSlice";
 
 function ActiveCategory(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>()
