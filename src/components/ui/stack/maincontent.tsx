@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 import { LandingHeader } from '../typography/landingHeader';
 import { MobileEventsSearch } from '../nav/landingSubNav';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
-import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines';
+import { useMainContentPipelines } from '@/src/lib/hooks/rendering/useMainContentPipelines';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { PaginateEvents } from '../box/pagination/paginateEvents';
