@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllGroups } from "../store/slices/GroupsSlice";
-import type { RootState, AppDispatch } from "../store";
-import { LoadingStatus } from "../types/types";
+import { getAllGroups } from "@/src/lib/store/slices/GroupsSlice";
+import type { RootState, AppDispatch } from "@/src/lib/store";
+import { LoadingStatus } from "@/src/lib/types/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { GroupsResponse } from "@/src/trpc/types/types";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 const usePopulateGroups = (): LoadingStatus => {

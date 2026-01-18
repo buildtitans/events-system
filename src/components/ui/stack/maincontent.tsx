@@ -8,9 +8,9 @@ import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { PaginateEvents } from '../box/pagination/paginateEvents';
-import { usePopulateGroups } from '@/src/lib/hooks/usePopulateGroups';
+import { usePopulateGroups } from '@/src/lib/hooks/init/usePopulateGroups';
 import { loadGroupsPipeline } from '../../pipelines/groups/loadGroupsPipeline';
-import { useGetCategories } from '@/src/lib/hooks/useGetCategories';
+import { useGetCategories } from '@/src/lib/hooks/init/useGetCategories';
 
 const overrides = {
   display: 'flex',
