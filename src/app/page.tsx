@@ -1,4 +1,4 @@
-import MainContent from "../components/ui/stack/maincontent";
+import MainContent from "../components/pages/maincontent";
 
 export default function Home() {
 

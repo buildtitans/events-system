@@ -1,14 +1,13 @@
 "use client";
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
-import { validateNewGroupInput } from "../utils/helpers/validateNewGroupInput";
+import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { addGroup } from "../store/slices/GroupsSlice";
-import { parseNewGroupForSubmit } from "../utils/helpers/parseNewGroupForSubmit";
-import { enqueueAlert, enqueueSnackbar, showModal } from "../store/slices/RenderingSlice";
+import { addGroup } from "../../store/slices/GroupsSlice";
+import { parseNewGroupForSubmit } from "../../utils/helpers/parseNewGroupForSubmit";
+import { enqueueAlert, enqueueSnackbar, showModal } from "../../store/slices/RenderingSlice";
 
 export type CreateNewGroupHook = {
     newGroup: NewGroupInputType;

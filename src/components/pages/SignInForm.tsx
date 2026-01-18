@@ -1,7 +1,7 @@
 "use client";
 
 import Stack from "@mui/material/Stack";
-import SignInCard from "@/src/features/auth/SignInCard";
+import SignInCard from "@/src/components/sections/forms/SignInCard";
 import Content from "@/src/features/auth/LoginCopy";
 import type { JSX } from "react";
 import { useLogin } from "@/src/lib/hooks/auth/useLogin";
