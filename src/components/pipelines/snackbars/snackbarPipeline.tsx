@@ -10,7 +10,7 @@ function snackbarPipeline(kind: SnackbarStatusAndKind["kind"], status: SnackbarS
             return null
         default: {
             return (
-                <AuthenticatonSnackbar key={kind} statusKind={kind} status={status} />
+                <AuthenticatonSnackbar key={"snackbar"} statusKind={kind} status={status} />
             )
         }
     }

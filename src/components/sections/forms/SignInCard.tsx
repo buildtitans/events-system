@@ -7,14 +7,13 @@ import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '@/src/components/ui/icons/CustomIcons';
 import Email from '@/src/components/sections/inputs/Email';
 import Password from '@/src/components/sections/inputs/Password';
 import StyledSigninCard from '@/src/styles/styledComponents/styledSigninCard';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-
+import ForgotPassword from '@/src/features/auth/ForgotPassword';
 
 export default function SignInCard({
     isSubmittable,

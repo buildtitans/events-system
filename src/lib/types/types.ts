@@ -11,6 +11,8 @@ type LoadingStatus = "idle" | "pending" | "failed";
 
 type RequestStatus = "idle" | "success" | "pending" | "failed";
 
+
+
 type UsePopulateEventsListHook = {
     eventLoadingStatus: LoadingStatus;
 };
@@ -21,6 +23,23 @@ type SnackbarMessages = {
     newGroup: Record<RequestStatus, string>;
 };
 
+type AlertKind = "success" | "error"
+
+type AlertMessages = {
+    createGroup: Record<AlertKind, string>,
+    signup: Record<AlertKind, string>
+}
+
+type AlertMessagesType =
+    | { action: null, kind: null, message: null }
+    | {
+        [A in keyof AlertMessages]:
+        {
+            [K in keyof AlertMessages[A]]: { action: A, kind: K, message: AlertMessages[A][K] }
+
+        }[keyof AlertMessages[A]]
+    }[keyof AlertMessages];
+
 type UseLoginHook = {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 };
@@ -28,6 +47,7 @@ type UseLoginHook = {
 type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 export type {
+    AlertMessagesType,
     LoadingStatus,
     UsePopulateEventsListHook,
     HealthCheck,
@@ -37,4 +57,5 @@ export type {
     UseLoginHook,
     RequestStatus,
     SnackbarMessages,
+    AlertMessages
 };

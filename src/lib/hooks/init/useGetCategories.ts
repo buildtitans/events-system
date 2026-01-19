@@ -1,9 +1,9 @@
 "use client"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "../store"
+import type { AppDispatch, RootState } from "@/src/lib/store"
 import { trpcClient } from "@/src/trpc/trpcClient"
-import { getAllCategories } from "../store/slices/CategorySlice"
+import { getAllCategories } from "@/src/lib/store/slices/CategorySlice";
 
 
 const useGetCategories = () => {

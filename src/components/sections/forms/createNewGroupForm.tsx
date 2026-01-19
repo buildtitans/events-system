@@ -3,7 +3,7 @@ import type { ModalProps } from "@mui/material/Modal";
 import Modal from "@mui/material/Modal";
 import { JSX } from "react";
 import SelectCategory from "../inputs/group/selectCategory";
-import { useCreateNewGroup } from "@/src/lib/hooks/useCreateNewGroup";
+import { useCreateNewGroup } from "@/src/lib/hooks/insert/useCreateNewGroup";
 import GroupNameField from "../inputs/group/groupName";
 import GroupLocationField from "../inputs/group/groupLocationField";
 import GroupDescriptionField from "../inputs/group/groupDescriptionField";

@@ -1,16 +1,16 @@
 "use client"
 import Box from '@mui/material/Box';
 import type { JSX } from 'react';
-import { LandingHeader } from '../typography/landingHeader';
-import { MobileEventsSearch } from '../nav/landingSubNav';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
-import { useMainContentPipelines } from '@/src/lib/hooks/useMainContentPipelines';
+import { useMainContentPipelines } from '@/src/lib/hooks/rendering/useMainContentPipelines';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { PaginateEvents } from '../box/pagination/paginateEvents';
-import { usePopulateGroups } from '@/src/lib/hooks/usePopulateGroups';
-import { loadGroupsPipeline } from '../../pipelines/groups/loadGroupsPipeline';
-import { useGetCategories } from '@/src/lib/hooks/useGetCategories';
+import { usePopulateGroups } from '@/src/lib/hooks/init/usePopulateGroups';
+import { useGetCategories } from '@/src/lib/hooks/init/useGetCategories';
+import { PaginateEvents } from '../ui/box/pagination/paginateEvents';
+import { loadGroupsPipeline } from '../pipelines/groups/loadGroupsPipeline';
+import { MobileEventsSearch } from '../ui/nav/landingSubNav';
+import { LandingHeader } from '../ui/typography/landingHeader';
 
 const overrides = {
   display: 'flex',

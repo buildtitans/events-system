@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 type GroupsInitialState = {
-    communities: GroupsSchemaType
+    communities: GroupsSchemaType,
+    currentPage: number
 };
 
 const initialState: GroupsInitialState = {
-    communities: []
+    communities: [],
+    currentPage: 0
 };
 
 const GroupsSlice = createSlice({
@@ -17,6 +19,7 @@ const GroupsSlice = createSlice({
             state.communities = action.payload
         },
         addGroup: (state: GroupsInitialState, action: PayloadAction<GroupSchemaType>) => {
+
             state.communities.push(action.payload);
         }
     }

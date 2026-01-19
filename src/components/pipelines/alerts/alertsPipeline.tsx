@@ -1,0 +1,17 @@
+import { AlertResult } from "../../ui/feedback/alerts/Alerts";
+import { createAlertMessages } from "@/src/lib/utils/rendering/createAlertMessages";
+import { AlertType } from "@/src/lib/store/slices/RenderingSlice";
+
+const alertsPipeline = (alert: AlertType) => {
+    if ((alert.action === null) || (alert.kind === null)) return null;
+
+    return (
+        <AlertResult
+            severity={alert.kind}
+            variant="filled"
+            message={createAlertMessages(alert)}
+        />
+    )
+};
+
+export { alertsPipeline };

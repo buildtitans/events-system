@@ -9,6 +9,7 @@ import { RootState } from '@/src/lib/store';
 import { Group } from '../box/cards/group';
 import { useMemo, useState } from 'react';
 import { GroupSchemaType } from '@/src/schemas/groupSchema';
+import { chunkGroupsIntoPages } from '@/src/lib/utils/helpers/chunkGroupsIntoPages';
 
 type CategoryMap = Map<string, string>;
 
@@ -18,10 +19,17 @@ function getCategoryName(category_id: GroupSchemaType["category_id"], map: Categ
     return name
 };
 
+
+
+
 export default function GroupCards(): React.JSX.Element {
     const groups = useSelector((s: RootState) => s.groups.communities);
+    const groupsPages = useMemo(() => {
+        return chunkGroupsIntoPages(groups);
+    }, [groups]);
     const categories = useSelector((s: RootState) => s.categories.categories);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
+    const currentPage = useSelector((s: RootState) => s.groups.currentPage);
     const categoryMap: CategoryMap = useMemo(() => {
         let map: CategoryMap = new Map();
         categories.forEach((category) => {
@@ -45,7 +53,7 @@ export default function GroupCards(): React.JSX.Element {
                 Groups
             </Typography>
             <Grid container spacing={8} columns={12} sx={{ my: 4 }}>
-                {groups.map((group, index) => (
+                {groupsPages[currentPage].map((group, index) => (
                     <Group
                         categoryName={getCategoryName(group.category_id, categoryMap)}
                         key={group.id}

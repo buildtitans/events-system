@@ -18,7 +18,7 @@ const loadGroupsPipeline = (groupsLoadingStatus: LoadingStatus): JSX.Element | n
             )
         case "failed":
             return (
-                <NoEventsFound /> // <----- replace w/groups focused failure state component
+                <NoEventsFound />
             )
 
         default: {
