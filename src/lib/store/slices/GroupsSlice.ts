@@ -21,11 +21,14 @@ const GroupsSlice = createSlice({
         addGroup: (state: GroupsInitialState, action: PayloadAction<GroupSchemaType>) => {
 
             state.communities.push(action.payload);
+        },
+        paginateGroups: (state: GroupsInitialState, action: PayloadAction<number>) => {
+            state.currentPage = action.payload;
         }
     }
 });
 
-export const { getAllGroups, addGroup } = GroupsSlice.actions;
+export const { getAllGroups, addGroup, paginateGroups } = GroupsSlice.actions;
 
 type GroupsSliceType = ReturnType<typeof GroupsSlice.reducer>;
 

@@ -3,16 +3,20 @@ import type { EventsPages } from "../../types/types";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
+type GroupNameByGroupID = Record<string, string>;
+
 type EventCategoryState = {
     displayed: PresentedCategory,
     eventPages: EventsPages,
-    currentPage: number
+    currentPage: number,
+    nameByGroupId: GroupNameByGroupID
 };
 
 const initialState: EventCategoryState = {
     displayed: 'Upcoming events',
     eventPages: [],
-    currentPage: 0
+    currentPage: 0,
+    nameByGroupId: {}
 };
 
 export const EventsSlice = createSlice({
@@ -38,6 +42,9 @@ export const EventsSlice = createSlice({
         },
         goToEventsPage: (state: EventCategoryState, action: PayloadAction<number>) => {
             state.currentPage = action.payload;
+        },
+        populateEventGroups: (state: EventCategoryState, action: PayloadAction<GroupNameByGroupID>) => {
+            state.nameByGroupId = action.payload;
         }
     }
 });
@@ -47,11 +54,12 @@ export const {
     chunkEventPages,
     nextEventsPage,
     prevEventsPage,
-    goToEventsPage
+    goToEventsPage,
+    populateEventGroups
 } = EventsSlice.actions;
 
 export default EventsSlice.reducer;
 
 export type EventCategorySliceType = ReturnType<typeof EventsSlice.reducer>;
 
-export type { PresentedCategory };
+export type { PresentedCategory, GroupNameByGroupID };

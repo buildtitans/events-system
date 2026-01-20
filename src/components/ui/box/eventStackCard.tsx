@@ -9,9 +9,10 @@ type EventStackCardProps = {
     handleFocus: EventCardProps["handleFocus"],
     focusedCardIndex: EventCardProps["focusedCardIndex"],
     event: EventCardProps["event"],
+    groupName: string
 }
 
-function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event }: EventStackCardProps) {
+function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, groupName }: EventStackCardProps) {
 
 
     return (
@@ -33,7 +34,7 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event }: Ev
             >
                 <div>
                     <Typography gutterBottom variant="caption" component="div">
-                        {event.tag}
+                        {groupName}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                         {event.title}

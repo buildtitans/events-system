@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import Latest from './groupsContainer';
+import GroupCards from './groupsContainer';
 
 
 function GroupsContainer(): JSX.Element | null {
@@ -23,7 +23,7 @@ function GroupsContainer(): JSX.Element | null {
     if (groups.length < 1) return null;
 
     return (
-        <Latest />
+        <GroupCards />
     )
 };
 

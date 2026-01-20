@@ -10,6 +10,7 @@ import { Group } from '../box/cards/group';
 import { useMemo, useState } from 'react';
 import { GroupSchemaType } from '@/src/schemas/groupSchema';
 import { chunkGroupsIntoPages } from '@/src/lib/utils/helpers/chunkGroupsIntoPages';
+import GroupsPaginaton from '../box/pagination/groupsPagination';
 
 type CategoryMap = Map<string, string>;
 
@@ -30,13 +31,15 @@ export default function GroupCards(): React.JSX.Element {
     const categories = useSelector((s: RootState) => s.categories.categories);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const currentPage = useSelector((s: RootState) => s.groups.currentPage);
+    const columns = groupsPages[currentPage].length > 1 ? 2 : 1;
     const categoryMap: CategoryMap = useMemo(() => {
         let map: CategoryMap = new Map();
         categories.forEach((category) => {
             map.set(category.id, category.name)
-        })
-        return map
+        });
+        return map;
     }, [categories]);
+
 
 
     const handleFocus = (index: number) => {
@@ -47,26 +50,27 @@ export default function GroupCards(): React.JSX.Element {
         setFocusedCardIndex(null);
     };
 
+
     return (
         <div>
             <Typography variant="h2" gutterBottom>
                 Groups
             </Typography>
-            <Grid container spacing={8} columns={12} sx={{ my: 4 }}>
+            <Grid container spacing={2} columns={columns} sx={{ minHeight: 600 }}>
                 {groupsPages[currentPage].map((group, index) => (
                     <Group
                         categoryName={getCategoryName(group.category_id, categoryMap)}
-                        key={group.id}
                         group={group}
                         index={index}
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
                     />
+
                 ))}
             </Grid>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4 }}>
-                <Pagination hidePrevButton hideNextButton count={10} boundaryCount={10} />
+                <GroupsPaginaton numButtons={groupsPages.length} />
             </Box>
         </div>
     );

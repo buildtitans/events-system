@@ -31,10 +31,11 @@ export type EventCardProps = {
     focusedCardIndex: number | null,
     event: EventSchemaType,
     variant: CardDesignation,
-    index: number
+    index: number,
+    groupName: string
 }
 
-function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant, index }: EventCardProps): JSX.Element {
+function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant, index, groupName }: EventCardProps): JSX.Element {
 
 
     return (
@@ -67,7 +68,7 @@ function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant, 
 
                 <StyledCardContent>
                     <Typography gutterBottom variant="caption" component="div">
-                        {event.tag}
+                        {groupName}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                         {event.title}

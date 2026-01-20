@@ -73,14 +73,15 @@ function Group({ index, group, handleFocus, handleBlur, focusedCardIndex, catego
 
 
     return (
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid flexShrink={0} size={{ xs: 2, sm: 1, md: 1, lg: 1, xl: 1 }}>
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     gap: 1,
-                    height: '100%',
+                    height: 'auto',
+                    width: '100%'
                 }}
             >
                 <Typography gutterBottom variant="caption" component="div">

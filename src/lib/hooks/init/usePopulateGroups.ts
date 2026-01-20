@@ -6,17 +6,19 @@ import type { RootState, AppDispatch } from "@/src/lib/store";
 import { LoadingStatus } from "@/src/lib/types/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import { mapEventGroups } from "../../utils/rendering/mapEventGroups";
+import { populateEventGroups } from "../../store/slices/EventsSlice";
 
 const usePopulateGroups = (): LoadingStatus => {
     const [groupsLoadingStatus, setGroupsLoadingStatus] = useState<LoadingStatus>('pending');
-    const loadedRef = useRef<boolean | null>(null);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const dispatch = useDispatch<AppDispatch>();
 
     function handleGroupsResults(result: GroupsSchemaType) {
         if (result) {
             dispatch(getAllGroups(result));
-
+            const groupsById = mapEventGroups(result);
+            dispatch(populateEventGroups(groupsById));
         }
         setGroupsLoadingStatus(
             ((Array.isArray(result)) && (result.length > 0))
@@ -26,9 +28,8 @@ const usePopulateGroups = (): LoadingStatus => {
     }
 
     useEffect(() => {
-        if ((loadedRef.current)) return;
 
-        if (groups.length > 0) loadedRef.current = true;
+        if (groups.length > 0) return;
 
         const loadGroups = async () => {
             try {
