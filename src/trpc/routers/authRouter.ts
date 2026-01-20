@@ -38,6 +38,30 @@ export const authRouter = router({
 
             if (!token) return null;
 
-            return ctx.api.auth.logOut(token)
-        })
+            const res = await ctx.api.auth.logOut(token);
+
+            if (res) {
+                ctx.reply.clearCookie("session");
+
+            }
+
+            return res;
+        }),
+
+    recover:
+        publicProcedure
+            .mutation(async ({ ctx }) => {
+
+                const token = ctx.req.cookies.session;
+
+                const session = await ctx.api.auth.getSession(token);
+
+                if (!session) {
+                    ctx.reply.clearCookie("session");
+                    return undefined;
+                };
+                ctx.user = { id: session.user_id, role: 'user' };
+
+                return session;
+            })
 })

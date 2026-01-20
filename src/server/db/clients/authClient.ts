@@ -6,8 +6,6 @@ import crypto from "crypto";
 import type { StoredSession, AuthClientLoginResponse } from "./types/types";
 
 
-type DeletedUser = Selectable<DB["users"]>;
-
 export class AuthClient {
 
     constructor(private readonly db: Kysely<DB>) { }
@@ -41,7 +39,6 @@ export class AuthClient {
             id: dbUser.id,
             email: dbUser.email
         }
-        console.log(publicUser ? publicUser : "****************INVALID CREDENTIALS************************")
 
         return { user: publicUser, session };
     }
@@ -103,9 +100,9 @@ export class AuthClient {
 
     async getSession(
         token?: string
-    ): Promise<StoredSession | null> {
+    ): Promise<StoredSession | undefined> {
 
-        if (!token) return null;
+        if (!token) return undefined;
 
         const session = await this.db
             .selectFrom("sessions")
@@ -113,8 +110,6 @@ export class AuthClient {
             .where("id", "=", token)
             .where("expires_at", ">", new Date())
             .executeTakeFirst();
-
-        if (!session) return null;
 
         return session;
     }

@@ -16,7 +16,8 @@ import { createContext } from "../trpc/context";
 
 function buildServer() {
     const app = Fastify({
-        logger: true
+        logger: true,
+        maxParamLength: 500
     });
     app.register(cors, {
         origin: "http://localhost:3000",

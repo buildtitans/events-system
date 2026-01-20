@@ -5,7 +5,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "@/src/lib/store/slices/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import type { LoginCredentials } from "../useValidateCredentialsInput";
+import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
 import type { UseLoginHook } from "../../types/types";
 import { useRouter } from "next/navigation";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";

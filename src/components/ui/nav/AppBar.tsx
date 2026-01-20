@@ -21,6 +21,7 @@ import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/AuthSlice';
 import { enqueueSnackbar, showModal } from '@/src/lib/store/slices/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
+import { useRecoverSession } from '@/src/lib/hooks/auth/useRecoverSession';
 
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -40,16 +41,13 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 
-
-
-
 export default function AppAppBar() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const modal = useSelector((s: RootState) => s.rendering.modal);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
-
+    useRecoverSession();
+    console.log(userKind)
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);

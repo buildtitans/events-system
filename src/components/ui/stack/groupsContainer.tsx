@@ -59,6 +59,7 @@ export default function GroupCards(): React.JSX.Element {
             <Grid container spacing={2} columns={columns} sx={{ minHeight: 600 }}>
                 {groupsPages[currentPage].map((group, index) => (
                     <Group
+                        key={group.id}
                         categoryName={getCategoryName(group.category_id, categoryMap)}
                         group={group}
                         index={index}
