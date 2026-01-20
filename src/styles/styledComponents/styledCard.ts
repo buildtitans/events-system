@@ -13,9 +13,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
     borderRadius: '2%',
     transitionDuration: '200ms',
     '&:hover': {
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
         cursor: 'pointer',
-        scale: 1.02
+
     },
     '&:focus-visible': {
         outline: '3px solid',
