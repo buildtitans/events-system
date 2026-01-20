@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { fadeInOut } from "@/src/styles/motion/variants"
 import Grid from "@mui/material/Grid"
 import { Group } from "../box/cards/group"
-import type { CategoryMap } from "./groupsContainer"
+import type { CategoryMap } from "./groupsPages"
 import { GroupsSchemaType } from "@/src/schemas/groupSchema"
 import { getCategoryName } from "@/src/lib/utils/rendering/getCategoryName"
 const MotionGrid = motion.create(Grid);

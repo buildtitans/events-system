@@ -1,5 +1,5 @@
 import type { GroupSchemaType } from "@/src/schemas/groupSchema";
-import type { CategoryMap } from "@/src/components/ui/stack/groupsContainer";
+import type { CategoryMap } from "@/src/components/ui/stack/groupsPages";
 
 function getCategoryName(category_id: GroupSchemaType["category_id"], map: CategoryMap): string | null {
     if (!category_id) return null;

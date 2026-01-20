@@ -1,7 +1,7 @@
 "use client"
 import type { JSX } from "react";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
-import GroupsContainer from "../../ui/stack/groupCards";
+import GroupsContainer from "../../ui/stack/groupsContainer";
 import { NoEventsFound } from "../../ui/box/noEventsFound";
 import type { LoadingStatus } from "@/src/lib/types/types"
 

@@ -1,7 +1,7 @@
 import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 
-function chunkGroupsIntoPages(groups: GroupsSchemaType, size: number = 8): GroupsSchemaType[] {
+function chunkGroupsIntoPages(groups: GroupsSchemaType, size: number = 6): GroupsSchemaType[] {
     const chunked: GroupsSchemaType[] = []
 
     for (let i = 0; i < groups.length; i += size) {
