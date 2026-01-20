@@ -10,7 +10,7 @@ import { mapEventGroups } from "../../utils/rendering/mapEventGroups";
 import { populateEventGroups } from "../../store/slices/EventsSlice";
 
 const usePopulateGroups = (): LoadingStatus => {
-    const [groupsLoadingStatus, setGroupsLoadingStatus] = useState<LoadingStatus>('pending');
+    const [groupsLoadingStatus, setGroupsLoadingStatus] = useState<LoadingStatus>('idle');
     const groups = useSelector((s: RootState) => s.groups.communities);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -32,6 +32,7 @@ const usePopulateGroups = (): LoadingStatus => {
         if (groups.length > 0) return;
 
         const loadGroups = async () => {
+            setGroupsLoadingStatus('pending')
             try {
                 const result = await trpcClient.groups.list.mutate();
                 handleGroupsResults(result);

@@ -13,6 +13,6 @@ export default function GroupsPaginaton({ numButtons }: { numButtons: number }):
     }
 
     return (
-        <Pagination hideNextButton hidePrevButton onChange={handleClick} count={numButtons} />
+        <Pagination onChange={handleClick} count={numButtons} />
     )
 }

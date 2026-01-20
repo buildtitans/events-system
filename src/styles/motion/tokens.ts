@@ -8,6 +8,13 @@ export const smoothTransition: Transition = {
     ease: softEase,
 };
 
+export const smoothMount: Transition = {
+    type: "tween",
+    delay: 0.3,
+    duration: 0.3,
+    ease: softEase
+}
+
 export const fadeIn: Target = {
     opacity: 1,
 };
