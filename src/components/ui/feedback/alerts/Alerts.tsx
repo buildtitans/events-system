@@ -43,7 +43,8 @@ export function AlertResult({ variant, severity, message }: AlertResultPropertie
             sx={{
                 position: 'fixed',
                 bottom: 20,
-                right: 30,
+                right: 200,
+                left: 200,
                 zIndex: 100
             }} variant={variant} severity={severity}>
             {message}
