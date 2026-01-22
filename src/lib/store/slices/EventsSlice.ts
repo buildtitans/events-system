@@ -45,7 +45,7 @@ export const EventsSlice = createSlice({
         },
         populateEventGroups: (state: EventCategoryState, action: PayloadAction<GroupNameByGroupID>) => {
             state.nameByGroupId = action.payload;
-        }
+        },
     }
 });
 
