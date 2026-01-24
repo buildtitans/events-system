@@ -19,6 +19,12 @@ const snackbarMessages: SnackbarMessages = {
         pending: "Creating new group",
         success: "Group created successfully",
         failed: "Failed to create new group"
+    },
+    newEvent: {
+        idle: "",
+        pending: "Scheduling Event...",
+        success: "Event Scheduled!",
+        failed: "Failed to schedule event"
     }
 };
 

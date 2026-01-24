@@ -1,4 +1,5 @@
 import { Type, Static } from "@sinclair/typebox";
+import { TypeCompiler } from "@sinclair/typebox/compiler";
 
 const AuthorSchema = Type.Object({
     name: Type.String(),
@@ -52,3 +53,6 @@ type EventsReponseSchemaType = Static<typeof EventsReponseSchema>;
 export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema, AuthorsSchema, NewEventInputSchema };
 
 export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType, AuthorsSchemaType, NewEventInputSchemaType };
+
+
+export const NewEventInputSchemaValidator = TypeCompiler.Compile(NewEventInputSchema);

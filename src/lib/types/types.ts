@@ -21,6 +21,7 @@ type SnackbarMessages = {
     logout: Record<RequestStatus, string>;
     login: Record<RequestStatus, string>;
     newGroup: Record<RequestStatus, string>;
+    newEvent: Record<RequestStatus, string>;
 };
 
 type AlertKind = "success" | "error"

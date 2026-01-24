@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { GroupSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
 import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../../store/slices/GroupsSlice";
-import { parseNewGroupForSubmit } from "../../utils/helpers/parseNewGroupForSubmit";
 import { enqueueAlert, enqueueSnackbar, showModal } from "../../store/slices/RenderingSlice";
+import { parseInputSchema } from "../../utils/validation/parseInputSchema";
 
 export type CreateNewGroupHook = {
     newGroup: NewGroupInputType;
@@ -97,7 +97,7 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
 
         dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
 
-        const insertData = parseNewGroupForSubmit(newGroup);
+        const insertData = parseInputSchema(newGroup, NewGroupInputSchema);
         const createdGroup = await createGroup(insertData);
 
         handleNewGroupResult(createdGroup);
