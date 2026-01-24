@@ -28,7 +28,7 @@ export type CardDesignation = {
 export type EventCardProps = {
     handleFocus: (index: number) => void,
     handleBlur: () => void,
-    focusedCardIndex: number | null,
+    focusedCardIndex: number,
     event: EventSchemaType,
     variant: CardDesignation,
     index: number,
