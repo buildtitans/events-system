@@ -1,13 +1,11 @@
 "use client";
 import Box from "@mui/material/Box";
-import { JSX, useMemo } from "react";
+import { JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { useMainContentPipelines } from "@/src/lib/hooks/rendering/useMainContentPipelines";
-import { usePathname } from "next/navigation";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import Button from "@mui/material/Button";
-import { enqueueDrawer, showModal } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";
 import { useRecoverStore } from "@/src/lib/hooks/init/useRecoverData";
 
 
@@ -16,21 +14,10 @@ export default function OpenedGroup(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
     const tab = useSelector((s: RootState) => s.rendering.mainContent);
     const content = useMainContentPipelines(tab);
-    const groups = useSelector((s: RootState) => s.groups.communities);
-    const path = usePathname();
-    const group_id = useMemo(() => {
-        const slug = path.split('').slice(8).join('');
-
-        const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
-        return currentGroup?.id;
-    }, [path, groups])
-
 
     const openEventDrawer = () => {
         dispatch(enqueueDrawer('create event'));
     }
-
-    console.log(group_id);
 
     return (
         <Box
