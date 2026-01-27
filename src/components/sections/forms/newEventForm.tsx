@@ -6,9 +6,10 @@ import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
 import Typography from "@mui/material/Typography";
 import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
+import { useForm, Controller } from 'react-hook-form';
 
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
-
+    const { control } = useForm()
     const {
         handleDescription,
         handleStartsAt,
@@ -18,7 +19,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
 
     //TODO: wire in the useCreateEvent hook with proper form input fields to create the event.
     //  alerts and snackbar components should be already wired up for the feedback in the UI
-
+    // --> leverage react-hook-form to get more comforatable with the API
 
     return (
         <Stack
@@ -31,6 +32,33 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
 
             }}
         >
+
+            <Controller
+                name="title"
+                control={control}
+                render={({ field: { onChange, onBlur, value, ref }, formState, fieldState }) => (
+                    <>
+                        <Typography component={"h1"}>
+                            New Event
+                        </Typography>
+                        <FormControl sx={{
+                        }}>
+                            <FormLabel>
+                                Title
+                            </FormLabel>
+                            <TextField
+                                sx={{
+                                    backgroundColor: 'rgb(255, 255, 255, 0.2)',
+                                    border: 1,
+                                    borderColor: 'white',
+                                    borderRadius: 2
+                                }}
+                            />
+                        </FormControl>
+                    </>
+
+                )}
+            />
             <Typography component={"h1"}>
                 New Event
             </Typography>
