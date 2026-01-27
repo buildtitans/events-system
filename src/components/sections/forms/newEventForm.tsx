@@ -5,6 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
 import Typography from "@mui/material/Typography";
+import StartTime from "../inputs/event/startTime";
 import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
 import { useForm, Controller } from 'react-hook-form';
 
@@ -36,7 +37,16 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
             <Controller
                 name="title"
                 control={control}
-                render={({ field: { onChange, onBlur, value, ref }, formState, fieldState }) => (
+                render={({ field:
+                    {
+                        onChange,
+                        onBlur,
+                        value,
+                        ref
+                    },
+                    formState,
+                    fieldState
+                }) => (
                     <>
                         <Typography component={"h1"}>
                             New Event
@@ -59,9 +69,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
 
                 )}
             />
-            <Typography component={"h1"}>
-                New Event
-            </Typography>
+
             <FormControl sx={{
             }}>
                 <FormLabel>
@@ -95,13 +103,8 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                 <FormLabel>
                     Starts at
                 </FormLabel>
-                <TextField
-                    sx={{
-                        backgroundColor: 'rgb(255, 255, 255, 0.1)',
-                        border: 1,
-                        borderColor: 'white',
-                        borderRadius: 2
-                    }}
+                <StartTime
+                    handleStartsAt={handleStartsAt}
                 />
             </FormControl>
         </Stack>
