@@ -6,6 +6,9 @@ import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/st
 import { Author } from '@/src/components/ui/box/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
+import dayjs from 'dayjs';
+import { utc } from 'dayjs';
+import { start } from 'repl';
 
 export type MobileEventCard = 12;
 
@@ -35,8 +38,19 @@ export type EventCardProps = {
     groupName: string
 }
 
-function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant, index, groupName }: EventCardProps): JSX.Element {
+function EventCard(
+    {
+        handleFocus,
+        handleBlur,
+        focusedCardIndex,
+        event,
+        variant,
+        index,
+        groupName
+    }: EventCardProps
+): JSX.Element {
 
+    //TODO: use dayjs + utc dayjs plugin to reformat display value for event.starts_at
 
     return (
 
@@ -68,7 +82,7 @@ function EventCard({ handleFocus, handleBlur, focusedCardIndex, event, variant, 
 
                 <StyledCardContent>
                     <Typography gutterBottom variant="caption" component="div">
-                        {groupName}
+                        {event.starts_at}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                         {event.title}

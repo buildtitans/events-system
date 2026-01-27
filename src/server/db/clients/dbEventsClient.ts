@@ -2,8 +2,9 @@ import { Insertable, Kysely, Selectable } from "kysely";
 import { DB } from "../types/db";
 import type { Events } from "../types/db";
 import { compileEventsLayout } from "../../layout/compileEventsLayout";
-import { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
 import { EventSchemaType, NewEventInputSchemaType } from "@/src/schemas/eventSchema";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 export class EventsClient {
     constructor(private readonly db: Kysely<DB>) {
@@ -38,13 +39,16 @@ export class EventsClient {
 
         const { title, description, starts_at, group_id, authors } = newEvent;
 
+        const start_time = dayjs(starts_at).utc().format('YYYY-MM-DDTHH:mm:ss.sssZ');
+
+
         const parsed: Insertable<Events> = {
             title: title,
             description: description,
             img: "https://picsum.photos/800/450?random=2",
             group_id: group_id,
             authors: authors,
-            starts_at: starts_at,
+            starts_at: start_time,
             created_at: new Date(),
             tag: "placeholder tag",
         }

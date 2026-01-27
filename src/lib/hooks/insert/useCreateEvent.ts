@@ -36,6 +36,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
         img: null
     })
 
+    console.log(newEvent.starts_at)
 
     const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const val = e.target.value;
@@ -56,11 +57,10 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
     };
 
     const handleStartsAt = (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => {
-
-
+        const date = value?.toDate();
         setNewEvent((prev: NewEventType) => ({
             ...prev,
-            starts_at: value
+            starts_at: date
         }));
     };
 

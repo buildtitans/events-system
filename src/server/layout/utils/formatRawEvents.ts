@@ -11,6 +11,7 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
 
         const parsed_authors = typeof row.authors === "string" ? JSON.parse(row.authors) : row.authors
 
+
         return {
             id: String(row.id),
             img: row.img,

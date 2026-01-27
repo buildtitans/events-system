@@ -13,7 +13,7 @@ type AuthorsSchemaType = Static<typeof AuthorsSchema>
 const EventSchema = Type.Object({
     id: Type.String(),
     group_id: Type.String(),
-    starts_at: Type.String({ format: "date-time" }),
+    starts_at: Type.String(),
     img: Type.Union([Type.String(), Type.Null()]),
     tag: Type.Union([Type.String(), Type.Null()]),
     title: Type.String(),
@@ -25,7 +25,7 @@ const EventSchema = Type.Object({
 
 const NewEventInputSchema = Type.Object({
     group_id: Type.String(),
-    starts_at: Type.String({ format: "date-time" }),
+    starts_at: Type.String(),
     img: Type.Union([Type.String(), Type.Null()]),
     tag: Type.Union([Type.String(), Type.Null()]),
     title: Type.String(),
