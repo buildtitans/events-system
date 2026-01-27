@@ -2,32 +2,27 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
-import { useMemo, } from 'react';
-import { chunkGroupsIntoPages } from '@/src/lib/utils/helpers/chunkGroupsIntoPages';
 import GroupsPaginaton from '../box/pagination/groupsPagination';
 import { GroupsPage } from './groupsPage';
 import { AnimatePresence } from 'framer-motion';
+import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
+import { useRouter } from "next/navigation";
+import { useCallback } from 'react';
+import { GroupSchemaType } from '@/src/schemas/groupSchema';
 
 export type CategoryMap = Map<string, string>;
 
 export default function GroupsPagesContainer(): React.JSX.Element {
-    const groups = useSelector((s: RootState) => s.groups.communities);
-    const groupsPages = useMemo(() => {
-        return chunkGroupsIntoPages(groups);
-    }, [groups]);
-    const categories = useSelector((s: RootState) => s.categories.categories);
-    const currentPage = useSelector((s: RootState) => s.groups.currentPage);
-    const columns = groupsPages[currentPage].length > 1 ? 2 : 1;
-    const categoryMap: CategoryMap = useMemo(() => {
-        let map: CategoryMap = new Map();
-        categories.forEach((category) => {
-            map.set(category.id, category.name)
-        });
-        return map;
-    }, [categories]);
+    const { groupsPages, currentPage, categoryMap, columns } = useGroupPages();
+    const router = useRouter();
 
+    const handleGroupClicked = useCallback((slug: GroupSchemaType["slug"]) => {
+
+        return () => {
+            const route = `groups/${slug}`
+            router.push(route)
+        }
+    }, []);
 
     return (
         <div>
@@ -38,6 +33,7 @@ export default function GroupsPagesContainer(): React.JSX.Element {
                 {
                     (groupsPages[currentPage]) &&
                     <GroupsPage
+                        handleGroupClicked={handleGroupClicked}
                         key={groupsPages[currentPage][0].id}
                         page={groupsPages[currentPage]}
                         categoryMap={categoryMap}

@@ -1,17 +1,11 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
 import { Author } from '../author';
 import type { GroupSchemaType } from '@/src/schemas/groupSchema';
-
-
-
 
 
 const StyledTypography = styled(Typography)({
@@ -65,16 +59,26 @@ type GroupCardProps = {
     handleFocus: (index: number) => void,
     handleBlur: () => void,
     focusedCardIndex: number | null,
-    categoryName?: string | null
+    categoryName?: string | null,
+    handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void
 }
 
-
-function Group({ index, group, handleFocus, handleBlur, focusedCardIndex, categoryName }: GroupCardProps): React.JSX.Element {
+function Group({
+    index,
+    group,
+    handleFocus,
+    handleBlur,
+    focusedCardIndex,
+    categoryName,
+    handleGroupClicked
+}: GroupCardProps): React.JSX.Element {
 
 
     return (
         <Grid flexShrink={0} size={{ xs: 2, sm: 1, md: 1, lg: 1, xl: 1 }}>
             <Box
+                onClick={handleGroupClicked(group.slug)}
+                component={"div"}
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -111,4 +115,4 @@ function Group({ index, group, handleFocus, handleBlur, focusedCardIndex, catego
     )
 }
 
-export { Group };
+export default React.memo(Group);

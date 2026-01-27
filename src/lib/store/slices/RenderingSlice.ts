@@ -7,7 +7,9 @@ import { ValueOf } from "@trpc/server/unstable-core-do-not-import";
 
 type MainContentTabType = 'Groups' | 'Events'
 
-export type ActiveModal = 'new group' | null;
+export type ActiveModal = 'new group' | 'create event' | null;
+
+export type ActiveDrawer = 'create event' | null;
 
 type AlertType = {
     action: AlertMessagesType["action"],
@@ -24,12 +26,14 @@ type RenderingInitialState = {
     mainContent: MainContentTabType,
     modal: ActiveModal,
     snackbar: SnackbarStatusAndKind,
-    alert: AlertType
+    alert: AlertType,
+    drawer: ActiveDrawer
 };
 
 const initialState: RenderingInitialState = {
     mainContent: "Events",
     modal: null,
+    drawer: null,
     snackbar: {
         kind: null,
         status: 'idle'
@@ -50,6 +54,9 @@ const RenderingSlice = createSlice({
         showModal: (state: RenderingInitialState, action: PayloadAction<ActiveModal>) => {
             state.modal = action.payload;
         },
+        enqueueDrawer: (state: RenderingInitialState, action: PayloadAction<ActiveDrawer>) => {
+            state.drawer = action.payload
+        },
         enqueueSnackbar: (state: RenderingInitialState, action: PayloadAction<SnackbarStatusAndKind>) => {
             state.snackbar = action.payload;
         },
@@ -65,7 +72,8 @@ export const {
     chooseActiveTab,
     showModal,
     enqueueSnackbar,
-    enqueueAlert
+    enqueueAlert,
+    enqueueDrawer
 } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;

@@ -3,13 +3,15 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { fadeInOut } from "@/src/styles/motion/variants"
 import Grid from "@mui/material/Grid"
-import { Group } from "../box/cards/group"
+import Group from "@/src/components/ui/box/cards/group";
 import type { CategoryMap } from "./groupsPages"
-import { GroupsSchemaType } from "@/src/schemas/groupSchema"
+import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema"
 import { getCategoryName } from "@/src/lib/utils/rendering/getCategoryName"
 const MotionGrid = motion.create(Grid);
 
-export function GroupsPage({ page, categoryMap, columns }: { page: GroupsSchemaType, categoryMap: CategoryMap, columns: number }) {
+type GroupsPageProps = { page: GroupsSchemaType, categoryMap: CategoryMap, columns: number, handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void }
+
+export function GroupsPage({ page, categoryMap, columns, handleGroupClicked }: GroupsPageProps) {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
 
     const handleFocus = (index: number) => {
@@ -30,6 +32,7 @@ export function GroupsPage({ page, categoryMap, columns }: { page: GroupsSchemaT
             container spacing={2} columns={columns} sx={{ minHeight: 800 }}>
             {page.map((group, index) => (
                 <Group
+                    handleGroupClicked={handleGroupClicked}
                     key={group.id}
                     categoryName={getCategoryName(group.category_id, categoryMap)}
                     group={group}

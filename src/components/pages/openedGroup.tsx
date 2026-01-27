@@ -1,21 +1,76 @@
-import Stack from "@mui/material/Stack";
+"use client";
 import Box from "@mui/material/Box";
-import { JSX } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { JSX, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/lib/store";
+import { useMainContentPipelines } from "@/src/lib/hooks/rendering/useMainContentPipelines";
+import { usePathname } from "next/navigation";
+import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import Button from "@mui/material/Button";
+import { enqueueDrawer, showModal } from "@/src/lib/store/slices/RenderingSlice";
+import { useRecoverStore } from "@/src/lib/hooks/init/useRecoverData";
 
 
+export default function OpenedGroup(): JSX.Element {
+    useRecoverStore();
+    const dispatch = useDispatch<AppDispatch>();
+    const tab = useSelector((s: RootState) => s.rendering.mainContent);
+    const content = useMainContentPipelines(tab);
+    const groups = useSelector((s: RootState) => s.groups.communities);
+    const path = usePathname();
+    const group_id = useMemo(() => {
+        const slug = path.split('').slice(8).join('');
+
+        const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
+        return currentGroup?.id;
+    }, [path, groups])
 
 
-export default function OpenedGroup({ group_id }: { group_id: EventSchemaType["group_id"] }): JSX.Element {
-    const layoutSlots = useSelector((s: RootState) => s.events.eventPages);
+    const openEventDrawer = () => {
+        dispatch(enqueueDrawer('create event'));
+    }
 
-
+    console.log(group_id);
 
     return (
-        <Stack>
+        <Box
+            component={"section"}
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    height: 'auto',
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <Button onClick={openEventDrawer}>
+                    Create Event
+                </Button>
+            </Box>
 
-        </Stack>
+
+
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                {content}
+            </Box>
+
+
+
+        </Box>
     )
 }

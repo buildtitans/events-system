@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import type { MountStatus } from '@/src/lib/types/types';
 import { ReduxProvider } from '@/src/lib/store';
 import TopLayerHost from '../components/layers/topLayerHost';
+import { stat } from 'fs';
+import CreateEventDrawer from '../components/ui/drawers/createEventDrawer';
 
 const theme = createTheme({
     palette: {

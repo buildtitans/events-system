@@ -1,5 +1,5 @@
 "use client";
-import { CreateNewGroupHook } from "@/src/lib/hooks/useCreateNewGroup";
+import type { CreateNewGroupHook } from "@/src/lib/hooks/insert/useCreateNewGroup";
 import TextField from "@mui/material/TextField";
 import { JSX } from "react";
 

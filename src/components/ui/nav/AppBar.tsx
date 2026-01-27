@@ -47,7 +47,6 @@ export default function AppAppBar() {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
     useRecoverSession();
-    console.log(userKind)
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
