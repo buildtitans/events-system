@@ -6,6 +6,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 
+//TODO: create group dynamic route to pass group_id to the hook
 
 export type NewEventType = {
     title: EventSchemaType["title"] | null,

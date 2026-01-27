@@ -2,6 +2,7 @@ import { db } from "@/src/server/db";
 import type { Insertable } from "kysely";
 import type { Groups } from "../../types/db";
 import rawGroups from "@/src/server/db/seeds/data/placeholder-groups.json";
+import slugify from "slugify";
 
 export async function seedGroups(
     categoryBySlug: Record<string, string>,
@@ -11,21 +12,25 @@ export async function seedGroups(
     const groupBySlug: Record<string, string> = {};
 
     for (const group of rawGroups) {
-        const slug = `${group.name}-${group.location}`.toLowerCase().replace(/\s+/g, "-");
+        const nameAndLocation = `${group.name} ${group.location}`
+
+        const slug = slugify(nameAndLocation, {
+            replacement: "-",
+            lower: true,
+            trim: true
+        })
 
         const categorySlug = group.category.trim().toLowerCase();
 
         const categoryId = categoryBySlug[categorySlug];
 
-        const organizer_email = usersByEmail[group.organizer_email];
-
         const row: Insertable<Groups> = {
             name: group.name,
             description: group.description,
             location: group.location,
-            slug,
+            slug: slug,
             category_id: categoryId,
-            organizer_email: organizer_email
+            organizer_email: group.organizer_email
         };
 
         const inserted = await db
@@ -49,5 +54,10 @@ export async function seedGroups(
     }
 
     console.log(`Seeded ${rawGroups.length} groups`);
+
+    console.log({
+        Slugs: groupBySlug
+    });
+
     return groupBySlug;
 }
