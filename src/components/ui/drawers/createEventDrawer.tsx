@@ -15,11 +15,11 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import { useMemo } from "react";
 import type { GroupSchemaType } from "@/src/schemas/groupSchema";
+import NewEventForm from "../../sections/forms/newEventForm";
 
 
 export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
-    const tab = useSelector((s: RootState) => s.rendering.mainContent);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
     const group_id = useMemo(() => {
@@ -28,8 +28,6 @@ export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Elem
         const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
         return currentGroup?.id;
     }, [path, groups])
-
-    const { handleDescription, handleStartsAt, handleSubmit, handleTitle } = useCreateEvent(group_id ?? "");
 
     return (
         <Drawer
@@ -49,62 +47,8 @@ export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Elem
                 },
             }}
         >
-            <Stack
-                sx={{
-                    width: '400px',
-                    height: '100%',
-                    paddingX: '20px',
-                    gap: 6,
-                    paddingY: '100px'
 
-                }}
-            >
-                <Typography component={"h1"}>
-                    New Event
-                </Typography>
-                <FormControl sx={{
-                }}>
-                    <FormLabel>
-                        Event Name
-                    </FormLabel>
-                    <TextField
-                        sx={{
-                            backgroundColor: 'rgb(255, 255, 255, 0.2)',
-                            border: 1,
-                            borderColor: 'white',
-                            borderRadius: 2
-                        }}
-                    />
-                </FormControl>
-                <FormControl sx={{
-                }}>
-                    <FormLabel>
-                        Location
-                    </FormLabel>
-                    <TextField
-                        sx={{
-                            backgroundColor: 'rgb(255, 255, 255, 0.1)',
-                            border: 1,
-                            borderColor: 'white',
-                            borderRadius: 2
-                        }}
-                    />
-                </FormControl>
-                <FormControl sx={{
-                }}>
-                    <FormLabel>
-                        Starts at
-                    </FormLabel>
-                    <TextField
-                        sx={{
-                            backgroundColor: 'rgb(255, 255, 255, 0.1)',
-                            border: 1,
-                            borderColor: 'white',
-                            borderRadius: 2
-                        }}
-                    />
-                </FormControl>
-            </Stack>
+            <NewEventForm group_id={group_id ?? ""} />
         </Drawer>
     )
 }
