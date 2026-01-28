@@ -28,8 +28,6 @@ export type NewEventType = {
 }
 
 
-//TODO: pass the organizer_id from the group to trpcClient as well, to gaurd against new events being created by anybody that's not the organizer of the group
-
 export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);

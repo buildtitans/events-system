@@ -63,5 +63,18 @@ export const authRouter = router({
                 ctx.user = { id: session.user_id, role: 'user' };
 
                 return session;
-            })
+            }),
+    //Read-only session lookup
+    session: publicProcedure.mutation(async ({ ctx }) => {
+
+        const token = ctx.req.cookies.session;
+
+        const session = await ctx.api.auth.getSession(token);
+
+        return session
+
+    })
+
+
+
 })

@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
-export const useGetGroupEvents = (group_id: EventSchemaType["group_id"]) => {
+export const useGetGroupEvents = (group_id: EventSchemaType["group_id"] | null | undefined) => {
 
-    console.log(group_id);
 
     useEffect(() => {
+        if (!group_id) return;
+
         const executeGetGroupEvents = async () => {
             const result = await trpcClient.events.groupEvents.mutate(group_id)
             console.log({
