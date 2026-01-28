@@ -7,5 +7,7 @@ export function parseInputSchema<T extends TSchema>(data: unknown, schema: T): S
 
     const parsed = parser(data);
 
+    console.log(parsed)
+
     return parsed;
 }

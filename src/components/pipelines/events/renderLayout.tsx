@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { EventCard, type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
+import EventCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { useSelector } from "react-redux";

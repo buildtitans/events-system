@@ -5,6 +5,8 @@ import { compileEventsLayout } from "../../layout/compileEventsLayout";
 import { EventSchemaType, NewEventInputSchemaType } from "@/src/schemas/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
+dayjs.extend(utc);
 
 export class EventsClient {
     constructor(private readonly db: Kysely<DB>) {
@@ -18,6 +20,14 @@ export class EventsClient {
         return layout;
     }
 
+    async getGroupEvents(group_id: Selectable<Events>["group_id"]): Promise<PaginatedLayoutSchemaType | undefined> {
+
+        const raw = await this.getRawEventsFromGroup(group_id);
+        if (!Array.isArray(raw) || (raw.length === 0)) return undefined;
+        const eventsFromGroup = compileEventsLayout(raw)
+        return eventsFromGroup
+    }
+
     async getRawEvents(): Promise<Selectable<Events>[]> {
         return this.db
             .selectFrom("events")
@@ -25,6 +35,15 @@ export class EventsClient {
             .orderBy("created_at", "desc")
             .execute();
     }
+
+    async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
+
+        const raw = this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
+
+        return raw;
+
+    }
+
 
 
     async createNewEvent(newEvent: NewEventInputSchemaType): Promise<EventSchemaType | null> {
@@ -37,20 +56,22 @@ export class EventsClient {
 
     toInsertableEvent(newEvent: NewEventInputSchemaType): Insertable<Events> {
 
-        const { title, description, starts_at, group_id, authors } = newEvent;
+        const { title, description, starts_at, group_id, authors, meeting_location } = newEvent;
 
         const start_time = dayjs(starts_at).utc().format('YYYY-MM-DDTHH:mm:ss.sssZ');
 
+        const stringified_authors = JSON.stringify(authors);
 
         const parsed: Insertable<Events> = {
             title: title,
             description: description,
             img: "https://picsum.photos/800/450?random=2",
             group_id: group_id,
-            authors: authors,
+            authors: stringified_authors,
             starts_at: start_time,
             created_at: new Date(),
             tag: "placeholder tag",
+            meeting_location: meeting_location
         }
 
         return parsed;
@@ -82,7 +103,8 @@ export class EventsClient {
             group_id: raw.group_id,
             authors: parsed_authors,
             starts_at: raw.starts_at.toISOString(),
-            img: raw.img
+            img: raw.img,
+            meeting_location: raw.meeting_location
         }
     }
 

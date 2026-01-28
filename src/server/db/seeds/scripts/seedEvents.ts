@@ -20,7 +20,8 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
             img: event.img ?? null,
             authors: JSON.stringify(event.authors),
             group_id: groupID,
-            starts_at: event.starts_at
+            starts_at: event.starts_at,
+            meeting_location: event.meeting_location
         };
         const inserted = await db
             .insertInto("events")

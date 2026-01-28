@@ -13,13 +13,29 @@ export default function StartTime({ handleStartsAt }: { handleStartsAt: CreateEv
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
-                closeOnSelect={true}
+                label="Starts at"
                 onChange={(value, context) => handleStartsAt(value, context)}
-                sx={{
-                    backgroundColor: 'rgb(255, 255, 255, 0.2)',
-                    border: 1,
-                    borderColor: 'white',
-                    borderRadius: 2
+
+                slotProps={{
+                    textField: {
+                        sx: {
+                            // 1. Style the box corners
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderRadius: '12px',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                            },
+                            // 2. Style the label root
+                            "& .MuiInputLabel-root": {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                            },
+                            // 3. Optional: Style label background when it shrinks (floats)
+                            "& .MuiInputLabel-shrink": {
+                                backgroundColor: 'black',
+                                padding: '0 4px',
+                                borderRadius: '4px',
+                            }
+                        }
+                    }
                 }}
             />
         </LocalizationProvider>

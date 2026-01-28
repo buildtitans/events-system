@@ -37,6 +37,7 @@ export interface Events {
   group_id: string;
   id: Generated<string>;
   img: string | null;
+  meeting_location: string;
   starts_at: Timestamp;
   tag: string;
   title: string;

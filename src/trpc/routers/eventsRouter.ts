@@ -1,4 +1,4 @@
-import { NewEventInputSchema, NewEventInputSchemaType, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
+import { GroupIdSchemaType, GroupIdSchemaValidator, NewEventInputSchema, NewEventInputSchemaType, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "../init";
 
@@ -17,6 +17,17 @@ export const eventsRouter = router({
             const user_id = ctx.user?.id;
             if (!user_id) return null;
             return await ctx.api.events.createNewEvent(input)
+        }),
+
+    groupEvents: publicProcedure
+        .input(typeboxInput<GroupIdSchemaType>(GroupIdSchemaValidator))
+        .mutation(async ({ ctx, input }) => {
+
+            const user_id = ctx.user?.id;
+            if (!user_id || (!input)) return null;
+
+            return await ctx.api.events.getGroupEvents(input);
+
         })
 
 });

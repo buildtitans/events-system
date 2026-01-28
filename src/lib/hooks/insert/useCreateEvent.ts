@@ -5,25 +5,30 @@ import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema"
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
-import type { PickerValue, } from "@mui/x-date-pickers/internals";
 import { Dayjs } from "dayjs";
-import { PickerValidDate } from "@mui/x-date-pickers";
 import type { PickerChangeHandlerContext, DateTimeValidationError } from "@mui/x-date-pickers";
 
 export type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
     handleTitle: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     handleDescription: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-
+    handleLocation: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    schedule: (e: React.FormEvent<HTMLFormElement>) => void,
 }
 
 export type NewEventType = {
     title: EventSchemaType["title"] | null,
     description: EventSchemaType["description"] | null,
-    starts_at: any,
+    starts_at: string | null,
     group_id: EventSchemaType["group_id"] | null,
-    img: EventSchemaType["img"] | null
+    img: EventSchemaType["img"],
+    meeting_location: EventSchemaType["meeting_location"] | null,
+    authors: EventSchemaType["authors"] | null,
+    tag: EventSchemaType["tag"]
 }
+
+
+//TODO: pass the organizer_id from the group to trpcClient as well, to gaurd against new events being created by anybody that's not the organizer of the group
 
 export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -33,16 +38,26 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
         description: null,
         starts_at: null,
         group_id: group_id,
-        img: null
+        img: "https://picsum.photos/800/450?random=45",
+        meeting_location: null,
+        authors: [{ name: 'Jon Doe', avatar: 'meh' }],
+        tag: null
     })
 
-    console.log(newEvent.starts_at)
 
     const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const val = e.target.value;
         setNewEvent((prev: NewEventType) => ({
             ...prev,
             title: val
+        }))
+    }
+
+    const handleLocation = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const val = e.target.value;
+        setNewEvent((prev: NewEventType) => ({
+            ...prev,
+            meeting_location: val
         }))
     }
 
@@ -57,10 +72,11 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
     };
 
     const handleStartsAt = (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => {
-        const date = value?.toDate();
+        const date = value?.toISOString();
+        console.log(typeof date);
         setNewEvent((prev: NewEventType) => ({
             ...prev,
-            starts_at: date
+            starts_at: date ?? null
         }));
     };
 
@@ -79,7 +95,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
 
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         dispatch(enqueueSnackbar({ kind: 'newEvent', status: 'pending' }))
         const result = await scheduleEvent(newEvent);
@@ -93,5 +109,5 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
         }
     }, []);
 
-    return { handleSubmit, handleTitle, handleDescription, handleStartsAt }
+    return { schedule, handleTitle, handleDescription, handleStartsAt, handleLocation }
 }

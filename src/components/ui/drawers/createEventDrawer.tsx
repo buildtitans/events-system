@@ -35,15 +35,16 @@ export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Elem
             open={open}
             onClose={() => dispatch(enqueueDrawer(null))}
             transitionDuration={{ enter: 300, exit: 250 }}
+
             sx={{
-                width: 'auto',
                 height: '100%',
             }}
 
             PaperProps={{
+                elevation: 4,
                 sx: {
-                    width: 400,
-                    bgcolor: "black",
+                    width: 500,
+                    backgroundColor: 'black'
                 },
             }}
         >

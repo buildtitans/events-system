@@ -1,4 +1,5 @@
 "use client"
+import React, { useMemo } from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -7,8 +8,9 @@ import { Author } from '@/src/components/ui/box/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 import dayjs from 'dayjs';
-import { utc } from 'dayjs';
-import { start } from 'repl';
+import utc from 'dayjs/plugin/utc';
+
+const dayjsUTC = dayjs.extend(utc);
 
 export type MobileEventCard = 12;
 
@@ -49,6 +51,11 @@ function EventCard(
         groupName
     }: EventCardProps
 ): JSX.Element {
+    const scheduled_at = useMemo(() => {
+        const utcDate = dayjs(event.starts_at).utc().toDate().toLocaleDateString();
+        const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
+        return string_date;
+    }, [event])
 
     //TODO: use dayjs + utc dayjs plugin to reformat display value for event.starts_at
 
@@ -82,7 +89,7 @@ function EventCard(
 
                 <StyledCardContent>
                     <Typography gutterBottom variant="caption" component="div">
-                        {event.starts_at}
+                        {groupName}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                         {event.title}
@@ -91,10 +98,10 @@ function EventCard(
                         {event.description}
                     </StyledTypography>
                 </StyledCardContent>
-                <Author authors={event.authors} />
+                <Author authors={event.authors} scheduled_at={scheduled_at} />
             </StyledCard>
         </Grid>
     )
 }
 
-export { EventCard };
+export default React.memo(EventCard);

@@ -19,6 +19,7 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
             title: row.title,
             description: row.description,
             starts_at: row.starts_at.toISOString(),
+            meeting_location: row.meeting_location,
             group_id: row.group_id,
             authors: parsed_authors,
             created_at: row.created_at.toISOString(),

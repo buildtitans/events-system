@@ -1,10 +1,11 @@
+import { EventSchemaType } from '@/src/schemas/eventSchema';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { JSX } from 'react';
 
-function Author({ authors }: { authors: { name: string; avatar: string }[] }): JSX.Element | null {
+function Author({ authors, scheduled_at }: { authors: { name: string; avatar: string }[], scheduled_at: EventSchemaType["starts_at"] }): JSX.Element | null {
 
     return (
         <Box
@@ -34,7 +35,7 @@ function Author({ authors }: { authors: { name: string; avatar: string }[] }): J
                     {authors.map((author) => author.name).join(', ')}
                 </Typography>
             </Box>
-            <Typography variant="caption">July 14, 2021</Typography>
+            <Typography variant="caption">{scheduled_at}</Typography>
         </Box>
     );
 }
