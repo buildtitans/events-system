@@ -8,9 +8,30 @@ import type {
 import { GroupMembersSchemaType, GroupMembersSchemaValidator } from "@/src/schemas/groupMembersSchema";
 dayjs.extend(utc);
 
+type InsertableMember = Pick<GroupMembersSchemaType, "group_id" | "user_id">
+
+
 export class GroupMembersClient {
 
     constructor(private readonly db: Kysely<DB>) { }
+
+    async addOrganizer(organizer: InsertableMember): Promise<GroupMembersSchemaType> {
+
+        const inserted = await this.db.insertInto("group_members").values({
+            group_id: organizer.group_id,
+            user_id: organizer.user_id,
+            role: "organizer"
+        })
+            .onConflict((c) =>
+                c.columns(["group_id", "user_id"]).doUpdateSet({ role: "organizer" })
+            )
+            .returningAll()
+            .executeTakeFirstOrThrow()
+
+        const parsedOrganizer = this.parseNewRawMember(inserted);
+
+        return parsedOrganizer;
+    }
 
     async addNewMember(newMember: Pick<GroupMembersSchemaType, "group_id" | "user_id">): Promise<GroupMembersSchemaType | null> {
 

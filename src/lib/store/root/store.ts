@@ -3,7 +3,8 @@ import EventsSlice from '@/src/lib/store/slices/EventsSlice';
 import GroupsSlice from "@/src/lib/store/slices/GroupsSlice"
 import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
 import AuthSlice from "@/src/lib/store/slices/AuthSlice";
-import CategoriesSlice from "@/src/lib/store/slices/CategorySlice"
+import CategoriesSlice from "@/src/lib/store/slices/CategorySlice";
+import GroupMembersSlice from '@/src/lib/store/slices/GroupMembersSlice';
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         groups: GroupsSlice,
         rendering: RenderingSlice,
         auth: AuthSlice,
-        categories: CategoriesSlice
+        categories: CategoriesSlice,
+        groupMembers: GroupMembersSlice
     }
 });
 

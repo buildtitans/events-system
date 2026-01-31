@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
+import { EventSchemaType, NewEventInputSchema, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
@@ -33,7 +33,15 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         meeting_location: null,
         authors: [{ name: 'Jon Doe', avatar: 'meh' }],
         tag: null
-    })
+    });
+    const isSubmittable = useMemo(() => {
+        const filledOutForm = (
+            !!newEvent.title &&
+            !!newEvent.starts_at &&
+            !!newEvent.group_id
+        );
+        return !filledOutForm;
+    }, [newEvent]);
 
 
     const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -108,6 +116,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         handleTitle,
         handleDescription,
         handleStartsAt,
-        handleLocation
+        handleLocation,
+        isSubmittable
     }
 }

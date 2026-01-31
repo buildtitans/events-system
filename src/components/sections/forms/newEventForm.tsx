@@ -6,20 +6,22 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import StartTime from "../inputs/event/startTime";
 import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
-import { useForm, Controller, Form } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import type { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
 
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
-    const { control, handleSubmit } = useForm<NewEventType>()
+    const { control } = useForm<NewEventType>()
     const {
         handleDescription,
         handleStartsAt,
         schedule,
         handleTitle,
         handleLocation,
+        isSubmittable
     } = useCreateEvent(group_id ?? "");
+
 
     return (
         <Stack
@@ -172,7 +174,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     )}
                 />
                 <FormControl>
-                    <Button variant="contained" type="submit" startIcon={<AddIcon />}>Schedule Event</Button>
+                    <Button disabled={isSubmittable} variant="contained" type="submit" startIcon={<AddIcon />}>Schedule Event</Button>
                 </FormControl>
 
 

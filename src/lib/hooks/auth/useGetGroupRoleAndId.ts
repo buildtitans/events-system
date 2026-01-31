@@ -8,8 +8,8 @@ import { RootState } from "@/src/lib/store";
 import { usePathname } from "next/navigation";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { getIdsBySlug } from "../../utils/parsing/getIdsBySlug";
-import type { UserInGroupRoleType } from "../../types/types";
-import type { GetGroupRoleAndIdHook } from "../../types/hooks/types";
+import type { GetGroupRoleAndIdHook } from "@/src/lib/types/hooks/types";
+import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 
 export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
     const [roleType, setRoleType] = useState<UserInGroupRoleType>('anonymous');

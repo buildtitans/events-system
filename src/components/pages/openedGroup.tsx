@@ -6,15 +6,15 @@ import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import GroupOranizerOnly from "../sections/group/GroupOrganizerOnly";
 import { loadEventsPipeline } from "../pipelines/events/loadEventsPipeline";
 import JoinGroup from "../ui/buttons/joinGroupButton";
-import { useGetGroupMembers } from "@/src/lib/hooks/init/useGetGroupMembers";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type OpenedGroupProps = {
-    groupID: string | null | undefined, roleType: UserInGroupRoleType
+    groupID: string | null | undefined, roleType: UserInGroupRoleType, members: GroupMembersSchemaType[]
 }
 
-export default function OpenedGroup({ groupID, roleType }: OpenedGroupProps): JSX.Element {
+export default function OpenedGroup({ groupID, roleType, members }: OpenedGroupProps): JSX.Element {
     const { groupEvents, status } = useGetGroupEvents(groupID);
-    const { members } = useGetGroupMembers(groupID);
+
 
     return (
         <Box
@@ -31,6 +31,7 @@ export default function OpenedGroup({ groupID, roleType }: OpenedGroupProps): JS
             <JoinGroup
                 members={members}
                 group_id={groupID}
+                roleType={roleType}
             />
 
             <GroupOranizerOnly

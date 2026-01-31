@@ -20,6 +20,14 @@ export const groupsRouter = router({
 
             const group = await ctx.api.groups.createGroup(input, user_id);
 
+            if (group && group.organizer_id) {
+                const { id, organizer_id } = group;
+
+                await ctx.api.groupMembers.addOrganizer({ user_id: organizer_id, group_id: id });
+
+            }
+
+
             return group
         })
 })
