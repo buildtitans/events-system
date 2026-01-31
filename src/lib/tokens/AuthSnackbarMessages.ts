@@ -24,6 +24,12 @@ const snackbarMessages: SnackbarMessages = {
         pending: "Scheduling Event...",
         success: "Event Scheduled!",
         failed: "Failed to schedule event"
+    },
+    joiningGroup: {
+        idle: "",
+        pending: "Joining group...",
+        success: "Joined group!",
+        failed: "Failed to join this group"
     }
 };
 

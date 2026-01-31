@@ -18,6 +18,7 @@ type SnackbarMessages = {
     login: Record<RequestStatus, string>;
     newGroup: Record<RequestStatus, string>;
     newEvent: Record<RequestStatus, string>;
+    joiningGroup: Record<RequestStatus, string>
 };
 
 
