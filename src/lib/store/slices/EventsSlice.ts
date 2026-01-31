@@ -5,7 +5,7 @@ type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
 type GroupNameByGroupID = Record<string, string>;
 
-type EventsPages = Array<LayoutSlotSchemaType[]>;
+export type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 type EventCategoryState = {
     displayed: PresentedCategory,

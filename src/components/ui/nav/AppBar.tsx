@@ -9,9 +9,7 @@ import { logout } from '@/src/lib/store/slices/AuthSlice';
 import { enqueueSnackbar } from '@/src/lib/store/slices/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import { useRecoverSession } from '@/src/lib/hooks/auth/useRecoverSession';
-import NavLinks from './global/navBar';
 import NavActions from './global/navActions';
-import { Search } from '@/src/features/search/search';
 import NavBar from './global/navBar';
 
 
@@ -51,14 +49,14 @@ export default function AppAppBar() {
     return (
         <AppBar
             component={"nav"}
-            position="fixed"
+            position="absolute"
             enableColorOnDark
             sx={{
                 boxShadow: 0,
                 bgcolor: 'transparent',
                 backgroundImage: 'none',
                 mt: 'calc(var(--template-frame-height, 0px) + 20px)',
-                py: 1
+                py: 1,
             }}
         >
             <Container maxWidth={"lg"} disableGutters

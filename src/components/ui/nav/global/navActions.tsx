@@ -48,7 +48,6 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
                         variant="contained"
                         size="medium"
                         sx={{
-                            paddingX: 0.8,
                             borderRadius: 999,
                             ':hover': {
                                 bgcolor: 'rgba(255, 255, 255, 0.1)',
@@ -68,7 +67,7 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
                             transition: 'all 0.3s ease'
                         }
                     }}
-                    color="info" variant="contained" size="small">
+                    color="info" variant="contained" size="medium">
                     Sign up
                 </Button>}
                 {(userKind === "authenticated") &&

@@ -28,7 +28,8 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         description: null,
         starts_at: null,
         group_id: group_id,
-        img: "https://picsum.photos/800/450?random=45",
+        img: `https://picsum.photos/800/450?random=${Date.now()}`
+        ,
         meeting_location: null,
         authors: [{ name: 'Jon Doe', avatar: 'meh' }],
         tag: null

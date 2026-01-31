@@ -7,15 +7,14 @@ import { RootState } from '@/src/lib/store';
 import { renderLayout } from '@/src/components/pipelines/events/renderLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
+import { EventsPages } from '@/src/lib/store/slices/EventsSlice';
 const MotionGrid = motion(Grid);
 
 
-function EventsLayout(): JSX.Element | null {
-    const eventsPages = useSelector((s: RootState) => s.events.eventPages);
+function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Element | null {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
-    const page = eventsPages?.[currentPage];
-    if (!page) return null;
+    const page = eventsPages?.[currentPage] ?? [];
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);
@@ -44,7 +43,7 @@ function EventsLayout(): JSX.Element | null {
                     contain: "layout paint style",
                 }}
             >
-                {renderLayout(eventsPages[currentPage], handleBlur, handleFocus, focusedCardIndex)}
+                {renderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
             </MotionGrid>
         </AnimatePresence>
 

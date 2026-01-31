@@ -4,8 +4,9 @@ import { LinearIndeterminate } from "@/src/components/ui/feedback/"
 import { NoEventsFound } from "../../ui/box/noEventsFound";
 import EventsLayout from "@/src/components/sections/events/eventsLayout";
 import { JSX } from "react";
+import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
 
-const loadEventsPipeline = (eventLoadingStatus: LoadingStatus): JSX.Element => {
+const loadEventsPipeline = (eventLoadingStatus: LoadingStatus, eventsPages: EventsPages): JSX.Element => {
 
     switch (eventLoadingStatus) {
         case "pending":
@@ -13,7 +14,9 @@ const loadEventsPipeline = (eventLoadingStatus: LoadingStatus): JSX.Element => {
                 <LinearIndeterminate />
             )
         case "idle":
-            return <EventsLayout />
+            return <EventsLayout
+                eventsPages={eventsPages}
+            />
 
         case "failed":
             return <NoEventsFound />

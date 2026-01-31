@@ -1,8 +1,10 @@
 import type { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
-import type { UserInGroupRoleType, LoadingStatus } from "@/src/lib/types/tokens/types";
+import type { UserInGroupRoleType, LoadingStatus, RequestStatus } from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
+import { LayoutSlotSchemaArrayType } from "@/src/schemas/layoutSlotSchema";
+import { EventsPages } from "../../store/slices/EventsSlice";
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -27,9 +29,16 @@ type UsePopulateEventsListHook = {
 };
 
 
+type GetGroupEventsHook = {
+    groupEvents: EventsPages,
+    status: LoadingStatus
+};
+
+
 export type {
     GetGroupRoleAndIdHook,
     CreateEventHook,
     UseLoginHook,
-    UsePopulateEventsListHook
+    UsePopulateEventsListHook,
+    GetGroupEventsHook
 }

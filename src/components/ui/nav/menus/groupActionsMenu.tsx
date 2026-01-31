@@ -82,6 +82,10 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
                 disableElevation
                 onClick={(e) => handleMenuOpen(e)}
                 endIcon={<KeyboardArrowDownIcon />}
+                sx={{
+                    borderRadius: 999,
+                    color: 'black',
+                }}
             >
                 Manage Group
             </Button>

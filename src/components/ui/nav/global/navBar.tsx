@@ -16,6 +16,8 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { UserKind } from '@/src/lib/store/slices/AuthSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import { Search } from '@/src/features/search/search';
+import { HomeIcon } from '../../icons/CustomIcons';
+import HomeButton from '../../buttons/homeButton';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     display: 'flex',
@@ -55,13 +57,7 @@ export default function NavBar({ userKind, handleSignout, handleLogoutResponse }
             mr: 'auto',
             minWidth: { xs: '400px', md: '600px' }
         }}>
-            <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-                <Link href={'/'}>
-                    <SitemarkIcon />
-                </Link>
-
-            </Box>
-
+            <HomeButton />
             <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
                 <ColorModeIconDropdown size="medium" />
                 <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>

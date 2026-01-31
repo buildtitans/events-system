@@ -7,17 +7,18 @@ import { useMainContentPipelines } from "@/src/lib/hooks/rendering/useMainConten
 import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
 import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import GroupOranizerOnly from "../sections/group/GroupOrganizerOnly";
+import GroupsPagesContainer from "../sections/group/groupsPages";
+import EventsLayout from "../sections/events/eventsLayout";
+import { group } from "console";
+import { loadEventsPipeline } from "../pipelines/events/loadEventsPipeline";
 
 type OpenedGroupProps = {
     groupID: string | null | undefined, roleType: UserInGroupRoleType
 }
 
 export default function OpenedGroup({ groupID, roleType }: OpenedGroupProps): JSX.Element {
-    useGetGroupEvents(groupID);
-    const tab = useSelector((s: RootState) => s.rendering.mainContent);
-    const content = useMainContentPipelines(tab);
+    const { groupEvents, status } = useGetGroupEvents(groupID);
 
-    //TODO: display only the events relevant to the opened group, endoint to get events associated with the current group is already in place
 
     return (
         <Box
@@ -26,6 +27,8 @@ export default function OpenedGroup({ groupID, roleType }: OpenedGroupProps): JS
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 4,
+                mt: 10,
+
             }}
         >
             <GroupOranizerOnly
@@ -41,11 +44,8 @@ export default function OpenedGroup({ groupID, roleType }: OpenedGroupProps): JS
                     justifyContent: 'center'
                 }}
             >
-                {content}
+                {loadEventsPipeline(status, groupEvents)}
             </Box>
-
-
-
         </Box>
     )
 }
