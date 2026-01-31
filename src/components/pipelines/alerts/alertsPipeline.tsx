@@ -1,5 +1,5 @@
-import { AlertResult } from "../../ui/feedback/alerts/Alerts";
-import { createAlertMessages } from "@/src/lib/utils/rendering/createAlertMessages";
+import { AlertResult } from "@/src/components/ui/feedback/alerts/Alerts";
+import { createAlertMessages } from "@/src/lib/utils/helpers/createAlertMessages";
 import { AlertType } from "@/src/lib/store/slices/RenderingSlice";
 
 const alertsPipeline = (alert: AlertType) => {

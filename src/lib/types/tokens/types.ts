@@ -1,8 +1,17 @@
-type MountStatus = "active" | "idle";
+type MountStatus =
+    "active"
+    | "idle";
 
-type LoadingStatus = "idle" | "pending" | "failed";
+type LoadingStatus =
+    "idle"
+    | "pending"
+    | "failed";
 
-type RequestStatus = "idle" | "success" | "pending" | "failed";
+type RequestStatus =
+    "idle"
+    | "success"
+    | "pending"
+    | "failed";
 
 type SnackbarMessages = {
     logout: Record<RequestStatus, string>;
@@ -18,7 +27,12 @@ type UserInGroupRoleType =
     | 'organizer';
 
 
-type AlertKind = "success" | "error"
+
+
+type AlertKind =
+    "success"
+    | "error";
+
 
 type AlertMessages = {
     createGroup: Record<AlertKind, string>,
@@ -32,9 +46,21 @@ type AlertMessagesType =
         [A in keyof AlertMessages]:
         {
             [K in keyof AlertMessages[A]]: { action: A, kind: K, message: AlertMessages[A][K] }
-
         }[keyof AlertMessages[A]]
     }[keyof AlertMessages];
+
+// —> without this indexed access([keyof AlertMessages] seen on line 52 above), 
+// we still have an *object*, who'se *values* are unions
+//  i.e. it looks like the example below: 
+//     {
+//       createGroup:   (union of createGroup alerts)
+//       signup:        (union of signup alerts)
+//       createEvent:   (union of createEvent alerts)
+//     }
+// We want *one* union, not a keyed object.
+// `keyof AlertMessages` gives the key union ("createGroup" | "signup" | "createEvent").
+// Indexing with that union extracts values and unions them:
+//  T[K1 | K2 | K3] => T[K1] | T[K2] | T[K3]
 
 
 export type {

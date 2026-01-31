@@ -1,5 +1,8 @@
-import type { SnackbarMessages, RequestStatus } from "@/src/lib/types/tokens/types";
-import { snackbarMessages } from "../tokens/AuthSnackbarMessages";
+import type {
+    SnackbarMessages,
+    RequestStatus
+} from "@/src/lib/types/tokens/types";
+import { snackbarMessages } from "@/src/lib/tokens/AuthSnackbarMessages";
 
 function createSnackbarMessages<
     K extends keyof SnackbarMessages

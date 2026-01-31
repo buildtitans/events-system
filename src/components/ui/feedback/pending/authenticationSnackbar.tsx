@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { fadeInOut } from "@/src/styles/motion/variants";
 import Snackbar from "@mui/material/Snackbar";
@@ -7,7 +6,7 @@ import { JSX, useEffect } from "react";
 import type { RequestStatus, SnackbarMessages } from "@/src/lib/types/tokens/types";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { createSnackbarMessages } from "@/src/lib/utils/createSnackbarMessage";
+import { createSnackbarMessages } from "@/src/lib/utils/helpers/createSnackbarMessage";
 import { enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 
 const MotionSnackbar = motion(Snackbar);
