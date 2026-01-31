@@ -99,7 +99,7 @@ export class AuthClient {
 
 
     async getSession(
-        token?: string
+        token: string
     ): Promise<StoredSession | undefined> {
 
         if (!token) return undefined;

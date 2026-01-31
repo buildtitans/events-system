@@ -1,15 +1,9 @@
 "use client"
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import Stack from "@mui/material/Stack";
 import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";
-import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import FormLabel from "@mui/material/FormLabel";
-import Typography from "@mui/material/Typography";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
-import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";

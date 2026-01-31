@@ -54,6 +54,8 @@ export const authRouter = router({
 
                 const token = ctx.req.cookies.session;
 
+                if (!token) return null;
+
                 const session = await ctx.api.auth.getSession(token);
 
                 if (!session) {
@@ -64,12 +66,14 @@ export const authRouter = router({
 
                 return session;
             }),
-    //Read-only session lookup
+
     session: publicProcedure.mutation(async ({ ctx }) => {
 
         const token = ctx.req.cookies.session;
 
-        const session = await ctx.api.auth.getSession(token);
+        if (!token) return null;
+
+        const session = await ctx.api.auth.getSession(token)
 
         return session
 

@@ -15,8 +15,9 @@ export const groupsRouter = router({
         .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
         .mutation(async ({ ctx, input }) => {
             const user_id = ctx.user?.id;
-            console.log("*************** NO USER, RETURNIG EARLY ********************")
+
             if (!user_id) return null;
+
             const group = await ctx.api.groups.createGroup(input, user_id);
 
             return group

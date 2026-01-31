@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import type { MountStatus } from '@/src/lib/types/types';
 import { ReduxProvider } from '@/src/lib/store';
 import TopLayerHost from '../components/layers/topLayerHost';
+import Footer from '../components/sections/footer/footer';
 
 const theme = createTheme({
     palette: {
@@ -52,6 +53,7 @@ export default function Providers({
                             {children}
                         </Container>
                     }
+                    <Footer />
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

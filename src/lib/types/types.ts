@@ -1,5 +1,8 @@
 import type { NextResponse } from "next/server";
 import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import type { Dayjs } from "dayjs";
+import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
+import type { DateTimeValidationError } from "@mui/x-date-pickers";
 
 type HealthCheck = { ok: boolean };
 
@@ -28,7 +31,8 @@ type AlertKind = "success" | "error"
 
 type AlertMessages = {
     createGroup: Record<AlertKind, string>,
-    signup: Record<AlertKind, string>
+    signup: Record<AlertKind, string>,
+    createEvent: Record<AlertKind, string>
 }
 
 type AlertMessagesType =
@@ -45,6 +49,14 @@ type UseLoginHook = {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 };
 
+type CreateEventHook = {
+    handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
+    handleTitle: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    handleDescription: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    handleLocation: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    schedule: (e: React.FormEvent<HTMLFormElement>) => void,
+}
+
 type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 export type {
@@ -58,5 +70,6 @@ export type {
     UseLoginHook,
     RequestStatus,
     SnackbarMessages,
-    AlertMessages
+    AlertMessages,
+    CreateEventHook
 };

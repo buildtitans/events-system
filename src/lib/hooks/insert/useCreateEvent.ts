@@ -3,18 +3,11 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 import { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext, DateTimeValidationError } from "@mui/x-date-pickers";
-
-export type CreateEventHook = {
-    handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
-    handleTitle: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    handleDescription: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    handleLocation: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    schedule: (e: React.FormEvent<HTMLFormElement>) => void,
-}
+import type { CreateEventHook } from "../../types/types";
 
 export type NewEventType = {
     title: EventSchemaType["title"] | null,
@@ -25,10 +18,9 @@ export type NewEventType = {
     meeting_location: EventSchemaType["meeting_location"] | null,
     authors: EventSchemaType["authors"] | null,
     tag: EventSchemaType["tag"]
-}
+};
 
-
-export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
+export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEventHook => {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
     const [newEvent, setNewEvent] = useState<NewEventType>({
@@ -71,7 +63,6 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
 
     const handleStartsAt = (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => {
         const date = value?.toISOString();
-        console.log(typeof date);
         setNewEvent((prev: NewEventType) => ({
             ...prev,
             starts_at: date ?? null
@@ -80,8 +71,12 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
 
 
     const handleScheduleResult = (result: EventSchemaType | null) => {
+
         timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: 'newEvent', status: result ? 'success' : 'failed' }))
+            dispatch(enqueueSnackbar({ kind: null, status: 'idle' }))
+            dispatch(enqueueAlert({ kind: result ? 'success' : 'error', action: 'createEvent' }))
+            dispatch(enqueueDrawer(null))
+
             timerRef.current = null;
         }, 1200);
     }
@@ -107,5 +102,11 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]) => {
         }
     }, []);
 
-    return { schedule, handleTitle, handleDescription, handleStartsAt, handleLocation }
+    return {
+        schedule,
+        handleTitle,
+        handleDescription,
+        handleStartsAt,
+        handleLocation
+    }
 }

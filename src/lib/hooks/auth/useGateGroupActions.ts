@@ -54,9 +54,9 @@ export const useGateGroupActions = () => {
             const session = await trpcClient.auth.session.mutate();
             if (!session) return;
 
-            const { id } = session;
+            const { user_id } = session;
 
-            if (id === organizerId) {
+            if (user_id === organizerId) {
                 setRoleType('organizer')
             }
         };

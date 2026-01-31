@@ -35,7 +35,6 @@ export class GroupsClient {
     }
 
     async createGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Promise<GroupSchemaType | null> {
-        console.log("************************* createGroup() hit *********************** ")
 
         const insertableGroup = this.parseNewGroup(newGroup, organizer_id)
         const inserted = await this.insertNewGroup(insertableGroup);

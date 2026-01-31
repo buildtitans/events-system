@@ -16,7 +16,7 @@ export function Search() {
                     flexGrow: 1,
                     transition: 'ease-in-out',
                     transitionDuration: '200ms',
-                    borderRadius: 2,
+                    borderRadius: 999,
 
                 }}
                 startAdornment={

@@ -83,7 +83,7 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
                 onClick={(e) => handleMenuOpen(e)}
                 endIcon={<KeyboardArrowDownIcon />}
             >
-                Options
+                Manage Group
             </Button>
             <StyledMenu
                 id="demo-customized-menu"
@@ -98,20 +98,20 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
             >
                 <MenuItem onClick={handleClick} disableRipple>
                     <EditIcon />
-                    Create Event
+                    create event
                 </MenuItem>
                 <MenuItem onClick={handleClose} disableRipple>
                     <FileCopyIcon />
-                    Duplicate
+                    edit events
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
                     <ArchiveIcon />
-                    Archive
+                    archive
                 </MenuItem>
                 <MenuItem onClick={handleClose} disableRipple>
                     <MoreHorizIcon />
-                    More
+                    more
                 </MenuItem>
             </StyledMenu>
         </div>

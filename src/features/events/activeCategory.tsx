@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import { EventCategories } from "./categories";
 import { EventsSearch } from "../search/eventsSearch";
 import { selectCategory, type PresentedCategory } from "@/src/lib/store/slices/EventsSlice";
+import { PaginateEvents } from "@/src/components/ui/box/pagination/paginateEvents";
 
 function ActiveCategory(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>()
@@ -38,7 +39,7 @@ function ActiveCategory(): JSX.Element {
             }}
         >
             <EventCategories handleClick={handleClick} />
-            <EventsSearch />
+            <PaginateEvents />
         </Box>
     );
 }

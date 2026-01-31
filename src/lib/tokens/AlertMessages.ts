@@ -8,6 +8,10 @@ const alertMessages: AlertMessages = {
     signup: {
         success: "Account created successfully!",
         error: "Failed to create account"
+    },
+    createEvent: {
+        success: "Event created successfully!",
+        error: "Failed to create new event"
     }
 };
 

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type UserKind = 'authenticated' | 'anonymous'
+export type UserKind = 'authenticated' | 'anonymous'
 
 type AuthInitialState = {
     userKind: UserKind

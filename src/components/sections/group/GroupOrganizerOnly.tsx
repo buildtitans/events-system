@@ -14,6 +14,7 @@ export default function GroupOranizerOnly({ roleType }: { roleType: UserInGroupR
         dispatch(enqueueDrawer('create event'));
     }
 
+
     if (roleType === 'organizer') {
 
         return <Box
@@ -21,8 +22,8 @@ export default function GroupOranizerOnly({ roleType }: { roleType: UserInGroupR
                 display: 'flex',
                 height: 'auto',
                 width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center'
+                justifyContent: "flex-end",
+                alignItems: "center",
             }}
         >
             <GroupActionsMenu openEventDrawer={openEventDrawer} />

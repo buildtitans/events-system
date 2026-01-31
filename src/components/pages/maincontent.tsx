@@ -48,19 +48,19 @@ function MainContent(): JSX.Element {
         sx={overrides}
       >
         <ActiveCategory />
-        <PaginateEvents />
       </Box>
 
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 20,
-          alignItems: 'center',
+          gap: 8,
+          alignItems: 'start',
           justifyContent: 'center'
         }}
       >
         {content}
+
         {loadGroupsPipeline(groupsLoadingStatus)}
       </Box>
 
