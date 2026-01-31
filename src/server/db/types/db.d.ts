@@ -44,6 +44,13 @@ export interface Events {
   updated_at: Generated<Timestamp>;
 }
 
+export interface GroupMembers {
+  group_id: string;
+  joined_at: Generated<Timestamp>;
+  role: Generated<string>;
+  user_id: string;
+}
+
 export interface Groups {
   category_id: string | null;
   created_at: Generated<Timestamp>;
@@ -74,6 +81,7 @@ export interface Users {
 export interface DB {
   categories: Categories;
   events: Events;
+  group_members: GroupMembers;
   groups: Groups;
   sessions: Sessions;
   users: Users;

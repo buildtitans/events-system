@@ -8,6 +8,9 @@ import { renderLayout } from '@/src/components/pipelines/events/renderLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
 import { EventsPages } from '@/src/lib/store/slices/EventsSlice';
+import NoGroups from '../../ui/feedback/failure/noGroups';
+import { NoEventsFound } from '../../ui/box/noEventsFound';
+import NoScheduledEvents from '../../ui/feedback/info/suggestScheduleEvent';
 const MotionGrid = motion(Grid);
 
 
@@ -27,7 +30,7 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
 
     return (
         <AnimatePresence mode='wait'>
-            <MotionGrid
+            {(page.length > 0) && <MotionGrid
                 key={currentPage}
                 variants={fadeInOut}
                 initial="initial"
@@ -44,7 +47,9 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
                 }}
             >
                 {renderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
-            </MotionGrid>
+            </MotionGrid>}
+
+            {(page.length === 0) && <NoScheduledEvents />}
         </AnimatePresence>
 
     )

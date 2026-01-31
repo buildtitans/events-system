@@ -1,5 +1,4 @@
 "use client";
-
 import Stack from "@mui/material/Stack";
 import SignInCard from "@/src/components/sections/forms/SignInCard";
 import Content from "@/src/features/auth/LoginCopy";

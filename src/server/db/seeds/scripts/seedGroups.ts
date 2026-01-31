@@ -20,6 +20,8 @@ export async function seedGroups(
             trim: true
         })
 
+        const organizerId = usersByEmail[group.organizer_email.toLowerCase().trim()];
+
         const categorySlug = group.category.trim().toLowerCase();
 
         const categoryId = categoryBySlug[categorySlug];
@@ -30,7 +32,8 @@ export async function seedGroups(
             location: group.location,
             slug: slug,
             category_id: categoryId,
-            organizer_email: group.organizer_email
+            organizer_email: group.organizer_email,
+            organizer_id: organizerId
         };
 
         const inserted = await db

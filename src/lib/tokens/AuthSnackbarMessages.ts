@@ -1,5 +1,4 @@
-import type { SnackbarMessages } from "../types/types";
-
+import type { SnackbarMessages } from "@/src/lib/types/tokens/types";
 
 const snackbarMessages: SnackbarMessages = {
     logout: {

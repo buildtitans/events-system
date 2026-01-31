@@ -2,6 +2,7 @@ import { seedCategories } from "./seedCategories";
 import { seedGroups } from "./seedGroups";
 import { seedEvents } from "./seedEvents";
 import { seedUsers } from "./seedUsers";
+import { seedGroupMembers } from "./seedGroupMembers";
 
 async function seedDB() {
     console.log("Seeding DB…");
@@ -16,6 +17,9 @@ async function seedDB() {
 
     await seedEvents(groupsBySlug);
     console.log("Events OK");
+
+    await seedGroupMembers(groupsBySlug)
+    console.log("Group Members OK");
 
     process.exit(0);
 }
