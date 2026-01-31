@@ -5,6 +5,7 @@ import type { UserInGroupRoleType, LoadingStatus, RequestStatus } from "@/src/li
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
 import { LayoutSlotSchemaArrayType } from "@/src/schemas/layoutSlotSchema";
 import { EventsPages } from "../../store/slices/EventsSlice";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -35,10 +36,15 @@ type GetGroupEventsHook = {
 };
 
 
+type GetGroupMembersHook = {
+    members: GroupMembersSchemaType[]
+}
+
 export type {
     GetGroupRoleAndIdHook,
     CreateEventHook,
     UseLoginHook,
     UsePopulateEventsListHook,
-    GetGroupEventsHook
+    GetGroupEventsHook,
+    GetGroupMembersHook
 }
