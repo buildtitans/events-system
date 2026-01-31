@@ -70,7 +70,6 @@ export class AuthClient {
         }
 
         const ok = await argon2.verify(user?.password_hash, input_password);
-        console.log(`************ ${ok} ******************`)
         if (!ok) {
             throw new Error(`Invalid email or password`)
         }

@@ -15,7 +15,6 @@ const useRecoverSession = (): void => {
         const executeRecoverSession = async () => {
 
             const result = await trpcClient.auth.recover.mutate();
-            console.log(result)
 
             if (result) {
                 dispatch(loginSuccess())

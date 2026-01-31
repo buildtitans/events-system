@@ -1,4 +1,4 @@
-import type { SnackbarMessages, RequestStatus } from "@/src/lib/types/types";
+import type { SnackbarMessages, RequestStatus } from "@/src/lib/types/tokens/types";
 import { snackbarMessages } from "../tokens/AuthSnackbarMessages";
 
 function createSnackbarMessages<

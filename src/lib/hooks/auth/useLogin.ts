@@ -1,15 +1,15 @@
 "use client";
-
 import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "@/src/lib/store/slices/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
-import type { UseLoginHook } from "../../types/types";
+import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import { useRouter } from "next/navigation";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
+
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);

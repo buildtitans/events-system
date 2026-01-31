@@ -1,28 +1,31 @@
 "use client"
-import * as React from 'react';
+import type { JSX } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import GroupsPaginaton from '../box/pagination/groupsPagination';
+import GroupsPaginaton from '../../ui/box/pagination/groupsPagination';
 import { GroupsPage } from './groupsPage';
 import { AnimatePresence } from 'framer-motion';
 import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
 import { useRouter } from "next/navigation";
 import { useCallback } from 'react';
-import { GroupSchemaType } from '@/src/schemas/groupSchema';
+import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groupSchema';
 
 export type CategoryMap = Map<string, string>;
 
-export default function GroupsPagesContainer(): React.JSX.Element {
-    const { groupsPages, currentPage, categoryMap, columns } = useGroupPages();
+export default function GroupsPagesContainer({ groupsPages }: { groupsPages: GroupsSchemaType[] }): JSX.Element | null {
+
+    const { currentPage, categoryMap, columns } = useGroupPages(groupsPages);
     const router = useRouter();
 
     const handleGroupClicked = useCallback((slug: GroupSchemaType["slug"]) => {
 
         return () => {
-            const route = `groups/${slug}`
+            const route = `group/${slug}`
             router.push(route)
         }
     }, []);
+
+    if (!groupsPages[currentPage]) return null;
 
     return (
         <div>

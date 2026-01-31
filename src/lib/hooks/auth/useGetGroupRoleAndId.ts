@@ -6,42 +6,13 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { usePathname } from "next/navigation";
-import type {
-    GroupSchemaType,
-    GroupsSchemaType
-} from "@/src/schemas/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { getIdsBySlug } from "../../utils/parsing/getIdsBySlug";
+import type { UserInGroupRoleType } from "../../types/types";
+import type { GetGroupRoleAndIdHook } from "../../types/hooks/types";
 
-export type UserInGroupRoleType =
-    'anonymous'
-    | 'member'
-    | 'organizer';
-
-export type OrganizerAndUserIdsType = {
-    groupId: string | undefined | null,
-    organizerId: string | undefined | null
-}
-
-export type GateGroupActionsHook = {
-    groupID: OrganizerAndUserIdsType["groupId"],
-    roleType: UserInGroupRoleType
-}
-
-function getIdsBySlug(path: string, groups: GroupsSchemaType): OrganizerAndUserIdsType {
-
-    const slug = path.split('/').filter(Boolean).pop();
-
-    const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
-
-    const groupId = currentGroup?.id;
-    const organizerId = currentGroup?.organizer_id
-
-    return { groupId, organizerId }
-};
-
-export const useGateGroupActions = () => {
+export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
     const [roleType, setRoleType] = useState<UserInGroupRoleType>('anonymous');
-
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
     const { groupId, organizerId } = getIdsBySlug(path, groups);

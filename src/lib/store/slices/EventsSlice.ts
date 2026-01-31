@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { EventsPages } from "../../types/types";
+import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
 type GroupNameByGroupID = Record<string, string>;
+
+type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 type EventCategoryState = {
     displayed: PresentedCategory,

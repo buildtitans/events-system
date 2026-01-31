@@ -53,7 +53,7 @@ export default function Providers({
                             {children}
                         </Container>
                     }
-                    <Footer />
+                    {(status === "active") && <Footer />}
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

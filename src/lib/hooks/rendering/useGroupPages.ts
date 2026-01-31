@@ -1,23 +1,35 @@
+"use client"
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { useMemo } from "react";
-import { chunkGroupsIntoPages } from "../../utils/helpers/chunkGroupsIntoPages";
+import { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
 
 export type CategoryMap = Map<string, string>;
 
-const useGroupPages = () => {
-    const groups = useSelector((s: RootState) => s.groups.communities);
-    const groupsPages = useMemo(() => {
-        return chunkGroupsIntoPages(groups);
-    }, [groups]);
+function seedCategoryMap(categories: CategoriesSchemaType): CategoryMap {
+    let map: CategoryMap = new Map();
+    categories.forEach((category) => {
+        map.set(category.id, category.name)
+    });
+    return map;
+}
+
+function getNumColumns(pagelength: number): number {
+    if (pagelength > 1) {
+        return 2
+    } else {
+        return 1;
+    }
+};
+
+const useGroupPages = (groupsPages: GroupsSchemaType[]) => {
     const categories = useSelector((s: RootState) => s.categories.categories);
     const currentPage = useSelector((s: RootState) => s.groups.currentPage);
-    const columns = groupsPages[currentPage].length > 1 ? 2 : 1;
+    const page = groupsPages[currentPage] ?? [];
+    const columns = getNumColumns(page.length);
     const categoryMap: CategoryMap = useMemo(() => {
-        let map: CategoryMap = new Map();
-        categories.forEach((category) => {
-            map.set(category.id, category.name)
-        });
+        const map = seedCategoryMap(categories);
         return map;
     }, [categories]);
 

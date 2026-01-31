@@ -11,7 +11,6 @@ import CreateEventDrawer from "../../ui/drawers/createEventDrawer";
 export const modalPipeline = (activeModal: ActiveModal): JSX.Element | null => {
     const dispatch = useDispatch<AppDispatch>();
 
-    console.log(activeModal)
 
     const handleClose: ModalProps["onClose"] = () => {
         dispatch(showModal(null));

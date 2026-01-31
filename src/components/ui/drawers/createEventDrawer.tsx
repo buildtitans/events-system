@@ -17,7 +17,7 @@ export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Elem
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
     const group_id = useMemo(() => {
-        const slug = path.split('').slice(8).join('');
+        const slug = path.split('/').pop();
 
         const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
         return currentGroup?.id;

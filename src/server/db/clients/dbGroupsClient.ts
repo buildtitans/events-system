@@ -38,7 +38,6 @@ export class GroupsClient {
 
         const insertableGroup = this.parseNewGroup(newGroup, organizer_id)
         const inserted = await this.insertNewGroup(insertableGroup);
-        console.log({ Sent: insertableGroup, Inserting: inserted });
         return this.toGroupSchema(inserted);
     }
 

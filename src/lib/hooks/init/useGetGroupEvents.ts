@@ -11,9 +11,6 @@ export const useGetGroupEvents = (group_id: EventSchemaType["group_id"] | null |
 
         const executeGetGroupEvents = async () => {
             const result = await trpcClient.events.groupEvents.mutate(group_id)
-            console.log({
-                "Events for Group": result
-            });
             return result;
         }
 

@@ -1,4 +1,4 @@
-import type { AlertMessages } from "../types/types";
+import type { AlertMessages } from "@/src/lib/types/tokens/types";
 
 const alertMessages: AlertMessages = {
     createGroup: {

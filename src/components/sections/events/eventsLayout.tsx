@@ -10,7 +10,7 @@ import { fadeInOut } from '@/src/styles/motion/variants';
 const MotionGrid = motion(Grid);
 
 
-function EventCards(): JSX.Element | null {
+function EventsLayout(): JSX.Element | null {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages);
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
@@ -51,4 +51,4 @@ function EventCards(): JSX.Element | null {
     )
 }
 
-export default EventCards;
+export default EventsLayout;

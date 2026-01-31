@@ -3,7 +3,8 @@ import type { JSX } from "react";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
 import GroupsContainer from "../../ui/stack/groupsContainer";
 import { NoEventsFound } from "../../ui/box/noEventsFound";
-import type { LoadingStatus } from "@/src/lib/types/types"
+import type { LoadingStatus } from "@/src/lib/types/tokens/types"
+import NoGroups from "../../ui/feedback/failure/noGroups";
 
 const loadGroupsPipeline = (groupsLoadingStatus: LoadingStatus): JSX.Element | null => {
 
@@ -18,7 +19,7 @@ const loadGroupsPipeline = (groupsLoadingStatus: LoadingStatus): JSX.Element | n
             )
         case "failed":
             return (
-                <NoEventsFound />
+                <NoGroups />
             )
 
         default: {

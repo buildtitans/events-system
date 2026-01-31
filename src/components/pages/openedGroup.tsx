@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { useMainContentPipelines } from "@/src/lib/hooks/rendering/useMainContentPipelines";
 import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
-import type { UserInGroupRoleType } from "@/src/lib/hooks/auth/useGateGroupActions";
+import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import GroupOranizerOnly from "../sections/group/GroupOrganizerOnly";
 
 type OpenedGroupProps = {

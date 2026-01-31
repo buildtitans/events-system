@@ -2,10 +2,13 @@ import {
     createSlice,
     PayloadAction
 } from "@reduxjs/toolkit";
-import type { AlertMessages, AlertMessagesType, RequestStatus, SnackbarMessages } from "@/src/lib/types/types";
-import { ValueOf } from "@trpc/server/unstable-core-do-not-import";
+import type {
+    AlertMessagesType,
+    RequestStatus,
+    SnackbarMessages
+} from "@/src/lib/types/tokens/types";
 
-type MainContentTabType = 'Groups' | 'Events'
+type MainContentTabType = "Upcoming Events" | "Local Events" | "Categories" | "Popular Events";
 
 export type ActiveModal = 'new group' | 'create event' | null;
 
@@ -31,7 +34,7 @@ type RenderingInitialState = {
 };
 
 const initialState: RenderingInitialState = {
-    mainContent: "Events",
+    mainContent: "Upcoming Events",
     modal: null,
     drawer: null,
     snackbar: {

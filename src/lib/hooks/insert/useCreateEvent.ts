@@ -7,7 +7,7 @@ import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/sl
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 import { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext, DateTimeValidationError } from "@mui/x-date-pickers";
-import type { CreateEventHook } from "../../types/types";
+import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 
 export type NewEventType = {
     title: EventSchemaType["title"] | null,
@@ -78,7 +78,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
             dispatch(enqueueDrawer(null))
 
             timerRef.current = null;
-        }, 1200);
+        }, 800);
     }
 
     const scheduleEvent = async (newEvent: NewEventType) => {

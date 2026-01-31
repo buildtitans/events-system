@@ -1,8 +1,8 @@
 "use client";
-import type { LoadingStatus } from "@/src/lib/types/types";
+import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
 import { NoEventsFound } from "../../ui/box/noEventsFound";
-import EventCards from "../../ui/stack/eventCards";
+import EventsLayout from "@/src/components/sections/events/eventsLayout";
 import { JSX } from "react";
 
 const loadEventsPipeline = (eventLoadingStatus: LoadingStatus): JSX.Element => {
@@ -13,8 +13,7 @@ const loadEventsPipeline = (eventLoadingStatus: LoadingStatus): JSX.Element => {
                 <LinearIndeterminate />
             )
         case "idle":
-            return <EventCards
-            />
+            return <EventsLayout />
 
         case "failed":
             return <NoEventsFound />

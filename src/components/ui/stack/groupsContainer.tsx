@@ -1,28 +1,20 @@
 "use client"
-import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import GroupsPagesContainer from './groupsPages';
+import GroupsPagesContainer from "@/src/components/sections/group/groupsPages";
+import { chunkGroupsIntoPages } from '@/src/lib/utils/helpers/chunkGroupsIntoPages';
+import { useMemo } from 'react';
 
 function GroupsContainer(): JSX.Element | null {
-    const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const groups = useSelector((s: RootState) => s.groups.communities);
+    const groupsPages = useMemo(() => {
+        return chunkGroupsIntoPages(groups);
+    }, [groups]);
 
-    const handleFocus = useCallback((index: number) => {
-        return () => {
-            setFocusedCardIndex(index);
-        }
-    }, []);
-
-    const handleBlur = useCallback((): void => {
-        setFocusedCardIndex(null);
-    }, []);
-
-    if (groups.length < 1) return null;
 
     return (
-        <GroupsPagesContainer />
+        <GroupsPagesContainer groupsPages={groupsPages} />
     )
 };
 

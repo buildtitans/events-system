@@ -2,7 +2,7 @@
 import type { JSX } from "react";
 import Box from "@mui/material/Box";
 import GroupActionsMenu from "../../ui/nav/menus/groupActionsMenu";
-import { UserInGroupRoleType } from "@/src/lib/hooks/auth/useGateGroupActions";
+import { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";

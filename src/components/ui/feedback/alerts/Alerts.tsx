@@ -4,7 +4,7 @@ import { JSX, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
 import { AlertProps } from '@mui/material/Alert';
-import { AlertMessagesType } from '@/src/lib/types/types';
+import { AlertMessagesType } from '@/src/lib/types/tokens/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/src/lib/store';
 import { enqueueAlert } from '@/src/lib/store/slices/RenderingSlice';

@@ -16,8 +16,8 @@ import type {
 } from "@/src/lib/store/root/store";
 import type {
     LoadingStatus,
-    UsePopulateEventsListHook
-} from "@/src/lib/types/types";
+} from "@/src/lib/types/tokens/types";
+import type { UsePopulateEventsListHook } from "@/src/lib/types/hooks/types"
 import { chunkEventPages } from "@/src/lib/store/slices/EventsSlice";
 
 const usePopulateEventsList = (): UsePopulateEventsListHook => {
