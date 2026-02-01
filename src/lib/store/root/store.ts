@@ -5,6 +5,7 @@ import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
 import AuthSlice from "@/src/lib/store/slices/AuthSlice";
 import CategoriesSlice from "@/src/lib/store/slices/CategorySlice";
 import GroupMembersSlice from '@/src/lib/store/slices/GroupMembersSlice';
+import EventAttendantsSlice from "@/src/lib/store/slices/EventAttendantsSlice";
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         rendering: RenderingSlice,
         auth: AuthSlice,
         categories: CategoriesSlice,
-        groupMembers: GroupMembersSlice
+        groupMembers: GroupMembersSlice,
+        eventAttendants: EventAttendantsSlice
     }
 });
 
