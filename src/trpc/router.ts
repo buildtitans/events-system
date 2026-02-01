@@ -4,13 +4,15 @@ import { categoriesRouter } from "./routers/categoriesRouter";
 import { eventsRouter } from "./routers/eventsRouter";
 import { groupsRouter } from "./routers/groupsRouter";
 import { groupMembersRouter } from "./routers/groupMembersRouter";
+import { eventAttendantsRouter } from "./routers/eventAttendantsRouter";
 
 export const appRouter = router({
     events: eventsRouter,
     groups: groupsRouter,
     auth: authRouter,
     categories: categoriesRouter,
-    groupMembers: groupMembersRouter
+    groupMembers: groupMembersRouter,
+    eventAttendants: eventAttendantsRouter
 });
 
 export type AppRouter = typeof appRouter;

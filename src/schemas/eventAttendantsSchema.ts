@@ -19,15 +19,20 @@ const EventAttendantsSchema = Type.Object({
     ])
 });
 
+const EventIdSchema = Type.String();
+
+type EventIdSchemaType = Static<typeof EventIdSchema>;
 
 type EventAttendantsSchemaType = Static<typeof EventAttendantsSchema>;
 
 type EventAttendantStatusSchemaType = Static<typeof EventAttendantStatusSchema>;
 
 
-export type { EventAttendantsSchemaType, EventAttendantStatusSchemaType };
+export type { EventAttendantsSchemaType, EventAttendantStatusSchemaType, EventIdSchemaType };
 
-export { EventAttendantsSchema, EventAttendantStatusSchema };
+export { EventAttendantsSchema, EventAttendantStatusSchema, EventIdSchema };
+
+export const EventIdSchemaValidator = TypeCompiler.Compile(EventIdSchema);
 
 export const EventAttendantsSchemaValidator = TypeCompiler.Compile(EventAttendantsSchema);
 
