@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { addToGroupMembersState } from "../../store/slices/GroupMembersSlice";
@@ -15,11 +15,12 @@ const useJoinGroup = (): JoinGroupHook => {
     const timerRef = useRef<number | null>(null);
 
     function handleResult(res: GroupMembersSchemaType | null) {
-        if (res) {
-            dispatch(addToGroupMembersState(res))
-        }
 
         timerRef.current = window.setTimeout(() => {
+            if (res) {
+                dispatch(addToGroupMembersState(res))
+            }
+
             dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: res ? "success" : 'failed' }))
         }, 800);
     };
@@ -49,7 +50,7 @@ const useJoinGroup = (): JoinGroupHook => {
     }, []);
 
     return {
-        handleClick
+        handleClick,
     };
 };
 

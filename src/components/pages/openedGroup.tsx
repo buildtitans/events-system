@@ -5,12 +5,14 @@ import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
 import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import GroupOranizerOnly from "../sections/group/GroupOrganizerOnly";
 import { loadEventsPipeline } from "../pipelines/events/loadEventsPipeline";
-import JoinGroup from "../ui/buttons/joinGroupButton";
+import JoinGroupButton from "../ui/buttons/joinGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type OpenedGroupProps = {
-    groupID: string | null | undefined, roleType: UserInGroupRoleType, members: GroupMembersSchemaType[]
-}
+    groupID: string | null | undefined,
+    roleType: UserInGroupRoleType,
+    members: GroupMembersSchemaType[]
+};
 
 export default function OpenedGroup({ groupID, roleType, members }: OpenedGroupProps): JSX.Element {
     const { groupEvents, status } = useGetGroupEvents(groupID);
@@ -28,8 +30,7 @@ export default function OpenedGroup({ groupID, roleType, members }: OpenedGroupP
             }}
         >
 
-            <JoinGroup
-                members={members}
+            <JoinGroupButton
                 group_id={groupID}
                 roleType={roleType}
             />

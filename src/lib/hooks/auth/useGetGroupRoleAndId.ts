@@ -3,23 +3,34 @@ import {
     useEffect,
     useState
 } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/lib/store";
 import { usePathname } from "next/navigation";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { getIdsBySlug } from "../../utils/parsing/getIdsBySlug";
 import type { GetGroupRoleAndIdHook } from "@/src/lib/types/hooks/types";
 import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
+import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { designateViewerKind } from "../../store/slices/GroupMembersSlice";
+
+function checkMembership(members: GroupMembersSchemaType[], id: string): UserInGroupRoleType {
+
+    const member = members.find((el: GroupMembersSchemaType) => el.user_id === id);
+
+    return member?.role ?? "anonymous";
+};
 
 export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
-    const [roleType, setRoleType] = useState<UserInGroupRoleType>('anonymous');
+    const viewerKind = useSelector((s: RootState) => s.groupMembers.viewerKind);
+    const members = useSelector((s: RootState) => s.groupMembers.members);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
+    const dispatch = useDispatch<AppDispatch>()
     const { groupId, organizerId } = getIdsBySlug(path, groups);
 
 
     useEffect(() => {
-        if (!organizerId) return;
+        if (!organizerId || (viewerKind !== "anonymous")) return;
 
         const executeCheckRole = async () => {
             const session = await trpcClient.auth.session.mutate();
@@ -27,18 +38,17 @@ export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
 
             const { user_id } = session;
 
-            if (user_id === organizerId) {
-                setRoleType('organizer')
-            }
+            const role = checkMembership(members, user_id);
+            dispatch(designateViewerKind(role));
         };
 
         void executeCheckRole();
 
-    }, [organizerId]);
+    }, [organizerId, members]);
 
 
     return {
         groupID: groupId,
-        roleType: roleType
+        roleType: viewerKind
     }
 };

@@ -1,21 +1,24 @@
 "use client";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { GetGroupMembersHook } from "../../types/hooks/types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { getGroupMembers } from "../../store/slices/GroupMembersSlice";
+import { UserInGroupRoleType } from "../../types/tokens/types";
 
 
-const useGetGroupMembers = (group_id: GroupSchemaType["id"] | null | undefined): GetGroupMembersHook => {
+const useGetGroupMembers = (group_id: GroupSchemaType["id"] | null | undefined, roleType: UserInGroupRoleType): GetGroupMembersHook => {
     const members = useSelector((s: RootState) => s.groupMembers.members);
     const dispatch = useDispatch<AppDispatch>();
-
-    console.log(members);
+    const roleRef = useRef<UserInGroupRoleType | null>(null);
 
     useEffect(() => {
+        if (roleRef.current === roleType) return;
         if (!group_id) return;
+        roleRef.current = roleType
+
 
         const executeGetMembers = async () => {
 
@@ -25,7 +28,7 @@ const useGetGroupMembers = (group_id: GroupSchemaType["id"] | null | undefined):
 
         void executeGetMembers();
 
-    }, [group_id]);
+    }, [group_id, roleType]);
 
     return { members };
 };

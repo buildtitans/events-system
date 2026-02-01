@@ -11,7 +11,7 @@ import { clearMembersState } from "@/src/lib/store/slices/GroupMembersSlice";
 export default function GroupOpen(): JSX.Element {
     useRecoverStore();
     const { groupID, roleType } = useGetGroupRoleAndId();
-    const { members } = useGetGroupMembers(groupID);
+    const { members } = useGetGroupMembers(groupID, roleType);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {

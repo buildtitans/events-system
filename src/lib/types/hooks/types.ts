@@ -39,11 +39,11 @@ type GetGroupEventsHook = {
 
 
 type GetGroupMembersHook = {
-    members: GroupMembersSchemaType[]
+    members: GroupMembersSchemaType[],
 }
 
 type JoinGroupHook = {
-    handleClick: (group_id: GroupSchemaType["id"]) => Promise<void>
+    handleClick: (group_id: GroupSchemaType["id"]) => Promise<void>,
 }
 
 export type {

@@ -7,7 +7,8 @@ const GroupMembersSchema = Type.Object({
     user_id: Type.String(),
     role: Type.Union([
         Type.Literal("member"),
-        Type.Literal("organizer")
+        Type.Literal("organizer"),
+        Type.Literal("anonymous")
     ]),
     joined_at: Type.String()
 });

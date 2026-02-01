@@ -1,15 +1,16 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 type GroupMembersSliceState = {
-    members: GroupMembersSchemaType[]
+    members: GroupMembersSchemaType[],
+    viewerKind: GroupMembersSchemaType["role"],
 };
 
 const initialState: GroupMembersSliceState = {
-    members: []
-};
+    members: [],
+    viewerKind: "anonymous",
 
+};
 
 const GroupMembersSlice = createSlice({
     name: "group/members",
@@ -21,13 +22,16 @@ const GroupMembersSlice = createSlice({
         addToGroupMembersState: (state: GroupMembersSliceState, action: PayloadAction<GroupMembersSchemaType>) => {
             state.members.push(action.payload);
         },
-        clearMembersState: (state: GroupMembersSliceState) => initialState,
+        designateViewerKind: (state: GroupMembersSliceState, action: PayloadAction<GroupMembersSchemaType["role"]>) => {
+            state.viewerKind = action.payload
+        },
+        clearMembersState: () => initialState,
     }
 });
 
 
 export type GroupMembersSliceType = ReturnType<typeof GroupMembersSlice.reducer>;
 
-export const { getGroupMembers, addToGroupMembersState, clearMembersState } = GroupMembersSlice.actions;
+export const { getGroupMembers, addToGroupMembersState, clearMembersState, designateViewerKind } = GroupMembersSlice.actions;
 
 export default GroupMembersSlice.reducer;
