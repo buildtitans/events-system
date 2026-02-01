@@ -28,8 +28,7 @@ type OpenedGroupProps = {
 export default function OpenedGroup({ groupID, roleType, groupName, groupEvents, status, members }: OpenedGroupProps): JSX.Element {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
 
-    //TODO: with trpcClient + dbClient wired for event attendants, 
-    // display the attendees of each event (if there are any)
+    // TODO: display the attendees of each event (if there are any)
     //TODO: add a button to allow authenticated users (userKind === "authenticated") 
     // the ability to change their attendance status
     // ———> attendance status being ' "going" | "not_going" | "interested"
