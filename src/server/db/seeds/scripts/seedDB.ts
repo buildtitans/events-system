@@ -19,10 +19,10 @@ async function seedDB() {
     await seedEvents(groupsBySlug);
     console.log("Events OK");
 
-    await seedGroupMembers(groupsBySlug)
+    const membersByGroupId = await seedGroupMembers(groupsBySlug)
     console.log("Group Members OK");
 
-    await seedEventAttendants("placeholder_arg");
+    await seedEventAttendants(membersByGroupId);
     console.log("Event Attendants OK");
 
 

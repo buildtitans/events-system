@@ -30,6 +30,14 @@ export interface Categories {
   slug: string;
 }
 
+export interface EventAttendants {
+  created_at: Generated<Timestamp>;
+  event_id: string;
+  status: Generated<string>;
+  updated_at: Timestamp | null;
+  user_id: string;
+}
+
 export interface Events {
   authors: Json;
   created_at: Generated<Timestamp>;
@@ -80,6 +88,7 @@ export interface Users {
 
 export interface DB {
   categories: Categories;
+  event_attendants: EventAttendants;
   events: Events;
   group_members: GroupMembers;
   groups: Groups;
