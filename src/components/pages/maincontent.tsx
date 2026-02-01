@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { usePopulateGroups } from '@/src/lib/hooks/init/usePopulateGroups';
 import { useGetCategories } from '@/src/lib/hooks/init/useGetCategories';
-import { PaginateEvents } from '../ui/box/pagination/paginateEvents';
 import { loadGroupsPipeline } from '../pipelines/groups/loadGroupsPipeline';
 import { MobileEventsSearch } from '../ui/nav/landingSubNav';
 import { LandingHeader } from '../ui/typography/landingHeader';

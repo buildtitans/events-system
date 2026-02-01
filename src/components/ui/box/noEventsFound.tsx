@@ -17,7 +17,7 @@ function NoEventsFound() {
             sx={{ display: 'flex', marginTop: 20, flexDirection: "column", justifyContent: "center", alignItems: "center", width: "100%", height: "auto", gap: 2 }}>
 
             <h2 className="text-zinc-400 font-light tracking-tight text-xl">
-                Could not find any events
+                Failed to fetch events
             </h2>
 
             <NotFound />

@@ -3,22 +3,26 @@ import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { type JSX } from "react";
+import { useMemo, type JSX } from "react";
 import { useJoinGroup } from "@/src/lib/hooks/insert/useJoinGroup";
 import type { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
+import { LoadingStatus, UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 
 type JoinGroupButtonProps = {
     group_id: GroupSchemaType["id"] | null | undefined,
     roleType?: UserInGroupRoleType,
+    status: LoadingStatus
 }
 
-export default function JoinGroupButton({ group_id, roleType }: JoinGroupButtonProps): JSX.Element | null {
+export default function JoinGroupButton({ group_id, roleType, status }: JoinGroupButtonProps): JSX.Element | null {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const { handleClick } = useJoinGroup();
+    const earlyReturn = useMemo(() => {
+        const shouldReturn = ((userKind === "anonymous") || (roleType !== "anonymous") || status !== "idle");
+        return shouldReturn
+    }, [status, userKind, roleType])
 
-
-    if (userKind === "anonymous" || (!group_id) || (roleType !== "anonymous")) return null;
+    if (earlyReturn || (!group_id)) return null;
 
 
     return (

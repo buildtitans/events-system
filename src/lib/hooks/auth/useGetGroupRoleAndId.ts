@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { usePathname } from "next/navigation";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { getIdsBySlug } from "../../utils/parsing/getIdsBySlug";
+import { getIdsAndNameBySlug } from "../../utils/parsing/getIdsBySlug";
 import type { GetGroupRoleAndIdHook } from "@/src/lib/types/hooks/types";
 import type { UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
@@ -26,7 +26,7 @@ export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
     const dispatch = useDispatch<AppDispatch>()
-    const { groupId, organizerId } = getIdsBySlug(path, groups);
+    const { groupId, organizerId, name } = getIdsAndNameBySlug(path, groups);
 
 
     useEffect(() => {
@@ -49,6 +49,7 @@ export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
 
     return {
         groupID: groupId,
-        roleType: viewerKind
+        roleType: viewerKind,
+        groupName: name ?? ""
     }
 };

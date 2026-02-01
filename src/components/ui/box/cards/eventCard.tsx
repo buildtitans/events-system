@@ -57,10 +57,9 @@ function EventCard(
         return string_date;
     }, [event])
 
-    //TODO: use dayjs + utc dayjs plugin to reformat display value for event.starts_at
+    console.log(variant.type)
 
     return (
-
         <Grid size={{
             xs: variant.size.xs,
             md: variant.size.md

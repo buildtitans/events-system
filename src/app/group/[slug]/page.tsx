@@ -7,12 +7,17 @@ import { useGetGroupMembers } from "@/src/lib/hooks/init/useGetGroupMembers";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { clearMembersState } from "@/src/lib/store/slices/GroupMembersSlice";
+import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
 
 export default function GroupOpen(): JSX.Element {
     useRecoverStore();
-    const { groupID, roleType } = useGetGroupRoleAndId();
+    const { groupID, roleType, groupName } = useGetGroupRoleAndId();
     const { members } = useGetGroupMembers(groupID, roleType);
     const dispatch = useDispatch<AppDispatch>();
+    const {
+        groupEvents,
+        status
+    } = useGetGroupEvents(groupID);
 
     useEffect(() => {
 
@@ -23,9 +28,12 @@ export default function GroupOpen(): JSX.Element {
 
     return (
         <OpenedGroup
+            groupName={groupName}
             members={members}
             groupID={groupID}
             roleType={roleType}
+            groupEvents={groupEvents}
+            status={status}
         />
     )
 }

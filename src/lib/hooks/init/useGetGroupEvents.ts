@@ -16,8 +16,8 @@ export const useGetGroupEvents = (group_id: EventSchemaType["group_id"] | null |
 
         timerRef.current = window.setTimeout(() => {
             setGroupEvents(result);
-            setStatus("idle");
-        }, 1200)
+            setStatus((result.length < 1 ? "warning" : "idle"));
+        }, 1200);
     };
 
     useEffect(() => {

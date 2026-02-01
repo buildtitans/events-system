@@ -2,19 +2,21 @@ import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchem
 
 export type OrganizerAndUserIdsType = {
     groupId: string | undefined | null,
-    organizerId: string | undefined | null
+    organizerId: string | undefined | null,
+    name: string | undefined | null
 }
 
-function getIdsBySlug(path: string, groups: GroupsSchemaType): OrganizerAndUserIdsType {
+function getIdsAndNameBySlug(path: string, groups: GroupsSchemaType): OrganizerAndUserIdsType {
 
     const slug = path.split('/').filter(Boolean).pop();
 
     const currentGroup = groups.find((group: GroupSchemaType) => group.slug === slug);
 
     const groupId = currentGroup?.id;
-    const organizerId = currentGroup?.organizer_id
+    const organizerId = currentGroup?.organizer_id;
+    const name = currentGroup?.name;
 
-    return { groupId, organizerId }
+    return { groupId, organizerId, name }
 };
 
-export { getIdsBySlug };
+export { getIdsAndNameBySlug };

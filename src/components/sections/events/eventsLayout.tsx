@@ -8,9 +8,6 @@ import { renderLayout } from '@/src/components/pipelines/events/renderLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
 import { EventsPages } from '@/src/lib/store/slices/EventsSlice';
-import NoGroups from '../../ui/feedback/failure/noGroups';
-import { NoEventsFound } from '../../ui/box/noEventsFound';
-import NoScheduledEvents from '../../ui/feedback/info/suggestScheduleEvent';
 const MotionGrid = motion(Grid);
 
 
@@ -29,28 +26,29 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
 
 
     return (
-        <AnimatePresence mode='wait'>
-            {(page.length > 0) && <MotionGrid
-                key={currentPage}
-                variants={fadeInOut}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                container
-                spacing={2}
-                columns={12}
-                sx={{
-                    willChange: "transform",
-                    transform: "translate3d(0,0,0)",
-                    backfaceVisibility: "hidden",
-                    contain: "layout paint style",
-                }}
-            >
-                {renderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
-            </MotionGrid>}
+        <>
+            <AnimatePresence mode='wait'>
+                {(page.length > 0) && <MotionGrid
+                    key={currentPage}
+                    variants={fadeInOut}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    container
+                    spacing={2}
+                    columns={12}
+                    sx={{
+                        willChange: "transform",
+                        transform: "translate3d(0,0,0)",
+                        backfaceVisibility: "hidden",
+                        contain: "layout paint style",
+                    }}
+                >
+                    {renderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
+                </MotionGrid>}
+            </AnimatePresence>
+        </>
 
-            {(page.length === 0) && <NoScheduledEvents />}
-        </AnimatePresence>
 
     )
 }

@@ -5,7 +5,8 @@ type MountStatus =
 type LoadingStatus =
     "idle"
     | "pending"
-    | "failed";
+    | "failed"
+    | "warning";
 
 type RequestStatus =
     "idle"

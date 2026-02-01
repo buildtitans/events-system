@@ -19,7 +19,8 @@ type CreateEventHook = {
 
 type GetGroupRoleAndIdHook = {
     groupID: OrganizerAndUserIdsType["groupId"],
-    roleType: UserInGroupRoleType
+    roleType: UserInGroupRoleType,
+    groupName: GroupSchemaType["name"]
 }
 
 type UseLoginHook = {

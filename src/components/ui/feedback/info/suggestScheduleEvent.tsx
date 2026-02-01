@@ -13,9 +13,11 @@ export default function NoScheduledEvents() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    height: "50vh",
-                    gap: 12
+                    justifyContent: 'start',
+                    height: "100%",
+                    width: '100%',
+                    border: 1,
+                    borderColor: "white"
                 }}
             >
                 <Typography component={"h3"} sx={{ fontSize: '28px', fontWeight: 'light' }}>

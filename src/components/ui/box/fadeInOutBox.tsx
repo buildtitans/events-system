@@ -5,7 +5,7 @@ import React from "react";
 const MotionBox = motion.create(Box);
 
 
-export default function FadeInOutBox({ children }: { children: React.ReactNode }) {
+export default function FadeInOutBox({ children, styles }: { children: React.ReactNode, styles?: any }) {
 
 
     return (
@@ -14,6 +14,7 @@ export default function FadeInOutBox({ children }: { children: React.ReactNode }
             initial="initial"
             animate="animate"
             exit="exit"
+            sx={styles}
         >
             {children}
         </MotionBox>
