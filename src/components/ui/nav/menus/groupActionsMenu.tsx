@@ -42,12 +42,17 @@ const StyledMenu = styled((props: MenuProps) => (
                 ...theme.applyStyles('dark', {
                     color: 'inherit',
                 }),
+
             },
+
             '&:active': {
                 backgroundColor: alpha(
                     theme.palette.primary.main,
                     theme.palette.action.selectedOpacity,
                 ),
+                '&:hover': {
+                    cursor: "pointer"
+                }
             },
         },
         ...theme.applyStyles('dark', {
@@ -82,12 +87,17 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
                 disableElevation
                 onClick={(e) => handleMenuOpen(e)}
                 endIcon={<KeyboardArrowDownIcon />}
+                size="small"
                 sx={{
                     borderRadius: 999,
                     color: 'black',
+                    backgroundColor: 'white',
+                    ':hover': {
+                        cursor: "pointer"
+                    }
                 }}
             >
-                Manage Group
+                Actions
             </Button>
             <StyledMenu
                 id="demo-customized-menu"

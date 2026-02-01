@@ -12,6 +12,9 @@ import GroupEventsHeader from "../sections/group/groupEventsHeader";
 import Container from "@mui/material/Container";
 import GroupHeadSecton from "../sections/group/groupHeadSection";
 import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
+import OpenedGroupSidebar from "../ui/drawers/openedGroupSidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
 type OpenedGroupProps = {
     groupID: string | null | undefined,
@@ -22,7 +25,8 @@ type OpenedGroupProps = {
     status: LoadingStatus
 };
 
-export default function OpenedGroup({ groupID, roleType, groupName, groupEvents, status }: OpenedGroupProps): JSX.Element {
+export default function OpenedGroup({ groupID, roleType, groupName, groupEvents, status, members }: OpenedGroupProps): JSX.Element {
+    const userKind = useSelector((s: RootState) => s.auth.userKind);
 
     return (
 
@@ -32,18 +36,22 @@ export default function OpenedGroup({ groupID, roleType, groupName, groupEvents,
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 8,
                 minHeight: '100vh',
                 width: '100%'
             }}
         >
 
             <GroupHeadSecton
+                status={status}
                 pages={groupEvents}
+                groupName={groupName}
+            />
+
+            <OpenedGroupSidebar
                 roleType={roleType}
                 status={status}
-                group_id={groupID}
-                groupName={groupName}
+                groupID={groupID}
+                open={userKind === "authenticated"}
             />
 
             <Box
@@ -51,10 +59,12 @@ export default function OpenedGroup({ groupID, roleType, groupName, groupEvents,
                     display: "flex",
                     flexDirection: "column",
                     gap: 8,
-                    alignItems: 'start',
+                    alignItems: 'center',
                     justifyContent: 'center',
-                    width: '100%',
+                    width: "100%",
+                    minWidth: '100%',
                     minHeight: '70vh',
+                    height: '100%'
                 }}
             >
                 {loadEventsPipeline(status, groupEvents)}

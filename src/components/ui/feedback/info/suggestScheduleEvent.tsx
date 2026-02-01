@@ -17,10 +17,11 @@ export default function NoScheduledEvents() {
                     height: "100%",
                     width: '100%',
                     border: 1,
-                    borderColor: "white"
+                    borderColor: "white",
+                    margin: 'auto'
                 }}
             >
-                <Typography component={"h3"} sx={{ fontSize: '28px', fontWeight: 'light' }}>
+                <Typography component={"h3"} sx={{ fontSize: '28px', fontWeight: 'light', width: '100%', textAlign: "center" }}>
                     No events are currently scheduled for this group
                 </Typography>
 

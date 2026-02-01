@@ -38,7 +38,7 @@ export default function CreateEventDrawer({ open }: { open: boolean }): JSX.Elem
                 elevation: 4,
                 sx: {
                     width: 500,
-                    backgroundColor: 'black'
+                    backgroundColor: 'black',
                 },
             }}
         >

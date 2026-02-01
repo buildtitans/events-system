@@ -1,20 +1,15 @@
 "use client";
 import Box from "@mui/material/Box";
 import { JSX } from "react";
-import type { LoadingStatus, UserInGroupRoleType } from "@/src/lib/types/tokens/types";
-import GroupOranizerOnly from "../../sections/group/GroupOrganizerOnly";
-import JoinGroupButton from "@/src/components/ui/buttons/joinGroupButton";
+import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import FadeInOutBox from "@/src/components/ui/box/fadeInOutBox";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
-import GroupActonsContainer from "../../ui/stack/groupActionsContainer";
 import GroupEventsHeader from "./groupEventsHeader";
 
 type GroupHeadSectionProps = {
     status: LoadingStatus,
-    roleType: UserInGroupRoleType,
-    group_id: GroupSchemaType["id"] | null | undefined,
     pages: EventsPages,
     groupName: GroupSchemaType["name"]
 }
@@ -23,8 +18,6 @@ type GroupHeadSectionProps = {
 export default function GroupHeadSecton(
     {
         status,
-        roleType,
-        group_id,
         pages,
         groupName
     }: GroupHeadSectionProps): JSX.Element | null {
@@ -39,14 +32,10 @@ export default function GroupHeadSecton(
                     alignItems: 'start',
                     justifyContent: 'center',
                     gap: 6,
-                    width: '100%',
+                    width: 'auto',
+                    height: '100%'
                 }}>
-                    <GroupActonsContainer
-                        roleType={roleType}
-                        status={status}
-                        group_id={group_id}
 
-                    />
 
                     <GroupEventsHeader
                         groupName={groupName}

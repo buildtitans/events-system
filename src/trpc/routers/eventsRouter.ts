@@ -23,8 +23,7 @@ export const eventsRouter = router({
         .input(typeboxInput<GroupIdSchemaType>(GroupIdSchemaValidator))
         .mutation(async ({ ctx, input }) => {
 
-            const user_id = ctx.user?.id;
-            if (!user_id || (!input)) return null;
+            if (!input) return null;
 
             return await ctx.api.events.getGroupEvents(input);
 

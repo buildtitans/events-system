@@ -9,7 +9,6 @@ import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 
 const loadEventsPipeline = (eventLoadingStatus: LoadingStatus, eventsPages: EventsPages): JSX.Element => {
 
-
     switch (eventLoadingStatus) {
         case "pending":
             return (

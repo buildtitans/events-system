@@ -18,32 +18,27 @@ export default function GroupActonsContainer({ status, roleType, group_id }: Gro
 
 
     return (
-        <AnimatePresence mode="wait">
-            {(status === "idle") &&
 
-                <FadeInOutBox>
-                    <Box sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "auto"
-                    }}>
-                        <JoinGroupButton
-                            status={status}
-                            group_id={group_id}
-                            roleType={roleType}
-                        />
+        <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "center",
+            width: "100%",
+            height: "auto",
+            paddingY: 10,
+            overflow: 'hidden'
+        }}>
+            <JoinGroupButton
+                status={status}
+                group_id={group_id}
+                roleType={roleType}
+            />
 
-                        <GroupOranizerOnly
-                            roleType={roleType}
-                        />
-                    </Box>
+            <GroupOranizerOnly
+                roleType={roleType}
+            />
+        </Box>
 
-
-                </FadeInOutBox>}
-
-        </AnimatePresence>
     )
 }

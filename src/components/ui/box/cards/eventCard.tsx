@@ -57,7 +57,6 @@ function EventCard(
         return string_date;
     }, [event])
 
-    console.log(variant.type)
 
     return (
         <Grid size={{
