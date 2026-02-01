@@ -3,6 +3,7 @@ import { seedGroups } from "./seedGroups";
 import { seedEvents } from "./seedEvents";
 import { seedUsers } from "./seedUsers";
 import { seedGroupMembers } from "./seedGroupMembers";
+import { seedEventAttendants } from "./seedEventAttendants";
 
 async function seedDB() {
     console.log("Seeding DB…");
@@ -20,6 +21,10 @@ async function seedDB() {
 
     await seedGroupMembers(groupsBySlug)
     console.log("Group Members OK");
+
+    await seedEventAttendants("placeholder_arg");
+    console.log("Event Attendants OK");
+
 
     process.exit(0);
 }
