@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { JSX } from 'react';
 
-function Author({ authors, scheduled_at }: { authors: { name: string; avatar: string }[], scheduled_at: EventSchemaType["starts_at"] }): JSX.Element | null {
+function Author({ authors, scheduled_at }: { authors: { name: string; avatar: string }[], scheduled_at?: EventSchemaType["starts_at"] }): JSX.Element | null {
 
     return (
         <Box

@@ -20,6 +20,8 @@ const groupMembersRouter = router({
                 };
 
                 return await ctx.api.groupMembers.addNewMember(newMember);
+
+
             }),
 
     getGroupMembers:

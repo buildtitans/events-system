@@ -7,6 +7,8 @@ import { LayoutSlotSchemaArrayType } from "@/src/schemas/layoutSlotSchema";
 import { EventsPages } from "../../store/slices/EventsSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -47,6 +49,12 @@ type JoinGroupHook = {
     handleClick: (group_id: GroupSchemaType["id"]) => Promise<void>,
 }
 
+type UpdateAttendanceStatusHook = {
+    newStatus: EventAttendantStatusSchemaType,
+    handleStatusChange: (e: SelectChangeEvent) => void,
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
+}
+
 export type {
     GetGroupRoleAndIdHook,
     CreateEventHook,
@@ -54,5 +62,6 @@ export type {
     UsePopulateEventsListHook,
     GetGroupEventsHook,
     GetGroupMembersHook,
-    JoinGroupHook
+    JoinGroupHook,
+    UpdateAttendanceStatusHook
 }

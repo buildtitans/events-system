@@ -1,9 +1,12 @@
-import { JSX } from "react";
+import { JSX, useCallback } from "react";
 import EventCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/lib/store";
+import { openEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
+
+//TODO: seperate openEventDrawer from populating the viewerInfo, makes this an optimistic update instead
 
 function renderLayout(
     slots: LayoutSlotSchemaType[],
@@ -12,6 +15,13 @@ function renderLayout(
     focusedCardIndex: EventCardProps["focusedCardIndex"]
 ): JSX.Element[] {
     const groupNamesById = useSelector((s: RootState) => s.events.nameByGroupId);
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleOpenEvent = useCallback((event: EventCardProps["event"]) => {
+        return () => {
+            dispatch(openEventDrawer(event))
+        }
+    }, []);
 
     return slots.map((slot, i: number) => {
 
@@ -27,6 +37,7 @@ function renderLayout(
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
+                        handleOpenEvent={handleOpenEvent}
                     />
                 )
 

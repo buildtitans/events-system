@@ -37,7 +37,8 @@ export type EventCardProps = {
     event: EventSchemaType,
     variant: CardDesignation,
     index: number,
-    groupName: string
+    groupName: string,
+    handleOpenEvent: (event: EventSchemaType) => () => void
 }
 
 function EventCard(
@@ -48,7 +49,8 @@ function EventCard(
         event,
         variant,
         index,
-        groupName
+        groupName,
+        handleOpenEvent
     }: EventCardProps
 ): JSX.Element {
     const scheduled_at = useMemo(() => {
@@ -66,6 +68,7 @@ function EventCard(
         >
 
             <StyledCard
+                onClick={handleOpenEvent(event)}
                 variant="outlined"
                 onFocus={() => handleFocus(index)}
                 onBlur={handleBlur}

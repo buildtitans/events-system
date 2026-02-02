@@ -30,6 +30,12 @@ const snackbarMessages: SnackbarMessages = {
         pending: "Joining group...",
         success: "Joined group!",
         failed: "Failed to join this group"
+    },
+    updatingAttendance: {
+        idle: "",
+        pending: "Updating attendance...",
+        success: "Updated Attendance!",
+        failed: "Failed to update attendance"
     }
 };
 

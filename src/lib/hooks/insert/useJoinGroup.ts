@@ -14,6 +14,7 @@ const useJoinGroup = (): JoinGroupHook => {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
 
+
     function handleResult(res: GroupMembersSchemaType | null) {
 
         timerRef.current = window.setTimeout(() => {

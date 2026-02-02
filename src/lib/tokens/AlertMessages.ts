@@ -12,6 +12,10 @@ const alertMessages: AlertMessages = {
     createEvent: {
         success: "Event created successfully!",
         error: "Failed to create new event"
+    },
+    updateAttendance: {
+        success: "Attendance updated!",
+        error: "Failed to update attendance"
     }
 };
 

@@ -1,22 +1,12 @@
-import { TypeSystem } from "@sinclair/typebox/system";
+import "./formats";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
 import type { ValueError } from "@sinclair/typebox/compiler";
 import { EventsArraySchema, NewEventInputSchema } from "@/src/schemas/eventSchema";
-import { CardVariantTypeSchema, PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
+import { PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groupSchema";
-import { NewGroupInputSchema } from "@/src/schemas/groupSchema";
-
-TypeSystem.Format("date-time", (value) => {
-    if (typeof value !== "string") return false;
-    const t = Date.parse(value);
-    if (!Number.isFinite(t)) return false;
-
-    return /(?:Z|[+-]\d{2}:\d{2})$/.test(value);
-});
-
 
 function preview(value: unknown, max = 160) {
     if (value == null) return String(value);
@@ -74,7 +64,13 @@ const GroupsSchemaValidator = createValidator(GroupsSchema, "GroupsSchema");
 
 const NewEventSchemaValidator = createValidator(NewEventInputSchema, "NewEventInputSchema")
 
-const AuthorsParsingValidator = createValidator(AuthorsSchema, "AuthorsShchema");
 
 
-export { AuthorsValidator, eventsValidator, layoutSlotValidator, GroupSchemaValidator, GroupsSchemaValidator, NewEventSchemaValidator };
+export {
+    AuthorsValidator,
+    eventsValidator,
+    layoutSlotValidator,
+    GroupSchemaValidator,
+    GroupsSchemaValidator,
+    NewEventSchemaValidator
+};

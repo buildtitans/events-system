@@ -19,7 +19,8 @@ type SnackbarMessages = {
     login: Record<RequestStatus, string>;
     newGroup: Record<RequestStatus, string>;
     newEvent: Record<RequestStatus, string>;
-    joiningGroup: Record<RequestStatus, string>
+    joiningGroup: Record<RequestStatus, string>,
+    updatingAttendance: Record<RequestStatus, string>
 };
 
 
@@ -39,7 +40,8 @@ type AlertKind =
 type AlertMessages = {
     createGroup: Record<AlertKind, string>,
     signup: Record<AlertKind, string>,
-    createEvent: Record<AlertKind, string>
+    createEvent: Record<AlertKind, string>,
+    updateAttendance: Record<AlertKind, string>
 }
 
 type AlertMessagesType =

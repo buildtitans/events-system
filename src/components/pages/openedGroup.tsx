@@ -15,6 +15,7 @@ import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
 import OpenedGroupSidebar from "../ui/drawers/openedGroupSidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import { useGetEventAttendants } from "@/src/lib/hooks/init/useGetEventAttendants";
 
 type OpenedGroupProps = {
     groupID: string | null | undefined,
@@ -27,7 +28,6 @@ type OpenedGroupProps = {
 
 export default function OpenedGroup({ groupID, roleType, groupName, groupEvents, status, members }: OpenedGroupProps): JSX.Element {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
-
     // TODO: display the attendees of each event (if there are any)
     //TODO: add a button to allow authenticated users (userKind === "authenticated") 
     // the ability to change their attendance status

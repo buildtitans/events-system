@@ -1,35 +1,12 @@
 import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Groups } from "@/src/server/db/types/db";
 import { GroupSchemaType, GroupsSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
-import { GroupSchemaValidator, GroupsSchemaValidator } from "@/src/server/validation/validateSchema";
+import { GroupSchemaValidator, GroupsSchemaValidator } from "@/src/lib/utils/validation/validateSchema";
 import { slugify } from "@/src/lib/utils/helpers/slugify";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
-// type InsertableMember = Pick<GroupMembersSchemaType, "group_id" | "user_id">
 
 export class GroupsClient {
     constructor(private readonly db: Kysely<DB>) { }
-
-
-    //   async addOrganizer(organizer: InsertableMember): Promise<GroupMembersSchemaType> {
-    //
-    //       const inserted = await this.db.insertInto("group_members").values({
-    //           group_id: organizer.group_id,
-    //           user_id: organizer.user_id,
-    //           role: "organizer"
-    //       })
-    //           .onConflict((c) =>
-    //               c.columns(["group_id", "user_id"]).doUpdateSet({ role: "organizer" })
-    //           )
-    //           .returningAll()
-    //           .executeTakeFirstOrThrow()
-    //
-    //       const parsedOrganizer = this.parseNewRawMember(inserted);
-    //
-    //       return parsedOrganizer;
-    //   }
-    //
-
 
     async getGroups(): Promise<GroupsSchemaType> {
         const raw = await this.getRawGroups();
