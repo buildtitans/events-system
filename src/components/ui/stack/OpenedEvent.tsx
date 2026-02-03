@@ -16,9 +16,13 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
     return (
         <FadeInOutBox>
             <Stack sx={{
-                paddingX: 3,
-                paddingY: 6
-            }} spacing={4}>
+                marginX: 3,
+                paddingTop: 2,
+                paddingBottom: 4,
+                alignItems: "start",
+                borderBottom: 1,
+                borderColor: 'rgb(255, 255, 255, 0.15)'
+            }} spacing={3}>
 
                 <EventTitle
                     title={event.title}
@@ -28,39 +32,7 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
                     thumbnail={thumbnail}
                 />
 
-                <Box sx={{
-                    width: "100%",
-                    height: "auto",
-                    textAlign: "center",
-                    borderRadius: 2,
-                    gap: 1,
-                    overflow: "hidden",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "start"
-                }} >
-                    <Typography component={"h3"} sx={{
-                        textAlign: "left",
-                        color: "rgba(255, 255, 255, 0.75)",
-                        width: "100%",
-                        fontSize: "20px",
-                        fontWeight: "light",
-                        borderBottom: 1,
-                        borderColor: 'rgb(255, 255, 255, 0.15)'
-                    }}>
-                        Details
-                    </Typography>
-
-                    <Typography component={"p"} sx={{
-                        fontWeight: "light",
-                        fontSize: "16px",
-                        color: "white",
-                        textAlign: "left"
-                    }} >
-                        {event.description}
-                    </Typography>
-                </Box>
+                <EventDescription description={event.description} />
 
                 <Box
                     sx={{
@@ -80,22 +52,14 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
                         textAlign: "left",
                         color: "rgba(255, 255, 255, 0.75)",
                         width: "100%",
-                        fontSize: "20px",
+                        fontSize: "14px",
                         fontWeight: "light",
-                        borderBottom: 1,
-                        borderColor: 'rgb(255, 255, 255, 0.15)'
+
                     }}>
-                        Starts at
+                        Starts at {startTime}
                     </Typography>
 
-                    <Typography component={"p"} sx={{
-                        fontWeight: "light",
-                        fontSize: "16px",
-                        color: "white",
-                        textAlign: "left"
-                    }} >
-                        {startTime}
-                    </Typography>
+
                 </Box>
             </Stack>
 
@@ -108,7 +72,7 @@ function EventTitle({ title }: { title: EventSchemaType["title"] }): JSX.Element
 
     return (
         <Box sx={{
-            width: "100%",
+            width: "90%",
             height: "auto",
             textAlign: "center",
             color: "white",
@@ -116,11 +80,52 @@ function EventTitle({ title }: { title: EventSchemaType["title"] }): JSX.Element
             <Typography component={"h2"} sx={{
                 fontSize: "22px",
                 fontWeight: "light",
-                textAlign: "left"
+                textAlign: "left",
+                textWrap: "wrap"
             }} >
                 {title}
             </Typography>
 
+        </Box>
+    )
+}
+
+function EventDescription({ description }: { description: EventSchemaType["description"] }): JSX.Element {
+
+
+    return (
+        <Box sx={{
+            width: "100%",
+            height: "auto",
+            textAlign: "center",
+            borderRadius: 2,
+            gap: 1,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "start"
+        }} >
+            <Typography component={"h3"} sx={{
+                textAlign: "left",
+                color: "rgba(255, 255, 255, 0.85)",
+                width: "100%",
+                fontSize: "18px",
+                fontWeight: "light",
+                borderBottom: 1,
+                borderColor: 'rgb(255, 255, 255, 0.15)'
+            }}>
+                Details
+            </Typography>
+
+            <Typography component={"p"} sx={{
+                fontWeight: "light",
+                fontSize: "14px",
+                color: "white",
+                textAlign: "left"
+            }} >
+                {description}
+            </Typography>
         </Box>
     )
 }

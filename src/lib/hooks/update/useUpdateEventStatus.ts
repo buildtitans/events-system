@@ -10,6 +10,7 @@ import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
@@ -28,6 +29,10 @@ export const useUpdateEventStatus = (currentStatus: EventAttendantStatusSchemaTy
         timerRef.current = window.setTimeout(() => {
             dispatch(enqueueSnackbar({ kind: null, status: 'idle' }));
             dispatch(enqueueAlert({ action: "updateAttendance", kind: result ? "success" : "error" }));
+
+            if (result) {
+                dispatch(getViewerAttendance(result))
+            }
 
             timerRef.current = null;
         }, 1200)

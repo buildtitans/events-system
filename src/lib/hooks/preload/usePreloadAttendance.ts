@@ -2,65 +2,72 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { getViewerAttendance, setViewerMemberType } from "../../store/slices/events/EventDrawerSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { getEventAttendants } from "../../store/slices/EventAttendantsSlice";
 
-function getViewerFromAttendants(user_id: string, attendants: EventAttendantsSchemaType[]): EventAttendantsSchemaType | undefined {
-
-    const info = attendants.find((attendant: EventAttendantsSchemaType) => {
-        const match = (attendant.user_id === user_id);
-        if (match) {
-            return attendant
-        }
-    });
-
-    return info
+function getViewerFromAttendants(
+    user_id: string,
+    attendants: EventAttendantsSchemaType[]
+): EventAttendantsSchemaType | undefined {
+    return attendants.find(a => a.user_id === user_id);
 };
 
-function ifNotAttendant(user_id: string, event_id: string): EventAttendantsSchemaType {
-
-    const now = String(new Date())
-
+function ifNotAttendant(
+    user_id: string,
+    event_id: string
+): EventAttendantsSchemaType {
     return {
         user_id: user_id,
         event_id: event_id,
         status: "not_going",
-        created_at: now,
+        created_at: new Date().toISOString(),
         updated_at: null
-
-    }
+    };
 };
 
-function isMemberOfThisGroup(user_id: string, members: GroupMembersSchemaType[]): boolean {
-    let isMember: boolean = false;
-
-    members.forEach((member) => {
-        if (user_id === member.user_id) {
-            isMember = true;
-            return;
-        }
-    })
-    return isMember
+function isMemberOfThisGroup(
+    user_id: string,
+    members: GroupMembersSchemaType[]
+): boolean {
+    return members.some(m => m.user_id === user_id);
 }
-
 
 export const usePreloadAttendance = () => {
     const members = useSelector((s: RootState) => s.groupMembers.members);
     const event = useSelector((s: RootState) => s.eventDrawer.event);
-    const attendants = useSelector((s: RootState) => s.eventAttendants.attendants);
-    const viewerType = useSelector((s: RootState) => s.eventDrawer.viewerType);
     const dispatch = useDispatch<AppDispatch>();
 
-    console.log(viewerType)
+    function handleAttendants(
+        attendantsReq: EventAttendantsSchemaType[],
+        user_id: string,
+        event_id: string
+    ) {
+
+        dispatch(getEventAttendants(attendantsReq));
+        const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
+        dispatch(getViewerAttendance(viewerAttendance ?? ifNotAttendant(user_id, event_id)));
+    };
+
+    function handleIsMember(
+        user_id: string
+    ) {
+        const isGroupMember = isMemberOfThisGroup(user_id, members);
+        dispatch(setViewerMemberType(isGroupMember ? "member" : "anonymous"));
+        return isGroupMember
+    }
 
     useEffect(() => {
-        if (!event) return;
+        if ((!event)) return;
 
         const executeGetViewerAttendance = async () => {
             try {
-                const res = await trpcClient.auth.session.mutate();
+                const res = await trpcClient
+                    .auth
+                    .session
+                    .mutate();
 
                 if (!res) {
                     throw new Error(`Failed to get current user`);
@@ -68,23 +75,25 @@ export const usePreloadAttendance = () => {
 
                 const { user_id } = res;
 
-                const isGroupMember = isMemberOfThisGroup(user_id, members);
+                const isMember = handleIsMember(user_id);
+                if (!isMember) return;
+                const attendantsReq = await trpcClient
+                    .eventAttendants
+                    .getAttendants
+                    .mutate(event.id);
 
-                dispatch(setViewerMemberType(isGroupMember ? "member" : "anonymous"))
-
-                const attendance = getViewerFromAttendants(user_id, attendants);
-                console.log(attendance)
-
-                dispatch(getViewerAttendance(attendance ?? ifNotAttendant(user_id, event.id)))
+                if (!attendantsReq) {
+                    throw new Error("Failed to get attendants")
+                }
+                handleAttendants(attendantsReq, user_id, event.id);
 
             } catch (err) {
                 console.error(err);
             }
-
         };
 
         void executeGetViewerAttendance();
+    }, [event, members, dispatch]);
 
-
-    }, [event])
+    return;
 }

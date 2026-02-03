@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/fadeInOutBox";
+import InputLabel from '@mui/material/InputLabel';
 
 type UpdateAttendanceStatusForm = {
     status: EventAttendantStatusSchemaType | null
@@ -33,15 +34,15 @@ export default function UpdateViewerAttendanceForm(
     } = useUpdateEventStatus(currentStatus, event_id);
     const { control } = useForm<UpdateAttendanceStatusForm>();
 
-    console.log(newStatus)
-
     return (
         <FadeInOutBox>
             <Container
                 sx={{
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
+                    justifyContent: "start",
+                    alignItems: "center",
+                    paddingX: 3,
+                    paddingTop: 6
                 }}
                 disableGutters>
                 <form
@@ -49,33 +50,26 @@ export default function UpdateViewerAttendanceForm(
                     style={{
                         width: '450px',
                         height: '100%',
-                        gap: 40,
+                        gap: 16,
                         display: 'flex',
                         flexDirection: 'column',
 
                     }}
                 >
-                    <Typography
-                        component={"h2"}
-                        sx={{
-                            fontSize: '26px',
-                            borderBottom: 1,
-                            borderColor: 'rgb(255, 255, 255, 0.15)'
-                        }}
-                    >
-                        Attendance Status
-                    </Typography>
+
 
                     <Controller
                         name="status"
                         control={control}
                         render={() => (
-                            <FormControl>
+                            <FormControl fullWidth>
+                                <InputLabel id="attendance-interest-selector">Mark me as</InputLabel>
                                 <Select
                                     id="select-attendance-status"
                                     value={newStatus}
                                     label="Attendance"
                                     onChange={(e) => handleStatusChange(e)}
+                                    labelId="attendance-interest-selector"
                                 >
                                     {ATTENDANCE_OPTIONS.map((option) => (
                                         <MenuItem

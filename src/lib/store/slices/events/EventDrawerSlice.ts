@@ -14,7 +14,8 @@ type InitialState = {
     status: EventDrawerStatus
     event: EventForDrawer,
     viewerAttendanceInfo: UserAttendantInfo
-    viewerType: ViewerType
+    viewerType: ViewerType,
+
 };
 
 const initialState: InitialState = {

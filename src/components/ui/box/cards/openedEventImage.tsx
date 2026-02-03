@@ -16,6 +16,7 @@ export default function OpenedEventImage({ thumbnail }: {
         <Box sx={{
             width: "100%",
             height: "auto",
+            maxWidth: 500,
             textAlign: "center",
             borderRadius: 2,
             overflow: "hidden",

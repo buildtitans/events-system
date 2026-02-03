@@ -33,14 +33,21 @@ export class EventAttendantsClient {
             .parseRawAttendants(raw);
     }
 
-    async updateAttendanceStatus(attendant: PrivateUserAttendanceUpdate
-        , newStatus: EventAttendantsSchemaType["status"]): Promise<EventAttendantsSchemaType> {
+    async updateAttendanceStatus(
+        attendant: PrivateUserAttendanceUpdate,
+        newStatus: EventAttendantsSchemaType["status"]
+    ): Promise<EventAttendantsSchemaType> {
 
         const updatedRaw = await this
-            .updateStatus(
+            .upsertStatus(
                 attendant,
                 newStatus
             );
+
+        console.log({
+            "Raw Updated Attendant": updatedRaw
+        });
+
         return this
             .parseRawAttendant(updatedRaw);
     };
@@ -67,22 +74,32 @@ export class EventAttendantsClient {
             .executeTakeFirstOrThrow();
     };
 
-    async updateStatus(
+    async upsertStatus(
         attendant: PrivateUserAttendanceUpdate,
         newStatus: EventAttendantsSchemaType["status"]
     ): Promise<SelectedAttendant> {
+        const now = new Date();
 
         return await this.db
-            .updateTable("event_attendants")
-            .where("event_id", "=", attendant.event_id)
-            .where("user_id", "=", attendant.user_id)
-            .set({
-                status: newStatus
+            .insertInto("event_attendants")
+            .values({
+                event_id: attendant.event_id,
+                user_id: attendant.user_id,
+                status: newStatus,
+                created_at: now,
+                updated_at: now,
             })
+            .onConflict((oc) =>
+                oc
+                    .columns(["event_id", "user_id"])
+                    .doUpdateSet({
+                        status: newStatus,
+                        updated_at: now,
+                    })
+            )
             .returningAll()
-            .executeTakeFirstOrThrow()
+            .executeTakeFirstOrThrow();
     }
-
 
     parseRawAttendants(
         raw: Selectable<EventAttendants>[]
