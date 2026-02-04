@@ -7,6 +7,7 @@ import CategoriesSlice from "@/src/lib/store/slices/CategorySlice";
 import GroupMembersSlice from '@/src/lib/store/slices/GroupMembersSlice';
 import EventAttendantsSlice from "@/src/lib/store/slices/EventAttendantsSlice";
 import EventDrawerSlice from "@/src/lib/store/slices/events/EventDrawerSlice";
+import OpenedGroupSlice from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
         categories: CategoriesSlice,
         groupMembers: GroupMembersSlice,
         eventAttendants: EventAttendantsSlice,
-        eventDrawer: EventDrawerSlice
+        eventDrawer: EventDrawerSlice,
+        openGroup: OpenedGroupSlice
     }
 });
 

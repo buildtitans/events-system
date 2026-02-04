@@ -5,10 +5,11 @@ import type { JSX } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ViewerType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import NotGroupMember from "../../ui/fallbacks/NotGroupMember";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type MembersOnlyAttendanceFormProps = {
     viewer: EventAttendantsSchemaType | null,
-    viewerType: ViewerType
+    viewerType: GroupMembersSchemaType["role"]
 }
 
 export default function MembersOnlyAttendanceForm({ viewerType, viewer }: MembersOnlyAttendanceFormProps): JSX.Element | null {

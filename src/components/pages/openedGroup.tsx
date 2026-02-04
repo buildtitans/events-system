@@ -1,37 +1,22 @@
 "use client";
 import Box from "@mui/material/Box";
 import { JSX } from "react";
-import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
-import type { LoadingStatus, UserInGroupRoleType } from "@/src/lib/types/tokens/types";
-import type { GroupSchemaType } from "@/src/schemas/groupSchema";
+import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { loadEventsPipeline } from "../pipelines/events/loadEventsPipeline";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
-import GroupActonsContainer from "../ui/stack/groupActionsContainer";
-import { AnimatePresence } from "framer-motion";
-import GroupEventsHeader from "../sections/group/groupEventsHeader";
-import Container from "@mui/material/Container";
 import GroupHeadSecton from "../sections/group/groupHeadSection";
-import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
 import OpenedGroupSidebar from "../ui/drawers/openedGroupSidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { useGetEventAttendants } from "@/src/lib/hooks/init/useGetEventAttendants";
 
 type OpenedGroupProps = {
-    groupID: string | null | undefined,
-    roleType: UserInGroupRoleType,
-    members: GroupMembersSchemaType[],
-    groupName: GroupSchemaType["name"],
-    groupEvents: EventsPages,
     status: LoadingStatus
 };
 
-export default function OpenedGroup({ groupID, roleType, groupName, groupEvents, status, members }: OpenedGroupProps): JSX.Element {
+export default function OpenedGroup({ status }: OpenedGroupProps): JSX.Element | null {
+    const { viewerKind, events, group } = useSelector((s: RootState) => s.openGroup)
     const userKind = useSelector((s: RootState) => s.auth.userKind);
-    // TODO: display the attendees of each event (if there are any)
-    //TODO: add a button to allow authenticated users (userKind === "authenticated") 
-    // the ability to change their attendance status
-    // ———> attendance status being ' "going" | "not_going" | "interested"
+
+    if (!group) return null;
 
     return (
 
@@ -48,14 +33,14 @@ export default function OpenedGroup({ groupID, roleType, groupName, groupEvents,
 
             <GroupHeadSecton
                 status={status}
-                pages={groupEvents}
-                groupName={groupName}
+                pages={events}
+                groupName={group?.name}
             />
 
             <OpenedGroupSidebar
-                roleType={roleType}
+                roleType={viewerKind}
                 status={status}
-                groupID={groupID}
+                groupID={group.id}
                 open={userKind === "authenticated"}
             />
 
@@ -72,7 +57,7 @@ export default function OpenedGroup({ groupID, roleType, groupName, groupEvents,
                     height: '100%'
                 }}
             >
-                {loadEventsPipeline(status, groupEvents)}
+                {loadEventsPipeline(status, events)}
             </Box>
         </Box>
     )

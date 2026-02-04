@@ -7,16 +7,16 @@ import { usePreloadAttendance } from "@/src/lib/hooks/preload/usePreloadAttendan
 import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
 import { AnimatePresence } from "framer-motion";
 import OpenedEvent from "../stack/OpenedEvent";
-import AttendanceFormSkeleton from "../skeletons/AttendanceFormSkeleton";
 
-//TODO: add optimistic load of attendance form
 
 export default function OpenedEventDrawer({ open }: { open: boolean }) {
     const event = useSelector((s: RootState) => s.eventDrawer.event);
     const viewer = useSelector((s: RootState) => s.eventDrawer.viewerAttendanceInfo);
-    const viewerType = useSelector((s: RootState) => s.eventDrawer.viewerType);
+    const viewerType = useSelector((s: RootState) => s.groupMembers.viewerKind);
     usePreloadAttendance();
     const dispatch = useDispatch<AppDispatch>()
+
+
 
     return (
         <Drawer

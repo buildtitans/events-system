@@ -1,23 +1,16 @@
 "use client"
 import OpenedGroup from "@/src/components/pages/openedGroup";
 import { useEffect, type JSX } from "react";
-import { useGetGroupRoleAndId } from "@/src/lib/hooks/auth/useGetGroupRoleAndId";
 import { useRecoverStore } from "@/src/lib/hooks/init/useRecoverData";
-import { useGetGroupMembers } from "@/src/lib/hooks/init/useGetGroupMembers";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { clearMembersState } from "@/src/lib/store/slices/GroupMembersSlice";
-import { useGetGroupEvents } from "@/src/lib/hooks/init/useGetGroupEvents";
+import { useHydrateOpenedGroup } from "@/src/lib/hooks/preload/useHydrateOpenedGroup";
 
-export default function GroupOpen(): JSX.Element {
+export default function GroupOpen({ params }: { params: { groupSlug: string } }): JSX.Element {
     useRecoverStore();
-    const { groupID, roleType, groupName } = useGetGroupRoleAndId();
-    const { members } = useGetGroupMembers(groupID, roleType);
+    const { status } = useHydrateOpenedGroup(params.groupSlug);
     const dispatch = useDispatch<AppDispatch>();
-    const {
-        groupEvents,
-        status
-    } = useGetGroupEvents(groupID);
 
     useEffect(() => {
 
@@ -28,11 +21,6 @@ export default function GroupOpen(): JSX.Element {
 
     return (
         <OpenedGroup
-            groupName={groupName}
-            members={members}
-            groupID={groupID}
-            roleType={roleType}
-            groupEvents={groupEvents}
             status={status}
         />
     )

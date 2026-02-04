@@ -21,13 +21,17 @@ function checkMembership(members: GroupMembersSchemaType[], id: string): UserInG
 };
 
 export const useGetGroupRoleAndId = (): GetGroupRoleAndIdHook => {
-    const viewerKind = useSelector((s: RootState) => s.groupMembers.viewerKind);
+    const viewerKind = useSelector((s: RootState) => s.openGroup.viewerKind);
     const members = useSelector((s: RootState) => s.groupMembers.members);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const path = usePathname();
     const dispatch = useDispatch<AppDispatch>()
     const { groupId, organizerId, name } = getIdsAndNameBySlug(path, groups);
 
+
+    console.log({
+        "Viewer Type": viewerKind
+    })
 
     useEffect(() => {
         if (!organizerId || (viewerKind !== "anonymous")) return;
