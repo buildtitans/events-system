@@ -23,6 +23,24 @@ export class GroupsClient {
 
     }
 
+    async getGroupBySlug(slug: GroupSchemaType["slug"]): Promise<GroupSchemaType> {
+
+        const raw = await this.rawGroupsBySlug(slug);
+
+        return this.formatGroup(raw)
+    }
+
+
+    async rawGroupsBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>> {
+
+        return await this.db
+            .selectFrom("groups")
+            .selectAll()
+            .where("slug", "=", slug)
+            .limit(1)
+            .executeTakeFirstOrThrow()
+    }
+
     formatRawGroups(groups: Selectable<Groups>[]): GroupsSchemaType {
         const formatted = [];
 

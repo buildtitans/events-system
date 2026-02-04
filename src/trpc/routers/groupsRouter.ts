@@ -1,7 +1,7 @@
 
 import { router, publicProcedure, protectedProcedure } from "@/src/trpc/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { CompiledGroupSchema, NewGroupInputSchemaType, NewGroupInputSchemaValidator } from "@/src/schemas/groupSchema";
+import { CompiledGroupSchema, GroupSlugSchemaType, GroupSlugSchemaValidator, NewGroupInputSchemaType, NewGroupInputSchemaValidator } from "@/src/schemas/groupSchema";
 
 export const groupsRouter = router({
     list: publicProcedure
@@ -29,5 +29,12 @@ export const groupsRouter = router({
 
 
             return group
+        }),
+
+    groupBySlug: publicProcedure
+        .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
+        .mutation(async ({ ctx, input }) => {
+
+            return await ctx.api.groups.getGroupBySlug(input);
         })
 })

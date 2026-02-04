@@ -20,6 +20,12 @@ export const NewGroupInputSchema = Type.Object({
     category_id: Type.Union([Type.String(), Type.Null()]),
 });
 
+export const GroupSlugSchema = Type.String();
+
+export type GroupSlugSchemaType = Static<typeof GroupSlugSchema>;
+
+export const GroupSlugSchemaValidator = TypeCompiler.Compile(GroupSlugSchema);
+
 export const NewGroupInputSchemaValidator = TypeCompiler.Compile(NewGroupInputSchema);
 
 export type NewGroupInputSchemaType = Static<typeof NewGroupInputSchema>;
