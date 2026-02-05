@@ -13,10 +13,12 @@ export const useGetViewerPermissions = () => {
     const groups = useSelector((s: RootState) => s.groups.communities);
 
     function handlePermissions(
-        userMemberships: GroupMembersSchemaType[]
+        userMemberships?: GroupMembersSchemaType[]
     ) {
-        const permissions = mapGroupAccessPermissions(userMemberships, groups);
-        console.log(permissions)
+        const permissions = mapGroupAccessPermissions(
+            groups,
+            userMemberships ?? null
+        );
         dispatch(getViewerPermissions(permissions));
     }
 
@@ -29,14 +31,12 @@ export const useGetViewerPermissions = () => {
                 const userMemberships = await trpcClient.groupMembers.viewerMemberships.mutate();
                 if (!userMemberships) return;
 
-                handlePermissions(userMemberships)
+                handlePermissions(userMemberships ?? [])
             } catch (err) {
                 console.error(err);
             }
         }
-
         void getUserPermissions();
-
     }, [userKind]);
 
 }

@@ -3,8 +3,8 @@ import type { ViewerAccess } from "../store/slices/GroupMembersSlice";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";
 
 export const mapGroupAccessPermissions = (
-    memberships: GroupMembersSchemaType[] | null,
-    groups: GroupsSchemaType
+    groups: GroupsSchemaType,
+    memberships: GroupMembersSchemaType[] | null
 ): ViewerAccess => {
     const accessPermissions: ViewerAccess = {};
 
