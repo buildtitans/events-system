@@ -18,6 +18,7 @@ import { retryLink } from "@trpc/client";
 export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
     const path = usePathname();
     const router = useRouter();
+    const userKind = useSelector((s: RootState) => s.auth.userKind);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const viewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
     const dispatch = useDispatch<AppDispatch>();
@@ -36,9 +37,7 @@ export default function CheckOutGroupButton({ event }: { event: EventSchemaType 
         dispatch(closeEventDrawer());
     };
 
-    console.log(viewerAccess)
-
-    if ((path !== "/") || (viewerAccess !== "anonymous")) return null;
+    if ((path !== "/") || ((viewerAccess !== "anonymous") && (userKind === "authenticated"))) return null;
 
     return (
         <Button

@@ -16,10 +16,11 @@ export default function TopLayerHost(): React.ReactNode {
     const createEventDrawer = useSelector((s: RootState) => s.rendering.drawer);
     const openedEventDrawerStatus = useSelector((s: RootState) => s.eventDrawer.status);
 
+
     return (
         <>
             <OpenedEventDrawer
-                open={((openedEventDrawerStatus === "active") && (userKind === "authenticated"))}
+                open={(openedEventDrawerStatus === "active")}
             />
             <CreateEventDrawer
                 open={createEventDrawer === "create event"}
