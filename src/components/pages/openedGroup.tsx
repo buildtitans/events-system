@@ -39,9 +39,8 @@ export default function OpenedGroup({ status }: OpenedGroupProps): JSX.Element |
             />
 
             <OpenedGroupSidebar
-                roleType={viewerKind}
                 status={status}
-                groupID={group.id}
+                group_id={group.id}
                 open={userKind === "authenticated"}
             />
 

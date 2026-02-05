@@ -7,21 +7,25 @@ import { groupSidebarStyles } from "@/src/lib/tokens/sxTokens";
 import { AnimatePresence } from "framer-motion";
 import Skeleton from "@mui/material/Skeleton";
 import FadeInOutBox from "../box/fadeInOutBox";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
+import { GroupSchemaType } from "@/src/schemas/groupSchema";
 
 type GroupSidebarProps = {
-    groupID: string,
-    roleType: UserInGroupRoleType,
     status: LoadingStatus,
     open: boolean
-
+    group_id: GroupSchemaType["id"]
 }
 
 export default function OpenedGroupSidebar({
     status,
-    groupID,
-    open
+    open,
+    group_id
 
-}: GroupSidebarProps): JSX.Element {
+}: GroupSidebarProps): JSX.Element | null {
+    const userKind = useSelector((s: RootState) => s.auth.userKind);
+
+    if (userKind === "anonymous") return null;
 
     return (
         <Drawer
@@ -42,14 +46,10 @@ export default function OpenedGroupSidebar({
             {(status === "pending") && (
                 <SidebarSkeleton key={"sidebar-skeleton"} />)}
 
-            <AnimatePresence >
-                {(status === "idle") && (
-                    <GroupActonsContainer
-                        status={status}
-                        group_id={groupID}
-                    />
-                )}
-            </AnimatePresence>
+            <GroupActonsContainer
+                status={status}
+                group_id={group_id}
+            />
         </Drawer>
     )
 }

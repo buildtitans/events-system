@@ -15,7 +15,7 @@ export default function MembersOnlyAttendanceForm({ role }: MembersOnlyAttendanc
 
     return (
         <AnimatePresence mode="wait">
-            {((role === "member") || (role === "organizer")) && (viewer) && <UpdateViewerAttendanceForm
+            {(viewer) && <UpdateViewerAttendanceForm
                 key={"update-status-form"}
                 currentStatus={viewer.status ?? "not_going"}
                 event_id={viewer.event_id}

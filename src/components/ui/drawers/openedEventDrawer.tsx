@@ -1,7 +1,7 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/src/lib/store";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/src/lib/store";
 import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/preload/usePreloadAttendance";
 import { JSX } from "react";
@@ -14,10 +14,6 @@ type EventDrawerProps = {
 export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Element | null {
     useHydrateEventDrawer();
     const dispatch = useDispatch<AppDispatch>();
-    const event = useSelector((s: RootState) => s.eventDrawer.event);
-    if (!event) return null;
-    const viewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event.group_id])
-
 
     const closeDrawer = () => {
         dispatch(closeEventDrawer());
@@ -32,15 +28,17 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Eleme
             sx={{
                 height: '100%',
             }}
-            PaperProps={{
-                elevation: 4,
-                sx: {
-                    width: 500,
-                    backgroundColor: 'black',
-                },
+            slotProps={{
+                paper: {
+                    elevation: 4,
+                    sx: {
+                        width: 500,
+                        backgroundColor: 'black',
+                    },
+                }
             }}
         >
-            {renderEventDrawerContents(viewerAccess)}
+            {renderEventDrawerContents()}
         </Drawer>
     );
 };

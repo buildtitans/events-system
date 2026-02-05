@@ -9,7 +9,7 @@ import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { getGroupSlugRoute } from "@/src/lib/utils/parsing/getGroupSlugRoute";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
-export default function CheckOutGroupButton({ event, role }: { event: EventSchemaType | null, role: GroupMembersSchemaType["role"] }): JSX.Element | null {
+export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
     const path = usePathname();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +21,7 @@ export default function CheckOutGroupButton({ event, role }: { event: EventSchem
         dispatch(closeEventDrawer());
     };
 
-    if ((path !== "/") || (role !== "anonymous")) return null;
+    if (path !== "/") return null;
 
     return (
         <Button

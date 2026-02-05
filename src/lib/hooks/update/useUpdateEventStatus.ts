@@ -52,7 +52,6 @@ export const useUpdateEventStatus = (currentStatus: EventAttendantStatusSchemaTy
                         newStatus: newStatus
                     }
                 );
-            console.log(result)
 
             handleResult(result);
         } catch (err) {

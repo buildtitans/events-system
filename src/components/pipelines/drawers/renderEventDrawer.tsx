@@ -1,4 +1,3 @@
-import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import type { JSX } from "react";
 import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
 import { useSelector } from "react-redux";
@@ -8,14 +7,24 @@ import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 
 
 export const renderEventDrawerContents = (
-    role: GroupMembersSchemaType["role"]
 ): JSX.Element | null => {
     const event = useSelector((s: RootState) => s.eventDrawer.event);
+    const role = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
 
     if (!event) return null;
 
     switch (role) {
         case "member":
+            return (
+                <>
+                    <OpenedEvent
+                        event={event}
+                    />
+                    <MembersOnlyAttendanceForm
+                        role={role}
+                    />
+                </>
+            )
         case "organizer":
             return (
                 <>
@@ -36,7 +45,6 @@ export const renderEventDrawerContents = (
                     />
 
                     <CheckOutGroupButton
-                        role={role}
                         event={event}
                     />
                 </>

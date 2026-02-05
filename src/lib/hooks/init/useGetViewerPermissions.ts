@@ -24,12 +24,11 @@ export const useGetViewerPermissions = () => {
 
 
     useEffect(() => {
-        if (userKind === "anonymous") return;
 
         const getUserPermissions = async () => {
             try {
                 const userMemberships = await trpcClient.groupMembers.viewerMemberships.mutate();
-                if (!userMemberships) return;
+
 
                 handlePermissions(userMemberships ?? [])
             } catch (err) {
@@ -37,6 +36,6 @@ export const useGetViewerPermissions = () => {
             }
         }
         void getUserPermissions();
-    }, [userKind]);
+    }, [userKind, groups]);
 
 }

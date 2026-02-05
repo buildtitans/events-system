@@ -1,6 +1,6 @@
 "use client";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef, useState } from "react";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
@@ -14,8 +14,9 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
     const [status, setStatus] = useState<LoadingStatus>("idle");
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
+    const { group, events } = useSelector((s: RootState) => s.openGroup);
 
-    async function handleTrpcResponses(
+    function handleTrpcResponses(
         events: EventsPages | null | undefined,
         group: GroupSchemaType | null | undefined,
     ) {
@@ -27,6 +28,8 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
         if (group) {
             dispatch(groupOpened(group));
         }
+
+        return "finished";
     };
 
     useEffect(() => {
@@ -39,15 +42,17 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
                 const events = await trpcClient.events.groupEvents.mutate(group.id);
 
 
-                await handleTrpcResponses(
+                const dispatches = handleTrpcResponses(
                     events,
                     group,
                 );
 
-                timerRef.current = window.setTimeout(() => {
-                    setStatus("idle");
-                    timerRef.current = null;
-                }, 1200)
+                if (dispatches === "finished" && (group)) {
+                    timerRef.current = window.setTimeout(() => {
+                        setStatus("idle");
+                        timerRef.current = null;
+                    }, 1200)
+                }
 
 
             } catch (err) {

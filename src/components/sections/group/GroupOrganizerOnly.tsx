@@ -7,9 +7,10 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";
 import Button from "@mui/material/Button";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 
-export default function GroupOranizerOnly({ roleType }: { roleType: UserInGroupRoleType }): JSX.Element | null {
+export default function GroupOranizerOnly({ roleType }: { roleType: GroupMembersSchemaType["role"] }): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
     const openEventDrawer = () => {
         dispatch(enqueueDrawer('create event'));

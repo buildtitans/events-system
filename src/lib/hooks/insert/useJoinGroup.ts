@@ -3,26 +3,40 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { addToGroupMembersState } from "../../store/slices/GroupMembersSlice";
+import { addToGroupMembersState, getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
+import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
 
 const useJoinGroup = (): JoinGroupHook => {
+    const groups = useSelector((s: RootState) => s.groups.communities);
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
 
+    async function refreshMemberships(): Promise<void> {
+        const userMemberships = await trpcClient.groupMembers.viewerMemberships.mutate();
+        const permissions = mapGroupAccessPermissions(
+            groups,
+            userMemberships ?? null
+        );
 
-    function handleResult(res: GroupMembersSchemaType | null) {
+        dispatch(getViewerPermissions(permissions));
+    }
+
+
+    async function handleResult(res: GroupMembersSchemaType | null) {
+        if (res) {
+            dispatch(addToGroupMembersState(res))
+
+            await refreshMemberships()
+        }
 
         timerRef.current = window.setTimeout(() => {
-            if (res) {
-                dispatch(addToGroupMembersState(res))
-            }
-
-            dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: res ? "success" : 'failed' }))
+            dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: res ? "success" : 'failed' }));
+            timerRef.current = null;
         }, 800);
     };
 

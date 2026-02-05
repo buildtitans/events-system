@@ -68,6 +68,8 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
         setAnchorEl(event.currentTarget);
     }
 
+    console.log("Actions button")
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         openEventDrawer();
         setAnchorEl(null)

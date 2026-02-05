@@ -1,6 +1,5 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventsPages } from "./EventsSlice";
 
 
 export type ViewerAccess = Record<GroupMembersSchemaType["group_id"], GroupMembersSchemaType["role"]>;
