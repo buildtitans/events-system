@@ -8,6 +8,15 @@ import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { formatDateForUI } from "@/src/lib/utils/rendering/formatDateForUI";
 import OpenedEventImage from "../box/cards/openedEventImage";
 
+const stackProps = {
+    marginX: 3,
+    paddingTop: 8,
+    paddingBottom: 4,
+    alignItems: "start",
+    borderBottom: 1,
+    borderColor: 'rgb(255, 255, 255, 0.15)'
+}
+
 
 export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.Element {
     const thumbnail = event.img;
@@ -15,14 +24,7 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
 
     return (
         <FadeInOutBox>
-            <Stack sx={{
-                marginX: 3,
-                paddingTop: 2,
-                paddingBottom: 4,
-                alignItems: "start",
-                borderBottom: 1,
-                borderColor: 'rgb(255, 255, 255, 0.15)'
-            }} spacing={3}>
+            <Stack sx={stackProps} spacing={3}>
 
                 <EventTitle
                     title={event.title}
@@ -32,35 +34,13 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
                     thumbnail={thumbnail}
                 />
 
-                <EventDescription description={event.description} />
+                <EventDescription
+                    description={event.description}
+                />
 
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: "auto",
-                        textAlign: "center",
-                        borderRadius: 2,
-                        gap: 1,
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "start"
-                    }}
-                >
-                    <Typography component={"h3"} sx={{
-                        textAlign: "left",
-                        color: "rgba(255, 255, 255, 0.75)",
-                        width: "100%",
-                        fontSize: "14px",
-                        fontWeight: "light",
-
-                    }}>
-                        Starts at {startTime}
-                    </Typography>
-
-
-                </Box>
+                <StartTime
+                    startTime={startTime}
+                />
             </Stack>
 
         </FadeInOutBox>
@@ -127,5 +107,41 @@ function EventDescription({ description }: { description: EventSchemaType["descr
                 {description}
             </Typography>
         </Box>
+    )
+}
+
+
+function StartTime({ startTime }: { startTime: string }) {
+
+
+    return (
+        <Box
+            sx={{
+                width: "100%",
+                height: "auto",
+                textAlign: "center",
+                borderRadius: 2,
+                gap: 1,
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "start"
+            }}
+        >
+            <Typography component={"h3"} sx={{
+                textAlign: "left",
+                color: "rgba(255, 255, 255, 0.75)",
+                width: "100%",
+                fontSize: "14px",
+                fontWeight: "light",
+
+            }}>
+                Starts at {startTime}
+            </Typography>
+
+
+        </Box>
+
     )
 }

@@ -15,6 +15,16 @@ export class GroupMembersClient {
 
     constructor(private readonly db: Kysely<DB>) { }
 
+    async getViewerMemberships(user_id: string): Promise<GroupMembersSchemaType[]> {
+
+        const raw = await this.db.selectFrom("group_members").selectAll().where("user_id", "=", user_id).execute();
+
+        const viewerMemberships = this.parseRawMembers(raw);
+
+        return viewerMemberships;
+    };
+
+
     async addOrganizer(organizer: InsertableMember): Promise<GroupMembersSchemaType> {
 
         const inserted = await this.db.insertInto("group_members").values({

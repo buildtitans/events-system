@@ -13,8 +13,10 @@ type OpenedGroupProps = {
 };
 
 export default function OpenedGroup({ status }: OpenedGroupProps): JSX.Element | null {
-    const { viewerKind, events, group } = useSelector((s: RootState) => s.openGroup)
+    const { events, group } = useSelector((s: RootState) => s.openGroup);
+    const viewerKind = useSelector((s: RootState) => s.groupMembers.accessPermissions[group?.id ?? ""])
     const userKind = useSelector((s: RootState) => s.auth.userKind);
+
 
     if (!group) return null;
 

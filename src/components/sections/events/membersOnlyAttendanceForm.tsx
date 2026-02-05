@@ -1,25 +1,23 @@
 "use client";
 import UpdateViewerAttendanceForm from "../forms/openedEventForm";
-import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import type { JSX } from "react";
 import { AnimatePresence } from "framer-motion";
-import { ViewerType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import NotGroupMember from "../../ui/fallbacks/NotGroupMember";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/src/lib/store";
+import { EventSchemaType } from "@/src/schemas/eventSchema";
 
 type MembersOnlyAttendanceFormProps = {
-    viewer: EventAttendantsSchemaType | null,
-    viewerType: GroupMembersSchemaType["role"]
+    group_id: EventSchemaType["group_id"]
 }
 
-export default function MembersOnlyAttendanceForm({ viewerType, viewer }: MembersOnlyAttendanceFormProps): JSX.Element | null {
-
-
-    if (!viewer) return null;
+export default function MembersOnlyAttendanceForm({ group_id }: MembersOnlyAttendanceFormProps): JSX.Element | null {
+    const viewer = useSelector((s: RootState) => s.eventDrawer.viewerAttendanceInfo);
+    const viewerType = useSelector((s: RootState) => s.groupMembers.accessPermissions[group_id]);
 
     return (
         <AnimatePresence mode="wait">
-            {(viewerType === "member") && <UpdateViewerAttendanceForm
+            {(viewerType === "member") && (viewer) && <UpdateViewerAttendanceForm
                 key={"update-status-form"}
                 currentStatus={viewer.status ?? "not_going"}
                 event_id={viewer.event_id}

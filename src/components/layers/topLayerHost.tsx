@@ -18,8 +18,13 @@ export default function TopLayerHost(): React.ReactNode {
 
     return (
         <>
-            {(userKind === "authenticated") && <OpenedEventDrawer open={(openedEventDrawerStatus === "active")} />}
-            <CreateEventDrawer open={createEventDrawer === "create event"} />
+            <OpenedEventDrawer
+                open={((openedEventDrawerStatus === "active") && (userKind === "authenticated"))}
+            />
+            <CreateEventDrawer
+                open={createEventDrawer === "create event"}
+            />
+
             {modalPipeline(modal)}
             <AnimatePresence mode='wait'>
                 {(alert.action !== null) && alertsPipeline(alert)}

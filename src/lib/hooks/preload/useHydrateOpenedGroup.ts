@@ -6,27 +6,12 @@ import { useEffect, useState } from "react";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventsPages } from "../../store/slices/EventsSlice";
-import { getGroupEvents, getViewerRoleInGroup, groupOpened } from "../../store/slices/groups/OpenedGroupSlice";
-import { getGroupMembers } from "../../store/slices/GroupMembersSlice";
+import { groupOpened } from "../../store/slices/groups/OpenedGroupSlice";
+import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 import { LoadingStatus } from "../../types/tokens/types";
+import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
+import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 
-function checkMembership(members: GroupMembersSchemaType[], id: string): GroupMembersSchemaType["role"] {
-
-    const member = members.find((el: GroupMembersSchemaType) => el.user_id === id);
-
-    return member?.role ?? "anonymous";
-};
-
-async function getUserId(): Promise<string | null> {
-
-    const session = await trpcClient.auth.session.mutate();
-
-    if (!session) return null;
-
-    const { user_id } = session;
-
-    return user_id;
-};
 
 export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: LoadingStatus } => {
     const [status, setStatus] = useState<LoadingStatus>("idle");
@@ -34,20 +19,14 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
 
     async function handleTrpcResponses(
         events: EventsPages | null | undefined,
-        user_id: string | null | undefined,
-        members: GroupMembersSchemaType[],
-        group: GroupSchemaType | null | undefined
+        group: GroupSchemaType | null | undefined,
+        userMemberships: GroupMembersSchemaType[] | null
     ) {
-        if (user_id) {
-            const role = checkMembership(members, user_id);
-            dispatch(getViewerRoleInGroup(role));
-        }
 
-        if ((Array.isArray(members) && (members.length > 0))) {
-            dispatch(getGroupMembers(members));
-        }
+        const accessMap = mapGroupAccessPermissions(userMemberships);
+        dispatch(getViewerPermissions(accessMap))
 
-        if ((Array.isArray(events)) && (events.length > 1)) {
+        if (events) {
             dispatch(getGroupEvents(events));
         };
 
@@ -59,20 +38,19 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
     }
 
     useEffect(() => {
+        if (!slug) return;
 
         const executeGetGroupBySlug = async () => {
             setStatus("pending");
             try {
                 const group = await trpcClient.groups.groupBySlug.mutate(slug);
-                const members = await trpcClient.groupMembers.getGroupMembers.mutate(group.id);
                 const events = await trpcClient.events.groupEvents.mutate(group.id);
-                const user_id = await getUserId();
+                const userMemberships = await trpcClient.groupMembers.viewerMemberships.mutate();
 
                 await handleTrpcResponses(
                     events,
-                    user_id,
-                    members,
-                    group
+                    group,
+                    userMemberships
                 );
 
             } catch (err) {
@@ -85,7 +63,7 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
 
         void executeGetGroupBySlug();
 
-    }, []);
+    }, [slug]);
 
     return { status }
 }

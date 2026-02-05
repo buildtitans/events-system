@@ -14,7 +14,6 @@ type GroupHeadSectionProps = {
     groupName: GroupSchemaType["name"]
 }
 
-
 export default function GroupHeadSecton(
     {
         status,

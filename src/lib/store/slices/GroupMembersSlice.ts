@@ -1,15 +1,19 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EventsPages } from "./EventsSlice";
+
+
+export type ViewerAccess = Record<GroupMembersSchemaType["group_id"], GroupMembersSchemaType["role"]>;
 
 type GroupMembersSliceState = {
     members: GroupMembersSchemaType[],
-    viewerKind: GroupMembersSchemaType["role"],
+    accessPermissions: ViewerAccess
 };
+
 
 const initialState: GroupMembersSliceState = {
     members: [],
-    viewerKind: "anonymous",
-
+    accessPermissions: {}
 };
 
 const GroupMembersSlice = createSlice({
@@ -22,8 +26,8 @@ const GroupMembersSlice = createSlice({
         addToGroupMembersState: (state: GroupMembersSliceState, action: PayloadAction<GroupMembersSchemaType>) => {
             state.members.push(action.payload);
         },
-        designateViewerKind: (state: GroupMembersSliceState, action: PayloadAction<GroupMembersSchemaType["role"]>) => {
-            state.viewerKind = action.payload
+        getViewerPermissions: (state: GroupMembersSliceState, action: PayloadAction<ViewerAccess>) => {
+            state.accessPermissions = action.payload;
         },
         clearMembersState: () => initialState,
     }
@@ -32,6 +36,11 @@ const GroupMembersSlice = createSlice({
 
 export type GroupMembersSliceType = ReturnType<typeof GroupMembersSlice.reducer>;
 
-export const { getGroupMembers, addToGroupMembersState, clearMembersState, designateViewerKind } = GroupMembersSlice.actions;
+export const {
+    getGroupMembers,
+    addToGroupMembersState,
+    clearMembersState,
+    getViewerPermissions
+} = GroupMembersSlice.actions;
 
 export default GroupMembersSlice.reducer;
