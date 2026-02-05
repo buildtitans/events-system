@@ -6,23 +6,20 @@ type EventDrawerStatus = 'active' | 'idle';
 
 type EventForDrawer = EventSchemaType | null
 
-type UserAttendantInfo = EventAttendantsSchemaType | null;
+type UserAttendantInfo = EventAttendantsSchemaType
 
-export type ViewerType = "member" | "anonymous"
 
 type InitialState = {
     status: EventDrawerStatus
     event: EventForDrawer,
-    viewerAttendanceInfo: UserAttendantInfo
-    viewerType: ViewerType,
+    viewerAttendanceInfo: EventAttendantsSchemaType | null
 
 };
 
 const initialState: InitialState = {
     status: 'idle',
     event: null,
-    viewerAttendanceInfo: null,
-    viewerType: "anonymous"
+    viewerAttendanceInfo: null
 };
 
 const EventDrawerSlice = createSlice({
@@ -32,9 +29,6 @@ const EventDrawerSlice = createSlice({
         openEventDrawer: (state: InitialState, action: PayloadAction<EventForDrawer>) => {
             state.status = "active";
             state.event = action.payload;
-        },
-        setViewerMemberType: (state: InitialState, action: PayloadAction<ViewerType>) => {
-            state.viewerType = action.payload;
         },
         getViewerAttendance: (state: InitialState, action: PayloadAction<UserAttendantInfo>) => {
             state.viewerAttendanceInfo = action.payload;
@@ -49,7 +43,6 @@ export const {
     openEventDrawer,
     closeEventDrawer,
     getViewerAttendance,
-    setViewerMemberType
 } = EventDrawerSlice.actions;
 
 export default EventDrawerSlice.reducer;

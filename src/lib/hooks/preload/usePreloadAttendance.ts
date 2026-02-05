@@ -4,8 +4,7 @@ import { RootState, AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
-import { getViewerAttendance, setViewerMemberType } from "../../store/slices/events/EventDrawerSlice";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/EventAttendantsSlice";
 
 function getViewerFromAttendants(
@@ -28,16 +27,9 @@ function ifNotAttendant(
     };
 };
 
-function isMemberOfThisGroup(
-    user_id: string,
-    members: GroupMembersSchemaType[]
-): boolean {
-    return members.some(m => m.user_id === user_id);
-}
-
-export const usePreloadAttendance = () => {
-    const members = useSelector((s: RootState) => s.groupMembers.members);
+export const useHydrateEventDrawer = () => {
     const event = useSelector((s: RootState) => s.eventDrawer.event);
+    const ViewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
     const dispatch = useDispatch<AppDispatch>();
 
     function handleAttendants(
@@ -48,16 +40,9 @@ export const usePreloadAttendance = () => {
 
         dispatch(getEventAttendants(attendantsReq));
         const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
+
         dispatch(getViewerAttendance(viewerAttendance ?? ifNotAttendant(user_id, event_id)));
     };
-
-    function handleIsMember(
-        user_id: string
-    ) {
-        const isGroupMember = isMemberOfThisGroup(user_id, members);
-        dispatch(setViewerMemberType(isGroupMember ? "member" : "anonymous"));
-        return isGroupMember
-    }
 
     useEffect(() => {
         if ((!event)) return;
@@ -75,8 +60,8 @@ export const usePreloadAttendance = () => {
 
                 const { user_id } = res;
 
-                const isMember = handleIsMember(user_id);
-                if (!isMember) return;
+
+                if (ViewerAccess === "anonymous") return;
                 const attendantsReq = await trpcClient
                     .eventAttendants
                     .getAttendants
@@ -93,7 +78,7 @@ export const usePreloadAttendance = () => {
         };
 
         void executeGetViewerAttendance();
-    }, [event, members, dispatch]);
+    }, [event, ViewerAccess, dispatch]);
 
     return;
 }

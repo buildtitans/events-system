@@ -12,6 +12,7 @@ const DbUserSchema = Type.Object({
     password_hash: Type.String()
 });
 
+
 type PublicUserSchemaType = Static<typeof PublicUserSchema>;
 
 type DbUserSchemaType = Static<typeof DbUserSchema>;

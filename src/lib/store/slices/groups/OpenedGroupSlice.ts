@@ -6,17 +6,15 @@ import { GroupSchemaType } from "@/src/schemas/groupSchema";
 //TODO: finish setting up unified slice for hydrated group (in @/src/app/group/[groupSlug]/page.tsx)
 
 type InitialState = {
-    viewerKind: GroupMembersSchemaType["role"],
-    events: EventsPages,
-    group: GroupSchemaType | null
+    group: GroupSchemaType | null,
+    events: EventsPages
 };
 
 
 
 const initialState: InitialState = {
-    viewerKind: "anonymous",
-    events: [],
-    group: null
+    group: null,
+    events: []
 };
 
 
@@ -25,20 +23,21 @@ const OpenedGroupSlice = createSlice({
     initialState: initialState,
     reducers: {
 
-        getViewerRoleInGroup: (state: InitialState, action: PayloadAction<GroupMembersSchemaType["role"]>) => {
-            state.viewerKind = action.payload;
-        },
         getGroupEvents: (state: InitialState, action: PayloadAction<EventsPages>) => {
-            state.events = action.payload;
+            state.events = action.payload
         },
         groupOpened: (state: InitialState, action: PayloadAction<GroupSchemaType>) => {
             state.group = action.payload
-        }
+        },
+
     }
 });
 
-export const { getViewerRoleInGroup, getGroupEvents, groupOpened } = OpenedGroupSlice.actions;
+export const {
+    getGroupEvents,
+    groupOpened
+} = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;
 
-export default OpenedGroupSlice.reducer
+export default OpenedGroupSlice.reducer;
