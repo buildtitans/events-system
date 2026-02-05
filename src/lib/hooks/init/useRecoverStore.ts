@@ -7,7 +7,5 @@ export const useRecoverStore = () => {
     useGetCategories();
     usePopulateEventsList();
     usePopulateGroups();
-
-
     return;
 }

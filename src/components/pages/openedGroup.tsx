@@ -17,7 +17,6 @@ export default function OpenedGroup({ status }: OpenedGroupProps): JSX.Element |
     const viewerKind = useSelector((s: RootState) => s.groupMembers.accessPermissions[group?.id ?? ""])
     const userKind = useSelector((s: RootState) => s.auth.userKind);
 
-
     if (!group) return null;
 
     return (

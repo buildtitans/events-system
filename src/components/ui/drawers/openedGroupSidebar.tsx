@@ -3,9 +3,13 @@ import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
 import type { LoadingStatus, UserInGroupRoleType } from "@/src/lib/types/tokens/types";
 import GroupActonsContainer from "../stack/groupActionsContainer";
+import { groupSidebarStyles } from "@/src/lib/tokens/sxTokens";
+import { AnimatePresence } from "framer-motion";
+import Skeleton from "@mui/material/Skeleton";
+import FadeInOutBox from "../box/fadeInOutBox";
 
 type GroupSidebarProps = {
-    groupID: string | null | undefined,
+    groupID: string,
     roleType: UserInGroupRoleType,
     status: LoadingStatus,
     open: boolean
@@ -14,7 +18,6 @@ type GroupSidebarProps = {
 
 export default function OpenedGroupSidebar({
     status,
-    roleType,
     groupID,
     open
 
@@ -29,26 +32,43 @@ export default function OpenedGroupSidebar({
             sx={{
                 height: '100%',
             }}
-
-            PaperProps={{
-                elevation: 0,
-                sx: {
-                    width: "auto",
-                    paddingX: 2,
-                    backgroundColor: 'rgb(18, 18, 18)',
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderColor: "rgba(38, 38, 38, 0.7)"
-                },
+            slotProps={{
+                paper: {
+                    sx: groupSidebarStyles,
+                    elevation: 0
+                }
             }}
         >
-            <GroupActonsContainer
-                status={status}
-                roleType={roleType}
-                group_id={groupID}
-            />
+            {(status === "pending") && (
+                <SidebarSkeleton key={"sidebar-skeleton"} />)}
+
+            <AnimatePresence >
+                {(status === "idle") && (
+                    <GroupActonsContainer
+                        status={status}
+                        group_id={groupID}
+                    />
+                )}
+            </AnimatePresence>
         </Drawer>
+    )
+}
+
+
+function SidebarSkeleton() {
+
+
+    return (
+
+        <Skeleton
+            variant="rectangular"
+            animation="wave"
+            width="100%"
+            height="100%"
+            sx={{
+                bgcolor: 'rgba(255, 255, 255, 0.03)'
+            }}
+        />
+
     )
 }

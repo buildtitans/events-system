@@ -10,6 +10,7 @@ import { useGetCategories } from '@/src/lib/hooks/init/useGetCategories';
 import { loadGroupsPipeline } from '../pipelines/groups/loadGroupsPipeline';
 import { MobileEventsSearch } from '../ui/nav/landingSubNav';
 import { LandingHeader } from '../ui/typography/landingHeader';
+import { useGetViewerPermissions } from '@/src/lib/hooks/init/useGetViewerPermissions';
 
 const overrides = {
   display: 'flex',
@@ -31,6 +32,7 @@ function MainContent(): JSX.Element {
   const tab = useSelector((s: RootState) => s.rendering.mainContent);
   const content = useMainContentPipelines(tab);
   const groupsLoadingStatus = usePopulateGroups();
+  useGetViewerPermissions();
   useGetCategories();
 
   return (

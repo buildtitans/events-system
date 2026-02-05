@@ -30,6 +30,7 @@ function ifNotAttendant(
 export const useHydrateEventDrawer = () => {
     const event = useSelector((s: RootState) => s.eventDrawer.event);
     const ViewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
+    const userKind = useSelector((s: RootState) => s.auth.userKind);
     const dispatch = useDispatch<AppDispatch>();
 
     function handleAttendants(
@@ -46,8 +47,10 @@ export const useHydrateEventDrawer = () => {
 
     useEffect(() => {
         if ((!event)) return;
-
+        if (userKind === "anonymous") return;
         const executeGetViewerAttendance = async () => {
+
+
             try {
                 const res = await trpcClient
                     .auth

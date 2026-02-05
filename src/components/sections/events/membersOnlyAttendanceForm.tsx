@@ -17,13 +17,12 @@ export default function MembersOnlyAttendanceForm({ group_id }: MembersOnlyAtten
 
     return (
         <AnimatePresence mode="wait">
-            {(viewerType === "member") && (viewer) && <UpdateViewerAttendanceForm
+            {((viewerType === "member") || (viewerType === "organizer")) && (viewer) && <UpdateViewerAttendanceForm
                 key={"update-status-form"}
                 currentStatus={viewer.status ?? "not_going"}
                 event_id={viewer.event_id}
             />}
 
-            {(viewerType === "anonymous") && <NotGroupMember key={"not-a-member"} />}
         </AnimatePresence>
     )
 };

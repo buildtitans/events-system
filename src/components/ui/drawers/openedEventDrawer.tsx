@@ -11,33 +11,17 @@ import { usePathname, useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import { useMemo } from "react";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import CheckOutGroupButton from "../buttons/checkOutGroupButton";
 
 type EventDrawerProps = {
     open: boolean,
 }
 
 export default function OpenedEventDrawer({ open }: EventDrawerProps) {
-    const path = usePathname();
-    const router = useRouter();
-    const groups = useSelector((s: RootState) => s.groups.communities);
-    const event = useSelector((s: RootState) => s.eventDrawer.event);
     useHydrateEventDrawer();
+    const event = useSelector((s: RootState) => s.eventDrawer.event);
     const dispatch = useDispatch<AppDispatch>();
-    const slug = useMemo(() => {
-        if (!event) return "/"
-        const group = groups.find((group) =>
-            group.id === event?.group_id
-        ) as GroupSchemaType
-        return group.slug;
-    }, [event]);
-
     const closeDrawer = () => {
-        dispatch(closeEventDrawer());
-    };
-
-    const handleDirectToGroup = () => {
-        const route = `/group/${slug}`
-        router.push(route);
         dispatch(closeEventDrawer());
     };
 
@@ -65,20 +49,12 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps) {
                         event={event}
                     />
                 }
-                {(path === '/') && (
-                    <Button
-                        size="medium"
-                        variant="contained"
-                        onClick={handleDirectToGroup}
-                        sx={{
-                            width: '90%',
-                            marginX: 'auto'
-                        }}
-                    >
-                        Check out the group
-                    </Button>
-                )}
+
             </AnimatePresence>
+
+            <CheckOutGroupButton
+                event={event}
+            />
 
             {(event) && <MembersOnlyAttendanceForm
                 group_id={event.group_id}
