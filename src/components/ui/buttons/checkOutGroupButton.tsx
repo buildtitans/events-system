@@ -1,43 +1,27 @@
 "use client";
-import Drawer from "@mui/material/Drawer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import { useHydrateEventDrawer } from "@/src/lib/hooks/preload/usePreloadAttendance";
-import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
-import { AnimatePresence } from "framer-motion";
-import OpenedEvent from "../stack/OpenedEvent";
 import { usePathname, useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import { JSX, useMemo } from "react";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
-import { retryLink } from "@trpc/client";
+import { getGroupSlugRoute } from "@/src/lib/utils/parsing/getGroupSlugRoute";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
-
-export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
+export default function CheckOutGroupButton({ event, role }: { event: EventSchemaType | null, role: GroupMembersSchemaType["role"] }): JSX.Element | null {
     const path = usePathname();
     const router = useRouter();
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const groups = useSelector((s: RootState) => s.groups.communities);
-    const viewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
     const dispatch = useDispatch<AppDispatch>();
-    const slug = useMemo(() => {
-        if (!event) return "/"
-        const group = groups.find((group) =>
-            group.id === event?.group_id
-        ) as GroupSchemaType
-        return group.slug;
-    }, [event]);
-
+    const groups = useSelector((s: RootState) => s.groups.communities);
+    const route = useMemo(() => getGroupSlugRoute(groups, event), [event]);
 
     const handleDirectToGroup = () => {
-        const route = `/group/${slug}`
         router.push(route);
         dispatch(closeEventDrawer());
     };
 
-    if ((path !== "/") || ((viewerAccess !== "anonymous") && (userKind === "authenticated"))) return null;
+    if ((path !== "/") || (role !== "anonymous")) return null;
 
     return (
         <Button

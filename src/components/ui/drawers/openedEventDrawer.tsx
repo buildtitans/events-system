@@ -4,23 +4,21 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/preload/usePreloadAttendance";
-import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
-import { AnimatePresence } from "framer-motion";
-import OpenedEvent from "../stack/OpenedEvent";
-import { usePathname, useRouter } from "next/navigation";
-import Button from "@mui/material/Button";
-import { useMemo } from "react";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import CheckOutGroupButton from "../buttons/checkOutGroupButton";
+import { JSX } from "react";
+import { renderEventDrawerContents } from "../../pipelines/drawers/renderEventDrawer";
 
 type EventDrawerProps = {
-    open: boolean,
+    open: boolean
 }
 
-export default function OpenedEventDrawer({ open }: EventDrawerProps) {
+export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Element | null {
     useHydrateEventDrawer();
-    const event = useSelector((s: RootState) => s.eventDrawer.event);
     const dispatch = useDispatch<AppDispatch>();
+    const event = useSelector((s: RootState) => s.eventDrawer.event);
+    if (!event) return null;
+    const viewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event.group_id])
+
+
     const closeDrawer = () => {
         dispatch(closeEventDrawer());
     };
@@ -42,23 +40,7 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps) {
                 },
             }}
         >
-            <AnimatePresence mode="wait">
-                {(event) &&
-                    <OpenedEvent
-                        key={"event-opened"}
-                        event={event}
-                    />
-                }
-
-            </AnimatePresence>
-
-            <CheckOutGroupButton
-                event={event}
-            />
-
-            {(event) && <MembersOnlyAttendanceForm
-                group_id={event.group_id}
-            />}
+            {renderEventDrawerContents(viewerAccess)}
         </Drawer>
     );
 };
