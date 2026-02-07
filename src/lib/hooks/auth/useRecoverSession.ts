@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
@@ -25,7 +25,7 @@ const useRecoverSession = (): void => {
 
         executeRecoverSession();
 
-    }, []);
+    }, [dispatch]);
 };
 
 export { useRecoverSession };

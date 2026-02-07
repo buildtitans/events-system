@@ -9,6 +9,7 @@ import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { addToGroupMembersState, getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
 import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
+import { syncPermissions } from "../../store/sync/syncDomains";
 
 const useJoinGroup = (): JoinGroupHook => {
     const groups = useSelector((s: RootState) => s.groups.communities);
@@ -16,22 +17,13 @@ const useJoinGroup = (): JoinGroupHook => {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
 
-    async function refreshMemberships(): Promise<void> {
-        const userMemberships = await trpcClient.groupMembers.viewerMemberships.mutate();
-        const permissions = mapGroupAccessPermissions(
-            groups,
-            userMemberships ?? null
-        );
-
-        dispatch(getViewerPermissions(permissions));
-    }
-
-
     async function handleResult(res: GroupMembersSchemaType | null) {
         if (res) {
             dispatch(addToGroupMembersState(res))
 
-            await refreshMemberships()
+            const permissions = await syncPermissions();
+
+            dispatch(getViewerPermissions(permissions));
         }
 
         timerRef.current = window.setTimeout(() => {

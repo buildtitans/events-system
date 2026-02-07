@@ -1,6 +1,6 @@
 import { type Kysely, sql } from "kysely";
 
-async function checkAttendeeStatusConstraint(db: Kysely<any>) {
+async function checkAttendeeStatusConstraint(db: Kysely<any>): Promise<void> {
 
     await sql`
   alter table event_attendants

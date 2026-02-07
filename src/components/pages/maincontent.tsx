@@ -1,39 +1,21 @@
 "use client"
 import Box from '@mui/material/Box';
-import type { JSX } from 'react';
+import { type JSX } from 'react';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
 import { useMainContentPipelines } from '@/src/lib/hooks/rendering/useMainContentPipelines';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { usePopulateGroups } from '@/src/lib/hooks/init/usePopulateGroups';
-import { useGetCategories } from '@/src/lib/hooks/init/useGetCategories';
 import { loadGroupsPipeline } from '../pipelines/groups/loadGroupsPipeline';
 import { MobileEventsSearch } from '../ui/nav/landingSubNav';
 import { LandingHeader } from '../ui/typography/landingHeader';
-import { useGetViewerPermissions } from '@/src/lib/hooks/init/useGetViewerPermissions';
+import { overrides } from '@/src/styles/sx/sx';
 
-const overrides = {
-  display: 'flex',
-  flexDirection: {
-    xs: 'column-reverse',
-    md: 'row'
-  },
-  width: '100%',
-  justifyContent: 'space-between',
-  alignItems: {
-    xs: 'start',
-    md: 'center'
-  },
-  gap: 4,
-  overflow: 'auto',
-};
 
 function MainContent(): JSX.Element {
   const tab = useSelector((s: RootState) => s.rendering.mainContent);
   const content = useMainContentPipelines(tab);
-  const groupsLoadingStatus = usePopulateGroups();
-  useGetViewerPermissions();
-  useGetCategories();
+  const initialLoadStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
+
 
   return (
     <Box
@@ -62,7 +44,7 @@ function MainContent(): JSX.Element {
       >
         {content}
 
-        {loadGroupsPipeline(groupsLoadingStatus)}
+        {loadGroupsPipeline(initialLoadStatus)}
       </Box>
 
 

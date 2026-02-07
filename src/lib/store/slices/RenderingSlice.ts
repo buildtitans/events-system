@@ -4,6 +4,7 @@ import {
 } from "@reduxjs/toolkit";
 import type {
     AlertMessagesType,
+    LoadingStatus,
     RequestStatus,
     SnackbarMessages
 } from "@/src/lib/types/tokens/types";
@@ -27,6 +28,7 @@ export type SnackbarStatusAndKind = {
 
 type RenderingInitialState = {
     mainContent: MainContentTabType,
+    initialLoadStatus: LoadingStatus,
     modal: ActiveModal,
     snackbar: SnackbarStatusAndKind,
     alert: AlertType,
@@ -35,6 +37,7 @@ type RenderingInitialState = {
 
 const initialState: RenderingInitialState = {
     mainContent: "Upcoming Events",
+    initialLoadStatus: "idle",
     modal: null,
     drawer: null,
     snackbar: {
@@ -65,6 +68,9 @@ const RenderingSlice = createSlice({
         },
         enqueueAlert: (state: RenderingInitialState, action: PayloadAction<AlertType>) => {
             state.alert = action.payload;
+        },
+        signalDomainStatus: (state: RenderingInitialState, action: PayloadAction<LoadingStatus>) => {
+            state.initialLoadStatus = action.payload;
         }
     }
 });
@@ -76,7 +82,8 @@ export const {
     showModal,
     enqueueSnackbar,
     enqueueAlert,
-    enqueueDrawer
+    enqueueDrawer,
+    signalDomainStatus
 } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;

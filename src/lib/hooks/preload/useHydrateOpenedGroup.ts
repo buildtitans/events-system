@@ -38,6 +38,7 @@ export const useHydrateOpenedGroup = (slug: GroupSchemaType["slug"]): { status: 
         const executeGetGroupBySlug = async () => {
             setStatus("pending");
             try {
+
                 const group = await trpcClient.groups.groupBySlug.mutate(slug);
                 const events = await trpcClient.events.groupEvents.mutate(group.id);
 

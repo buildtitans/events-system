@@ -46,10 +46,12 @@ export default function OpenedGroupSidebar({
             {(status === "pending") && (
                 <SidebarSkeleton key={"sidebar-skeleton"} />)}
 
-            <GroupActonsContainer
-                status={status}
-                group_id={group_id}
-            />
+            {(status === "idle") &&
+                <GroupActonsContainer
+                    status={status}
+                    group_id={group_id}
+                />
+            }
         </Drawer>
     )
 }

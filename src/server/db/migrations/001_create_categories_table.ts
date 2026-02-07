@@ -1,8 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-
 export async function up(db: Kysely<any>): Promise<void> {
-    //TODO: finish writing sql script to execute creation of the "categories" table
 
     await sql`create extension if not exists "pgcrypto"`.execute(db);
 

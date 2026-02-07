@@ -34,7 +34,6 @@ const groupMembersRouter = router({
 
     viewerMemberships:
         publicProcedure
-
             .mutation(async ({ ctx }) => {
 
                 const user_id = ctx.user?.id;
@@ -44,6 +43,7 @@ const groupMembersRouter = router({
                 return ctx.api.groupMembers.getViewerMemberships(user_id);
 
             })
+
 })
 
 export { groupMembersRouter };

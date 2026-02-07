@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,7 +11,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledMenu from '@/src/styles/styledComponents/styledMenu';
 
 
-export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer: () => void }) {
+export default function MemberActionsMenu(): JSX.Element {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -18,7 +19,6 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        openEventDrawer();
         setAnchorEl(null)
     };
     const handleClose = () => {
@@ -78,5 +78,6 @@ export default function GroupActionsMenu({ openEventDrawer }: { openEventDrawer:
                 </MenuItem>
             </StyledMenu>
         </div>
-    );
+
+    )
 }

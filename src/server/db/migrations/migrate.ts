@@ -1,5 +1,3 @@
-// mostly scaffolded from Kysely docs, swapping out new Kysely Db with existing DB
-
 import * as path from 'path'
 import { promises as fs } from 'fs'
 import {

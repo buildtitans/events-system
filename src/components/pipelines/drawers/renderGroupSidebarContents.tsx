@@ -2,8 +2,12 @@ import JoinGroupButton from "../../ui/buttons/joinGroupButton";
 import GroupOranizerOnly from "../../sections/group/GroupOrganizerOnly";
 import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import type { JSX } from "react";
+import MemberActionsMenu from "../../ui/menus/memberActionsMenu";
 
-export const renderGroupSidebarContents = (role: GroupMembersSchemaType["role"], group_id: GroupMembersSchemaType["group_id"]): JSX.Element | null => {
+export const renderGroupSidebarContents = (
+    role: GroupMembersSchemaType["role"],
+    group_id: GroupMembersSchemaType["group_id"]
+): JSX.Element | null => {
 
     switch (role) {
         case "organizer":
@@ -19,15 +23,13 @@ export const renderGroupSidebarContents = (role: GroupMembersSchemaType["role"],
             />)
 
         case "member":
-            return null;
+            return (
+                <MemberActionsMenu />
+            )
 
 
         default: {
-            return (
-                <JoinGroupButton
-                    group_id={group_id}
-                />
-            )
+            return null;
         }
 
     }

@@ -4,14 +4,16 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import OpenedEvent from "../../ui/stack/OpenedEvent";
 import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
+import { EventSchemaType } from "@/src/schemas/eventSchema";
 
 
 export const renderEventDrawerContents = (
+    event: EventSchemaType | null
 ): JSX.Element | null => {
-    const event = useSelector((s: RootState) => s.eventDrawer.event);
-    const role = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
+    const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
 
-    if (!event) return null;
+    if (!event) return null
+    const role = permissions[event.group_id];
 
     switch (role) {
         case "member":

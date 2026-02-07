@@ -16,10 +16,13 @@ export default function GroupActonsContainer({
     group_id,
     status
 }: GroupActonsContainerProps): JSX.Element | null {
-    const viewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[group_id]);
+    const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
+    const viewerAccess = permissions[group_id];
     const content = renderGroupSidebarContents(viewerAccess, group_id);
 
     if (status === "pending") return null;
+
+    console.log(viewerAccess);
 
     return (
         <Box

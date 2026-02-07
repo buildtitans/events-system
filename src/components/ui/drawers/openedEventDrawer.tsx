@@ -1,7 +1,7 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
 import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/preload/usePreloadAttendance";
 import { JSX } from "react";
@@ -14,10 +14,11 @@ type EventDrawerProps = {
 export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Element | null {
     useHydrateEventDrawer();
     const dispatch = useDispatch<AppDispatch>();
-
+    const event = useSelector((s: RootState) => s.eventDrawer.event);
     const closeDrawer = () => {
         dispatch(closeEventDrawer());
     };
+
 
     return (
         <Drawer
@@ -38,7 +39,7 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Eleme
                 }
             }}
         >
-            {renderEventDrawerContents()}
+            {renderEventDrawerContents(event)}
         </Drawer>
     );
 };

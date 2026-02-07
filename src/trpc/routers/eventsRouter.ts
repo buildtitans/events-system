@@ -1,4 +1,4 @@
-import { GroupIdSchemaType, GroupIdSchemaValidator, NewEventInputSchema, NewEventInputSchemaType, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
+import { GroupIdSchemaType, GroupIdSchemaValidator, NewEventInputSchemaType, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "../init";
 

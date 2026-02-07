@@ -30,27 +30,9 @@ export default function GroupOranizerOnly({ roleType }: { roleType: GroupMembers
                 gap: 4
             }}
         >
-            <GroupActionsMenu openEventDrawer={openEventDrawer} />
-
-            <Button
-                variant="contained"
-                id="placeholder-button"
-                size="small"
-                sx={{
-                    borderRadius: 999,
-                    width: "100%",
-                    color: 'black',
-                    backgroundColor: 'white',
-                    ':hover': {
-                        cursor: "pointer"
-                    }
-                }}
-            >
-                Manage
-
-            </Button>
-
-
+            <GroupActionsMenu
+                openEventDrawer={openEventDrawer}
+            />
         </Box>
     }
 

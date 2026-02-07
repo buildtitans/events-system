@@ -14,7 +14,7 @@ const MotionGrid = motion(Grid);
 function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Element | null {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
-    const page = eventsPages[currentPage];
+    const page = eventsPages[currentPage] ?? [];
 
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);

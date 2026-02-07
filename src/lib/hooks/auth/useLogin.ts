@@ -9,6 +9,7 @@ import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import { useRouter } from "next/navigation";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
+import { syncPermissions } from "../../store/sync/syncDomains";
 
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
@@ -18,13 +19,14 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
-    const handleLoginResult = (result: AuthenticationSchemaType): void => {
+    const handleLoginResult = async (result: AuthenticationSchemaType): Promise<void> => {
         const { success } = result;
 
         dispatch(enqueueSnackbar({ kind: "login", status: success ? "success" : "failed" }));
 
         if (success) {
             dispatch(loginSuccess());
+            await syncPermissions()
         }
     };
 
@@ -45,7 +47,7 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
         dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
 
         const result = await login(email, password);
-        handleLoginResult(result);
+        await handleLoginResult(result);
     };
 
     useEffect(() => {

@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllGroups } from "@/src/lib/store/slices/GroupsSlice";
 import type { RootState, AppDispatch } from "@/src/lib/store";
-import { LoadingStatus } from "@/src/lib/types/types";
+import { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";
 import { mapEventGroups } from "../../utils/rendering/mapEventGroups";

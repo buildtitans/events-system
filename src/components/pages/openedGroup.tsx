@@ -1,23 +1,32 @@
 "use client";
 import Box from "@mui/material/Box";
-import { JSX } from "react";
+import { JSX, useEffect } from "react";
 import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { loadEventsPipeline } from "../pipelines/events/loadEventsPipeline";
 import GroupHeadSecton from "../sections/group/groupHeadSection";
 import OpenedGroupSidebar from "../ui/drawers/openedGroupSidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
+import { sync } from "framer-motion";
 
-type OpenedGroupProps = {
-    status: LoadingStatus
-};
 
-export default function OpenedGroup({ status }: OpenedGroupProps): JSX.Element | null {
+export default function OpenedGroup({ slug }: { slug: string }): JSX.Element | null {
     const { events, group } = useSelector((s: RootState) => s.openGroup);
-    const viewerKind = useSelector((s: RootState) => s.groupMembers.accessPermissions[group?.id ?? ""])
     const userKind = useSelector((s: RootState) => s.auth.userKind);
+    const status = useSelector((s: RootState) => s.openGroup.syncStatus);
+
+    useEffect(() => {
+        const syncGroup = async (): Promise<void> => {
+            await syncOpenedGroup(slug);
+        };
+
+        void syncGroup();
+    }, [slug]);
+
 
     if (!group) return null;
+
 
     return (
 

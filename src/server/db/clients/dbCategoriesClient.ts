@@ -26,26 +26,9 @@ export class CategoriesClient {
     }
 
     parseCategories(raw: Selectable<Categories>[]): CategoriesSchemaType {
-
-        const parsedCategories = [];
-
-        for (const category of raw) {
-            let { id, icon, name, slug } = category
-
-            let parsed = {
-                id: id,
-                name: name,
-                slug: slug,
-                icon: icon
-            };
-
-            parsedCategories.push(parsed)
-
-        }
-
-        CategoriesValidator.Check(parsedCategories);
-
-        return parsedCategories
+        const parsed = raw;
+        CategoriesValidator.Check(parsed);
+        return parsed
     }
 
 
