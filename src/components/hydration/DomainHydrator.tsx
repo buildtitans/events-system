@@ -9,6 +9,7 @@ import { chunkEventPages } from "@/src/lib/store/slices/EventsSlice";
 import { getViewerPermissions } from "@/src/lib/store/slices/GroupMembersSlice";
 import { getAllCategories } from "@/src/lib/store/slices/CategorySlice";
 
+
 export default function DomainHydrator(
     {
         domains

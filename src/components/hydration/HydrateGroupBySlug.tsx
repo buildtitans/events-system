@@ -1,0 +1,1 @@
+import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";

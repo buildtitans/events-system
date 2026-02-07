@@ -1,14 +1,15 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventsPages } from "../EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
-import { syncOpenedGroup } from "../../sync/syncOpenedGroup";
 
-//TODO: finish setting up unified slice for hydrated group (in @/src/app/group/[groupSlug]/page.tsx)
+export type GroupHydrated = { status: "idle" }
+    | { status: "pending" }
+    | { status: "failed", error: "Group hydration error" }
+    | { status: "ready", data: GroupSchemaType };
 
 type InitialState = {
-    group: GroupSchemaType | null,
+    group: GroupHydrated,
     events: EventsPages,
     syncStatus: LoadingStatus
 };
@@ -16,7 +17,7 @@ type InitialState = {
 
 
 const initialState: InitialState = {
-    group: null,
+    group: { status: "idle" },
     events: [],
     syncStatus: "idle"
 };
@@ -30,7 +31,7 @@ const OpenedGroupSlice = createSlice({
         getGroupEvents: (state: InitialState, action: PayloadAction<EventsPages>) => {
             state.events = action.payload
         },
-        groupOpened: (state: InitialState, action: PayloadAction<GroupSchemaType>) => {
+        groupOpened: (state: InitialState, action: PayloadAction<GroupHydrated>) => {
             state.group = action.payload
         },
 

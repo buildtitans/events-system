@@ -4,8 +4,16 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { RenderOpenedGroup } from "../pipelines/groups/renderOpenedGroup";
+import Container from "@mui/material/Container";
 
-export default function OpenedGroup({ slug }: { slug: string }): JSX.Element | null {
+type OpenedGroupProps = {
+    slug: string
+}
+
+export default function OpenedGroup({
+    slug
+}: OpenedGroupProps
+): JSX.Element | null {
     const {
         events,
         group
@@ -14,13 +22,20 @@ export default function OpenedGroup({ slug }: { slug: string }): JSX.Element | n
     useEffect(() => {
 
         void syncOpenedGroup(slug);
+
     }, [slug]);
 
 
     return (
-        <RenderOpenedGroup
-            events={events}
-            group={group}
-        />
+        <Container sx={{
+            minHeight: "100svh",
+            minWidth: "100%"
+        }}>
+            <RenderOpenedGroup
+                events={events}
+                group={group}
+            />
+        </Container>
+
     )
 }

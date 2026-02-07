@@ -12,7 +12,7 @@ function hydrateGroup(
     group: GroupSchemaType,
     events: EventsPages | null | undefined
 ) {
-    store.dispatch(groupOpened(group));
+    store.dispatch(groupOpened({ status: "ready", data: group }));
 
     if (events) store.dispatch(getGroupEvents(events));
 
