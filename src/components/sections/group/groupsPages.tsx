@@ -13,14 +13,19 @@ import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groupSchema';
 export type CategoryMap = Map<string, string>;
 
 export default function GroupsPagesContainer({ groupsPages }: { groupsPages: GroupsSchemaType[] }): JSX.Element | null {
-
-    const { currentPage, categoryMap, columns } = useGroupPages(groupsPages);
+    const {
+        currentPage,
+        categoryMap,
+        columns
+    } = useGroupPages(groupsPages);
     const router = useRouter();
 
-    const handleGroupClicked = useCallback((slug: GroupSchemaType["slug"]) => {
+    const handleGroupClicked = useCallback((
+        slug: GroupSchemaType["slug"]
+    ) => {
 
         return () => {
-            const route = `group/${slug}`
+            const route = `/group/${slug}`
             router.push(route)
         }
     }, []);

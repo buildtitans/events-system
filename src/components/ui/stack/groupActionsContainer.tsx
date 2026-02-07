@@ -4,8 +4,8 @@ import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { renderGroupSidebarContents } from "../../pipelines/drawers/renderGroupSidebarContents";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
+import { sidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
 
 type GroupActonsContainerProps = {
     group_id: GroupSchemaType["id"],
@@ -16,13 +16,8 @@ export default function GroupActonsContainer({
     group_id,
     status
 }: GroupActonsContainerProps): JSX.Element | null {
-    const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
-    const viewerAccess = permissions[group_id];
-    const content = renderGroupSidebarContents(viewerAccess, group_id);
 
     if (status === "pending") return null;
-
-    console.log(viewerAccess);
 
     return (
         <Box
@@ -36,7 +31,7 @@ export default function GroupActonsContainer({
                 paddingY: 10,
                 overflow: 'hidden'
             }}>
-            {content}
+            {sidebarPipeline(group_id)}
         </Box>
     )
 }
