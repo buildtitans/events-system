@@ -8,33 +8,35 @@ import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/AuthSlice';
 import { enqueueSnackbar } from '@/src/lib/store/slices/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
-import { useRecoverSession } from '@/src/lib/hooks/auth/useRecoverSession';
 import NavActions from './global/navActions';
 import NavBar from './global/navBar';
+import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';
+import { getViewerPermissions } from '@/src/lib/store/slices/GroupMembersSlice';
 
 
 export default function AppAppBar() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
-    useRecoverSession();
 
 
-    function handleLogoutResponse(success: AuthenticationSchemaType["success"]) {
+    async function handleLogoutResponse(success: AuthenticationSchemaType["success"]) {
 
         timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: 'logout', status: 'success' }))
+            dispatch(enqueueSnackbar({ kind: 'logout', status: success ? "success" : "failed" }))
             dispatch(logout());
             timerRef.current = null;
-        }, 1500)
+        }, 1500);
 
+        const permissions = await syncPermissions();
+        dispatch(getViewerPermissions(permissions))
     };
 
 
     const handleSignout = async (): Promise<void> => {
         dispatch(enqueueSnackbar({ kind: 'logout', status: 'pending' }));
         const res = await trpcClient.auth.signout.mutate();
-        handleLogoutResponse(res ? true : false);
+        await handleLogoutResponse(res ? true : false);
     };
 
 

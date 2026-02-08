@@ -40,7 +40,7 @@ export default function ViewGroupSection({
             <GroupHeadSecton
                 status={status}
                 pages={events}
-                groupName={group?.name}
+                groupName={group.name}
             />
 
             <OpenedGroupSidebar

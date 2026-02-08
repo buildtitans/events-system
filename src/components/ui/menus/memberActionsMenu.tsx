@@ -59,19 +59,13 @@ export default function MemberActionsMenu(): JSX.Element {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClick} disableRipple>
-                    <EditIcon />
-                    create event
-                </MenuItem>
+
                 <MenuItem onClick={handleClose} disableRipple>
                     <FileCopyIcon />
-                    edit events
+                    Leave group
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={handleClose} disableRipple>
-                    <ArchiveIcon />
-                    archive
-                </MenuItem>
+
                 <MenuItem onClick={handleClose} disableRipple>
                     <MoreHorizIcon />
                     more

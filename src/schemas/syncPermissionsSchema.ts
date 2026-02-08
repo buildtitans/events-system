@@ -12,10 +12,6 @@ export const ViewerMembershipsSchema = Type.Array(GroupMembersSchema);
 export const GroupsAndMembershipsSchema = Type.Object({
     events: PaginatedLayoutSchema,
     groups: GroupsSchema,
-    memberships: Type.Union([
-        Type.Null(),
-        ViewerMembershipsSchema
-    ]),
     categories: CategoriesSchema
 });
 

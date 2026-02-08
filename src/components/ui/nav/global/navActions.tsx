@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from 'react-redux';
-import { enqueueSnackbar, showModal } from '@/src/lib/store/slices/RenderingSlice';
+import { enqueueDrawer, enqueueSnackbar, showModal } from '@/src/lib/store/slices/RenderingSlice';
 import { AppDispatch } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
@@ -42,8 +42,8 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
 
                 {(userKind === 'anonymous') &&
                     <Button
-                        component={Link}
-                        href='/login'
+
+                        onClick={() => dispatch(enqueueDrawer("Sign In Drawer"))}
                         color="info"
                         variant="contained"
                         size="medium"

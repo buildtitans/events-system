@@ -10,20 +10,14 @@ type OpenedGroupProps = {
     slug: string
 }
 
-export default function OpenedGroup({
-    slug
-}: OpenedGroupProps
-): JSX.Element | null {
+export default function OpenedGroup(): JSX.Element | null {
     const {
         events,
         group
     } = useSelector((s: RootState) => s.openGroup);
+    const access = useSelector((s: RootState) => s.groupMembers.accessPermissions);
+    console.log(access)
 
-    useEffect(() => {
-
-        void syncOpenedGroup(slug);
-
-    }, [slug]);
 
 
     return (

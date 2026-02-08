@@ -4,27 +4,33 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess, logout } from "../../store/slices/AuthSlice";
-
+import { syncPermissions } from "../../store/sync/syncPermissions";
+import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 
 const useRecoverSession = (): void => {
     const dispatch = useDispatch<AppDispatch>();
 
-
     useEffect(() => {
-
         const executeRecoverSession = async () => {
+            try {
+                const result = await trpcClient.auth.recover.mutate();
 
-            const result = await trpcClient.auth.recover.mutate();
+                if (result) {
+                    dispatch(loginSuccess());
 
-            if (result) {
-                dispatch(loginSuccess())
-            } else {
-                dispatch(logout())
+                    const permissions = await syncPermissions();
+                    dispatch(getViewerPermissions(permissions));
+
+                } else {
+                    dispatch(logout());
+                }
+
+            } catch {
+                dispatch(logout());
             }
-        }
+        };
 
-        executeRecoverSession();
-
+        void executeRecoverSession();
     }, [dispatch]);
 };
 

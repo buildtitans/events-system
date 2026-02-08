@@ -35,7 +35,7 @@ const OpenedGroupSlice = createSlice({
             state.group = action.payload
         },
 
-        syncOpenedGroupStatus: (state: InitialState, action: PayloadAction<LoadingStatus>) => {
+        groupEventsStatus: (state: InitialState, action: PayloadAction<LoadingStatus>) => {
             state.syncStatus = action.payload;
         },
 
@@ -45,7 +45,7 @@ const OpenedGroupSlice = createSlice({
 export const {
     getGroupEvents,
     groupOpened,
-    syncOpenedGroupStatus
+    groupEventsStatus
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

@@ -6,18 +6,16 @@ import { loginSuccess } from "@/src/lib/store/slices/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
-import { useRouter } from "next/navigation";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
-import { syncPermissions } from "../../store/sync/syncDomains";
-
+import { syncPermissions } from "../../store/sync/syncPermissions";
+import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const { status } = useSelector((s: RootState) => s.rendering.snackbar);
 
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
 
     const handleLoginResult = async (result: AuthenticationSchemaType): Promise<void> => {
         const { success } = result;
@@ -26,7 +24,9 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
 
         if (success) {
             dispatch(loginSuccess());
-            await syncPermissions()
+            const permissions = await syncPermissions();
+
+            dispatch(getViewerPermissions(permissions));
         }
     };
 
@@ -53,10 +53,8 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     useEffect(() => {
         if (userKind === "anonymous" || status === "idle") return;
 
-        if (userKind === "authenticated" && status === "success") {
-            router.push("/");
-        }
-    }, [userKind, status, router]);
+
+    }, [userKind, status]);
 
     return {
         handleSubmit,

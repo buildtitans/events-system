@@ -10,6 +10,8 @@ export const sidebarPipeline = (group_id: GroupSchemaType["id"]): JSX.Element | 
     const access = useSelector((s: RootState) => s.groupMembers.accessPermissions);
     const role = access[group_id];
 
+    console.log(role, access)
+
     switch (userKind) {
         case "authenticated":
             return (

@@ -9,14 +9,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
-import SitemarkIcon from '../Sitemark';
 import ColorModeIconDropdown from '../ColorModelIconDropdown';
 import { useState } from 'react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { UserKind } from '@/src/lib/store/slices/AuthSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import { Search } from '@/src/features/search/search';
-import { HomeIcon } from '../../icons/CustomIcons';
 import HomeButton from '../../buttons/homeButton';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({

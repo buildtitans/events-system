@@ -1,14 +1,13 @@
 "use client"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
-import AppAppBar from '@/src/components/ui/nav/AppBar';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { useEffect, useState } from 'react';
 import type { MountStatus } from '@/src/lib/types/tokens/types';
 import { ReduxProvider } from '@/src/lib/store';
-import TopLayerHost from '../components/layers/topLayerHost';
-import Footer from '../components/sections/footer/footer';
+import { DomainStateType } from '../lib/store/sync/syncDomains';
+import type { PropsWithChildren } from 'react';
+import { appMountedPipeline } from '../components/pipelines/mount/appMountedPipeline';
 
 const theme = createTheme({
     palette: {
@@ -20,12 +19,16 @@ const theme = createTheme({
     }
 });
 
+type ProvidersProps = PropsWithChildren<{
+    domains: DomainStateType
+}>;
+
 export default function Providers({
     children,
-}: {
-    children: React.ReactNode;
-}) {
+    domains
+}: ProvidersProps) {
     const [status, setStatus] = useState<MountStatus>('idle');
+
 
     useEffect(() => setStatus('active'), []);
 
@@ -36,24 +39,7 @@ export default function Providers({
                     theme={theme}
                 >
                     <CssBaseline enableColorScheme />
-                    {(status === 'active') &&
-                        <AppAppBar
-                            key="navigation_bar"
-                        />
-                    }
-                    {(status === "active") && <TopLayerHost />}
-
-                    {(status === 'active') &&
-                        <Container
-                            key="content_container"
-                            maxWidth="lg"
-                            component="main"
-                            sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
-                        >
-                            {children}
-                        </Container>
-                    }
-                    {(status === "active") && <Footer />}
+                    {appMountedPipeline(status, children, domains)}
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

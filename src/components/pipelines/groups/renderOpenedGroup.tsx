@@ -8,8 +8,15 @@ import type { JSX } from "react";
 import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NoGroups from "../../ui/feedback/failure/noGroups";
 
-export function RenderOpenedGroup(
-    { group, events }: { group: GroupHydrated; events: EventsPages }
+type RenderOpenedGroupProps = {
+    group: GroupHydrated,
+    events: EventsPages
+};
+
+export function RenderOpenedGroup({
+    group,
+    events
+}: RenderOpenedGroupProps
 ): JSX.Element | null {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const status = useSelector((s: RootState) => s.openGroup.syncStatus);

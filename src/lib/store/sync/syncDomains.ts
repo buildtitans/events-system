@@ -9,7 +9,6 @@ import { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
 export type DomainStateType = {
     events: EventsPages,
     groups: GroupsSchemaType,
-    access: ViewerAccess,
     categories: CategoriesSchemaType
 };
 
@@ -17,13 +16,11 @@ export type DomainStateType = {
 async function getDomains(): Promise<GroupsAndMembershipsSchemaType> {
     const events = await trpcClient.events.list.mutate();
     const groups = await trpcClient.groups.list.mutate();
-    const memberships = await trpcClient.groupMembers.viewerMemberships.mutate();
     const categories = await trpcClient.categories.getAllCategories.mutate();
 
     return {
         events,
         groups,
-        memberships,
         categories
     }
 };
@@ -31,17 +28,14 @@ async function getDomains(): Promise<GroupsAndMembershipsSchemaType> {
 async function syncDomains(): Promise<DomainStateType> {
     const {
         groups,
-        memberships,
         events,
         categories
     } = await getDomains();
 
-    const access = mapGroupAccessPermissions(groups, memberships);
 
     return {
         events,
         groups,
-        access,
         categories
     }
 };

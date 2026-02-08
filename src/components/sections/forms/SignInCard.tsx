@@ -38,7 +38,7 @@ export default function SignInCard({
 
 
     return (
-        <StyledSigninCard variant="outlined">
+        <StyledSigninCard>
 
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                 <SitemarkIcon />

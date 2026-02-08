@@ -6,28 +6,24 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { addToGroupMembersState, getViewerPermissions } from "../../store/slices/GroupMembersSlice";
+import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
-import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
-import { syncPermissions } from "../../store/sync/syncDomains";
+import { syncPermissions } from "@/src/lib/store/sync/syncPermissions";
 
 const useJoinGroup = (): JoinGroupHook => {
-    const groups = useSelector((s: RootState) => s.groups.communities);
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
 
     async function handleResult(res: GroupMembersSchemaType | null) {
         if (res) {
-            dispatch(addToGroupMembersState(res))
-
             const permissions = await syncPermissions();
-
             dispatch(getViewerPermissions(permissions));
+            dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: 'success' }));
         }
 
         timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: res ? "success" : 'failed' }));
+            dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "idle" }))
             timerRef.current = null;
         }, 800);
     };

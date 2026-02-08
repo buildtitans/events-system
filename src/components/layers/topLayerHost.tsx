@@ -7,6 +7,7 @@ import { alertsPipeline } from '../pipelines/alerts/alertsPipeline';
 import { AnimatePresence } from 'framer-motion';
 import CreateEventDrawer from '../ui/drawers/createEventDrawer';
 import OpenedEventDrawer from '../ui/drawers/openedEventDrawer';
+import SignInDrawer from '../ui/drawers/signInDrawer';
 
 export default function TopLayerHost(): React.ReactNode {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -25,6 +26,7 @@ export default function TopLayerHost(): React.ReactNode {
             <CreateEventDrawer
                 open={createEventDrawer === "create event"}
             />
+            <SignInDrawer />
 
             {modalPipeline(modal)}
             <AnimatePresence mode='wait'>

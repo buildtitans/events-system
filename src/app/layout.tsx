@@ -5,6 +5,7 @@ import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import "./globals.css";
+import { syncDomains } from "../lib/store/sync/syncDomains";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,9 @@ export const metadata: Metadata = buildMetaData();
 
 type RootLayoutType = Readonly<{ children: React.ReactNode }>;
 
-function RootLayout({ children }: RootLayoutType): React.ReactNode {
+async function RootLayout({ children }: RootLayoutType): Promise<React.ReactNode> {
+  const domains = await syncDomains();
+
   return (
     <html lang="en" className={roboto.variable}>
       <body
@@ -37,7 +40,9 @@ function RootLayout({ children }: RootLayoutType): React.ReactNode {
           antialiased`
         }>
         <AppRouterCacheProvider>
-          <Providers>
+          <Providers
+            domains={domains}
+          >
             {children}
           </Providers>
         </AppRouterCacheProvider>

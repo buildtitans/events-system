@@ -16,8 +16,6 @@ export default function NoScheduledEvents() {
                     justifyContent: 'start',
                     height: "100%",
                     width: '100%',
-                    border: 1,
-                    borderColor: "white",
                     margin: 'auto'
                 }}
             >

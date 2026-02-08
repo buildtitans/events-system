@@ -3,21 +3,24 @@ import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/author';
 import { EventCardProps } from './cards/eventCard';
+import type { EventSchemaType } from '@/src/schemas/eventSchema';
 
 type EventStackCardProps = {
     handleBlur: EventCardProps["handleBlur"],
     handleFocus: EventCardProps["handleFocus"],
     focusedCardIndex: EventCardProps["focusedCardIndex"],
     event: EventCardProps["event"],
-    groupName: string
+    groupName: string,
+    handleOpenEvent: (event: EventSchemaType) => () => void
 }
 
-function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, groupName }: EventStackCardProps) {
+function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, groupName, handleOpenEvent }: EventStackCardProps) {
 
 
     return (
         <StyledCard
             variant="outlined"
+            onClick={handleOpenEvent(event)}
             onFocus={() => handleFocus(3)}
             onBlur={handleBlur}
             tabIndex={0}

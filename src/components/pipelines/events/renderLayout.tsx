@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { openEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
-//TODO: seperate openEventDrawer from populating the viewerInfo, makes this an optimistic update instead
 
 function renderLayout(
     slots: LayoutSlotSchemaType[],
@@ -50,6 +49,7 @@ function renderLayout(
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
+                        handleOpenEvent={handleOpenEvent}
                     />
                 )
             }

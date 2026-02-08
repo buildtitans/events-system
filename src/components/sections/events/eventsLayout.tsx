@@ -27,8 +27,8 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
 
     return (
         <>
-            <AnimatePresence mode='wait'>
-                {(page.length > 0) && <MotionGrid
+            <AnimatePresence initial={false} mode='wait'>
+                {(page) && <MotionGrid
                     key={currentPage}
                     variants={fadeInOut}
                     initial="initial"
