@@ -45,7 +45,7 @@ export class GroupsClient {
         const formatted = [];
 
         for (const group of groups) {
-            let parsed = this.formatGroup(group);
+            const parsed = this.formatGroup(group);
             formatted.push(parsed);
         }
 

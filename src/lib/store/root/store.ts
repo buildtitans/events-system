@@ -4,7 +4,7 @@ import GroupsSlice from "@/src/lib/store/slices/GroupsSlice"
 import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
 import AuthSlice from "@/src/lib/store/slices/AuthSlice";
 import CategoriesSlice from "@/src/lib/store/slices/CategorySlice";
-import GroupMembersSlice from '@/src/lib/store/slices/GroupMembersSlice';
+import PermissionsSlice from '@/src/lib/store/slices/PermissionsSlice';
 import EventAttendantsSlice from "@/src/lib/store/slices/EventAttendantsSlice";
 import EventDrawerSlice from "@/src/lib/store/slices/events/EventDrawerSlice";
 import OpenedGroupSlice from "@/src/lib/store/slices/groups/OpenedGroupSlice";
@@ -16,7 +16,7 @@ const store = configureStore({
         rendering: RenderingSlice,
         auth: AuthSlice,
         categories: CategoriesSlice,
-        groupMembers: GroupMembersSlice,
+        groupMembers: PermissionsSlice,
         eventAttendants: EventAttendantsSlice,
         eventDrawer: EventDrawerSlice,
         openGroup: OpenedGroupSlice

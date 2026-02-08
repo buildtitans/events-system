@@ -1,6 +1,13 @@
 import { router, publicProcedure } from "@/src/trpc/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { AttendanceUpdateInputSchemaType, AttendanceUpdateInputSchemaValidator, EventAttendantStatusSchemaType, EventIdSchemaType, EventIdSchemaValidator, UpdatedAttendanceResponseSchemaType, UpdatedAttendanceResponseSchemaValidator } from "@/src/schemas/eventAttendantsSchema";
+import {
+    AttendanceUpdateInputSchemaType,
+    AttendanceUpdateInputSchemaValidator,
+    EventIdSchemaType,
+    EventIdSchemaValidator,
+    UpdatedAttendanceResponseSchemaType,
+    UpdatedAttendanceResponseSchemaValidator
+} from "@/src/schemas/eventAttendantsSchema";
 
 export const eventAttendantsRouter = router({
     getAttendants:

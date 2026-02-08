@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 export type LoginCredentials = {
     email: string | null,
@@ -18,16 +18,21 @@ type ValidateCredentialsHook = {
 }
 
 const useValidateCredentials = (): ValidateCredentialsHook => {
-    const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-    const [open, setOpen] = useState(false);
     const [credentials, setCredentials] = useState<LoginCredentials>({
         email: null,
         password: null
     });
+    const isSubmittable = () => {
+        const email = credentials.email;
+        const password = credentials.password;
+        if (!email || !password) return false;
+        const isValid = validateInputs(email, password);
+        return isValid;
+    }
 
     const handleEmail = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         e.preventDefault();
@@ -53,7 +58,7 @@ const useValidateCredentials = (): ValidateCredentialsHook => {
     const validateInputs = (email: string, password: string) => {
 
         let isValid = true;
-        let validEmailFormat = !/\S+@\S+\.\S+/.test(email);
+        const validEmailFormat = !/\S+@\S+\.\S+/.test(email);
 
         if (validEmailFormat) {
             setEmailError(true);
@@ -76,20 +81,8 @@ const useValidateCredentials = (): ValidateCredentialsHook => {
         return isValid;
     };
 
-
-    useEffect(() => {
-        const password = credentials.password;
-        const email = credentials.email;
-        if ((!password) || (!email)) return;
-
-        const isValid = validateInputs(email, password);
-        setIsSubmittable(isValid);
-
-
-    }, [credentials.password, credentials.email])
-
     return {
-        isSubmittable,
+        isSubmittable: isSubmittable(),
         emailErrorMessage,
         emailError,
         passwordError,

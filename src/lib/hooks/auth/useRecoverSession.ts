@@ -5,7 +5,7 @@ import type { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess, logout } from "../../store/slices/AuthSlice";
 import { syncPermissions } from "../../store/sync/syncPermissions";
-import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
+import { getViewerPermissions } from "../../store/slices/PermissionsSlice";
 
 const useRecoverSession = (): void => {
     const dispatch = useDispatch<AppDispatch>();

@@ -33,21 +33,23 @@ export const useHydrateEventDrawer = () => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const dispatch = useDispatch<AppDispatch>();
 
-    function handleAttendants(
-        attendantsReq: EventAttendantsSchemaType[],
-        user_id: string,
-        event_id: string
-    ) {
-
-        dispatch(getEventAttendants(attendantsReq));
-        const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
-
-        dispatch(getViewerAttendance(viewerAttendance ?? ifNotAttendant(user_id, event_id)));
-    };
 
     useEffect(() => {
         if ((!event)) return;
         if (userKind === "anonymous") return;
+
+        const handleAttendants = (
+            attendantsReq: EventAttendantsSchemaType[],
+            user_id: string,
+            event_id: string
+
+        ) => {
+            dispatch(getEventAttendants(attendantsReq));
+            const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
+
+            dispatch(getViewerAttendance(viewerAttendance ?? ifNotAttendant(user_id, event_id)));
+        };
+
         const executeGetViewerAttendance = async () => {
 
 
@@ -81,7 +83,7 @@ export const useHydrateEventDrawer = () => {
         };
 
         void executeGetViewerAttendance();
-    }, [event, ViewerAccess, dispatch]);
+    }, [event, ViewerAccess, dispatch, userKind]);
 
     return;
 }

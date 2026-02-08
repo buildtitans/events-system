@@ -1,6 +1,4 @@
-import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import type { ViewerAccess } from "../slices/GroupMembersSlice";
 import { GroupsAndMembershipsSchemaType } from "@/src/schemas/syncPermissionsSchema";
 import { EventsPages } from "../slices/EventsSlice";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";

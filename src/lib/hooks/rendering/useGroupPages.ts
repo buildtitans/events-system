@@ -8,7 +8,7 @@ import type { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
 export type CategoryMap = Map<string, string>;
 
 function seedCategoryMap(categories: CategoriesSchemaType): CategoryMap {
-    let map: CategoryMap = new Map();
+    const map: CategoryMap = new Map();
     categories.forEach((category) => {
         map.set(category.id, category.name)
     });

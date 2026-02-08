@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { EventSchemaType, NewEventInputSchema, NewEventInputSchemaValidator } from "@/src/schemas/eventSchema";
+import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 import { Dayjs } from "dayjs";
-import type { PickerChangeHandlerContext, DateTimeValidationError } from "@mui/x-date-pickers";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 
 export type NewEventType = {
@@ -20,15 +19,20 @@ export type NewEventType = {
     tag: EventSchemaType["tag"]
 };
 
+function getPicDate() {
+    return Date.now();
+}
+
 export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEventHook => {
     const dispatch = useDispatch<AppDispatch>();
     const timerRef = useRef<number | null>(null);
+    const picDate = getPicDate();
     const [newEvent, setNewEvent] = useState<NewEventType>({
         title: null,
         description: null,
         starts_at: null,
         group_id: group_id,
-        img: `https://picsum.photos/800/450?random=${Date.now()}`
+        img: `https://picsum.photos/800/450?random=${picDate}`
         ,
         meeting_location: null,
         authors: [{ name: 'Jon Doe', avatar: 'meh' }],
@@ -46,6 +50,8 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
 
     const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const val = e.target.value;
+
+
         setNewEvent((prev: NewEventType) => ({
             ...prev,
             title: val
@@ -70,7 +76,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         }));
     };
 
-    const handleStartsAt = (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => {
+    const handleStartsAt = (value: Dayjs | null) => {
         const date = value?.toISOString();
         setNewEvent((prev: NewEventType) => ({
             ...prev,

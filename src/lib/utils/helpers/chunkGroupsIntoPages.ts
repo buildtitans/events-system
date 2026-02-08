@@ -6,7 +6,7 @@ function chunkGroupsIntoPages(groups: GroupsSchemaType, size: number = 6): Group
 
     for (let i = 0; i < groups.length; i += size) {
 
-        let chunk: GroupsSchemaType = groups.slice(i, i + size);
+        const chunk: GroupsSchemaType = groups.slice(i, i + size);
 
         chunked.push(chunk);
     }

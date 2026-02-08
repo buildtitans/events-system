@@ -1,9 +1,8 @@
 import type { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
-import type { UserInGroupRoleType, LoadingStatus, RequestStatus } from "@/src/lib/types/tokens/types";
+import type { UserInGroupRoleType, LoadingStatus } from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
-import { LayoutSlotSchemaArrayType } from "@/src/schemas/layoutSlotSchema";
 import { EventsPages } from "../../store/slices/EventsSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";

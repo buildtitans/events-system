@@ -11,7 +11,7 @@ import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import NavActions from './global/navActions';
 import NavBar from './global/navBar';
 import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';
-import { getViewerPermissions } from '@/src/lib/store/slices/GroupMembersSlice';
+import { getViewerPermissions } from '@/src/lib/store/slices/PermissionsSlice';
 
 
 export default function AppAppBar() {

@@ -9,7 +9,7 @@ import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
 import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
 import { syncPermissions } from "../../store/sync/syncPermissions";
-import { getViewerPermissions } from "../../store/slices/GroupMembersSlice";
+import { getViewerPermissions } from "../../store/slices/PermissionsSlice";
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);

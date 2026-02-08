@@ -2,9 +2,7 @@ import type { JSX } from 'react';
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
 import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -18,9 +16,9 @@ export default function MemberActionsMenu(): JSX.Element {
         setAnchorEl(event.currentTarget);
     }
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(null)
-    };
+    //   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    //       setAnchorEl(null)
+    //   };
     const handleClose = () => {
         setAnchorEl(null);
     };

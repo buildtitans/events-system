@@ -1,4 +1,4 @@
-import { ViewerAccess } from "../slices/GroupMembersSlice";
+import { ViewerAccess } from "../slices/PermissionsSlice";
 import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
 import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
@@ -9,7 +9,6 @@ function handlePermissions(
     memberships: GroupMembersSchemaType[] | null
 ) {
     const permissions = mapGroupAccessPermissions(groups, memberships);
-    console.log(permissions);
 
     return permissions;
 };

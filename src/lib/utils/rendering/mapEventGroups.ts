@@ -6,7 +6,7 @@ import {
 
 function mapEventGroups(groups: GroupsSchemaType): GroupNameByGroupID {
 
-    let groupNameById: GroupNameByGroupID = {}
+    const groupNameById: GroupNameByGroupID = {}
 
 
     groups.forEach((group: GroupSchemaType) => {

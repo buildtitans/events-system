@@ -1,7 +1,7 @@
 import type { CardType } from "@/src/components/ui/box/cards/eventCard";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { LayoutSlotSchemaType, PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
-import { getCardSizing, designateLayoutSlot } from "@/src/server/layout/utils";
+import { designateLayoutSlot } from "@/src/server/layout/utils";
 import { chunkEventsIntoPages } from "./chunkIntoPages";
 
 export type LayoutSlot =
