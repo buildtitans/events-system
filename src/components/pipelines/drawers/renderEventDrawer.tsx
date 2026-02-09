@@ -1,19 +1,19 @@
+"use client";
 import type { JSX } from "react";
 import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import OpenedEvent from "../../ui/stack/OpenedEvent";
 import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
 
+export default function RenderEventDrawerContents(
 
-export const RenderEventDrawerContents = (
-    event: EventSchemaType | null
-): JSX.Element | null => {
+): JSX.Element | null {
     const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
-
+    const event = useSelector((s: RootState) => s.eventDrawer.event)
+    const role = permissions[event?.group_id ?? ""];
     if (!event) return null
-    const role = permissions[event.group_id];
+
 
     switch (role) {
         case "member":

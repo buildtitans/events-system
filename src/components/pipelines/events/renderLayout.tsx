@@ -5,6 +5,7 @@ import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { openEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 
 function RenderLayout(
@@ -18,7 +19,8 @@ function RenderLayout(
 
     const handleOpenEvent = useCallback((event: EventCardProps["event"]) => {
         return () => {
-            dispatch(openEventDrawer(event))
+            dispatch(openEventDrawer(event));
+            dispatch(enqueueDrawer("event drawer"));
         }
     }, [dispatch]);
 

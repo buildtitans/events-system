@@ -28,6 +28,7 @@ function ifNotAttendant(
 };
 
 export const useHydrateEventDrawer = () => {
+    const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
     const event = useSelector((s: RootState) => s.eventDrawer.event);
     const ViewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -37,6 +38,7 @@ export const useHydrateEventDrawer = () => {
     useEffect(() => {
         if ((!event)) return;
         if (userKind === "anonymous") return;
+        if (drawerActive !== "event drawer") return;
 
         const handleAttendants = (
             attendantsReq: EventAttendantsSchemaType[],
@@ -82,7 +84,7 @@ export const useHydrateEventDrawer = () => {
         };
 
         void executeGetViewerAttendance();
-    }, [event, ViewerAccess, dispatch, userKind]);
+    }, [event, ViewerAccess, dispatch, userKind, drawerActive]);
 
     return;
 }

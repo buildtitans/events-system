@@ -5,27 +5,16 @@ import type { RootState } from '@/src/lib/store';
 import React from 'react';
 import { alertsPipeline } from '../pipelines/alerts/alertsPipeline';
 import { AnimatePresence } from 'framer-motion';
-import CreateEventDrawer from '../ui/drawers/createEventDrawer';
-import OpenedEventDrawer from '../ui/drawers/openedEventDrawer';
-import SignInDrawer from '../ui/drawers/signInDrawer';
+import RightAnchoredDrawer from '../ui/drawers/rightAnchoredDrawer';
 
 export default function TopLayerHost(): React.ReactNode {
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const modal = useSelector((s: RootState) => s.rendering.modal);
     const alert = useSelector((s: RootState) => s.rendering.alert);
-    const createEventDrawer = useSelector((s: RootState) => s.rendering.drawer);
-    const openedEventDrawerStatus = useSelector((s: RootState) => s.eventDrawer.status);
-
 
     return (
         <>
-            <OpenedEventDrawer
-                open={(openedEventDrawerStatus === "active")}
-            />
-            <CreateEventDrawer
-                open={createEventDrawer === "create event"}
-            />
-            <SignInDrawer />
+            <RightAnchoredDrawer />
 
             {ModalPipeline(modal)}
             <AnimatePresence mode='wait'>

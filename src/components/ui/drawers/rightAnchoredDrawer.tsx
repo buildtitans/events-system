@@ -2,29 +2,21 @@
 import Drawer from "@mui/material/Drawer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
 import { JSX } from "react";
-import { RenderEventDrawerContents } from "../../pipelines/drawers/renderEventDrawer";
+import { OpenedDrawerContents } from "../../pipelines/drawers/openedDrawerContents";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
-type EventDrawerProps = {
-    open: boolean
-}
-
-export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Element | null {
+export default function RightAnchoredDrawer(): JSX.Element | null {
     useHydrateEventDrawer();
     const dispatch = useDispatch<AppDispatch>();
-    const event = useSelector((s: RootState) => s.eventDrawer.event);
-    const closeDrawer = () => {
-        dispatch(closeEventDrawer());
-    };
-
+    const drawerType = useSelector((s: RootState) => s.rendering.drawer);
 
     return (
         <Drawer
             anchor="right"
-            open={open}
-            onClose={closeDrawer}
+            open={(drawerType !== null)}
+            onClose={() => dispatch(enqueueDrawer(null))}
             transitionDuration={{ enter: 300, exit: 250 }}
             sx={{
                 height: '100%',
@@ -39,7 +31,7 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Eleme
                 }
             }}
         >
-            {RenderEventDrawerContents(event)}
+            {(drawerType !== null) && <OpenedDrawerContents drawerType={drawerType} />}
         </Drawer>
     );
 };

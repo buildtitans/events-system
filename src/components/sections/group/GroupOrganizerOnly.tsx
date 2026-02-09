@@ -11,7 +11,7 @@ import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 export default function GroupOranizerOnly({ roleType }: { roleType: GroupMembersSchemaType["role"] }): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
     const openEventDrawer = () => {
-        dispatch(enqueueDrawer('create event'));
+        dispatch(enqueueDrawer("create event drawer"));
     }
 
 

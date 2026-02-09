@@ -41,7 +41,7 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
                 {(userKind === 'anonymous') &&
                     <Button
 
-                        onClick={() => dispatch(enqueueDrawer("Sign In Drawer"))}
+                        onClick={() => dispatch(enqueueDrawer("sign in drawer"))}
                         color="info"
                         variant="contained"
                         size="medium"

@@ -20,7 +20,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
         handleTitle,
         handleLocation,
         isSubmittable
-    } = useCreateEvent(group_id ?? "");
+    } = useCreateEvent(group_id);
 
 
     return (
