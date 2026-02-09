@@ -2,7 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 
-export type OpenedEvent = { status: "idle" } | { status: "pending" } | { status: "ready", data: EventSchemaType } | { status: "failed", error: string }
+export type OpenedEvent = { status: "idle" }
+    | { status: "pending" }
+    | { status: "ready", data: EventSchemaType }
+    | { status: "failed", error: string }
 
 type UserAttendantInfo = EventAttendantsSchemaType
 
