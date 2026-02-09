@@ -25,14 +25,15 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
         const invalidEmailFormat = !/\S+@\S+\.\S+/.test(email);
         const invalidPassword = !password || password.length < 6;
 
-        setEmailError(() => ({
-            hasError: invalidEmailFormat ? true : false,
-            message: invalidEmailFormat ? 'Please provide a valid email' : ''
-        }));
-        setPasswordError(() => ({
-            hasError: invalidPassword ? true : false,
+        setEmailError({
+            hasError: invalidEmailFormat,
+            message: invalidEmailFormat ? "Please provide a valid email" : ""
+        });
+
+        setPasswordError({
+            hasError: invalidPassword,
             message: invalidPassword ? "Password needs to be at least 6 characters" : ""
-        }));
+        });
     };
 
     const setField =
@@ -54,7 +55,7 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
         const email = credentials.email;
         const password = credentials.password
         if ((!email) || (!password)) return;
-        const executeValidateInputs = async () => {
+        const executeValidateInputs = () => {
             validateInputs(email, password)
         }
 
