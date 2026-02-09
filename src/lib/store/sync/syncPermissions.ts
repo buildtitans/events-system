@@ -15,7 +15,6 @@ function handlePermissions(
 
 export async function syncPermissions(): Promise<ViewerAccess> {
 
-    console.log("syncing permisssions")
     const groups = await trpcClient.groups.list.mutate();
     const memberships = await trpcClient.groupMembers.viewerMemberships.mutate();
     return handlePermissions(groups, memberships);

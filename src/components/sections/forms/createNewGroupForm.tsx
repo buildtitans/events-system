@@ -1,6 +1,4 @@
 "use client";
-import type { ModalProps } from "@mui/material/Modal";
-import Modal from "@mui/material/Modal";
 import { JSX } from "react";
 import SelectCategory from "../inputs/group/selectCategory";
 import { useCreateNewGroup } from "@/src/lib/hooks/insert/useCreateNewGroup";
@@ -9,9 +7,6 @@ import GroupLocationField from "../inputs/group/groupLocationField";
 import GroupDescriptionField from "../inputs/group/groupDescriptionField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
-import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import Typography from "@mui/material/Typography";
 
 

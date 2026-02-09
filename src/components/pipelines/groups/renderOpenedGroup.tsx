@@ -47,7 +47,6 @@ export function RenderOpenedGroup({
                     key="opened-group"
                     group={group.data}
                     events={events}
-                    status={group.status}
                 />
             )
     }

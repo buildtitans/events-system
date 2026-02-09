@@ -1,89 +1,76 @@
 "use client"
-import { useState } from "react"
+import {
+    useEffect,
+    useState
+} from "react"
+import type {
+    ValidationState,
+    LoginCredentials
+} from "../../types/tokens/types";
 
-export type LoginCredentials = {
-    email: string | null,
-    password: string | null
-};
+import type { ValidateCredentialsHook } from "../../types/hooks/types";
 
-export type ValidateCredentialsHook = {
-    isSubmittable: boolean,
-    emailErrorMessage: string,
-    emailError: boolean,
-    passwordError: boolean,
-    passwordErrorMessage: string,
-    handleEmail: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
-    handlePassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
-    credentials: LoginCredentials
-}
-
-const useValidateCredentials = (): ValidateCredentialsHook => {
-    const [emailError, setEmailError] = useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = useState('');
-    const [passwordError, setPasswordError] = useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+export const useValidateCredentials = (): ValidateCredentialsHook => {
+    const [emailError, setEmailError] = useState<ValidationState>({ hasError: false, message: '' })
+    const [passwordError, setPasswordError] = useState<ValidationState>({ hasError: false, message: '' })
     const [credentials, setCredentials] = useState<LoginCredentials>({
         email: null,
         password: null
     });
-    const validate = () => {
+
+    function validateInputs(
+        email: string,
+        password: string
+    ): void {
+        const invalidEmailFormat = !/\S+@\S+\.\S+/.test(email);
+        const invalidPassword = !password || password.length < 6;
+
+        setEmailError(() => ({
+            hasError: invalidEmailFormat ? true : false,
+            message: invalidEmailFormat ? 'Please provide a valid email' : ''
+        }));
+        setPasswordError(() => ({
+            hasError: invalidPassword ? true : false,
+            message: invalidPassword ? "Password needs to be at least 6 characters" : ""
+        }));
+    };
+
+    const setField =
+        (field: keyof LoginCredentials) =>
+            (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                const value = e.target.value;
+                setCredentials(prev => ({
+                    ...prev,
+                    [field]: value,
+                }));
+            };
+
+    const handleEmail = setField('email');
+    const handlePassword = setField('password');
+
+
+    useEffect(() => {
+
         const email = credentials.email;
-        const password = credentials.password;
-        if (!email || !password) return false;
-        const isValid = validateInputs(email, password);
-        return isValid;
-    }
-    const isSubmittable = validate();
-
-    const handleEmail = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        e.preventDefault();
-        const value = e.target.value;
-
-        setCredentials((prev: LoginCredentials) => ({
-            ...prev,
-            email: value
-        }));
-    };
-
-
-    const handlePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        e.preventDefault();
-        const value = e.target.value;
-
-        setCredentials((prev: LoginCredentials) => ({
-            ...prev,
-            password: value
-        }));
-    };
-
-    function validateInputs(email: string, password: string) {
-
-        let isValid = true;
-        const validEmailFormat = !/\S+@\S+\.\S+/.test(email);
-
-        if (validEmailFormat) {
-            isValid = false;
-        } else {
+        const password = credentials.password
+        if ((!email) || (!password)) return;
+        const executeValidateInputs = async () => {
+            validateInputs(email, password)
         }
 
-        if (!password || password.length < 6) {
-            isValid = false;
-        } else {
-        }
+        void executeValidateInputs();
 
-        return isValid;
-    };
+    }, [credentials.email, credentials.password]);
+
 
     return {
-        isSubmittable: isSubmittable,
-        emailErrorMessage,
-        emailError,
-        passwordError,
+        isSubmittable: (!!credentials.email && !!credentials.password),
+        emailErrorMessage: emailError.message,
+        emailError: emailError.hasError,
+        passwordError: passwordError.hasError,
+        passwordErrorMessage: passwordError.message,
         credentials,
-        passwordErrorMessage,
         handleEmail,
         handlePassword
     };
 };
-
-export { useValidateCredentials }

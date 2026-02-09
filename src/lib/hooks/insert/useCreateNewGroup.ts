@@ -6,7 +6,7 @@ import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@
 import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../../store/slices/groups/GroupsSlice";
-import { enqueueAlert, enqueueDrawer, enqueueSnackbar, showModal } from "../../store/slices/rendering/RenderingSlice";
+import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { parseInputSchema } from "../../utils/validation/parseInputSchema";
 
 export type CreateNewGroupHook = {

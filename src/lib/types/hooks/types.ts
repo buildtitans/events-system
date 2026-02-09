@@ -8,6 +8,7 @@ import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
+import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -16,6 +17,17 @@ type CreateEventHook = {
     handleLocation: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     schedule: (e: React.FormEvent<HTMLFormElement>) => void,
     isSubmittable: boolean
+}
+
+type ValidateCredentialsHook = {
+    isSubmittable: boolean,
+    emailErrorMessage: string,
+    emailError: boolean,
+    passwordError: boolean,
+    passwordErrorMessage: string,
+    handleEmail: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    handlePassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    credentials: LoginCredentials
 }
 
 type GetGroupRoleAndIdHook = {
@@ -62,5 +74,6 @@ export type {
     GetGroupEventsHook,
     GetGroupMembersHook,
     JoinGroupHook,
-    UpdateAttendanceStatusHook
+    UpdateAttendanceStatusHook,
+    ValidateCredentialsHook
 }

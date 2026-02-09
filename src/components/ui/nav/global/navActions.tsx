@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import { useDispatch } from 'react-redux';
-import { enqueueDrawer, showModal } from '@/src/lib/store/slices/rendering/RenderingSlice';
+import { enqueueDrawer } from '@/src/lib/store/slices/rendering/RenderingSlice';
 import { AppDispatch } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";

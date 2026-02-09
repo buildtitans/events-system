@@ -1,7 +1,6 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { usePathname, useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import { JSX, useMemo } from "react";

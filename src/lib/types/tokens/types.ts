@@ -29,8 +29,15 @@ type UserInGroupRoleType =
     | 'member'
     | 'organizer';
 
+type LoginCredentials = {
+    email: string | null,
+    password: string | null
+};
 
-
+type ValidationState = {
+    hasError: boolean,
+    message: string
+}
 
 type AlertKind =
     "success"
@@ -75,5 +82,7 @@ export type {
     UserInGroupRoleType,
     AlertKind,
     AlertMessages,
-    AlertMessagesType
+    AlertMessagesType,
+    LoginCredentials,
+    ValidationState
 }
