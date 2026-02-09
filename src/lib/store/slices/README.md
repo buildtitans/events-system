@@ -11,7 +11,7 @@ Components render directly from the state machine using exhaustive `switch` stat
 
 Instead of checking multiple booleans or null values, components can map state → UI in a single, predictable render pipeline:
 
-• `idle` → nothing selected / drawer closed  
+• `idle` → nothing hydrated / drawer closed  
 • `pending` → skeletons or loading spinners  
 • `failed` → error or fallback UI  
 • `ready` → fully hydrated content  
