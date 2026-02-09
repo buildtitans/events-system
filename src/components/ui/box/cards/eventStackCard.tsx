@@ -1,8 +1,8 @@
 "use client"
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
-import { Author } from '@/src/components/ui/box/author';
-import { EventCardProps } from './cards/eventCard';
+import { Author } from '@/src/components/ui/box/cards/author';
+import { EventCardProps } from './eventCard';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 
 type EventStackCardProps = {

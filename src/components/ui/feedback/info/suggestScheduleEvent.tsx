@@ -1,4 +1,4 @@
-import FadeInOutBox from "@/src/components/ui/box/fadeInOutBox";
+import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 

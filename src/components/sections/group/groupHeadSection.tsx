@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import { JSX } from "react";
 import type { LoadingStatus } from "@/src/lib/types/tokens/types";
-import FadeInOutBox from "@/src/components/ui/box/fadeInOutBox";
+import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";

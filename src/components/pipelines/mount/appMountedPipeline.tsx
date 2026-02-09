@@ -3,8 +3,8 @@ import { JSX } from "react";
 import type { MountStatus } from "@/src/lib/types/tokens/types";
 import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
-import CircularIndeterminate from "../../ui/feedback/pending/spinner";
 import Container from "@mui/material/Container";
+import Spinner from "../../ui/feedback/pending/spinner";
 
 export const AppMountedPipeline = (
     status: MountStatus,
@@ -32,7 +32,7 @@ export const AppMountedPipeline = (
 
         default: {
             return (
-                <CircularIndeterminate />
+                <Spinner />
             )
         }
     }

@@ -4,7 +4,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
-import { Author } from '@/src/components/ui/box/author';
+import { Author } from '@/src/components/ui/box/cards/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 import dayjs from 'dayjs';

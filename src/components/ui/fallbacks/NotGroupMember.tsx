@@ -1,4 +1,4 @@
-import FadeInOutBox from "../box/fadeInOutBox";
+import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 

@@ -1,7 +1,7 @@
 "use client";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import FadeInOutBox from "../box/fadeInOutBox";
+import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
 import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/eventSchema";

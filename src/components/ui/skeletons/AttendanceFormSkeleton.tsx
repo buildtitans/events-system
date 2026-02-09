@@ -1,5 +1,5 @@
 "use client";
-import FadeInOutBox from "../box/fadeInOutBox";
+import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import type { JSX } from "react";

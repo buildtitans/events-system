@@ -1,7 +1,7 @@
 "use client";
 import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
-import { NoEventsFound } from "../../ui/box/noEventsFound";
+import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import EventsLayout from "@/src/components/sections/events/eventsLayout";
 import { JSX } from "react";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
