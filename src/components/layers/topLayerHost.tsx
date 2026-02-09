@@ -1,23 +1,13 @@
-import { useSelector } from 'react-redux';
-import { snackbarPipeline } from '../pipelines/snackbars/snackbarPipeline';
-import type { RootState } from '@/src/lib/store';
-import React from 'react';
-import { alertsPipeline } from '../pipelines/alerts/alertsPipeline';
-import { AnimatePresence } from 'framer-motion';
+import type { JSX } from 'react';
 import RightAnchoredDrawer from '../ui/drawers/rightAnchoredDrawer';
+import AlertsAndSnackbarsShell from '../shell/AlertsAndSnackbarsShell';
 
-export default function TopLayerHost(): React.ReactNode {
-    const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
-    const alert = useSelector((s: RootState) => s.rendering.alert);
+export default function TopLayerHost(): JSX.Element {
 
     return (
         <>
             <RightAnchoredDrawer />
-
-            <AnimatePresence mode='wait'>
-                {(alert.action !== null) && alertsPipeline(alert)}
-                {snackbarPipeline(snackbar.kind, snackbar.status)}
-            </AnimatePresence>
+            <AlertsAndSnackbarsShell />
         </>
     )
 }
