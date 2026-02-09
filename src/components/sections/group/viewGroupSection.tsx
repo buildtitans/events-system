@@ -1,26 +1,22 @@
 "use client";
 import Box from "@mui/material/Box";
 import { JSX } from "react";
-import type { LoadingStatus } from "@/src/lib/types/tokens/types";
-import { loadEventsPipeline } from "../../pipelines/events/loadEventsPipeline";
 import GroupHeadSecton from "./groupHeadSection";
-import OpenedGroupSidebar from "../../ui/sidebars/openedGroupSidebar";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
+import EventsLayout from "../events/eventsLayout";
+import { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 type ViewGroupSectionProps = {
-    status: LoadingStatus,
+    status: GroupHydrated["status"],
     events: EventsPages,
     group: GroupSchemaType,
-    userKind: UserKind
 }
 
 export default function ViewGroupSection({
     status,
     events,
     group,
-    userKind
 }: ViewGroupSectionProps): JSX.Element {
 
 
@@ -43,12 +39,6 @@ export default function ViewGroupSection({
                 groupName={group.name}
             />
 
-            <OpenedGroupSidebar
-                status={status}
-                group_id={group.id}
-                open={userKind === "authenticated"}
-            />
-
             <Box
                 sx={{
                     display: "flex",
@@ -62,7 +52,9 @@ export default function ViewGroupSection({
                     height: '100%'
                 }}
             >
-                {loadEventsPipeline(status, events)}
+                <EventsLayout
+                    eventsPages={events}
+                />
             </Box>
         </Box>
     )

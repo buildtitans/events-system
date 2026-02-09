@@ -7,9 +7,10 @@ import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import GroupEventsHeader from "./groupEventsHeader";
+import { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 type GroupHeadSectionProps = {
-    status: LoadingStatus,
+    status: GroupHydrated["status"],
     pages: EventsPages,
     groupName: GroupSchemaType["name"]
 }

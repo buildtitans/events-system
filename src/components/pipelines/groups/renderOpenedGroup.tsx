@@ -1,12 +1,11 @@
 "use client";
 import { LinearIndeterminate } from "../../ui/feedback";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/src/lib/store";
 import type { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NoGroups from "../../ui/feedback/failure/noGroups";
+import Container from "@mui/material/Container";
 
 type RenderOpenedGroupProps = {
     group: GroupHydrated,
@@ -18,8 +17,6 @@ export function RenderOpenedGroup({
     events
 }: RenderOpenedGroupProps
 ): JSX.Element | null {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const status = useSelector((s: RootState) => s.openGroup.syncStatus);
 
     switch (group.status) {
 
@@ -27,8 +24,20 @@ export function RenderOpenedGroup({
             return null;
         case "pending":
             return (
-                <LinearIndeterminate
-                />
+                <Container
+                    disableGutters
+                    sx={{
+                        height: '100svh',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    <LinearIndeterminate
+                    />
+                </Container>
+
             )
         case "failed":
             return <NoGroups />
@@ -36,10 +45,9 @@ export function RenderOpenedGroup({
             return (
                 <ViewGroupSection
                     key="opened-group"
-                    userKind={userKind}
                     group={group.data}
                     events={events}
-                    status={status}
+                    status={group.status}
                 />
             )
     }

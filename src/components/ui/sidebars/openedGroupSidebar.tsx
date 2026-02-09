@@ -1,27 +1,16 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import GroupActonsContainer from "../stack/groupActionsContainer";
 import { groupSidebarStyles } from "@/src/lib/tokens/sxTokens";
 import Skeleton from "@mui/material/Skeleton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
 
-type GroupSidebarProps = {
-    status: LoadingStatus,
-    open: boolean
-    group_id: GroupSchemaType["id"]
-}
-
-export default function OpenedGroupSidebar({
-    status,
-    open,
-    group_id
-
-}: GroupSidebarProps): JSX.Element | null {
+export default function OpenedGroupSidebar(): JSX.Element | null {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
+    const group = useSelector((s: RootState) => s.openGroup.group);
+    const status = group.status;
 
     if (userKind === "anonymous") return null;
 
@@ -29,7 +18,7 @@ export default function OpenedGroupSidebar({
         <Drawer
             variant="permanent"
             anchor="left"
-            open={open}
+            open={(status !== "idle")}
             transitionDuration={{ enter: 300, exit: 250 }}
             sx={{
                 height: '100%',
@@ -44,10 +33,9 @@ export default function OpenedGroupSidebar({
             {(status === "pending") && (
                 <SidebarSkeleton key={"sidebar-skeleton"} />)}
 
-            {(status === "idle") &&
+            {(status === "ready") &&
                 <GroupActonsContainer
-                    status={status}
-                    group_id={group_id}
+                    group_id={group.data.id}
                 />
             }
         </Drawer>
@@ -66,7 +54,7 @@ function SidebarSkeleton() {
             width="100%"
             height="100%"
             sx={{
-                bgcolor: 'rgba(255, 255, 255, 0.03)'
+                bgcolor: 'rgba(255, 255, 255, 0.05)'
             }}
         />
 

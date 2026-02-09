@@ -34,7 +34,7 @@ export default function Providers({
 
     return (
         <ReduxProvider>
-            <StyledEngineProvider injectFirst>
+            <StyledEngineProvider >
                 <ThemeProvider
                     theme={theme}
                 >
