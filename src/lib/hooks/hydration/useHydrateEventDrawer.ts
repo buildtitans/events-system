@@ -27,16 +27,15 @@ function ifNotAttendant(
     };
 };
 
+
 export const useHydrateEventDrawer = () => {
     const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
     const event = useSelector((s: RootState) => s.eventDrawer.event);
-    const ViewerAccess = useSelector((s: RootState) => s.groupMembers.accessPermissions[event?.group_id ?? ""]);
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const dispatch = useDispatch<AppDispatch>();
 
-
     useEffect(() => {
-        if ((!event)) return;
+        if ((event.status !== "ready")) return;
         if (userKind === "anonymous") return;
         if (drawerActive !== "event drawer") return;
 
@@ -48,14 +47,15 @@ export const useHydrateEventDrawer = () => {
         ) => {
             dispatch(getEventAttendants(attendantsReq));
             const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
+            const notYetDecided = ifNotAttendant(user_id, event_id)
 
-            dispatch(getViewerAttendance(viewerAttendance ?? ifNotAttendant(user_id, event_id)));
+            dispatch(getViewerAttendance(viewerAttendance ?? notYetDecided));
         };
 
         const executeGetViewerAttendance = async () => {
 
             try {
-                const result = await syncUserAttendanceToEvent(event);
+                const result = await syncUserAttendanceToEvent(event.data);
 
                 const user_id = result.user_id;
                 const attendants = result.attendantsReq;
@@ -65,7 +65,7 @@ export const useHydrateEventDrawer = () => {
                 if (!attendants) {
                     throw new Error("Failed to get attendants")
                 }
-                handleAttendants(attendants, user_id, event.id);
+                handleAttendants(attendants, user_id, event.data.id);
 
             } catch (err) {
                 console.error(err);
@@ -73,7 +73,7 @@ export const useHydrateEventDrawer = () => {
         };
 
         void executeGetViewerAttendance();
-    }, [event, ViewerAccess, dispatch, userKind, drawerActive]);
+    }, [event, dispatch, userKind, drawerActive]);
 
     return;
 }

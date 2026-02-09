@@ -3,13 +3,12 @@ import type { JSX } from "react";
 import type { ActiveDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import SignInDrawerContents from "../../ui/drawers/signInDrawerContents";
 import NewEventDrawerContents from "../../ui/containers/NewEventDrawerContents";
-import RenderEventDrawerContents from "./renderEventDrawer";
 import CreateNewGroupForm from "../../sections/forms/createNewGroupForm";
 import Spinner from "../../ui/feedback/pending/spinner";
+import OpenedEventDrawerPipeline from "./openedEventDrawerPipeline";
 
 export const OpenedDrawerContents = ({ drawerType }: { drawerType: ActiveDrawer }): JSX.Element | null => {
 
-    console.log(drawerType);
 
     switch (drawerType) {
         case "create event drawer":
@@ -24,7 +23,7 @@ export const OpenedDrawerContents = ({ drawerType }: { drawerType: ActiveDrawer 
 
         case "event drawer":
             return (
-                <RenderEventDrawerContents />
+                <OpenedEventDrawerPipeline />
             )
 
         case "new group":
