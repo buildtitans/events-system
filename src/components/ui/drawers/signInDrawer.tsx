@@ -4,7 +4,7 @@ import SignInCard from "../../sections/forms/SignInCard";
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useValidateCredentials } from "@/src/lib/hooks/validation/useValidateCredentialsInput";
 import { useLogin } from "@/src/lib/hooks/auth/useLogin";
 

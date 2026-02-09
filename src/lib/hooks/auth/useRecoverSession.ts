@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { loginSuccess, logout } from "../../store/slices/AuthSlice";
+import { loginSuccess, logout } from "../../store/slices/auth/AuthSlice";
 import { syncPermissions } from "../../store/sync/syncPermissions";
-import { getViewerPermissions } from "../../store/slices/PermissionsSlice";
+import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 
 const useRecoverSession = (): void => {
     const dispatch = useDispatch<AppDispatch>();

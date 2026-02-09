@@ -4,7 +4,7 @@ import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import type { JSX } from "react";
 import MemberActionsMenu from "../../ui/menus/memberActionsMenu";
 
-export const renderSidebarContents = (
+export const RenderSidebarContents = (
     role: GroupMembersSchemaType["role"],
     group_id: GroupMembersSchemaType["group_id"]
 ): JSX.Element | null => {

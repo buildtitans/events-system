@@ -1,4 +1,4 @@
-import type { GroupNameByGroupID } from "@/src/lib/store/slices/EventsSlice";
+import type { GroupNameByGroupID } from "@/src/lib/store/slices/events/EventsSlice";
 import {
     GroupSchemaType,
     GroupsSchemaType

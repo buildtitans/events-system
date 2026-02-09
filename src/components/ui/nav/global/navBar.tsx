@@ -12,7 +12,7 @@ import Link from 'next/link';
 import ColorModeIconDropdown from '../ColorModelIconDropdown';
 import { useState } from 'react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import type { UserKind } from '@/src/lib/store/slices/AuthSlice';
+import type { UserKind } from '@/src/lib/store/slices/auth/AuthSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import { Search } from '@/src/features/search/search';
 import HomeButton from '../../buttons/homeButton';
@@ -41,7 +41,7 @@ type NavLinksProps = {
 };
 
 
-export default function NavBar({ userKind, handleSignout, handleLogoutResponse }: NavLinksProps) {
+export default function NavBar({ userKind }: NavLinksProps) {
     const [open, setOpen] = useState(false);
 
 

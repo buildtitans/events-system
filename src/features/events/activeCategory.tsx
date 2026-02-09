@@ -5,8 +5,7 @@ import type { AppDispatch } from "@/src/lib/store"
 import { useCallback, type JSX } from "react";
 import Box from '@mui/material/Box';
 import { EventCategories } from "./categories";
-import { EventsSearch } from "../search/eventsSearch";
-import { selectCategory, type PresentedCategory } from "@/src/lib/store/slices/EventsSlice";
+import { selectCategory, type PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
 import { PaginateEvents } from "@/src/components/ui/box/pagination/paginateEvents";
 
 function ActiveCategory(): JSX.Element {
@@ -17,7 +16,7 @@ function ActiveCategory(): JSX.Element {
         return () => {
             dispatch(selectCategory(category))
         }
-    }, []);
+    }, [dispatch]);
 
     return (
         <Box

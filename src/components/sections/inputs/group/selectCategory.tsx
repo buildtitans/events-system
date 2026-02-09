@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { CreateNewGroupHook } from '@/src/lib/hooks/useCreateNewGroup';
+import { CreateNewGroupHook } from '@/src/lib/hooks/insert/useCreateNewGroup';
 import type { SelectChangeEvent } from "@mui/material/Select";
 
 
@@ -17,7 +17,7 @@ type SelectCategoryProps = {
     chosen: CreateNewGroupHook["newGroup"]["category_id"]
 };
 
-export default function SelectCategory({ handleGroupCategory, chosen }: SelectCategoryProps): React.JSX.Element {
+export default function SelectCategory({ handleGroupCategory }: SelectCategoryProps): React.JSX.Element {
     const [displayed, setDisplayed] = React.useState<string | null>("");
     const categories = useSelector((s: RootState) => s.categories.categories);
 

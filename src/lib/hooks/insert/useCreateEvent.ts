@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 import { Dayjs } from "dayjs";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";

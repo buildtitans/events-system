@@ -1,5 +1,5 @@
 import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
-import { renderLayout } from "../../pipelines/events/renderLayout";
+import { RenderLayout } from "../../pipelines/events/renderLayout";
 import Box from "@mui/material/Box";
 
 export default function ScheduledEvents({ layout }: { layout: LayoutSlotSchemaType[] }) {
@@ -11,7 +11,7 @@ export default function ScheduledEvents({ layout }: { layout: LayoutSlotSchemaTy
     return (
         <Box
         >
-            {renderLayout(layout, handleBlur, handleFocus, focusedCardIndex)}
+            {RenderLayout(layout, handleBlur, handleFocus, focusedCardIndex)}
         </Box>
     )
 }

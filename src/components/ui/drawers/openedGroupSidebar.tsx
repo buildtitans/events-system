@@ -1,12 +1,10 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import type { LoadingStatus, UserInGroupRoleType } from "@/src/lib/types/tokens/types";
+import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import GroupActonsContainer from "../stack/groupActionsContainer";
 import { groupSidebarStyles } from "@/src/lib/tokens/sxTokens";
-import { AnimatePresence } from "framer-motion";
 import Skeleton from "@mui/material/Skeleton";
-import FadeInOutBox from "../box/fadeInOutBox";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";

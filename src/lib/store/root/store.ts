@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import EventsSlice from '@/src/lib/store/slices/EventsSlice';
-import GroupsSlice from "@/src/lib/store/slices/GroupsSlice"
-import RenderingSlice from "@/src/lib/store/slices/RenderingSlice";
-import AuthSlice from "@/src/lib/store/slices/AuthSlice";
-import CategoriesSlice from "@/src/lib/store/slices/CategorySlice";
-import PermissionsSlice from '@/src/lib/store/slices/PermissionsSlice';
-import EventAttendantsSlice from "@/src/lib/store/slices/EventAttendantsSlice";
+import EventsSlice from '@/src/lib/store/slices/events/EventsSlice';
+import GroupsSlice from "@/src/lib/store/slices/groups/GroupsSlice"
+import RenderingSlice from "@/src/lib/store/slices/rendering/RenderingSlice";
+import AuthSlice from "@/src/lib/store/slices/auth/AuthSlice";
+import CategoriesSlice from "@/src/lib/store/slices/categories/CategorySlice";
+import PermissionsSlice from '@/src/lib/store/slices/viewer/PermissionsSlice';
+import EventAttendantsSlice from "@/src/lib/store/slices/events/EventAttendantsSlice";
 import EventDrawerSlice from "@/src/lib/store/slices/events/EventDrawerSlice";
 import OpenedGroupSlice from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 

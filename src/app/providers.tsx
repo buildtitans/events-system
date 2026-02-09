@@ -7,7 +7,8 @@ import type { MountStatus } from '@/src/lib/types/tokens/types';
 import { ReduxProvider } from '@/src/lib/store';
 import { DomainStateType } from '../lib/store/sync/syncDomains';
 import type { PropsWithChildren } from 'react';
-import { appMountedPipeline } from '../components/pipelines/mount/appMountedPipeline';
+import { AppMountedPipeline } from '../components/pipelines/mount/appMountedPipeline';
+import Container from '@mui/material/Container';
 
 const theme = createTheme({
     palette: {
@@ -29,7 +30,6 @@ export default function Providers({
 }: ProvidersProps) {
     const [status, setStatus] = useState<MountStatus>('idle');
 
-
     useEffect(() => setStatus('active'), []);
 
     return (
@@ -39,7 +39,8 @@ export default function Providers({
                     theme={theme}
                 >
                     <CssBaseline enableColorScheme />
-                    {appMountedPipeline(status, children, domains)}
+                    {AppMountedPipeline(status, children, domains)}
+
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

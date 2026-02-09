@@ -1,6 +1,6 @@
 import type { AlertMessagesType } from "@/src/lib/types/tokens/types";
 import { alertMessages } from "@/src/lib/tokens/AlertMessages";
-import { AlertType } from "@/src/lib/store/slices/RenderingSlice";
+import { AlertType } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 function createAlertMessages(
     alert: AlertType

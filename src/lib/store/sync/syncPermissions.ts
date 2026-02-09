@@ -1,4 +1,4 @@
-import { ViewerAccess } from "../slices/PermissionsSlice";
+import { ViewerAccess } from "../slices/viewer/PermissionsSlice";
 import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
 import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";

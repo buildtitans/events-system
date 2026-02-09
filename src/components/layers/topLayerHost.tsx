@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { snackbarPipeline } from '../pipelines/snackbars/snackbarPipeline';
-import { modalPipeline } from '../pipelines/modals/modalPipeline';
+import { ModalPipeline } from '../pipelines/modals/modalPipeline';
 import type { RootState } from '@/src/lib/store';
 import React from 'react';
 import { alertsPipeline } from '../pipelines/alerts/alertsPipeline';
@@ -10,7 +10,6 @@ import OpenedEventDrawer from '../ui/drawers/openedEventDrawer';
 import SignInDrawer from '../ui/drawers/signInDrawer';
 
 export default function TopLayerHost(): React.ReactNode {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const modal = useSelector((s: RootState) => s.rendering.modal);
     const alert = useSelector((s: RootState) => s.rendering.alert);
@@ -28,7 +27,7 @@ export default function TopLayerHost(): React.ReactNode {
             />
             <SignInDrawer />
 
-            {modalPipeline(modal)}
+            {ModalPipeline(modal)}
             <AnimatePresence mode='wait'>
                 {(alert.action !== null) && alertsPipeline(alert)}
                 {snackbarPipeline(snackbar.kind, snackbar.status)}

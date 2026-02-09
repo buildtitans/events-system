@@ -46,16 +46,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
 
                     name="title"
                     control={control}
-                    render={({ field:
-                        {
-                            onChange,
-                            onBlur,
-                            value,
-                            ref
-                        },
-                        formState,
-                        fieldState
-                    }) => (
+                    render={() => (
                         <>
                             <Typography component={"h1"} sx={{
                                 fontSize: '26px',
@@ -88,16 +79,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                 <Controller
                     name="description"
                     control={control}
-                    render={({ field:
-                        {
-                            onChange,
-                            onBlur,
-                            value,
-                            ref
-                        },
-                        formState,
-                        fieldState
-                    }) => (
+                    render={() => (
                         <FormControl sx={{
                         }}>
                             <TextField
@@ -121,16 +103,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                 <Controller
                     name="meeting_location"
                     control={control}
-                    render={({ field:
-                        {
-                            onChange,
-                            onBlur,
-                            value,
-                            ref
-                        },
-                        formState,
-                        fieldState
-                    }) => (
+                    render={() => (
 
                         <FormControl>
 
@@ -154,27 +127,23 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                 <Controller
                     name="starts_at"
                     control={control}
-                    render={({ field:
-                        {
-                            onChange,
-                            onBlur,
-                            value,
-                            ref
-                        },
-                        formState,
-                        fieldState
-                    }) => (
+                    render={() => (
                         <FormControl>
                             <StartTime
                                 handleStartsAt={handleStartsAt}
                             />
                         </FormControl>
-
-
                     )}
                 />
                 <FormControl>
-                    <Button disabled={isSubmittable} variant="contained" type="submit" startIcon={<AddIcon />}>Schedule Event</Button>
+                    <Button
+                        disabled={isSubmittable}
+                        variant="contained"
+                        type="submit"
+                        startIcon={<AddIcon />}
+                    >
+                        Schedule Event
+                    </Button>
                 </FormControl>
 
 

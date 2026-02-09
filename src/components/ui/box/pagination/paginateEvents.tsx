@@ -1,7 +1,6 @@
 import { AppDispatch, RootState } from "@/src/lib/store";
-import { goToEventsPage, nextEventsPage, prevEventsPage } from "@/src/lib/store/slices/EventsSlice";
+import { goToEventsPage } from "@/src/lib/store/slices/events/EventsSlice";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import type { JSX } from "react";
 import Pagination from "@mui/material/Pagination";

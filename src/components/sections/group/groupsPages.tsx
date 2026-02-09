@@ -28,7 +28,7 @@ export default function GroupsPagesContainer({ groupsPages }: { groupsPages: Gro
             const route = `/group/${slug}`
             router.push(route)
         }
-    }, []);
+    }, [router]);
 
     if (!groupsPages[currentPage]) return null;
 

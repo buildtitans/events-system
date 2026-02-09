@@ -2,10 +2,8 @@
 import Box from "@mui/material/Box";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
-import { sidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
+import { SidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
 
 type GroupActonsContainerProps = {
     group_id: GroupSchemaType["id"],
@@ -31,7 +29,7 @@ export default function GroupActonsContainer({
                 paddingY: 10,
                 overflow: 'hidden'
             }}>
-            {sidebarPipeline(group_id)}
+            {SidebarPipeline(group_id)}
         </Box>
     )
 }

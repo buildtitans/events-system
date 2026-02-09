@@ -14,6 +14,13 @@ import StyledSigninCard from '@/src/styles/styledComponents/styledSigninCard';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import ForgotPassword from '@/src/features/auth/ForgotPassword';
+import type { ValidateCredentialsHook } from '@/src/lib/hooks/validation/useValidateCredentialsInput';
+import { UseLoginHook } from '@/src/lib/types/hooks/types';
+
+type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
+    handleSubmit: UseLoginHook["handleSubmit"]
+}
+
 
 export default function SignInCard({
     isSubmittable,
@@ -24,7 +31,7 @@ export default function SignInCard({
     handleEmail,
     handlePassword,
     handleSubmit
-}: any) {
+}: SignInCardProps) {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
     const [open, setOpen] = React.useState(false);
 

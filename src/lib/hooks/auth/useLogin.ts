@@ -2,14 +2,14 @@
 import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess } from "@/src/lib/store/slices/AuthSlice";
+import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
-import { enqueueSnackbar } from "../../store/slices/RenderingSlice";
+import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { syncPermissions } from "../../store/sync/syncPermissions";
-import { getViewerPermissions } from "../../store/slices/PermissionsSlice";
+import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -27,6 +27,8 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
             const permissions = await syncPermissions();
 
             dispatch(getViewerPermissions(permissions));
+
+            dispatch(enqueueDrawer(null));
         }
     };
 

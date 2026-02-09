@@ -1,31 +1,30 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/src/lib/store";
-import { signalDomainStatus } from "@/src/lib/store/slices/RenderingSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/src/lib/store";
+import { signalDomainStatus } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useEffect } from "react";
 import { DomainStateType } from "@/src/lib/store/sync/syncDomains";
-import { getAllGroups } from "@/src/lib/store/slices/GroupsSlice";
-import { chunkEventPages } from "@/src/lib/store/slices/EventsSlice";
-import { getAllCategories } from "@/src/lib/store/slices/CategorySlice";
+import { getAllGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
+import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
+import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 
 export default function AppBootstrapHydrator({ domains }: { domains: DomainStateType }): React.ReactNode {
     useRecoverSession();
     const dispatch = useDispatch<AppDispatch>();
 
-    async function dispatchDomains(
-        events: DomainStateType["events"],
-        groups: DomainStateType["groups"],
-        categories: DomainStateType["categories"]
-    ): Promise<void> {
-
-        dispatch(getAllGroups(groups));
-        dispatch(chunkEventPages(events));
-        dispatch(getAllCategories(categories));
-    };
-
     useEffect(() => {
         if (!domains) return;
+
+        const dispatchDomains = (
+            events: DomainStateType["events"],
+            groups: DomainStateType["groups"],
+            categories: DomainStateType["categories"]
+        ) => {
+            dispatch(getAllGroups(groups));
+            dispatch(chunkEventPages(events));
+            dispatch(getAllCategories(categories));
+        };
 
         const hydrateDomains = async () => {
             dispatch(signalDomainStatus("pending"));
@@ -36,7 +35,7 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
                 categories
             } = domains;
 
-            await dispatchDomains(
+            dispatchDomains(
                 events,
                 groups,
                 categories
@@ -52,4 +51,4 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
     }, [domains, dispatch]);
 
     return null;
-}
+};

@@ -3,9 +3,9 @@ import Drawer from "@mui/material/Drawer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { closeEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import { useHydrateEventDrawer } from "@/src/lib/hooks/preload/usePreloadAttendance";
+import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
 import { JSX } from "react";
-import { renderEventDrawerContents } from "../../pipelines/drawers/renderEventDrawer";
+import { RenderEventDrawerContents } from "../../pipelines/drawers/renderEventDrawer";
 
 type EventDrawerProps = {
     open: boolean
@@ -39,7 +39,7 @@ export default function OpenedEventDrawer({ open }: EventDrawerProps): JSX.Eleme
                 }
             }}
         >
-            {renderEventDrawerContents(event)}
+            {RenderEventDrawerContents(event)}
         </Drawer>
     );
 };

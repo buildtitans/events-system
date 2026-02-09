@@ -1,4 +1,4 @@
-import { EventsPages } from "../slices/EventsSlice";
+import { EventsPages } from "../slices/events/EventsSlice";
 import type { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 

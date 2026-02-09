@@ -4,13 +4,8 @@ import type { JSX } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
-type MembersOnlyAttendanceFormProps = {
-    role: GroupMembersSchemaType["role"]
-}
-
-export default function MembersOnlyAttendanceForm({ role }: MembersOnlyAttendanceFormProps): JSX.Element | null {
+export default function MembersOnlyAttendanceForm(): JSX.Element | null {
     const viewer = useSelector((s: RootState) => s.eventDrawer.viewerAttendanceInfo);
 
     return (

@@ -5,7 +5,7 @@ import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import CircularIndeterminate from "../../ui/feedback/pending/spinner";
 
-export const appMountedPipeline = (
+export const AppMountedPipeline = (
     status: MountStatus,
     children: React.ReactNode,
     domains: DomainStateType

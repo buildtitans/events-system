@@ -3,7 +3,7 @@ import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
 import type { UserInGroupRoleType, LoadingStatus } from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
-import { EventsPages } from "../../store/slices/EventsSlice";
+import { EventsPages } from "../../store/slices/events/EventsSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";

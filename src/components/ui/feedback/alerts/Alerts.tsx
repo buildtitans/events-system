@@ -7,7 +7,7 @@ import { AlertProps } from '@mui/material/Alert';
 import { AlertMessagesType } from '@/src/lib/types/tokens/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/src/lib/store';
-import { enqueueAlert } from '@/src/lib/store/slices/RenderingSlice';
+import { enqueueAlert } from '@/src/lib/store/slices/rendering/RenderingSlice';
 const MotionSuccessAlert = motion.create(Alert);
 
 type AlertResultProperties = {
@@ -31,7 +31,7 @@ export function AlertResult({ variant, severity, message }: AlertResultPropertie
         }, 6000);
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [dispatch]);
 
     return (
         <MotionSuccessAlert

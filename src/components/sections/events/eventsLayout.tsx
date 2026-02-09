@@ -4,10 +4,10 @@ import { useState } from 'react';
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { renderLayout } from '@/src/components/pipelines/events/renderLayout';
+import { RenderLayout } from '@/src/components/pipelines/events/renderLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
-import { EventsPages } from '@/src/lib/store/slices/EventsSlice';
+import { EventsPages } from '@/src/lib/store/slices/events/EventsSlice';
 const MotionGrid = motion(Grid);
 
 
@@ -44,7 +44,7 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
                         contain: "layout paint style",
                     }}
                 >
-                    {renderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
+                    {RenderLayout(page, handleBlur, handleFocus, focusedCardIndex)}
                 </MotionGrid>}
             </AnimatePresence>
         </>

@@ -5,7 +5,7 @@ import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import FadeInOutBox from "@/src/components/ui/box/fadeInOutBox";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { AnimatePresence } from "framer-motion";
-import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
+import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import GroupEventsHeader from "./groupEventsHeader";
 
 type GroupHeadSectionProps = {

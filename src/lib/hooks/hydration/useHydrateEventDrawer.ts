@@ -5,7 +5,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
-import { getEventAttendants } from "../../store/slices/EventAttendantsSlice";
+import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 
 function getViewerFromAttendants(
     user_id: string,
@@ -51,7 +51,6 @@ export const useHydrateEventDrawer = () => {
         };
 
         const executeGetViewerAttendance = async () => {
-
 
             try {
                 const res = await trpcClient

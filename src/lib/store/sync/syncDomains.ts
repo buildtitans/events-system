@@ -1,6 +1,6 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupsAndMembershipsSchemaType } from "@/src/schemas/syncPermissionsSchema";
-import { EventsPages } from "../slices/EventsSlice";
+import { EventsPages } from "../slices/events/EventsSlice";
 import { GroupsSchemaType } from "@/src/schemas/groupSchema";
 import { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
 

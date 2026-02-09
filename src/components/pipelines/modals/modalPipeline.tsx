@@ -1,14 +1,12 @@
 "use client"
 import { JSX } from "react";
 import CreateNewGroupModal from "../../sections/forms/createNewGroupForm";
-import { showModal, type ActiveModal } from "@/src/lib/store/slices/RenderingSlice";
+import { showModal, type ActiveModal } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { ModalProps } from "@mui/material/Modal";
-import CreateEventDrawer from "../../ui/drawers/createEventDrawer";
 
-
-export const modalPipeline = (activeModal: ActiveModal): JSX.Element | null => {
+export const ModalPipeline = (activeModal: ActiveModal): JSX.Element | null => {
     const dispatch = useDispatch<AppDispatch>();
 
 

@@ -1,24 +1,15 @@
 "use client";
-import { JSX, useEffect } from "react";
+import type { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { RenderOpenedGroup } from "../pipelines/groups/renderOpenedGroup";
 import Container from "@mui/material/Container";
-
-type OpenedGroupProps = {
-    slug: string
-}
 
 export default function OpenedGroup(): JSX.Element | null {
     const {
         events,
         group
     } = useSelector((s: RootState) => s.openGroup);
-    const access = useSelector((s: RootState) => s.groupMembers.accessPermissions);
-    console.log(access)
-
-
 
     return (
         <Container sx={{

@@ -6,7 +6,7 @@ export type LoginCredentials = {
     password: string | null
 };
 
-type ValidateCredentialsHook = {
+export type ValidateCredentialsHook = {
     isSubmittable: boolean,
     emailErrorMessage: string,
     emailError: boolean,
@@ -26,13 +26,14 @@ const useValidateCredentials = (): ValidateCredentialsHook => {
         email: null,
         password: null
     });
-    const isSubmittable = () => {
+    const validate = () => {
         const email = credentials.email;
         const password = credentials.password;
         if (!email || !password) return false;
         const isValid = validateInputs(email, password);
         return isValid;
     }
+    const isSubmittable = validate();
 
     const handleEmail = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         e.preventDefault();
@@ -55,34 +56,26 @@ const useValidateCredentials = (): ValidateCredentialsHook => {
         }));
     };
 
-    const validateInputs = (email: string, password: string) => {
+    function validateInputs(email: string, password: string) {
 
         let isValid = true;
         const validEmailFormat = !/\S+@\S+\.\S+/.test(email);
 
         if (validEmailFormat) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
             isValid = false;
         } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
         }
 
         if (!password || password.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
             isValid = false;
         } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
         }
 
         return isValid;
     };
 
     return {
-        isSubmittable: isSubmittable(),
+        isSubmittable: isSubmittable,
         emailErrorMessage,
         emailError,
         passwordError,

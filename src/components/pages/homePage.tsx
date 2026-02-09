@@ -2,20 +2,17 @@
 import Box from '@mui/material/Box';
 import { type JSX } from 'react';
 import { ActiveCategory } from '@/src/features/events/activeCategory';
-import { useMainContentPipelines } from '@/src/lib/hooks/rendering/useMainContentPipelines';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { loadGroupsPipeline } from '../pipelines/groups/loadGroupsPipeline';
 import { MobileEventsSearch } from '../ui/nav/landingSubNav';
 import { LandingHeader } from '../ui/typography/landingHeader';
 import { overrides } from '@/src/styles/sx/sx';
+import { loadEventsPipeline } from '../pipelines/events/loadEventsPipeline';
 
-
-function MainContent(): JSX.Element {
-  const tab = useSelector((s: RootState) => s.rendering.mainContent);
-  const content = useMainContentPipelines(tab);
+function HomePage(): JSX.Element {
+  const events = useSelector((s: RootState) => s.events.eventPages);
   const initialLoadStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
-
 
   return (
     <Box
@@ -42,7 +39,7 @@ function MainContent(): JSX.Element {
           justifyContent: 'center'
         }}
       >
-        {content}
+        {loadEventsPipeline(initialLoadStatus, events)}
 
         {loadGroupsPipeline(initialLoadStatus)}
       </Box>
@@ -53,4 +50,4 @@ function MainContent(): JSX.Element {
   );
 }
 
-export default MainContent;
+export default HomePage;

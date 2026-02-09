@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "@/src/lib/store";
 import { openEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
 
-function renderLayout(
+function RenderLayout(
     slots: LayoutSlotSchemaType[],
     handleBlur: EventCardProps["handleBlur"],
     handleFocus: EventCardProps["handleFocus"],
@@ -20,7 +20,7 @@ function renderLayout(
         return () => {
             dispatch(openEventDrawer(event))
         }
-    }, []);
+    }, [dispatch]);
 
     return slots.map((slot, i: number) => {
 
@@ -57,4 +57,4 @@ function renderLayout(
     });
 }
 
-export { renderLayout }
+export { RenderLayout }

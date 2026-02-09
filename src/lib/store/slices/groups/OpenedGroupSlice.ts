@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventsPages } from "../EventsSlice";
+import { EventsPages } from "../events/EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
 

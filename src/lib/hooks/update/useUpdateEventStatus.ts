@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
-import { enqueueAlert, enqueueSnackbar } from "../../store/slices/RenderingSlice";
+import { enqueueAlert, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";

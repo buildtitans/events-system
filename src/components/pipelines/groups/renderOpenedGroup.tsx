@@ -2,7 +2,7 @@
 import { LinearIndeterminate } from "../../ui/feedback";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import type { EventsPages } from "@/src/lib/store/slices/EventsSlice";
+import type { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";

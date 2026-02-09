@@ -7,14 +7,14 @@ import Button from "@mui/material/Button";
 import { JSX, useMemo } from "react";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { getGroupSlugRoute } from "@/src/lib/utils/parsing/getGroupSlugRoute";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
     const path = usePathname();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const groups = useSelector((s: RootState) => s.groups.communities);
-    const route = useMemo(() => getGroupSlugRoute(groups, event), [event]);
+    const route = useMemo(() => getGroupSlugRoute(groups, event),
+        [event, groups]);
 
     const handleDirectToGroup = () => {
         router.push(route);

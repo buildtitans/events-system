@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { EventStackCard } from '../eventStackCard';
 import { EventCardProps } from '../cards/eventCard';
-import { GroupNameByGroupID } from '@/src/lib/store/slices/EventsSlice';
+import { GroupNameByGroupID } from '@/src/lib/store/slices/events/EventsSlice';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 
 type EventStackSlotProps = {

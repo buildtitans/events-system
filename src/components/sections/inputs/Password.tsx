@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import type { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
@@ -17,7 +17,7 @@ function Password({
     handlePassword,
     passwordError,
     passwordErrorMessage
-}: PasswordInputProps) {
+}: PasswordInputProps): JSX.Element {
 
     return (
         <FormControl>

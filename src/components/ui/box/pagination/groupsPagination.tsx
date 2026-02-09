@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/src/lib/store";
-import { paginateGroups } from "@/src/lib/store/slices/GroupsSlice";
+import { paginateGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
 import Pagination from "@mui/material/Pagination";
 import type { JSX } from "react";
 import { useDispatch } from "react-redux";

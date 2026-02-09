@@ -4,7 +4,7 @@ import { LinearIndeterminate } from "@/src/components/ui/feedback/"
 import { NoEventsFound } from "../../ui/box/noEventsFound";
 import EventsLayout from "@/src/components/sections/events/eventsLayout";
 import { JSX } from "react";
-import { EventsPages } from "@/src/lib/store/slices/EventsSlice";
+import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 
 const loadEventsPipeline = (eventLoadingStatus: LoadingStatus, eventsPages: EventsPages): JSX.Element => {

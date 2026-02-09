@@ -1,7 +1,7 @@
 "use client"
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import { PresentedCategory } from "@/src/lib/store/slices/EventsSlice";
+import { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
 
 type EventCategoriesProps = {
     handleClick: (category: PresentedCategory) => () => void

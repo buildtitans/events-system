@@ -1,7 +1,7 @@
 "use client"
 import { JSX } from "react";
 import AuthenticatonSnackbar from "../../ui/feedback/pending/authenticationSnackbar";
-import { SnackbarStatusAndKind } from "@/src/lib/store/slices/RenderingSlice";
+import { SnackbarStatusAndKind } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 function snackbarPipeline(kind: SnackbarStatusAndKind["kind"], status: SnackbarStatusAndKind["status"]): JSX.Element | null {
 

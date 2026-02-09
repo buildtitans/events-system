@@ -16,9 +16,7 @@ export default function MemberActionsMenu(): JSX.Element {
         setAnchorEl(event.currentTarget);
     }
 
-    //   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    //       setAnchorEl(null)
-    //   };
+
     const handleClose = () => {
         setAnchorEl(null);
     };

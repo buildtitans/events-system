@@ -7,7 +7,7 @@ import type { RequestStatus, SnackbarMessages } from "@/src/lib/types/tokens/typ
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { createSnackbarMessages } from "@/src/lib/utils/helpers/createSnackbarMessage";
-import { enqueueSnackbar } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 const MotionSnackbar = motion(Snackbar);
 

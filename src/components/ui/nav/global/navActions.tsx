@@ -1,13 +1,11 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from 'react-redux';
-import { enqueueDrawer, enqueueSnackbar, showModal } from '@/src/lib/store/slices/RenderingSlice';
+import { useDispatch } from 'react-redux';
+import { enqueueDrawer, showModal } from '@/src/lib/store/slices/rendering/RenderingSlice';
 import { AppDispatch } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import { UserKind } from "@/src/lib/store/slices/AuthSlice";
+import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import { JSX } from "react";
-import Link from "next/link";
 
 export default function NavActions({ userKind, handleSignout }: { userKind: UserKind, handleSignout: () => Promise<void> }): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();

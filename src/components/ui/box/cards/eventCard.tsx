@@ -9,8 +9,7 @@ import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-
-const dayjsUTC = dayjs.extend(utc);
+dayjs.extend(utc);
 
 export type MobileEventCard = 12;
 

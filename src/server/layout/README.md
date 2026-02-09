@@ -8,7 +8,7 @@ the server compiles a **slotted layout plan** describing exactly what ought to a
 in the UI.
 
 The client executes this layout plan via the 
-**renderLayout** pipeline(found in **@/src/components/pipelines/events directory**).
+**RenderLayout** pipeline(found in **@/src/components/pipelines/events directory**).
 
 This allows:
 - deterministic layouts

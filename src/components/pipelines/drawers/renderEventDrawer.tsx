@@ -7,7 +7,7 @@ import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 
 
-export const renderEventDrawerContents = (
+export const RenderEventDrawerContents = (
     event: EventSchemaType | null
 ): JSX.Element | null => {
     const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
@@ -23,7 +23,6 @@ export const renderEventDrawerContents = (
                         event={event}
                     />
                     <MembersOnlyAttendanceForm
-                        role={role}
                     />
                 </>
             )
@@ -34,7 +33,6 @@ export const renderEventDrawerContents = (
                         event={event}
                     />
                     <MembersOnlyAttendanceForm
-                        role={role}
                     />
                 </>
             )

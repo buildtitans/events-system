@@ -10,7 +10,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { ATTENDANCE_OPTIONS } from "@/src/lib/tokens/attentanceStatusTokens";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
@@ -73,6 +72,7 @@ export default function UpdateViewerAttendanceForm(
                                 >
                                     {ATTENDANCE_OPTIONS.map((option) => (
                                         <MenuItem
+                                            key={option.label}
                                             value={option.value}
                                         >
                                             {option.label}

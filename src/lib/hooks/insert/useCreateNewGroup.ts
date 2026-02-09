@@ -5,8 +5,8 @@ import type { AppDispatch } from "@/src/lib/store";
 import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
 import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { addGroup } from "../../store/slices/GroupsSlice";
-import { enqueueAlert, enqueueSnackbar, showModal } from "../../store/slices/RenderingSlice";
+import { addGroup } from "../../store/slices/groups/GroupsSlice";
+import { enqueueAlert, enqueueSnackbar, showModal } from "../../store/slices/rendering/RenderingSlice";
 import { parseInputSchema } from "../../utils/validation/parseInputSchema";
 
 export type CreateNewGroupHook = {

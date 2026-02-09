@@ -1,7 +1,6 @@
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 type EventAttendantsState = {
     attendants: EventAttendantsSchemaType[]
 };

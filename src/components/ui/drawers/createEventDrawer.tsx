@@ -1,7 +1,7 @@
 "use client"
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import { enqueueDrawer } from "@/src/lib/store/slices/RenderingSlice";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { usePathname } from "next/navigation";
