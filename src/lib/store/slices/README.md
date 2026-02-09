@@ -32,9 +32,66 @@ type OpenedEvent = { status: "idle" }
 ##### @/src/lib/store/slices/groups/openedGroupSlice.ts
 
 ```ts
-type OpenedEvent =
+type GroupHydrated =
   | { status: "idle" }
   | { status: "pending" }
   | { status: "ready"; data: GroupSchemaType }
   | { status: "failed"; error: string };
+```
+
+
+
+#### How it's leveraged
+
+> [!NOTE] 
+> Components consume the discriminated-union state and render UI via an exhaustive switch.
+
+```ts
+"use client";
+import { LinearIndeterminate } from "../../ui/feedback";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/src/lib/store";
+import type { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
+import ViewGroupSection from "../../sections/group/viewGroupSection";
+import type { JSX } from "react";
+import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import NoGroups from "../../ui/feedback/failure/noGroups";
+
+type RenderOpenedGroupProps = {
+    group: GroupHydrated,
+    events: EventsPages
+};
+
+export function RenderOpenedGroup({
+    group,
+    events
+}: RenderOpenedGroupProps
+): JSX.Element | null {
+    const userKind = useSelector((s: RootState) => s.auth.userKind);
+    const status = useSelector((s: RootState) => s.openGroup.syncStatus);
+
+    switch (group.status) {
+
+        case "idle":
+            return null;
+        case "pending":
+            return (
+                <LinearIndeterminate
+                />
+            )
+        case "failed":
+            return <NoGroups />
+        case "ready":
+            return (
+                <ViewGroupSection
+                    key="opened-group"
+                    userKind={userKind}
+                    group={group.data}
+                    events={events}
+                    status={status}
+                />
+            )
+    }
+}
+
 ```
