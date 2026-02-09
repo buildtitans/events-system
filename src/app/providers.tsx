@@ -8,7 +8,6 @@ import { ReduxProvider } from '@/src/lib/store';
 import { DomainStateType } from '../lib/store/sync/syncDomains';
 import type { PropsWithChildren } from 'react';
 import { AppMountedPipeline } from '../components/pipelines/mount/appMountedPipeline';
-import Container from '@mui/material/Container';
 
 const theme = createTheme({
     palette: {

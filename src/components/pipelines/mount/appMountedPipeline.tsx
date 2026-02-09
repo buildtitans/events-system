@@ -4,6 +4,7 @@ import type { MountStatus } from "@/src/lib/types/tokens/types";
 import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import CircularIndeterminate from "../../ui/feedback/pending/spinner";
+import Container from "@mui/material/Container";
 
 export const AppMountedPipeline = (
     status: MountStatus,
@@ -16,8 +17,17 @@ export const AppMountedPipeline = (
             return (
                 <ClientComponentsShell
                     domains={domains}
-                    children={children}
-                />
+                >
+                    <Container
+                        key="content_container"
+                        maxWidth="lg"
+                        component="main"
+                        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+                    >
+                        {children}
+                    </Container>
+                </ClientComponentsShell>
+
             )
 
         default: {
