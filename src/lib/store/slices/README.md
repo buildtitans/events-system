@@ -35,6 +35,6 @@ type OpenedEvent = { status: "idle" }
 type OpenedEvent =
   | { status: "idle" }
   | { status: "pending" }
-  | { status: "ready"; data: EventSchemaType }
+  | { status: "ready"; data: GroupSchemaType }
   | { status: "failed"; error: string };
 ```
