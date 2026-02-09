@@ -16,6 +16,7 @@ import { RootState } from '@/src/lib/store';
 import ForgotPassword from '@/src/features/auth/ForgotPassword';
 import type { ValidateCredentialsHook } from '@/src/lib/hooks/validation/useValidateCredentialsInput';
 import { UseLoginHook } from '@/src/lib/types/hooks/types';
+import Stack from '@mui/material/Stack';
 
 type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
     handleSubmit: UseLoginHook["handleSubmit"]
@@ -45,7 +46,19 @@ export default function SignInCard({
 
 
     return (
-        <StyledSigninCard>
+        <Stack
+            sx={{
+                width: '80%',
+                height: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'start',
+                alignItems: 'center',
+                paddingTop: 4,
+                marginX: 'auto',
+
+            }}
+        >
 
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                 <SitemarkIcon />
@@ -53,7 +66,7 @@ export default function SignInCard({
             <Typography
                 component="h1"
                 variant="h4"
-                sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+                sx={{ width: '100%', fontSize: '28px', fontWeight: 'light', borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.2)', marginBottom: 4 }}
             >
                 Sign in
             </Typography>
@@ -83,21 +96,9 @@ export default function SignInCard({
                 <Button type="submit" fullWidth variant="contained" disabled={(!isSubmittable) || (userKind === "authenticated")}>
                     Sign in
                 </Button>
-                <Typography sx={{ textAlign: 'center' }}>
-                    Don&apos;t have an account?{' '}
-                    <span>
-                        <Link
-                            href="/material-ui/getting-started/templates/sign-in/"
-                            variant="body2"
-                            sx={{ alignSelf: 'center' }}
-                        >
-                            Sign up
-                        </Link>
-                    </span>
-                </Typography>
             </Box>
             <Divider>or</Divider>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
                 <Button
                     fullWidth
                     variant="outlined"
@@ -115,6 +116,6 @@ export default function SignInCard({
                     Sign in with Facebook
                 </Button>
             </Box>
-        </StyledSigninCard>
+        </Stack>
     );
 }

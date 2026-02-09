@@ -21,18 +21,7 @@ function Password({
 
     return (
         <FormControl>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <FormLabel htmlFor="password">Password</FormLabel>
-                <Link
-                    component="button"
-                    type="button"
-                    onClick={handleClickOpen}
-                    variant="body2"
-                    sx={{ alignSelf: 'baseline' }}
-                >
-                    Forgot your password?
-                </Link>
-            </Box>
+            <FormLabel htmlFor="password">Password</FormLabel>
             <TextField
                 onChange={(e) => handlePassword(e)}
                 error={passwordError}
@@ -48,6 +37,18 @@ function Password({
                 variant="outlined"
                 color={passwordError ? 'error' : 'primary'}
             />
+            <Box sx={{ display: 'flex', justifyContent: 'end', paddingTop: 1 }}>
+
+                <Link
+                    component="button"
+                    type="button"
+                    onClick={handleClickOpen}
+                    variant="body2"
+                    sx={{ alignSelf: 'baseline' }}
+                >
+                    Forgot your password?
+                </Link>
+            </Box>
         </FormControl>
     )
 };

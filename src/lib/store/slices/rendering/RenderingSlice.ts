@@ -13,7 +13,7 @@ type MainContentTabType = "Upcoming Events" | "Local Events" | "Categories" | "P
 
 export type ActiveModal = 'new group' | 'create event' | null;
 
-export type ActiveDrawer = 'create event drawer' | 'sign in drawer' | 'event drawer' | null;
+export type ActiveDrawer = 'create event drawer' | 'sign in drawer' | 'event drawer' | 'new group' | null;
 
 type AlertType = {
     action: AlertMessagesType["action"],

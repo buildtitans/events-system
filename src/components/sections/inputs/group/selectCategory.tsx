@@ -14,10 +14,11 @@ import type { SelectChangeEvent } from "@mui/material/Select";
 type SelectCategoryProps = {
 
     handleGroupCategory: CreateNewGroupHook["handleGroupCategory"],
-    chosen: CreateNewGroupHook["newGroup"]["category_id"]
+    chosen: CreateNewGroupHook["newGroup"]["category_id"],
+    width: string
 };
 
-export default function SelectCategory({ handleGroupCategory }: SelectCategoryProps): React.JSX.Element {
+export default function SelectCategory({ handleGroupCategory, width }: SelectCategoryProps): React.JSX.Element {
     const [displayed, setDisplayed] = React.useState<string | null>("");
     const categories = useSelector((s: RootState) => s.categories.categories);
 
@@ -30,7 +31,7 @@ export default function SelectCategory({ handleGroupCategory }: SelectCategoryPr
 
     return (
         <>
-            <Box sx={{ width: 'auto', height: 'auto' }}>
+            <Box sx={{ width: width, height: 'auto' }}>
                 <FormControl fullWidth>
                     <InputLabel id="category-label">Categories</InputLabel>
                     <Select

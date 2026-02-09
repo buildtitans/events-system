@@ -1,13 +1,14 @@
 "use client";
-import { CreateNewGroupHook } from "@/src/lib/hooks/useCreateNewGroup";
+import type { CreateNewGroupHook } from "@/src/lib/hooks/insert/useCreateNewGroup";
 import TextField from "@mui/material/TextField";
 import { JSX } from "react";
 
 type GroupLocationFieldProps = {
-    handleGroupLocation: CreateNewGroupHook["handleGroupLocation"]
+    handleGroupLocation: CreateNewGroupHook["handleGroupLocation"],
+    width: string
 }
 
-export default function GroupLocationField({ handleGroupLocation }: GroupLocationFieldProps): JSX.Element {
+export default function GroupLocationField({ handleGroupLocation, width }: GroupLocationFieldProps): JSX.Element {
 
 
     return (
@@ -17,6 +18,9 @@ export default function GroupLocationField({ handleGroupLocation }: GroupLocatio
                 id="group-location"
                 label="Location"
                 variant="outlined"
+                sx={{
+                    width: width
+                }}
             />
         </>
 

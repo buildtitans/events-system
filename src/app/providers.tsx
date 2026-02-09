@@ -8,6 +8,7 @@ import { ReduxProvider } from '@/src/lib/store';
 import { DomainStateType } from '../lib/store/sync/syncDomains';
 import type { PropsWithChildren } from 'react';
 import { AppMountedPipeline } from '../components/pipelines/mount/appMountedPipeline';
+import Spinner from '../components/ui/feedback/pending/spinner';
 
 const theme = createTheme({
     palette: {
@@ -39,7 +40,7 @@ export default function Providers({
                 >
                     <CssBaseline enableColorScheme />
                     {AppMountedPipeline(status, children, domains)}
-
+                    {(status === "idle") && <Spinner />}
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import { JSX, useMemo } from "react";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { getGroupSlugRoute } from "@/src/lib/utils/parsing/getGroupSlugRoute";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
     const path = usePathname();
@@ -18,7 +19,7 @@ export default function CheckOutGroupButton({ event }: { event: EventSchemaType 
 
     const handleDirectToGroup = () => {
         router.push(route);
-        dispatch(closeEventDrawer());
+        dispatch(enqueueDrawer(null));
     };
 
     if (path !== "/") return null;

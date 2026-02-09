@@ -4,7 +4,6 @@ import type { MountStatus } from "@/src/lib/types/tokens/types";
 import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
-import Spinner from "../../ui/feedback/pending/spinner";
 
 export const AppMountedPipeline = (
     status: MountStatus,
@@ -31,9 +30,7 @@ export const AppMountedPipeline = (
             )
 
         default: {
-            return (
-                <Spinner />
-            )
+            return null;
         }
     }
 }

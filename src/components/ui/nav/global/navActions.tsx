@@ -11,11 +11,6 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
     const dispatch = useDispatch<AppDispatch>();
 
 
-    const handleAddGroup = () => {
-        dispatch(showModal('new group'))
-    };
-
-
     return (
         <Stack
             sx={{ display: { xs: 'none', md: 'flex', alignItems: 'center', justifyContent: 'center' } }}
@@ -24,7 +19,7 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
                 sx={{ display: { xs: 'none', md: 'flex', alignItems: 'center', justifyContent: 'center', gap: (userKind === 'authenticated') ? 40 : 12 } }}
             >
                 {(userKind === 'authenticated') &&
-                    <Button onClick={handleAddGroup} variant="text" color="info" size="medium" sx={{
+                    <Button onClick={() => dispatch(enqueueDrawer("new group"))} variant="text" color="info" size="medium" sx={{
                         borderRadius: 999,
                         backgroundColor: 'white',
                         color: 'black',
