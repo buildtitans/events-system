@@ -1,11 +1,11 @@
 "use client";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
+import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
 
 function getViewerFromAttendants(
     user_id: string,
@@ -55,28 +55,17 @@ export const useHydrateEventDrawer = () => {
         const executeGetViewerAttendance = async () => {
 
             try {
-                const res = await trpcClient
-                    .auth
-                    .session
-                    .mutate();
+                const result = await syncUserAttendanceToEvent(event);
 
-                if (!res) {
-                    throw new Error(`Failed to get current user`);
-                }
+                const user_id = result.user_id;
+                const attendants = result.attendantsReq;
 
-                const { user_id } = res;
+                if (!user_id) return;
 
-
-                if (ViewerAccess === "anonymous") return;
-                const attendantsReq = await trpcClient
-                    .eventAttendants
-                    .getAttendants
-                    .mutate(event.id);
-
-                if (!attendantsReq) {
+                if (!attendants) {
                     throw new Error("Failed to get attendants")
                 }
-                handleAttendants(attendantsReq, user_id, event.id);
+                handleAttendants(attendants, user_id, event.id);
 
             } catch (err) {
                 console.error(err);

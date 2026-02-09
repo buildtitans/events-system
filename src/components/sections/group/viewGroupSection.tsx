@@ -4,7 +4,7 @@ import { JSX } from "react";
 import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { loadEventsPipeline } from "../../pipelines/events/loadEventsPipeline";
 import GroupHeadSecton from "./groupHeadSection";
-import OpenedGroupSidebar from "../../ui/drawers/openedGroupSidebar";
+import OpenedGroupSidebar from "../../ui/sidebars/openedGroupSidebar";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
