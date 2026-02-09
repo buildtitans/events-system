@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import type { JSX } from "react";
 
-export default function AlertsAndSnackbarsShell(): JSX.Element | null {
+export default function AlertsAndSnackbarsHost(): JSX.Element | null {
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const alert = useSelector((s: RootState) => s.rendering.alert);
 

@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
 import { JSX } from "react";
-import { OpenedDrawerContents } from "../../pipelines/drawers/openedDrawerContents";
+import { OpenedDrawerContents } from "@/src/components/pipelines/drawers/openedDrawerContents";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
-export default function RightAnchoredDrawer(): JSX.Element | null {
+export default function RightAnchoredDrawerHost(): JSX.Element | null {
     useHydrateEventDrawer();
     const dispatch = useDispatch<AppDispatch>();
     const drawerType = useSelector((s: RootState) => s.rendering.drawer);

@@ -1,13 +1,13 @@
 import type { JSX } from 'react';
-import RightAnchoredDrawer from '../ui/drawers/rightAnchoredDrawer';
-import AlertsAndSnackbarsShell from '../shell/AlertsAndSnackbarsShell';
+import RightAnchoredDrawerHost from "@/src/components/hosts/rightAnchoredDrawerHost";
+import AlertsAndSnackbarsHost from "@/src/components/hosts/AlertsAndSnackbarsHost";
 
 export default function TopLayerHost(): JSX.Element {
 
     return (
         <>
-            <RightAnchoredDrawer />
-            <AlertsAndSnackbarsShell />
+            <RightAnchoredDrawerHost />
+            <AlertsAndSnackbarsHost />
         </>
     )
 }
