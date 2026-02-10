@@ -47,6 +47,7 @@ export interface Events {
   img: string | null;
   meeting_location: string;
   starts_at: Timestamp;
+  status: string;
   tag: string;
   title: string;
   updated_at: Generated<Timestamp>;

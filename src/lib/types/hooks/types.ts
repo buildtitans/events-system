@@ -9,6 +9,8 @@ import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
 import type { LoginCredentials } from "@/src/lib/types/tokens/types";
+import { UpdateEventArgsSchemaType } from "@/src/schemas/eventSchema";
+import React from "react";
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -66,6 +68,12 @@ type UpdateAttendanceStatusHook = {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
 }
 
+type CancelEventHook = {
+    options: UpdateEventArgsSchemaType,
+    handleStatusChange: () => void,
+    handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>
+}
+
 export type {
     GetGroupRoleAndIdHook,
     CreateEventHook,
@@ -75,5 +83,6 @@ export type {
     GetGroupMembersHook,
     JoinGroupHook,
     UpdateAttendanceStatusHook,
-    ValidateCredentialsHook
+    ValidateCredentialsHook,
+    CancelEventHook
 }

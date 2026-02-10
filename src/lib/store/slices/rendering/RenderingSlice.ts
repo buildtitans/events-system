@@ -11,7 +11,7 @@ import type {
 
 type MainContentTabType = "Upcoming Events" | "Local Events" | "Categories" | "Popular Events";
 
-export type ActiveModal = 'new group' | 'create event' | null;
+export type ActiveModal = 'confirm cancel' | null;
 
 export type ActiveDrawer = 'create event drawer' | 'sign in drawer' | 'event drawer' | 'new group' | null;
 

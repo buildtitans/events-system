@@ -18,6 +18,9 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .onDelete('cascade')
                 .notNull()
         )
+        .addColumn("status", "text", (col) =>
+            col.notNull()
+        )
         .addColumn("img", "text", (col) =>
             col
                 .defaultTo(null)

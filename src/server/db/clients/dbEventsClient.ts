@@ -1,18 +1,18 @@
-import { Insertable, Kysely, Selectable } from "kysely";
+import { DeleteResult, Insertable, Kysely, Selectable, UpdateResult } from "kysely";
 import { DB } from "../types/db";
 import type { Events } from "../types/db";
 import { compileEventsLayout } from "../../layout/compileEventsLayout";
-import { EventSchemaType, NewEventInputSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { eventsValidator, eventValidator } from "@/src/lib/utils/validation/validateSchema";
 dayjs.extend(utc);
 
 export class EventsClient {
     constructor(private readonly db: Kysely<DB>) {
         this.db = db;
     }
-
 
     async getEvents() {
         const raw = await this.getRawEvents();
@@ -27,6 +27,20 @@ export class EventsClient {
         const eventsFromGroup = compileEventsLayout(raw)
         return eventsFromGroup
     }
+
+    async updateEventStatus(eventUpdate: UpdateEventArgsSchemaType): Promise<{ updateStatus: "success" | "failure" }> {
+
+        const update = await this.db
+            .updateTable("events")
+            .set({
+                status: eventUpdate.status
+            })
+            .where("id", "=", eventUpdate.event_id)
+            .executeTakeFirstOrThrow();
+
+        return { updateStatus: "success" }
+    }
+
 
     async getRawEvents(): Promise<Selectable<Events>[]> {
         return this.db
@@ -71,7 +85,8 @@ export class EventsClient {
             starts_at: start_time,
             created_at: new Date(),
             tag: "placeholder tag",
-            meeting_location: meeting_location
+            meeting_location: meeting_location,
+            status: "scheduled"
         }
 
         return parsed;
@@ -93,7 +108,7 @@ export class EventsClient {
     formatEvent(raw: Selectable<Events>): EventSchemaType {
         const parsed_authors = typeof raw.authors === "string" ? JSON.parse(raw.authors) : raw.authors
 
-        return {
+        const parsed = eventValidator({
             id: raw.id,
             tag: raw.tag,
             title: raw.title,
@@ -104,8 +119,11 @@ export class EventsClient {
             authors: parsed_authors,
             starts_at: raw.starts_at.toISOString(),
             img: raw.img,
-            meeting_location: raw.meeting_location
-        }
+            meeting_location: raw.meeting_location,
+            status: raw.status
+        });
+
+        return parsed
     }
 
 }

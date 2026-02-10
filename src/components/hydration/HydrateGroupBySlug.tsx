@@ -29,7 +29,7 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
 
             timerRef.current = window.setTimeout(() => {
                 dispatch(groupOpened({ status: "ready", data: group }));
-            }, 3000)
+            }, 1200)
 
         };
 

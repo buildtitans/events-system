@@ -36,6 +36,12 @@ const snackbarMessages: SnackbarMessages = {
         pending: "Updating attendance...",
         success: "Updated Attendance!",
         failed: "Failed to update attendance"
+    },
+    changeEventScheduling: {
+        idle: "",
+        pending: "Event schedule change pending...",
+        success: "Scheduling update complete!",
+        failed: "Failed to update the set schedule of this event"
     }
 };
 

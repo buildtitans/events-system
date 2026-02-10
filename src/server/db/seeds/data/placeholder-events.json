@@ -1,6 +1,7 @@
 [
     {
         "starts_at": "2026-02-01T18:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=1",
         "tag": "Engineering",
         "title": "Revolutionizing software development with cutting-edge tools",
@@ -20,6 +21,7 @@
     },
     {
         "starts_at": "2026-02-03T19:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=2",
         "tag": "Product",
         "title": "Innovative product features that drive success",
@@ -35,6 +37,7 @@
     },
     {
         "starts_at": "2026-02-05T17:30:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=3",
         "tag": "Design",
         "title": "Designing for the future: trends and insights",
@@ -50,6 +53,7 @@
     },
     {
         "starts_at": "2026-02-07T18:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=4",
         "tag": "Company",
         "title": "Our company's journey: milestones and achievements",
@@ -65,6 +69,7 @@
     },
     {
         "starts_at": "2026-02-10T20:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=41",
         "tag": "DevOps",
         "title": "Sustainable AI",
@@ -84,6 +89,7 @@
     },
     {
         "starts_at": "2026-02-12T18:30:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=11",
         "tag": "Software Solutions",
         "title": "Maximizing efficiency with our latest products",
@@ -99,6 +105,7 @@
     },
     {
         "starts_at": "2026-02-15T19:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=101",
         "tag": "AI Research",
         "title": "Inside our next-generation machine learning platform",
@@ -118,6 +125,7 @@
     },
     {
         "starts_at": "2026-02-18T18:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=102",
         "tag": "Growth",
         "title": "How data-driven strategy is scaling our customer success",
@@ -133,6 +141,7 @@
     },
     {
         "starts_at": "2026-02-20T17:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=103",
         "tag": "UX",
         "title": "Crafting delightful interfaces through user research",
@@ -148,6 +157,7 @@
     },
     {
         "starts_at": "2026-02-22T18:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=104",
         "tag": "Culture",
         "title": "Building a company culture that fuels innovation",
@@ -163,6 +173,7 @@
     },
     {
         "starts_at": "2026-02-25T18:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=45",
         "tag": "Engineering",
         "title": "Pioneering sustainable engineering solutions",
@@ -182,6 +193,7 @@
     },
     {
         "starts_at": "2026-02-28T19:00:00Z",
+        "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=6",
         "tag": "Product",
         "title": "Maximizing efficiency with our latest product updates",

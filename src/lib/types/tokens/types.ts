@@ -20,7 +20,8 @@ type SnackbarMessages = {
     newGroup: Record<RequestStatus, string>;
     newEvent: Record<RequestStatus, string>;
     joiningGroup: Record<RequestStatus, string>,
-    updatingAttendance: Record<RequestStatus, string>
+    updatingAttendance: Record<RequestStatus, string>,
+    changeEventScheduling: Record<RequestStatus, string>
 };
 
 

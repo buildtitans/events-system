@@ -8,11 +8,16 @@ const AuthorSchema = Type.Object({
 
 const AuthorsSchema = Type.Array(AuthorSchema);
 
-type AuthorsSchemaType = Static<typeof AuthorsSchema>
+type AuthorsSchemaType = Static<typeof AuthorsSchema>;
+
+const EventStatusSchema = Type.Union([
+    Type.Literal("scheduled"), Type.Literal("cancelled")
+]);
 
 const EventSchema = Type.Object({
     id: Type.String(),
     group_id: Type.String(),
+    status: EventStatusSchema,
     starts_at: Type.String(),
     img: Type.Union([Type.String(), Type.Null()]),
     tag: Type.Union([Type.String(), Type.Null()]),
@@ -46,6 +51,14 @@ const EventsReponseSchema = Type.Object({
     })
 });
 
+const UpdateEventArgsSchema = Type.Object({
+    event_id: Type.String({ format: "uuid" }),
+    status: EventStatusSchema,
+    organizer_id: Type.String({ format: "uuid" })
+});
+
+type UpdateEventArgsSchemaType = Static<typeof UpdateEventArgsSchema>;
+
 type GroupIdSchemaType = Static<typeof GroupIdSchema>;
 
 type NewEventInputSchemaType = Static<typeof NewEventInputSchema>;
@@ -56,11 +69,13 @@ type EventsArraySchemaType = Static<typeof EventsArraySchema>;
 
 type EventsReponseSchemaType = Static<typeof EventsReponseSchema>;
 
-export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema, AuthorsSchema, NewEventInputSchema, GroupIdSchema };
+export { EventSchema, EventsArraySchema, EventsReponseSchema, AuthorSchema, AuthorsSchema, NewEventInputSchema, GroupIdSchema, UpdateEventArgsSchema };
 
-export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType, AuthorsSchemaType, NewEventInputSchemaType, GroupIdSchemaType };
+export type { EventSchemaType, EventsArraySchemaType, EventsReponseSchemaType, AuthorsSchemaType, NewEventInputSchemaType, GroupIdSchemaType, UpdateEventArgsSchemaType };
 
 
 export const NewEventInputSchemaValidator = TypeCompiler.Compile(NewEventInputSchema);
 
 export const GroupIdSchemaValidator = TypeCompiler.Compile(GroupIdSchema);
+
+export const UpdateEventArgsSchemaValidator = TypeCompiler.Compile(UpdateEventArgsSchema);

@@ -2,13 +2,17 @@
 import React, { useMemo } from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import CancelIcon from "@mui/icons-material/Cancel";
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/cards/author';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';
 dayjs.extend(utc);
 
 export type MobileEventCard = 12;
@@ -73,18 +77,30 @@ function EventCard(
                 onBlur={handleBlur}
                 tabIndex={0}
                 className={focusedCardIndex === 2 ? 'Mui-focused' : ''}
-                sx={{ height: '100%' }}
+                sx={{ height: '100%', opacity: (event.status === "cancelled") ? "55%" : "100%" }}
             >
 
-                <CardMedia
-                    component="img"
-                    alt="green iguana"
-                    image={event.img ?? undefined}
-                    sx={{
-                        height: { sm: 'auto', md: '50%' },
-                        aspectRatio: { sm: '16 / 9', md: '' },
-                    }}
-                />
+                <Box sx={{
+                    position: "relative",
+                    height: { sm: 'auto', md: '50%' }
+                }}>
+                    <CardMedia
+                        component="img"
+                        alt="green iguana"
+                        image={event.img ?? undefined}
+                        sx={{
+                            height: "100%",
+                            aspectRatio: { sm: '16 / 9', md: '' },
+                            filter: event.status === "cancelled" ? "grayscale(40%)" : "none"
+
+                        }}
+                    />
+
+                    {event.status === "cancelled" && (
+                        <EventCancelledOverlay />
+                    )}
+
+                </Box>
 
 
                 <StyledCardContent>

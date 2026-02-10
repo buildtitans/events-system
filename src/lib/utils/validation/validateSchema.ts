@@ -3,7 +3,7 @@ import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
 import type { ValueError } from "@sinclair/typebox/compiler";
-import { EventsArraySchema, NewEventInputSchema } from "@/src/schemas/eventSchema";
+import { EventsArraySchema, EventSchema, NewEventInputSchema } from "@/src/schemas/eventSchema";
 import { PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groupSchema";
@@ -51,6 +51,7 @@ export function createValidator<T extends TSchema>(schema: T, schemaName = "Sche
     };
 }
 
+const eventValidator = createValidator(EventSchema, "EventSchema");
 
 const eventsValidator = createValidator(EventsArraySchema, "EventsArraySchema");
 
@@ -72,5 +73,6 @@ export {
     layoutSlotValidator,
     GroupSchemaValidator,
     GroupsSchemaValidator,
-    NewEventSchemaValidator
+    NewEventSchemaValidator,
+    eventValidator
 };

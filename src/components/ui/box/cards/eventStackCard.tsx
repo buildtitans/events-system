@@ -4,6 +4,8 @@ import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/st
 import { Author } from '@/src/components/ui/box/cards/author';
 import { EventCardProps } from './eventCard';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
+import Box from '@mui/material/Box';
+import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';
 
 type EventStackCardProps = {
     handleBlur: EventCardProps["handleBlur"],
@@ -33,9 +35,18 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     height: '100%',
+                    position: "relative"
                 }}
             >
-                <div>
+                {(event.status === "cancelled") && <EventCancelledOverlay />}
+
+
+                <Box sx={{
+                    position: "relative",
+                    height: '100%',
+                    width: '100%',
+                    filter: (event.status === "cancelled" ? "grayscale(40%)" : "none")
+                }}>
                     <Typography gutterBottom variant="caption" component="div">
                         {groupName}
                     </Typography>
@@ -49,7 +60,7 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                     >
                         {event.description}
                     </StyledTypography>
-                </div>
+                </Box>
             </StyledCardContent>
             <Author authors={event.authors} />
         </StyledCard>
