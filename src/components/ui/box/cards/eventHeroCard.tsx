@@ -44,7 +44,7 @@ export type EventCardProps = {
     handleOpenEvent: (event: EventSchemaType) => () => void
 }
 
-function EventCard(
+function EventHeroCard(
     {
         handleFocus,
         handleBlur,
@@ -120,4 +120,4 @@ function EventCard(
     )
 }
 
-export default React.memo(EventCard);
+export default React.memo(EventHeroCard);

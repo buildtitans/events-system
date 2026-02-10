@@ -18,7 +18,6 @@ export const useCancelEvent = (
         organizer_id: organizer_id ?? ""
     });
 
-    console.log(options)
     const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -38,8 +37,6 @@ export const useCancelEvent = (
 
         try {
             const result = await trpcClient.events.updateEventStatus.mutate(options);
-
-            console.log(result);
 
             timerRef.current = window.setTimeout(() => {
                 dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }));

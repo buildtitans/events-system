@@ -1,4 +1,4 @@
-import type { CardType } from "@/src/components/ui/box/cards/eventCard";
+import type { CardType } from "@/src/components/ui/box/cards/eventHeroCard";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import { LayoutSlotSchemaType, PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { designateLayoutSlot } from "@/src/server/layout/utils";

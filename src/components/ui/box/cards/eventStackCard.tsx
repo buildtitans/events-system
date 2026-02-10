@@ -2,7 +2,7 @@
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/cards/author';
-import { EventCardProps } from './eventCard';
+import { EventCardProps } from './eventHeroCard';
 import type { EventSchemaType } from '@/src/schemas/eventSchema';
 import Box from '@mui/material/Box';
 import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';

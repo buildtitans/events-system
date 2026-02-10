@@ -4,17 +4,22 @@ import { useState, useEffect } from "react";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
-import { enqueueAlert, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
+import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
-export const useUpdateEventStatus = (currentStatus: EventAttendantStatusSchemaType, event_id: EventSchemaType["id"]): UpdateAttendanceStatusHook => {
+export const useUpdateAttendance = (
+    currentStatus: EventAttendantStatusSchemaType,
+    event_id: EventSchemaType["id"],
+    role: GroupMembersSchemaType["role"]
+): UpdateAttendanceStatusHook => {
     const [newStatus, setNewStatus] = useState<EventAttendantStatusSchemaType>(currentStatus);
     const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +37,9 @@ export const useUpdateEventStatus = (currentStatus: EventAttendantStatusSchemaTy
 
             if (result) {
                 dispatch(getViewerAttendance(result))
+            }
+            if (role !== "organizer") {
+                dispatch(enqueueDrawer(null));
             }
 
             timerRef.current = null;

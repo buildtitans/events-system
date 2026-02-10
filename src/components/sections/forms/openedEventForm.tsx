@@ -2,7 +2,7 @@
 import { type JSX } from "react";
 import Container from "@mui/material/Container";
 import { useForm, Controller } from 'react-hook-form';
-import { useUpdateEventStatus } from "@/src/lib/hooks/update/useUpdateEventStatus";
+import { useUpdateAttendance } from "@/src/lib/hooks/update/useUpdateEventStatus";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -13,25 +13,32 @@ import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
+import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
-type UpdateAttendanceStatusForm = {
-    status: EventAttendantStatusSchemaType | null
+type UpdateViewerAttendanceFormProps = {
+    currentStatus: EventAttendantStatusSchemaType, event_id: EventSchemaType["id"],
+
+    role: GroupMembersSchemaType["role"]
+
 }
 
-export default function UpdateViewerAttendanceForm(
-    {
-        currentStatus,
-        event_id
-    }: {
-        currentStatus: EventAttendantStatusSchemaType,
-        event_id: EventSchemaType["id"]
-    }): JSX.Element {
+type UpdateAttendanceStatusForm = {
+    status: EventAttendantStatusSchemaType | null,
+}
+
+export default function UpdateViewerAttendanceForm({
+    currentStatus,
+    event_id,
+    role
+}: UpdateViewerAttendanceFormProps
+): JSX.Element {
+    const { control } = useForm<UpdateAttendanceStatusForm>();
     const {
         newStatus,
         handleStatusChange,
         handleSubmit
-    } = useUpdateEventStatus(currentStatus, event_id);
-    const { control } = useForm<UpdateAttendanceStatusForm>();
+    } = useUpdateAttendance(currentStatus, event_id, role);
+
 
     return (
         <FadeInOutBox>
@@ -41,7 +48,7 @@ export default function UpdateViewerAttendanceForm(
                     justifyContent: "start",
                     alignItems: "center",
                     paddingX: 3,
-                    paddingTop: 6
+                    paddingTop: 2
                 }}
                 disableGutters>
                 <form

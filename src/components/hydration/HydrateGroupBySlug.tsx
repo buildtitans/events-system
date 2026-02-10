@@ -18,9 +18,7 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
             events: EventsPages
         ): void => {
 
-
-
-            dispatch(getGroupEvents(events));
+            dispatch(getGroupEvents({ status: "ready", data: events }));
             if (events.length === 0) {
                 dispatch(groupEventsStatus("warning"))
             } else {
@@ -33,21 +31,19 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
 
         };
 
-
         const executeHydration = async () => {
             dispatch(groupOpened({ status: "pending" }))
             dispatch(groupEventsStatus("pending"));
+            dispatch(getGroupEvents({ status: "pending" }))
 
             const {
                 events,
                 group
-            } = await syncOpenedGroup(slug)
+            } = await syncOpenedGroup(slug);
 
             handleSync(group, events);
         }
-
         void executeHydration();
-
 
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current)

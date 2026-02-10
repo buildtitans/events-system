@@ -2,12 +2,12 @@
 import Box from "@mui/material/Box";
 import { JSX } from "react";
 import GroupHeadSecton from "./groupHeadSection";
-import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import EventsLayout from "../events/eventsLayout";
+import { RenderEventsForGroup } from "../../pipelines/groups/renderEventsForGroup";
+import { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 type ViewGroupSectionProps = {
-    events: EventsPages,
+    events: HydratedEventsForOpenedGroup,
     group: GroupSchemaType,
 }
 
@@ -16,6 +16,7 @@ export default function ViewGroupSection({
     group,
 }: ViewGroupSectionProps): JSX.Element {
 
+    console.log(events)
 
     return (
 
@@ -31,7 +32,7 @@ export default function ViewGroupSection({
         >
 
             <GroupHeadSecton
-                pages={events}
+                eventsForGroupStatus={events.status}
                 groupName={group.name}
             />
 
@@ -48,9 +49,7 @@ export default function ViewGroupSection({
                     height: '100%'
                 }}
             >
-                <EventsLayout
-                    eventsPages={events}
-                />
+                <RenderEventsForGroup events={events} />
             </Box>
         </Box>
     )

@@ -41,7 +41,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 12,
+                marginTop: 10,
                 width: '100%',
             }}
         >
@@ -53,7 +53,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center",
+                    alignItems: "start",
                     gap: 40,
                 }}
             >

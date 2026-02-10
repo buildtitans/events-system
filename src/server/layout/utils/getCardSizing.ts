@@ -1,4 +1,4 @@
-import type { CardDesignation, CardType } from "@/src/components/ui/box/cards/eventCard";
+import type { CardDesignation, CardType } from "@/src/components/ui/box/cards/eventHeroCard";
 
 
 

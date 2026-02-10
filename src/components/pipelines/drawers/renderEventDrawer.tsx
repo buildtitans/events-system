@@ -25,6 +25,8 @@ export default function RenderEventDrawerContents({
                         event={event}
                     />
                     <MembersOnlyAttendanceForm
+                        role={role}
+                        scheduleStatus={event.status}
                     />
                 </>
             )
@@ -35,6 +37,8 @@ export default function RenderEventDrawerContents({
                         event={event}
                     />
                     <MembersOnlyAttendanceForm
+                        role={role}
+                        scheduleStatus={event.status}
                     />
 
                     <RescheduleEventForm event={event} />

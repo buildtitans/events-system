@@ -1,5 +1,5 @@
 import { JSX, useCallback } from "react";
-import EventCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventCard";
+import EventHeroCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "@/src/lib/store";
 import { fillEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
-function RenderLayout(
+function RenderEventsLayout(
     slots: LayoutSlotSchemaType[],
     handleBlur: EventCardProps["handleBlur"],
     handleFocus: EventCardProps["handleFocus"],
@@ -28,7 +28,7 @@ function RenderLayout(
         switch (slot.kind) {
             case "card":
                 return (
-                    <EventCard
+                    <EventHeroCard
                         groupName={groupNamesById[slot.event.group_id]}
                         index={i}
                         key={slot.event.id}
@@ -58,4 +58,4 @@ function RenderLayout(
     });
 }
 
-export { RenderLayout }
+export { RenderEventsLayout }

@@ -10,8 +10,8 @@ import OpenedEventImage from "../box/cards/openedEventImage";
 
 const stackProps = {
     marginX: 3,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 2,
+    paddingBottom: 2,
     alignItems: "start",
     borderBottom: 1,
     borderColor: 'rgb(255, 255, 255, 0.15)'
@@ -24,7 +24,14 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
 
     return (
         <FadeInOutBox>
-            <Stack sx={stackProps} spacing={3}>
+            <Stack sx={stackProps} spacing={1}>
+                <Typography component={"h1"} sx={{
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    fontSize: "28px",
+                    fontWeight: "light"
+                }} >
+                    Event
+                </Typography>
 
                 <EventTitle
                     title={event.title}

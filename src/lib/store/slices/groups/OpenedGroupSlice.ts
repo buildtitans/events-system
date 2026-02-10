@@ -8,9 +8,14 @@ export type GroupHydrated = { status: "idle" }
     | { status: "failed", error: "Group hydration error" }
     | { status: "ready", data: GroupSchemaType };
 
+export type HydratedEventsForOpenedGroup = { status: "idle" }
+    | { status: "pending" }
+    | { status: "failed", error: "Error hydrating events for opened group" }
+    | { status: "ready", data: EventsPages };
+
 type InitialState = {
     group: GroupHydrated,
-    events: EventsPages,
+    events: HydratedEventsForOpenedGroup,
     syncStatus: LoadingStatus
 };
 
@@ -18,7 +23,7 @@ type InitialState = {
 
 const initialState: InitialState = {
     group: { status: "idle" },
-    events: [],
+    events: { status: "idle" },
     syncStatus: "idle"
 };
 
@@ -28,7 +33,7 @@ const OpenedGroupSlice = createSlice({
     initialState: initialState,
     reducers: {
 
-        getGroupEvents: (state: InitialState, action: PayloadAction<EventsPages>) => {
+        getGroupEvents: (state: InitialState, action: PayloadAction<HydratedEventsForOpenedGroup>) => {
             state.events = action.payload
         },
         groupOpened: (state: InitialState, action: PayloadAction<GroupHydrated>) => {
