@@ -1,10 +1,10 @@
 "use client";
-import { LinearIndeterminate } from "../../ui/feedback";
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated, HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NoGroups from "../../ui/feedback/failure/noGroups";
 import Container from "@mui/material/Container";
+import DrawerSpinner from "../../ui/feedback/pending/drawerSpinner";
 
 type RenderOpenedGroupProps = {
     group: GroupHydrated,
@@ -33,8 +33,7 @@ export function RenderOpenedGroup({
                         alignItems: 'center'
                     }}
                 >
-                    <LinearIndeterminate
-                    />
+                    <DrawerSpinner />
                 </Container>
 
             )

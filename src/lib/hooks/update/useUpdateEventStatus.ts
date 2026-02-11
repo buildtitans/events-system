@@ -18,7 +18,7 @@ export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 export const useUpdateAttendance = (
     currentStatus: EventAttendantStatusSchemaType,
     event_id: EventSchemaType["id"],
-    role: GroupMembersSchemaType["role"]
+    role?: GroupMembersSchemaType["role"]
 ): UpdateAttendanceStatusHook => {
     const [newStatus, setNewStatus] = useState<EventAttendantStatusSchemaType>(currentStatus);
     const timerRef = useRef<number | null>(null);
@@ -38,10 +38,8 @@ export const useUpdateAttendance = (
             if (result) {
                 dispatch(getViewerAttendance(result))
             }
-            if (role !== "organizer") {
-                dispatch(enqueueDrawer(null));
-            }
 
+            dispatch(enqueueDrawer(null));
             timerRef.current = null;
         }, 1200)
     };

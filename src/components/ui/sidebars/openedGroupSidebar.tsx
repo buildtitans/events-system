@@ -54,7 +54,7 @@ function SidebarSkeleton() {
             width="100%"
             height="100%"
             sx={{
-                bgcolor: 'rgba(255, 255, 255, 0.05)'
+                bgcolor: 'rgba(255, 255, 255, 0.015)'
             }}
         />
 

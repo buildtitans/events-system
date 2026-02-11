@@ -7,6 +7,7 @@ import { AppDispatch } from "../../store";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { CancelEventHook } from "../../types/hooks/types";
 
+
 export const useCancelEvent = (
     event: EventSchemaType,
     organizer_id: string | null | undefined
@@ -29,6 +30,9 @@ export const useCancelEvent = (
     };
 
     function handleUpdateResult(updateStatus: "success" | "failure" | undefined): void {
+
+
+
         timerRef.current = window.setTimeout(() => {
             dispatch(enqueueSnackbar({
                 kind: "changeEventScheduling",

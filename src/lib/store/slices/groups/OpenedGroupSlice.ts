@@ -10,6 +10,8 @@ export type GroupHydrated = { status: "idle" }
 
 export type HydratedEventsForOpenedGroup = { status: "idle" }
     | { status: "pending" }
+    | { status: "refreshing" }
+    | { status: "warning", message: "No events have been scheduled for this group" }
     | { status: "failed", error: "Error hydrating events for opened group" }
     | { status: "ready", data: EventsPages };
 
@@ -18,8 +20,6 @@ type InitialState = {
     events: HydratedEventsForOpenedGroup,
     syncStatus: LoadingStatus
 };
-
-
 
 const initialState: InitialState = {
     group: { status: "idle" },

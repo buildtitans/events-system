@@ -16,8 +16,6 @@ export default function ViewGroupSection({
     group,
 }: ViewGroupSectionProps): JSX.Element {
 
-    console.log(events)
-
     return (
 
         <Box
@@ -32,7 +30,6 @@ export default function ViewGroupSection({
         >
 
             <GroupHeadSecton
-                eventsForGroupStatus={events.status}
                 groupName={group.name}
             />
 

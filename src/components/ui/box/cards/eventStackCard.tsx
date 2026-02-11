@@ -45,7 +45,7 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                     position: "relative",
                     height: '100%',
                     width: '100%',
-                    filter: (event.status === "cancelled" ? "grayscale(40%)" : "none")
+                    opacity: (event.status === "cancelled" ? 0.55 : "none")
                 }}>
                     <Typography gutterBottom variant="caption" component="div">
                         {groupName}

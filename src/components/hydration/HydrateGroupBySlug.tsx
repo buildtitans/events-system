@@ -1,39 +1,52 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/src/lib/store";
-import { getGroupEvents, groupOpened, groupEventsStatus } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/src/lib/store";
+import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groupSchema";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
-
+import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
+import { wait } from "@/src/lib/utils/helpers/wait";
 
 export default function HydrateGroupBySlug({ slug }: { slug: string }): React.ReactNode {
     const dispatch = useDispatch<AppDispatch>();
-    const timerRef = useRef<number | null>(null);
+    useRefreshGroupEvents();
+
+    const handleSyncGroupOpened = (group: GroupSchemaType) => {
+        dispatch(groupOpened({
+            status: "ready",
+            data: group
+        }));
+    }
+
+    const handleSyncEventsOfGroup = (events: EventsPages) => {
+        if (events.length > 0) {
+            dispatch(getGroupEvents({
+                status: "ready",
+                data: events
+            }));
+            return;
+        };
+        dispatch(getGroupEvents({
+            status: "warning",
+            message: "No events have been scheduled for this group"
+        }));
+    };
 
     useEffect(() => {
-        const handleSync = (
+        const handlePayload = async (
             group: GroupSchemaType,
             events: EventsPages
-        ): void => {
-
-            dispatch(getGroupEvents({ status: "ready", data: events }));
-            if (events.length === 0) {
-                dispatch(groupEventsStatus("warning"))
-            } else {
-                dispatch(groupEventsStatus("idle"));
-            }
-
-            timerRef.current = window.setTimeout(() => {
-                dispatch(groupOpened({ status: "ready", data: group }));
-            }, 1200)
-
-        };
+        ): Promise<void> => {
+            await wait(500);
+            handleSyncGroupOpened(group);
+            await wait(1200);
+            handleSyncEventsOfGroup(events);
+        }
 
         const executeHydration = async () => {
             dispatch(groupOpened({ status: "pending" }))
-            dispatch(groupEventsStatus("pending"));
             dispatch(getGroupEvents({ status: "pending" }))
 
             const {
@@ -41,15 +54,14 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
                 group
             } = await syncOpenedGroup(slug);
 
-            handleSync(group, events);
+            await handlePayload(group, events);
+
         }
         void executeHydration();
 
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current)
-        }
 
-    }, [slug, dispatch])
+
+    }, [slug, dispatch]);
 
     return null;
 }

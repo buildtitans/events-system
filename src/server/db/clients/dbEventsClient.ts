@@ -1,4 +1,4 @@
-import { DeleteResult, Insertable, Kysely, Selectable, UpdateResult } from "kysely";
+import { Insertable, Kysely, Selectable } from "kysely";
 import { DB } from "../types/db";
 import type { Events } from "../types/db";
 import { compileEventsLayout } from "../../layout/compileEventsLayout";
@@ -6,7 +6,7 @@ import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } f
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
-import { eventsValidator, eventValidator } from "@/src/lib/utils/validation/validateSchema";
+import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 dayjs.extend(utc);
 
 export class EventsClient {
@@ -20,12 +20,11 @@ export class EventsClient {
         return layout;
     }
 
-    async getGroupEvents(group_id: Selectable<Events>["group_id"]): Promise<PaginatedLayoutSchemaType | undefined> {
+    async getGroupEvents(group_id: Selectable<Events>["group_id"]): Promise<PaginatedLayoutSchemaType> {
 
         const raw = await this.getRawEventsFromGroup(group_id);
-        if (!Array.isArray(raw) || (raw.length === 0)) return undefined;
-        const eventsFromGroup = compileEventsLayout(raw)
-        return eventsFromGroup
+        if (!Array.isArray(raw) || (raw.length === 0)) return [];
+        return compileEventsLayout(raw);
     }
 
     async updateEventStatus(eventUpdate: UpdateEventArgsSchemaType): Promise<{ updateStatus: "success" | "failure" }> {

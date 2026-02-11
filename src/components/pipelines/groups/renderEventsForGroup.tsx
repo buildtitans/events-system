@@ -3,6 +3,7 @@ import type { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups
 import EventsLayout from "../../sections/events/eventsLayout";
 import { LinearIndeterminate } from "../../ui/feedback";
 import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
+import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 
 type RenderEventsForGroupProps = {
     events: HydratedEventsForOpenedGroup
@@ -13,17 +14,23 @@ export const RenderEventsForGroup = ({
 }: RenderEventsForGroupProps) => {
 
     switch (events.status) {
+        case "refreshing":
         case "pending":
             return (
                 <LinearIndeterminate />
             )
-        case "failed":
+        case "warning":
             return (
-                <NoEventsFound />
+                <NoScheduledEvents />
             )
         case "ready":
             return (
                 <EventsLayout eventsPages={events.data} />
+            )
+
+        case "failed":
+            return (
+                <NoEventsFound />
             )
 
         default: {
