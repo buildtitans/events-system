@@ -1,4 +1,11 @@
-import { GroupIdSchemaType, GroupIdSchemaValidator, NewEventInputSchemaType, NewEventInputSchemaValidator, UpdateEventArgsSchemaType, UpdateEventArgsSchemaValidator } from "@/src/schemas/eventSchema";
+import {
+    GroupIdSchemaType,
+    GroupIdSchemaValidator,
+    NewEventInputSchemaType,
+    NewEventInputSchemaValidator,
+    UpdateEventArgsSchemaType,
+    UpdateEventArgsSchemaValidator
+} from "@/src/schemas/eventSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "../init";
 
@@ -6,8 +13,12 @@ export const eventsRouter = router({
     list: publicProcedure.
         mutation(async ({ ctx }) => {
 
-            const rows = await ctx.api.events.getEvents()
-            return rows
+            const rows = await ctx
+                .api
+                .events
+                .getEvents();
+
+            return rows;
         }),
 
     newEvent: publicProcedure
@@ -16,7 +27,11 @@ export const eventsRouter = router({
 
             const user_id = ctx.user?.id;
             if (!user_id) return null;
-            return await ctx.api.events.createNewEvent(input)
+
+            return await ctx
+                .api
+                .events
+                .createNewEvent(input);
         }),
 
     groupEvents: publicProcedure
@@ -25,7 +40,10 @@ export const eventsRouter = router({
 
             if (!input) return null;
 
-            return await ctx.api.events.getGroupEvents(input);
+            return await ctx
+                .api
+                .events
+                .getGroupEvents(input);
 
         }),
 
@@ -34,13 +52,11 @@ export const eventsRouter = router({
             .input(typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator))
             .mutation(({ ctx, input }) => {
 
-                const user_id = ctx.user?.id;
+                if (ctx.user?.id !== input.organizer_id) return null;
 
-                const { organizer_id } = input;
-
-                if ((!user_id) || (user_id !== organizer_id)) return null;
-
-                return ctx.api.events.updateEventStatus(input);
+                return ctx
+                    .api
+                    .events
+                    .updateEventStatus(input);
             })
-
 });

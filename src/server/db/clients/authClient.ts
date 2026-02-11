@@ -8,23 +8,27 @@ import type { StoredSession, AuthClientLoginResponse } from "./types/types";
 
 export class AuthClient {
 
-    constructor(private readonly db: Kysely<DB>) { }
+    constructor(
+        private readonly db: Kysely<DB>
+    ) { }
 
-    async authenticate(token: string): Promise<PublicUserSchemaType | null> {
+    async authenticate(
+        token: string
+    ): Promise<PublicUserSchemaType | null> {
 
-        const session = await this.getSession(token);
+        const session = await this
+            .getSession(token);
+
         if (!session) return null;
 
         const user = await this.db
             .selectFrom("users")
             .select(["id", "email"])
             .where("id", "=", session.user_id)
-            .executeTakeFirst();
-
-        if (!user) return null;
+            .executeTakeFirstOrThrow();
 
         return user;
-    }
+    };
 
 
     async login(
@@ -54,7 +58,7 @@ export class AuthClient {
         return Number(result[0].numDeletedRows ?? 0) > 0;
     }
 
-    async verifyCredentials(
+    private async verifyCredentials(
         input_email: string,
         input_password: string
     ): Promise<DbUserSchemaType> {
@@ -66,17 +70,23 @@ export class AuthClient {
             .executeTakeFirst();
 
         if (!user) {
-            throw new Error(`That email doesn't match any of our records`)
+            throw new Error(
+                `That email doesn't match any of our records`
+            );
         }
 
-        const ok = await argon2.verify(user?.password_hash, input_password);
+        const ok = await argon2
+            .verify(
+                user?.password_hash,
+                input_password
+            );
         if (!ok) {
             throw new Error(`Invalid email or password`)
         }
-        return user
+        return user;
     }
 
-    async createSession(
+    private async createSession(
         user_id: string
     ): Promise<StoredSession> {
 

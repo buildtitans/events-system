@@ -28,15 +28,36 @@ export const useCancelEvent = (
         }))
     };
 
+    function handleUpdateResult(updateStatus: "success" | "failure" | undefined): void {
+        timerRef.current = window.setTimeout(() => {
+            dispatch(enqueueSnackbar({
+                kind: "changeEventScheduling",
+                status: (updateStatus === "success")
+                    ? "success"
+                    : "failed"
+            }));
+            dispatch(enqueueDrawer(null))
+            timerRef.current = null;
+        }, 1200)
 
-    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+    }
+
+
+    const handleSubmit = async (
+        e: React.MouseEvent<HTMLButtonElement>
+    ): Promise<void> => {
         e.preventDefault();
         dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "pending" }))
 
-        console.log(options)
-
         try {
             const result = await trpcClient.events.updateEventStatus.mutate(options);
+
+            if (!result?.updateStatus) {
+                throw new Error(`Error attempting to cancel event`);
+            }
+
+            handleUpdateResult(result.updateStatus);
+
 
             timerRef.current = window.setTimeout(() => {
                 dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }));

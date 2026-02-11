@@ -20,6 +20,8 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
         return pg ?? [];
     }, [eventsPages, currentPage]);
 
+
+
     const handleFocus = (index: number) => {
         setFocusedCardIndex(index);
     };

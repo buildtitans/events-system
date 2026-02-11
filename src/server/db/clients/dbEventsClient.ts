@@ -38,11 +38,11 @@ export class EventsClient {
             .where("id", "=", eventUpdate.event_id)
             .executeTakeFirstOrThrow();
 
-        return { updateStatus: "success" }
+        return { updateStatus: update ? "success" : "failure" };
     }
 
 
-    async getRawEvents(): Promise<Selectable<Events>[]> {
+    private async getRawEvents(): Promise<Selectable<Events>[]> {
         return this.db
             .selectFrom("events")
             .selectAll()
@@ -50,7 +50,7 @@ export class EventsClient {
             .execute();
     }
 
-    async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
+    private async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
 
         const raw = this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
 
@@ -93,7 +93,7 @@ export class EventsClient {
     }
 
 
-    async insertNewEvent(newEvent: Insertable<Events>): Promise<Selectable<Events> | null> {
+    private async insertNewEvent(newEvent: Insertable<Events>): Promise<Selectable<Events> | null> {
 
         const inserted = await this.db
             .insertInto("events")
@@ -105,7 +105,7 @@ export class EventsClient {
     }
 
 
-    formatEvent(raw: Selectable<Events>): EventSchemaType {
+    private formatEvent(raw: Selectable<Events>): EventSchemaType {
         const parsed_authors = typeof raw.authors === "string" ? JSON.parse(raw.authors) : raw.authors
 
         const parsed = eventValidator({

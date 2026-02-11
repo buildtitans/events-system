@@ -14,7 +14,7 @@ export class GroupsClient {
         return formatted
     }
 
-    async getRawGroups(): Promise<Selectable<Groups>[]> {
+    private async getRawGroups(): Promise<Selectable<Groups>[]> {
         return this.db
             .selectFrom("groups")
             .selectAll()
@@ -31,7 +31,7 @@ export class GroupsClient {
     }
 
 
-    async rawGroupsBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>> {
+    private async rawGroupsBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>> {
 
         return await this.db
             .selectFrom("groups")
@@ -41,7 +41,7 @@ export class GroupsClient {
             .executeTakeFirstOrThrow()
     }
 
-    formatRawGroups(groups: Selectable<Groups>[]): GroupsSchemaType {
+    private formatRawGroups(groups: Selectable<Groups>[]): GroupsSchemaType {
         const formatted = [];
 
         for (const group of groups) {
@@ -60,7 +60,7 @@ export class GroupsClient {
         return this.toGroupSchema(inserted);
     }
 
-    parseNewGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Insertable<Groups> {
+    private parseNewGroup(newGroup: NewGroupInputSchemaType, organizer_id: string): Insertable<Groups> {
 
         return {
             name: newGroup.name,
@@ -73,7 +73,7 @@ export class GroupsClient {
     }
 
 
-    async insertNewGroup(newGroup: Insertable<Groups>): Promise<Selectable<Groups>> {
+    private async insertNewGroup(newGroup: Insertable<Groups>): Promise<Selectable<Groups>> {
         return this.db
             .insertInto("groups")
             .values(newGroup)
@@ -81,7 +81,7 @@ export class GroupsClient {
             .executeTakeFirstOrThrow();
     }
 
-    formatGroup(group: Selectable<Groups>): GroupSchemaType {
+    private formatGroup(group: Selectable<Groups>): GroupSchemaType {
         return {
             id: group.id,
             name: group.name,
@@ -95,7 +95,7 @@ export class GroupsClient {
         };
     }
 
-    toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
+    private toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
         if (!group) return null;
         const formatted = this.formatGroup(group);
         const validGroup = GroupSchemaValidator(formatted);

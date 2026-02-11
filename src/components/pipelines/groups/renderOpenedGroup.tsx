@@ -1,6 +1,5 @@
 "use client";
 import { LinearIndeterminate } from "../../ui/feedback";
-import type { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated, HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";

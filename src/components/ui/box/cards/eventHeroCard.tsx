@@ -4,8 +4,6 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import CancelIcon from "@mui/icons-material/Cancel";
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/cards/author';
 import type { JSX } from 'react';

@@ -14,18 +14,16 @@ export class CategoriesClient {
         return this.parseCategories(raw)
     }
 
-    async getAllCategories(): Promise<Selectable<Categories>[]> {
+    private async getAllCategories(): Promise<Selectable<Categories>[]> {
 
-        return this.db
+        return await this.db
             .selectFrom("categories")
             .selectAll()
             .orderBy("categories.name")
             .execute()
+    };
 
-
-    }
-
-    parseCategories(raw: Selectable<Categories>[]): CategoriesSchemaType {
+    private parseCategories(raw: Selectable<Categories>[]): CategoriesSchemaType {
         const parsed = raw;
         CategoriesValidator.Check(parsed);
         return parsed
