@@ -1,15 +1,15 @@
 "use client";
 import React, { useRef } from "react";
 import { useState, useEffect } from "react";
-import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
-import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 

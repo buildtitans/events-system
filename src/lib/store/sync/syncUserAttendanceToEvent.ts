@@ -1,5 +1,5 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
-import type { EventSchemaType } from "@/src/schemas/eventSchema";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 export async function syncUserAttendanceToEvent(event: EventSchemaType) {
     const res = await trpcClient

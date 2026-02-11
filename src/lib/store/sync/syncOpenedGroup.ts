@@ -1,5 +1,5 @@
 import { EventsPages } from "../slices/events/EventsSlice";
-import type { GroupSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 export type SyncOpenGroupPayload = {

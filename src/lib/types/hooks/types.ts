@@ -5,11 +5,11 @@ import type { UserInGroupRoleType, LoadingStatus } from "@/src/lib/types/tokens/
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
 import { EventsPages } from "../../store/slices/events/EventsSlice";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
-import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
 import type { LoginCredentials } from "@/src/lib/types/tokens/types";
-import { UpdateEventArgsSchemaType } from "@/src/schemas/eventSchema";
+import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React from "react";
 
 type CreateEventHook = {

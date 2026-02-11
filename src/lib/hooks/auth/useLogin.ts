@@ -6,7 +6,7 @@ import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
-import type { AuthenticationSchemaType } from "@/src/schemas/loginCredentialsSchema";
+import type { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { syncPermissions } from "../../store/sync/syncPermissions";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import type { EventSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/eventSchema";
+import type { EventSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";

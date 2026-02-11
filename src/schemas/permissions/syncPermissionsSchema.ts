@@ -1,9 +1,9 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { GroupMembersSchema } from "./groupMembersSchema";
-import { GroupsSchema } from "./groupSchema";
+import { GroupsSchema } from "../groups/groupSchema";
 import { PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
-import { CategoriesSchema } from "./categoriesSchema";
+import { CategoriesSchema } from "../groups/categoriesSchema";
 
 export const SyncTrpcInputSchema = Type.Null();
 

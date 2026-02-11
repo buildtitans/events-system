@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type GroupsInitialState = {
     communities: GroupsSchemaType,

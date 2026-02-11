@@ -1,4 +1,4 @@
-import type { AuthorsSchemaType } from "@/src/schemas/eventSchema";
+import type { AuthorsSchemaType } from "@/src/schemas/events/eventSchema";
 
 function parseAuthors(
     value: unknown

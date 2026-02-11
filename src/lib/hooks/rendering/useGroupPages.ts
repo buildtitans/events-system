@@ -2,8 +2,8 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { useMemo } from "react";
-import { GroupsSchemaType } from "@/src/schemas/groupSchema";
-import type { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
+import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 export type CategoryMap = Map<string, string>;
 

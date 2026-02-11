@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/cards/author';
 import type { JSX } from 'react';
-import type { EventSchemaType } from '@/src/schemas/eventSchema';
+import type { EventSchemaType } from '@/src/schemas/events/eventSchema';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';

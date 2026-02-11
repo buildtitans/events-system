@@ -1,8 +1,8 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { GroupsAndMembershipsSchemaType } from "@/src/schemas/syncPermissionsSchema";
+import { GroupsAndMembershipsSchemaType } from "@/src/schemas/permissions/syncPermissionsSchema";
 import { EventsPages } from "../slices/events/EventsSlice";
-import { GroupsSchemaType } from "@/src/schemas/groupSchema";
-import { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
+import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 export type DomainStateType = {
     events: EventsPages,

@@ -4,7 +4,7 @@ import type { AppDispatch } from "@/src/lib/store";
 import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 import { wait } from "@/src/lib/utils/helpers/wait";

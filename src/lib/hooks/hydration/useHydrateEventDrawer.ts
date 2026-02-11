@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
-import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";

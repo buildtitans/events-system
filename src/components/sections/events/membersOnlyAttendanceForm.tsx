@@ -4,7 +4,7 @@ import type { JSX } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type MembersOnlyAttendanceFormProps = {

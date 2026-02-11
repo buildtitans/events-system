@@ -8,7 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
 import { useRouter } from "next/navigation";
 import { useCallback } from 'react';
-import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groupSchema';
+import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groups/groupSchema';
 
 export type CategoryMap = Map<string, string>;
 

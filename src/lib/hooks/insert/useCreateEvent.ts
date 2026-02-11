@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
+import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/events/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";

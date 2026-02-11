@@ -1,6 +1,6 @@
 import type { Selectable } from "kysely";
 import type { Events } from "@/src/server/db";
-import type { EventSchemaType } from "@/src/schemas/eventSchema";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { AuthorsValidator, eventValidator } from "@/src/lib/utils/validation/validateSchema";
 
 function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {

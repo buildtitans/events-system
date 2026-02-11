@@ -1,5 +1,5 @@
 import { Type, Static } from "@sinclair/typebox";
-import { EventSchema } from "./eventSchema";
+import { EventSchema } from "./events/eventSchema";
 
 const CardVariantTypeSchema = Type.Union([Type.Literal("hero"), Type.Literal("thumbnail")])
 

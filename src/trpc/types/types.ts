@@ -1,5 +1,5 @@
 import type { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
-import type { GroupsSchemaType, GroupSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupsSchemaType, GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type ApiPath = "/api";
 

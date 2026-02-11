@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../../store/slices/groups/GroupsSlice";

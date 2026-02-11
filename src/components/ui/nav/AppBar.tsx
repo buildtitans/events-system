@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from '@/src/lib/store';
 import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/auth/AuthSlice';
 import { enqueueSnackbar } from '@/src/lib/store/slices/rendering/RenderingSlice';
-import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
+import { AuthenticationSchemaType } from '@/src/schemas/auth/loginCredentialsSchema';
 import NavActions from './global/navActions';
 import NavBar from './global/navBar';
 import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';

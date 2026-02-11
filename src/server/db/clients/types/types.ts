@@ -1,4 +1,4 @@
-import type { PublicUserSchemaType } from "@/src/schemas/userSchema";
+import type { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 
 type StoredSession = {
     id: string,

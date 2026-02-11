@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import { JSX } from "react";
 import GroupHeadSecton from "./groupHeadSection";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { RenderEventsForGroup } from "../../pipelines/groups/renderEventsForGroup";
 import { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 

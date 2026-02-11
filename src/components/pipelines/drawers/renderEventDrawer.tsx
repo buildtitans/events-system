@@ -4,7 +4,7 @@ import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendan
 import OpenedEvent from "../../ui/stack/OpenedEvent";
 import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import RescheduleEventForm from "../../sections/forms/rescheduleEventForm";
 
 type RenderEventDrawerContentsProps = {

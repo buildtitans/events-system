@@ -4,7 +4,7 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { usePathname, useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import { JSX, useMemo } from "react";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { getGroupSlugRoute } from "@/src/lib/utils/parsing/getGroupSlugRoute";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 

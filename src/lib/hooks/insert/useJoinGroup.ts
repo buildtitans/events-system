@@ -5,7 +5,7 @@ import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
 import { syncPermissions } from "@/src/lib/store/sync/syncPermissions";

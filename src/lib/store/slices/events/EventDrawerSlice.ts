@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
-import { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 export type OpenedEvent = { status: "idle" }
     | { status: "pending" }

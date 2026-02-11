@@ -1,6 +1,6 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema"
 import type { ViewerAccess } from "../store/slices/viewer/PermissionsSlice";
-import { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export const mapGroupAccessPermissions = (
     groups: GroupsSchemaType,

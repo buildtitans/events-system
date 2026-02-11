@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventsPages } from "../events/EventsSlice";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
 
 export type GroupHydrated = { status: "idle" }
