@@ -51,7 +51,7 @@ export class EventsClient {
 
     private async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
 
-        const raw = this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
+        const raw = await this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
 
         return raw;
 

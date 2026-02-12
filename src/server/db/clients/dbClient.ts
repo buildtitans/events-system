@@ -6,6 +6,7 @@ import { AuthClient } from "./authClient";
 import { CategoriesClient } from "./dbCategoriesClient";
 import { GroupMembersClient } from "./dbGroupMembersCleint";
 import { EventAttendantsClient } from "./eventAttendantsClient";
+import { NotificationsClient } from "./notificationsClient";
 
 export class DBClient {
     public readonly events: EventsClient;
@@ -14,6 +15,7 @@ export class DBClient {
     public readonly categories: CategoriesClient;
     public readonly groupMembers: GroupMembersClient;
     public readonly eventAttendants: EventAttendantsClient;
+    public readonly notifications: NotificationsClient;
     constructor(private db: Kysely<DB>) {
         this.db = db;
         this.groupMembers = new GroupMembersClient(this.db);
@@ -22,5 +24,6 @@ export class DBClient {
         this.auth = new AuthClient(db);
         this.categories = new CategoriesClient(db);
         this.eventAttendants = new EventAttendantsClient(db);
+        this.notifications = new NotificationsClient(db)
     };
 };
