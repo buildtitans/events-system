@@ -1,7 +1,7 @@
 import { JSX, useCallback } from "react";
 import EventHeroCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { fillEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";

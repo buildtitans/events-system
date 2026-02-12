@@ -5,7 +5,7 @@ import { compileEventsLayout } from "../../layout/compileEventsLayout";
 import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 dayjs.extend(utc);
 

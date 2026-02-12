@@ -4,7 +4,7 @@ import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
 import type { ValueError } from "@sinclair/typebox/compiler";
 import { EventsArraySchema, EventSchema, NewEventInputSchema } from "@/src/schemas/events/eventSchema";
-import { PaginatedLayoutSchema } from "@/src/schemas/layoutSlotSchema";
+import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/events/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 

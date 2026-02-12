@@ -1,7 +1,7 @@
 import { layoutSlotValidator } from "@/src/lib/utils/validation/validateSchema";
 import type { Selectable } from "kysely";
 import type { Events } from "@/src/server/db";
-import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { formatRawEvents, buildLayoutSlots } from "@/src/server/layout/utils";
 
 function compileEventsLayout(rows: Selectable<Events>[]): PaginatedLayoutSchemaType {

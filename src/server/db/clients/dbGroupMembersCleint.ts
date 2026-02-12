@@ -10,7 +10,7 @@ import {
     GroupMembersSchemaType,
     ValidateGroupMember,
     ValidateGroupMembersArray
-} from "@/src/schemas/groupMembersSchema";
+} from "@/src/schemas/groups/groupMembersSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 

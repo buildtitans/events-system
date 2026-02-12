@@ -1,4 +1,4 @@
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { RenderEventsLayout } from "../../pipelines/events/renderEventsLayout";
 import Box from "@mui/material/Box";
 

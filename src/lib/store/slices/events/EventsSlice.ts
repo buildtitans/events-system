@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import type { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
