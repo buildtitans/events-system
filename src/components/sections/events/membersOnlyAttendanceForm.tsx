@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type MembersOnlyAttendanceFormProps = {
     scheduleStatus: EventSchemaType["status"],

@@ -13,7 +13,7 @@ import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type UpdateViewerAttendanceFormProps = {
     currentStatus: EventAttendantStatusSchemaType, event_id: EventSchemaType["id"],
