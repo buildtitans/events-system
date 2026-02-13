@@ -21,7 +21,6 @@ export class NotificationsClient {
     constructor(private readonly db: Kysely<DB>) {
     }
 
-
     async getUnseenNotifications(
         user_id: string
     ): Promise<NotificationSchemaArrayType> {
@@ -32,27 +31,31 @@ export class NotificationsClient {
     }
 
 
-    async addNewNotification(
+    async addNewNotifications(
         notification: CreateNotificationSchemaType,
         memberIds: string[]
     ) {
 
-        const row = this.toInsertableNotifications(notification, memberIds);
+        const rows = this.toInsertableNotifications(notification, memberIds);
 
-        return await this.insertNotifications(row);
+        return await this.insertNotifications(rows);
     }
 
     private async insertNotifications(
         rows: Insertable<Notifications>[]
     ): Promise<NotificationSchemaArrayType> {
 
-        const notifications = rows.map(async (row: Insertable<Notifications>) => {
-            return await this.db
-                .insertInto("notifications")
-                .values(rows)
-                .returningAll()
-                .executeTakeFirstOrThrow();
-        })
+        const notifications = await this.db
+            .insertInto("notifications")
+            .values(rows)
+            .returningAll()
+            .execute();
+
+        console.log({
+            "Result": `${notifications.length > 0 ? 'success' : 'failed'}`,
+            "Returned": notifications
+        });
+
         return this.parseRawNotifications(notifications);
     };
 
@@ -64,19 +67,15 @@ export class NotificationsClient {
 
         memberIds.forEach((id: string) => {
 
-            const notif = {
+            insertableRows.push({
                 user_id: id,
                 group_id: notification.group_id,
-                created_at: dayjs(new Date()).utc().format(ISO_FORMAT),
                 seen: false,
                 priority: notification.priority,
                 message: notification.message
-            };
-            insertableRows.push(notif);
+            })
         });
-
         return insertableRows
-
     }
 
 
@@ -92,30 +91,31 @@ export class NotificationsClient {
             .execute()
     };
 
-    private parseRawNotification(
-        row: Selectable<Notifications>
-    ): NotificationSchemaType {
-
-        const created_at = dayjs(row.created_at)
-            .utc()
-            .format(ISO_FORMAT);
-
-        return NotificationSchemaValidator({
-            created_at: created_at,
-            updated_at: row.updated_at ?? created_at,
-            user_id: row.user_id,
-            group_id: row.group_id,
-            message: row.message,
-            seen: row.seen,
-            priority: row.priority,
-            id: row.id
-        })
-    };
-
     private parseRawNotifications(
-        rows: unknown
+        rows: Selectable<Notifications>[]
     ): NotificationSchemaArrayType {
 
-        return NotificationSchemaArrayValidator(rows);
+        const parsed = this.formatNewNotifications(rows);
+
+        return NotificationSchemaArrayValidator(parsed);
     };
+
+
+    private formatNewNotifications(
+        rows: Selectable<Notifications>[]
+    ) {
+        return rows.map((row) => {
+
+            return {
+                user_id: row.user_id,
+                group_id: row.group_id,
+                message: row.message,
+                created_at: row.created_at.toISOString(),
+                updated_at: row.updated_at?.toISOString() ?? row.created_at.toISOString(),
+                seen: row.seen,
+                priority: row.priority,
+                id: row.id
+            }
+        })
+    }
 }

@@ -9,14 +9,15 @@ export const NotificationSchema = Type.Object({
     message: Type.String(),
     priority: Type.String(),
     seen: Type.Boolean(),
-    updated_at: Type.String({ format: "date-time" }),
+    updated_at: Type.Union([
+        Type.String({ format: "date-time" })],
+        Type.Null()
+    ),
     user_id: Type.String({ format: "uuid" }),
 });
 
 export const CreateNotificationSchema = Type.Object({
-    created_at: Type.String({ format: "date-time" }),
     group_id: Type.String({ format: "uuid" }),
-    updated_at: Type.String({ format: "date-time" }),
     priority: Type.String(),
     message: Type.String(),
 });

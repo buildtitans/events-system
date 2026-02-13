@@ -81,6 +81,14 @@ export class GroupsClient {
             .executeTakeFirstOrThrow();
     }
 
+    private toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
+        if (!group) return null;
+        const formatted = this.formatGroup(group);
+        const validGroup = GroupSchemaValidator(formatted);
+        if (validGroup) return validGroup;
+        return null;
+    }
+
     private formatGroup(group: Selectable<Groups>): GroupSchemaType {
         return {
             id: group.id,
@@ -95,11 +103,5 @@ export class GroupsClient {
         };
     }
 
-    private toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
-        if (!group) return null;
-        const formatted = this.formatGroup(group);
-        const validGroup = GroupSchemaValidator(formatted);
-        if (validGroup) return validGroup;
-        return null;
-    }
+
 };

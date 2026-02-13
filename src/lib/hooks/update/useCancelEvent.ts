@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { CancelEventHook } from "../../types/hooks/types";
+import { createScheduleNotificatoin } from "../../utils/helpers/createScheduleNotification";
 
 
 export const useCancelEvent = (
@@ -13,6 +14,7 @@ export const useCancelEvent = (
     organizer_id: string | null | undefined
 
 ): CancelEventHook => {
+    const [isUpdated, setIsUpdated] = useState<boolean>(false);
     const [options, setOptions] = useState<UpdateEventArgsSchemaType>({
         status: event.status,
         event_id: event.id,
@@ -40,6 +42,9 @@ export const useCancelEvent = (
                     ? "success"
                     : "failed"
             }));
+
+            if (updateStatus === "success") setIsUpdated(true);
+
             dispatch(enqueueDrawer(null))
             timerRef.current = null;
         }, 1200)
@@ -77,6 +82,24 @@ export const useCancelEvent = (
 
 
     useEffect(() => {
+        const executeCreateNotifications = async () => {
+
+            const notification = createScheduleNotificatoin(event, options);
+
+            const result = await trpcClient
+                .notifications
+                .createNotification
+                .mutate(notification);
+
+            console.log(result);
+        }
+
+        if (!isUpdated) return;
+
+
+
+        void executeCreateNotifications();
+
 
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);

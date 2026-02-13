@@ -79,6 +79,13 @@ export class GroupMembersClient {
         const parsed = this.parseRawMembers(raw);
 
         return parsed;
+    };
+
+    async getMemberIds(group_id: string): Promise<string[]> {
+
+        const members = await this.db.selectFrom("group_members").select("user_id").where("group_id", "=", group_id).execute();
+
+        return members.map((member) => member.user_id);
     }
 
     private async getRawMembers(group_id: string): Promise<Selectable<GroupMembers>[]> {
