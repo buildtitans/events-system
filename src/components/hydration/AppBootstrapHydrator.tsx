@@ -8,9 +8,11 @@ import { getAllGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
+import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
 
 export default function AppBootstrapHydrator({ domains }: { domains: DomainStateType }): React.ReactNode {
     useRecoverSession();
+    useHydrateNotifications();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {

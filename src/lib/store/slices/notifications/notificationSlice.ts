@@ -1,7 +1,7 @@
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type NotificationState = { status: "idle" }
+export type NotificationState = { status: "idle" }
     | { status: "pending" }
     | { status: "ready", data: NotificationSchemaArrayType }
     | { status: "error", error: string };
@@ -27,7 +27,8 @@ export const NotificationSlice = createSlice({
     reducers: {
 
         populateNewNotifications: (state: InitialState, action: PayloadAction<NotificationState>) => {
-            state.new = action.payload
+            state.new = action.payload;
+            console.log(state.new)
         },
         markSeenNotificaton: (state: InitialState, action: PayloadAction<ReadyNotificationState>) => {
 
@@ -39,6 +40,13 @@ export const NotificationSlice = createSlice({
 
             state.opened = action.payload;
         },
+        appendNewNotification: (state: InitialState, action: PayloadAction<ReadyNotificationState>) => {
+            if (state.new.status === "ready") {
+                const incoming = action.payload.data;
+                const appendPayload = [...state.new.data, ...incoming];
+                state.new.data = appendPayload;
+            }
+        }
 
     }
 });
@@ -48,5 +56,8 @@ export type NotificationSliceType = ReturnType<typeof NotificationSlice.reducer>
 
 export const {
     populateNewNotifications,
-    markSeenNotificaton
+    markSeenNotificaton,
+    appendNewNotification
 } = NotificationSlice.actions;
+
+export default NotificationSlice.reducer;

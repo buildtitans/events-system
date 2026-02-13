@@ -13,6 +13,7 @@ export const useHydrateNotifications = () => {
         if (userKind === "anonymous") return;
 
         const hydrateNotifications = async () => {
+            dispatch(populateNewNotifications({ status: "pending" }))
 
             const notifications = await trpcClient.notifications.getNotifications.mutate();
 

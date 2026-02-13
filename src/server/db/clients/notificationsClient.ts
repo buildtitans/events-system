@@ -32,6 +32,11 @@ export class NotificationsClient {
 
         const createdNotifications = await this.insertNotifications(rows);
 
+        console.log({
+            "Number of Members Notified": createdNotifications.length,
+            "copies": createdNotifications
+        });
+
         return {
             ok: createdNotifications.length > 0 ? true : false,
             items: createdNotifications

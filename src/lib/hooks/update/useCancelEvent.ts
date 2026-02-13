@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { CancelEventHook } from "../../types/hooks/types";
-import { createScheduleNotificatoin } from "../../utils/helpers/createScheduleNotification";
+import { createScheduleNotificatoin } from "../../utils/helpers/notifications/createScheduleNotification";
 
 
 export const useCancelEvent = (
