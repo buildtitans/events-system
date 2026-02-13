@@ -65,6 +65,8 @@ export class NotificationsClient {
     ): Insertable<Notifications>[] {
         const insertableRows: Insertable<Notifications>[] = [];
 
+        console.log({ "Number of Members": memberIds.length });
+
         memberIds.forEach((id: string) => {
 
             insertableRows.push({

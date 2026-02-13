@@ -33,8 +33,6 @@ export const useCancelEvent = (
 
     function handleUpdateResult(updateStatus: "success" | "failure" | undefined): void {
 
-
-
         timerRef.current = window.setTimeout(() => {
             dispatch(enqueueSnackbar({
                 kind: "changeEventScheduling",
@@ -43,13 +41,10 @@ export const useCancelEvent = (
                     : "failed"
             }));
 
-            if (updateStatus === "success") setIsUpdated(true);
 
-            dispatch(enqueueDrawer(null))
             timerRef.current = null;
-        }, 1200)
-
-    }
+        }, 4200)
+    };
 
 
     const handleSubmit = async (
@@ -67,6 +62,7 @@ export const useCancelEvent = (
 
             handleUpdateResult(result.updateStatus);
 
+            if (result.updateStatus === "success") setIsUpdated(true);
 
             timerRef.current = window.setTimeout(() => {
                 dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }));
@@ -104,7 +100,7 @@ export const useCancelEvent = (
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
         }
-    }, [])
+    }, [isUpdated, event, options]);
 
     return {
         options,
