@@ -4,6 +4,7 @@ import type { Insertable, Selectable } from "kysely";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import {
+    CreateNotificationSchemaType,
     NotificationSchemaArrayType,
     NotificationSchemaArrayValidator,
     NotificationSchemaType,
@@ -32,41 +33,50 @@ export class NotificationsClient {
 
 
     async addNewNotification(
-        notification: NotificationSchemaType
+        notification: CreateNotificationSchemaType,
+        memberIds: string[]
     ) {
 
-        const row = this.toInsertableNotification(notification);
+        const row = this.toInsertableNotifications(notification, memberIds);
 
-        return await this.insertNotification(row);
+        return await this.insertNotifications(row);
     }
 
-    private async insertNotification(
-        row: Insertable<Notifications>
-    ): Promise<NotificationSchemaType> {
+    private async insertNotifications(
+        rows: Insertable<Notifications>[]
+    ): Promise<NotificationSchemaArrayType> {
 
-        const inserted = await this.db
-            .insertInto("notifications")
-            .values(row)
-            .returningAll()
-            .executeTakeFirstOrThrow();
-
-        return this.parseRawNotification(inserted);
+        const notifications = rows.map(async (row: Insertable<Notifications>) => {
+            return await this.db
+                .insertInto("notifications")
+                .values(rows)
+                .returningAll()
+                .executeTakeFirstOrThrow();
+        })
+        return this.parseRawNotifications(notifications);
     };
 
-    private toInsertableNotification(
-        notification: NotificationSchemaType
-    ): Insertable<Notifications> {
+    private toInsertableNotifications(
+        notification: CreateNotificationSchemaType,
+        memberIds: string[]
+    ): Insertable<Notifications>[] {
+        const insertableRows: Insertable<Notifications>[] = [];
 
-        const createdAt = dayjs(notification.created_at).utc().format(ISO_FORMAT);
+        memberIds.forEach((id: string) => {
 
-        return {
-            user_id: notification.user_id,
-            group_id: notification.group_id,
-            created_at: createdAt,
-            seen: false,
-            priority: notification.priority,
-            message: notification.message
-        }
+            const notif = {
+                user_id: id,
+                group_id: notification.group_id,
+                created_at: dayjs(new Date()).utc().format(ISO_FORMAT),
+                seen: false,
+                priority: notification.priority,
+                message: notification.message
+            };
+            insertableRows.push(notif);
+        });
+
+        return insertableRows
+
     }
 
 
@@ -103,7 +113,7 @@ export class NotificationsClient {
     };
 
     private parseRawNotifications(
-        rows: Selectable<Notifications>[]
+        rows: unknown
     ): NotificationSchemaArrayType {
 
         return NotificationSchemaArrayValidator(rows);
