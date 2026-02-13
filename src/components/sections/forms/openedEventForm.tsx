@@ -2,7 +2,7 @@
 import { type JSX } from "react";
 import Container from "@mui/material/Container";
 import { useForm, Controller } from 'react-hook-form';
-import { useUpdateAttendance } from "@/src/lib/hooks/update/useUpdateEventStatus";
+import { useUpdateAttendance } from "@/src/lib/hooks/update/useUpdateAttendance";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";

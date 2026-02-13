@@ -79,7 +79,7 @@ export interface Notifications {
   id: Generated<string>;
   message: string;
   priority: string;
-  seen: Generated<boolean>;
+  status: Generated<string>;
   updated_at: Timestamp | null;
   user_id: string;
 }

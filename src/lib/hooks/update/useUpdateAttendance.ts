@@ -11,7 +11,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 

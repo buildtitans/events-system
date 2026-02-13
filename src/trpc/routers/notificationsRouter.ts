@@ -1,21 +1,15 @@
 import { router, publicProcedure } from "@/src/trpc/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { wrap } from "@typeschema/typebox";
 import {
     CreateNotificationSchemaType,
     CompiledCreateNotificationSchema,
-    NotificationSchemaArray,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { TSchema } from "@sinclair/typebox";
 
 const createNotificationInput = typeboxInput<CreateNotificationSchemaType>(CompiledCreateNotificationSchema);
-const getNotificationsOutput = wrap<TSchema>(NotificationSchemaArray);
-
 
 export const notificationsRouter = router({
     getNotifications:
         publicProcedure
-            .output(getNotificationsOutput)
             .mutation(async ({ ctx }) => {
                 const user_id = ctx.user?.id;
                 if (!user_id) return [];
@@ -33,7 +27,7 @@ export const notificationsRouter = router({
                     .groupMembers
                     .getMemberIds(input.group_id);
 
-                const result = await ctx
+                return await ctx
                     .api
                     .notifications
                     .addNewNotifications(
@@ -41,7 +35,7 @@ export const notificationsRouter = router({
                         memberIds
                     );
 
-                return { ok: result ? true : false }
+
             }),
 });
 

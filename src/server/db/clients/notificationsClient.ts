@@ -1,20 +1,12 @@
 import { Kysely } from "kysely";
 import { DB, Notifications } from "../types/db";
 import type { Insertable, Selectable } from "kysely";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import {
     CreateNotificationSchemaType,
     NotificationSchemaArrayType,
     NotificationSchemaArrayValidator,
-    NotificationSchemaType,
-    NotificationSchemaValidator
 } from "@/src/schemas/notifications/notificationsSchema";
-
-
-dayjs.extend(utc);
-const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
-
+import { NotificationCreationProcedure } from "./types/types";
 
 export class NotificationsClient {
 
@@ -34,11 +26,16 @@ export class NotificationsClient {
     async addNewNotifications(
         notification: CreateNotificationSchemaType,
         memberIds: string[]
-    ) {
+    ): Promise<NotificationCreationProcedure> {
 
         const rows = this.toInsertableNotifications(notification, memberIds);
 
-        return await this.insertNotifications(rows);
+        const createdNotifications = await this.insertNotifications(rows);
+
+        return {
+            ok: createdNotifications.length > 0 ? true : false,
+            items: createdNotifications
+        }
     }
 
     private async insertNotifications(
@@ -51,11 +48,6 @@ export class NotificationsClient {
             .returningAll()
             .execute();
 
-        console.log({
-            "Result": `${notifications.length > 0 ? 'success' : 'failed'}`,
-            "Returned": notifications
-        });
-
         return this.parseRawNotifications(notifications);
     };
 
@@ -65,14 +57,11 @@ export class NotificationsClient {
     ): Insertable<Notifications>[] {
         const insertableRows: Insertable<Notifications>[] = [];
 
-        console.log({ "Number of Members": memberIds.length });
-
         memberIds.forEach((id: string) => {
 
             insertableRows.push({
                 user_id: id,
                 group_id: notification.group_id,
-                seen: false,
                 priority: notification.priority,
                 message: notification.message
             })
@@ -89,7 +78,7 @@ export class NotificationsClient {
             .selectFrom("notifications")
             .selectAll()
             .where("user_id", "=", user_id)
-            .where("seen", "=", false)
+            .where("status", "=", "new")
             .execute()
     };
 
@@ -114,7 +103,7 @@ export class NotificationsClient {
                 message: row.message,
                 created_at: row.created_at.toISOString(),
                 updated_at: row.updated_at?.toISOString() ?? row.created_at.toISOString(),
-                seen: row.seen,
+                status: row.status,
                 priority: row.priority,
                 id: row.id
             }

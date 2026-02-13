@@ -87,7 +87,9 @@ export const useCancelEvent = (
                 .createNotification
                 .mutate(notification);
 
-            console.log(result);
+            const loggedRes = result.ok ? { ok: result.ok, "Notifications Created": result.items.length } : result.ok
+
+            console.log(loggedRes);
         }
 
         if (!isUpdated) return;

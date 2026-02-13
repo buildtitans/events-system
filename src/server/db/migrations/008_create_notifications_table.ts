@@ -33,10 +33,8 @@ export async function up(db: Kysely<any>): Promise<void> {
             col
                 .defaultTo(null)
         )
-        .addColumn("seen", "boolean", col =>
-            col
-                .notNull()
-                .defaultTo(false)
+        .addColumn("status", "text", (col) =>
+            col.notNull().defaultTo("new")
         )
         .addColumn("message", "text", col =>
             col

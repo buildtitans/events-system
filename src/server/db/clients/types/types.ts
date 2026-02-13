@@ -1,4 +1,5 @@
 import type { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 
 type StoredSession = {
     id: string,
@@ -12,6 +13,9 @@ type AuthClientLoginResponse = {
 }
 
 
+type NotificationCreationProcedure = {
+    ok: boolean,
+    items: NotificationSchemaArrayType
+}
 
-
-export type { StoredSession, AuthClientLoginResponse };
+export type { StoredSession, AuthClientLoginResponse, NotificationCreationProcedure };

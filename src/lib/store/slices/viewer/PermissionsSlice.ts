@@ -1,16 +1,19 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 export type ViewerAccess = Record<GroupMembersSchemaType["group_id"], GroupMembersSchemaType["role"]>;
 
-type GroupMembersSliceState = {
-    accessPermissions: ViewerAccess
+type InitialState = {
+    accessPermissions: ViewerAccess,
+    notifications: NotificationSchemaArrayType
 };
 
 
-const initialState: GroupMembersSliceState = {
-    accessPermissions: {}
+const initialState: InitialState = {
+    accessPermissions: {},
+    notifications: []
 };
 
 const PermissionsSlice = createSlice({
@@ -18,9 +21,10 @@ const PermissionsSlice = createSlice({
     initialState: initialState,
     reducers: {
 
-        getViewerPermissions: (state: GroupMembersSliceState, action: PayloadAction<ViewerAccess>) => {
+        getViewerPermissions: (state: InitialState, action: PayloadAction<ViewerAccess>) => {
             state.accessPermissions = action.payload;
         },
+
         clearPermissionsSlice: () => initialState,
     }
 });
