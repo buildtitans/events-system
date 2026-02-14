@@ -33,9 +33,5 @@ export const RenderEventsForGroup = ({
             return (
                 <NoEventsFound />
             )
-
-        default: {
-            return null;
-        }
     }
 }

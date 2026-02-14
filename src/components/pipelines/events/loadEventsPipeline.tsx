@@ -1,5 +1,5 @@
 "use client";
-import type { LoadingStatus } from "@/src/lib/types/tokens/types";
+import type { DomainStatus } from "@/src/lib/types/tokens/types";
 import { LinearIndeterminate } from "@/src/components/ui/feedback/"
 import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import EventsLayout from "@/src/components/sections/events/eventsLayout";
@@ -7,7 +7,7 @@ import { JSX } from "react";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 
-const loadEventsPipeline = (eventLoadingStatus: LoadingStatus, eventsPages: EventsPages): JSX.Element => {
+const loadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: EventsPages): JSX.Element | null => {
 
     switch (eventLoadingStatus) {
         case "pending":
@@ -37,7 +37,7 @@ const loadEventsPipeline = (eventLoadingStatus: LoadingStatus, eventsPages: Even
         default: {
             return (
                 <LinearIndeterminate
-                    key={"default-fallback"}
+                    key={"linearLoader"}
                 />
             )
         }

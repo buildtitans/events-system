@@ -8,6 +8,8 @@ type LoadingStatus =
     | "failed"
     | "warning";
 
+type DomainStatus = LoadingStatus | 'initial';
+
 type RequestStatus =
     "idle"
     | "success"
@@ -85,5 +87,6 @@ export type {
     AlertMessages,
     AlertMessagesType,
     LoginCredentials,
-    ValidationState
+    ValidationState,
+    DomainStatus
 }

@@ -6,7 +6,8 @@ import type {
     AlertMessagesType,
     LoadingStatus,
     RequestStatus,
-    SnackbarMessages
+    SnackbarMessages,
+    DomainStatus
 } from "@/src/lib/types/tokens/types";
 
 type MainContentTabType = "Upcoming Events" | "Local Events" | "Categories" | "Popular Events";
@@ -28,7 +29,7 @@ export type SnackbarStatusAndKind = {
 
 type RenderingInitialState = {
     mainContent: MainContentTabType,
-    initialLoadStatus: LoadingStatus,
+    initialLoadStatus: DomainStatus,
     modal: ActiveModal,
     snackbar: SnackbarStatusAndKind,
     alert: AlertType,
@@ -37,7 +38,7 @@ type RenderingInitialState = {
 
 const initialState: RenderingInitialState = {
     mainContent: "Upcoming Events",
-    initialLoadStatus: "idle",
+    initialLoadStatus: "initial",
     modal: null,
     drawer: null,
     snackbar: {

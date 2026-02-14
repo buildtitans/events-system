@@ -9,6 +9,7 @@ import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
+import { wait } from "@/src/lib/utils/helpers/wait";
 
 export default function AppBootstrapHydrator({ domains }: { domains: DomainStateType }): React.ReactNode {
     useRecoverSession();
@@ -29,6 +30,7 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
         };
 
         const hydrateDomains = async () => {
+
             dispatch(signalDomainStatus("pending"));
 
             const {
@@ -42,8 +44,6 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
                 groups,
                 categories
             );
-
-
 
             dispatch(signalDomainStatus("idle"));
         };

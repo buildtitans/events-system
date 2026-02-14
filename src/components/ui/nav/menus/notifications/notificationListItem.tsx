@@ -1,7 +1,6 @@
 "use client";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
 import { JSX } from "react";
 import {
     NotificationSchemaType
@@ -9,17 +8,28 @@ import {
 import Typography from '@mui/material/Typography';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
-export default function NotificationListItem({ notification }: { notification: NotificationSchemaType }): JSX.Element {
+type NotificationListItemProps = {
+    notification: NotificationSchemaType
+}
+
+function NotificationListItem({
+    notification
+}: NotificationListItemProps): JSX.Element {
+    const shouldDim: boolean = (notification.status === "new");
 
     return (
         <MenuItem divider sx={{
             paddingY: 2
         }}>
-
             <ListItemIcon>
-                <NotificationsActiveIcon sx={{
-                    opacity: (notification.status === "new") ? 1 : 0.5
-                }} fontSize="small" />
+                <NotificationsActiveIcon
+                    sx={{
+                        opacity: shouldDim
+                            ? 1
+                            : 0.5
+                    }}
+                    fontSize="small"
+                />
             </ListItemIcon>
             <Typography
                 sx={{
@@ -31,6 +41,7 @@ export default function NotificationListItem({ notification }: { notification: N
                 {notification.message}
             </Typography>
         </MenuItem>
+    );
+};
 
-    )
-}
+export default NotificationListItem;
