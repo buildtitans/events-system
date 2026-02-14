@@ -1,6 +1,9 @@
 import type { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 export function createScheduleNotificatoin(
     event: EventSchemaType,
@@ -39,10 +42,12 @@ export function createNewEventNotification(
     group: GroupSchemaType
 ): CreateNotificationSchemaType {
 
+    const utcDate = dayjs(event.starts_at).utc().toDate().toLocaleDateString();
+    const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
 
     return {
         priority: "low",
         group_id: event.group_id,
-        message: ` New event: ${event.title} for group: ${group.name} was scheduled for ${event.starts_at}, `
+        message: ` New event: ${event.title} for group: ${group.name} was scheduled for ${string_date}, `
     };
 };

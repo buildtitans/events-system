@@ -1,15 +1,20 @@
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type NewAndSeenNotifications = {
+    seen: NotificationSchemaArrayType,
+    new: NotificationSchemaArrayType
+}
+
 export type NotificationState = { status: "idle" }
     | { status: "pending" }
-    | { status: "ready", data: NotificationSchemaArrayType }
+    | { status: "ready", data: NewAndSeenNotifications }
     | { status: "error", error: string };
 
 type InitialState = {
-    new: NotificationState,
-    opened: NotificationState
+    notifications: NotificationState,
 };
+
 
 type ReadyNotificationState = Extract<
     NotificationState,
@@ -17,8 +22,7 @@ type ReadyNotificationState = Extract<
 >;
 
 const initialState: InitialState = {
-    new: { status: "idle" },
-    opened: { status: "idle" }
+    notifications: { status: "idle" },
 };
 
 export const NotificationSlice = createSlice({
@@ -27,24 +31,32 @@ export const NotificationSlice = createSlice({
     reducers: {
 
         populateNewNotifications: (state: InitialState, action: PayloadAction<NotificationState>) => {
-            state.new = action.payload;
-            console.log(state.new)
+            state.notifications = action.payload;
+            console.log(state.notifications)
         },
         markSeenNotificaton: (state: InitialState, action: PayloadAction<ReadyNotificationState>) => {
 
-            if (state.opened.status === "ready") {
-                const incoming = action.payload.data
-                const updatePayload = [...state.opened.data, ...incoming];
-                state.opened.data = updatePayload;
+            if (state.notifications.status === "ready") {
+                const incoming = action.payload.data.seen
+                const updatePayload = [...state.notifications.data.seen, ...incoming];
+                state.notifications.data.seen = updatePayload;
             }
 
-            state.opened = action.payload;
+            state.notifications = action.payload;
         },
         appendNewNotification: (state: InitialState, action: PayloadAction<ReadyNotificationState>) => {
-            if (state.new.status === "ready") {
-                const incoming = action.payload.data;
-                const appendPayload = [...state.new.data, ...incoming];
-                state.new.data = appendPayload;
+            if (state.notifications.status === "ready") {
+                const incoming = action.payload.data.new;
+                const appendPayload = [...state.notifications.data.new, ...incoming];
+                state.notifications.data.new = appendPayload;
+            }
+        },
+        markSeen: (state: InitialState) => {
+            if (state.notifications.status === "ready") {
+                state.notifications.status = "ready"
+
+                state.notifications.data.seen = state.notifications.data.new;
+                state.notifications.data.new = []
             }
         }
 
@@ -57,7 +69,8 @@ export type NotificationSliceType = ReturnType<typeof NotificationSlice.reducer>
 export const {
     populateNewNotifications,
     markSeenNotificaton,
-    appendNewNotification
+    appendNewNotification,
+    markSeen
 } = NotificationSlice.actions;
 
 export default NotificationSlice.reducer;

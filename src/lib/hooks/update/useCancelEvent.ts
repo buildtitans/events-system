@@ -82,14 +82,10 @@ export const useCancelEvent = (
 
             const notification = createScheduleNotificatoin(event, options);
 
-            const result = await trpcClient
+            await trpcClient
                 .notifications
                 .createNotification
                 .mutate(notification);
-
-            const loggedRes = result.ok ? { ok: result.ok, "Notifications Created": result.items.length } : result.ok
-
-            console.log(loggedRes);
         }
 
         if (!isUpdated) return;

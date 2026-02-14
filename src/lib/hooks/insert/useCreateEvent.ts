@@ -133,7 +133,13 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
                 .createNotification
                 .mutate(notification);
 
-            dispatch(appendNewNotification({ status: "ready", data: [result.items[0]] }))
+            dispatch(appendNewNotification({
+                status: "ready", data: {
+                    new: [result.items[0]],
+                    seen: []
+                }
+            })
+            );
 
             setCreateNotification(false);
             dispatch(enqueueDrawer(null));

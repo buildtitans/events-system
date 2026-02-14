@@ -24,6 +24,10 @@ export const CreateNotificationSchema = Type.Object({
     message: Type.String(),
 });
 
+const ViewedNotificationsIdsSchema = Type.Array(Type.String());
+
+export type ViewedNotificationsIdsSchemaType = Static<typeof ViewedNotificationsIdsSchema>;
+
 export const NotificationSchemaArray = Type.Array(NotificationSchema);
 
 export type NotificationSchemaArrayType = Static<typeof NotificationSchemaArray>;
@@ -37,6 +41,8 @@ export const CompiledCreateNotificationSchema = TypeCompiler.Compile(CreateNotif
 export const CompiledNotificationSchemaArray = TypeCompiler.Compile(NotificationSchemaArray);
 
 export const CompiledNotificationSchema = TypeCompiler.Compile(NotificationSchema);
+
+export const CompiledViewedNotificationsIdsSchema = TypeCompiler.Compile(ViewedNotificationsIdsSchema);
 
 export const NotificationSchemaValidator = createValidator(NotificationSchema, "NotificationsSchema");
 

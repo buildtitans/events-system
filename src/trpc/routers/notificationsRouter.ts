@@ -3,7 +3,11 @@ import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
     CreateNotificationSchemaType,
     CompiledCreateNotificationSchema,
+    ViewedNotificationsIdsSchemaType,
+    CompiledViewedNotificationsIdsSchema,
 } from "@/src/schemas/notifications/notificationsSchema";
+import { wrap } from "module";
+import { Static, TypeBoxError } from "@sinclair/typebox";
 
 const createNotificationInput = typeboxInput<CreateNotificationSchemaType>(CompiledCreateNotificationSchema);
 
@@ -34,9 +38,16 @@ export const notificationsRouter = router({
                         input,
                         memberIds
                     );
-
-
             }),
+
+    markOpenedNotifications:
+        publicProcedure
+            .input(typeboxInput<ViewedNotificationsIdsSchemaType>(CompiledViewedNotificationsIdsSchema))
+            .mutation(async ({ ctx, input }) => {
+                if (input.length === 0) return;
+
+                await ctx.api.notifications.markOpenedNotifications(input);
+            })
 });
 
 export type NotificatonsRouter = typeof notificationsRouter;

@@ -5,6 +5,7 @@ import {
     CreateNotificationSchemaType,
     NotificationSchemaArrayType,
     NotificationSchemaArrayValidator,
+    NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
 import { NotificationCreationProcedure } from "./types/types";
 
@@ -12,6 +13,21 @@ export class NotificationsClient {
 
     constructor(private readonly db: Kysely<DB>) {
     }
+
+    async markOpenedNotifications(ids: NotificationSchemaType["id"][]): Promise<void> {
+
+        const marked = await this.db
+            .updateTable("notifications")
+            .set({ status: "seen" })
+            .where("id", "in", ids)
+            .executeTakeFirstOrThrow();
+
+        console.log({
+            "Status Update Success": marked ? "Success" : "Failed",
+            "Data": marked
+        });
+
+    };
 
     async getUnseenNotifications(
         user_id: string
@@ -21,7 +37,6 @@ export class NotificationsClient {
 
         return this.parseRawNotifications(rows);
     }
-
 
     async addNewNotifications(
         notification: CreateNotificationSchemaType,

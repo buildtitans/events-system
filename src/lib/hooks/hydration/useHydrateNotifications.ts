@@ -18,7 +18,9 @@ export const useHydrateNotifications = () => {
             const notifications = await trpcClient.notifications.getNotifications.mutate();
 
             if (Array.isArray(notifications) && notifications.length > 0) {
-                dispatch(populateNewNotifications({ status: "ready", data: notifications }))
+                dispatch(populateNewNotifications({ status: "ready", data: { new: notifications, seen: [] } }))
+            } else {
+                dispatch(populateNewNotifications({ status: "ready", data: { new: [], seen: [] } }))
             }
         };
 

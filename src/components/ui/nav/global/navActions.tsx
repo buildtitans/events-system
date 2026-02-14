@@ -1,12 +1,12 @@
 import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { enqueueDrawer } from '@/src/lib/store/slices/rendering/RenderingSlice';
-import { AppDispatch, RootState } from "@/src/lib/store";
+import { AppDispatch } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
-import { JSX, useMemo } from "react";
-import NotificationBadge from "../../badges/notificationBadge";
+import type { JSX } from "react";
+import Notifications from "../menus/notifications/notifications";
 
 type NavActionsProps = { userKind: UserKind, handleSignout: () => Promise<void> }
 
@@ -14,12 +14,7 @@ export default function NavActions({
     userKind,
     handleSignout
 }: NavActionsProps): JSX.Element | null {
-    const newNotifications = useSelector((s: RootState) => s.notifications.new);
     const dispatch = useDispatch<AppDispatch>();
-    const numNotifications = useMemo(() => {
-        if (newNotifications.status === "ready") return newNotifications.data.length;
-        return 0;
-    }, [newNotifications]);
 
     return (
         <Stack
@@ -28,7 +23,7 @@ export default function NavActions({
             <Container
                 sx={{ display: { xs: 'none', md: 'flex', alignItems: 'center', justifyContent: 'center', gap: (userKind === 'authenticated') ? 40 : 12 } }}
             >
-                {(userKind === "authenticated") && <NotificationBadge badgeContent={numNotifications} />}
+                {(userKind === "authenticated") && <Notifications />}
 
                 {(userKind === 'authenticated') &&
                     <Button onClick={() => dispatch(enqueueDrawer("new group"))} variant="text" color="info" size="medium" sx={{
