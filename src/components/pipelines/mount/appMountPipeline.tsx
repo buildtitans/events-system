@@ -1,14 +1,19 @@
 "use client";
-import { JSX } from "react";
+import { JSX, PropsWithChildren } from "react";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 import type { SyncDomainsResult } from "@/src/lib/store/sync/syncDomains";
 
-export const AppMountPipeline = (
+type AppMountPipelineProps = PropsWithChildren<{
     children: React.ReactNode,
     domains: SyncDomainsResult
-): JSX.Element | null => {
+}>
+
+export function AppMountPipeline({
+    children,
+    domains
+}: AppMountPipelineProps): JSX.Element | null {
 
     switch (domains.status) {
         case "fulfilled":

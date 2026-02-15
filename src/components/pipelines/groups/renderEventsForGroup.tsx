@@ -15,6 +15,9 @@ export const RenderEventsForGroup = ({
 
     switch (events.status) {
         case "refreshing":
+            return (
+                <LinearIndeterminate />
+            )
         case "pending":
             return (
                 <LinearIndeterminate />

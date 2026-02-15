@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { EventSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,8 @@ import { AppDispatch } from "../../store";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { CancelEventHook } from "../../types/hooks/types";
 import { createScheduleNotificatoin } from "../../utils/helpers/notifications/createScheduleNotification";
-
+import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
+import { wait } from "../../utils/helpers/wait";
 
 export const useCancelEvent = (
     event: EventSchemaType,
@@ -20,8 +21,6 @@ export const useCancelEvent = (
         event_id: event.id,
         organizer_id: organizer_id ?? ""
     });
-
-    const timerRef = useRef<number | null>(null);
     const dispatch = useDispatch<AppDispatch>();
 
     const handleStatusChange = () => {
@@ -33,17 +32,15 @@ export const useCancelEvent = (
 
     function handleUpdateResult(updateStatus: "success" | "failure" | undefined): void {
 
-        timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({
-                kind: "changeEventScheduling",
-                status: (updateStatus === "success")
-                    ? "success"
-                    : "failed"
-            }));
+        dispatch(enqueueSnackbar({
+            kind: "changeEventScheduling",
+            status: (updateStatus === "success")
+                ? "success"
+                : "failed"
+        }));
 
+        if (updateStatus === "success") dispatch(getGroupEvents({ status: 'refreshing' }));
 
-            timerRef.current = null;
-        }, 4200)
     };
 
 
@@ -60,15 +57,16 @@ export const useCancelEvent = (
                 throw new Error(`Error attempting to cancel event`);
             }
 
+            await wait(1200);
+
             handleUpdateResult(result.updateStatus);
 
             if (result.updateStatus === "success") setIsUpdated(true);
 
-            timerRef.current = window.setTimeout(() => {
-                dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }));
-                dispatch(enqueueDrawer(null))
-                timerRef.current = null;
-            }, 1200)
+            await wait(1200);
+
+            dispatch(enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }));
+            dispatch(enqueueDrawer(null))
 
         } catch (err) {
             console.error(err);
@@ -95,9 +93,7 @@ export const useCancelEvent = (
         void executeCreateNotifications();
 
 
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        }
+
     }, [isUpdated, event, options]);
 
     return {

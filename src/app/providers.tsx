@@ -32,7 +32,12 @@ export default function Providers({
                     theme={theme}
                 >
                     <CssBaseline enableColorScheme />
-                    {AppMountPipeline(children, domains)}
+                    <AppMountPipeline
+
+                        domains={domains}
+                    >
+                        {children}
+                    </AppMountPipeline>
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>

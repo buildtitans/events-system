@@ -1,6 +1,6 @@
 "use client";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
 import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
