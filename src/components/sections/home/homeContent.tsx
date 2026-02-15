@@ -6,8 +6,6 @@ import { RootState } from '@/src/lib/store';
 import { loadGroupsPipeline } from '@/src/components/pipelines/groups/loadGroupsPipeline';
 import { loadEventsPipeline } from '@/src/components/pipelines/events/loadEventsPipeline';
 
-
-
 export default function HomeContent(): JSX.Element {
     const events = useSelector((s: RootState) => s.events.eventPages);
     const initialLoadStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
@@ -22,6 +20,8 @@ export default function HomeContent(): JSX.Element {
                 justifyContent: 'center',
             }}
         >
+
+
             {loadEventsPipeline(initialLoadStatus, events)}
 
             {loadGroupsPipeline(initialLoadStatus)}

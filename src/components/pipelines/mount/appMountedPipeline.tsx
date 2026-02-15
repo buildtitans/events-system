@@ -4,6 +4,7 @@ import type { MountStatus } from "@/src/lib/types/tokens/types";
 import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
+import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 
 export const AppMountedPipeline = (
     status: MountStatus,
@@ -30,7 +31,9 @@ export const AppMountedPipeline = (
             )
 
         default: {
-            return null;
+            return (
+                <SimpleBackdrop />
+            )
         }
     }
 }

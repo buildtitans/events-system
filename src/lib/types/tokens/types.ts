@@ -1,3 +1,5 @@
+type PromiseAllSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
+
 type MountStatus =
     "active"
     | "idle";
@@ -88,5 +90,6 @@ export type {
     AlertMessagesType,
     LoginCredentials,
     ValidationState,
-    DomainStatus
+    DomainStatus,
+    PromiseAllSettledResult
 }

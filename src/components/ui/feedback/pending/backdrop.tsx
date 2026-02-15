@@ -4,7 +4,7 @@ import { LoadingStatus } from '@/src/lib/types/tokens/types';
 import React from 'react';
 
 type SimpleBackdropProps = {
-    status: LoadingStatus
+    status?: LoadingStatus
 };
 
 export default function SimpleBackdrop({ status }: SimpleBackdropProps): React.ReactNode {
@@ -12,7 +12,10 @@ export default function SimpleBackdrop({ status }: SimpleBackdropProps): React.R
     return (
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-            open={(status === "pending")}
+            open={status
+                ? (status === "pending")
+                : true
+            }
         >
             <CircularProgress color="inherit" />
         </Backdrop>
