@@ -2,7 +2,7 @@
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated, HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import NoGroups from "../../ui/feedback/failure/noGroups";
+import NoGroup from "../../ui/feedback/failure/noGroups";
 import Container from "@mui/material/Container";
 import DrawerSpinner from "../../ui/feedback/pending/drawerSpinner";
 
@@ -38,7 +38,7 @@ export function RenderOpenedGroup({
 
             )
         case "failed":
-            return <NoGroups />
+            return <NoGroup />
         case "ready":
             return (
                 <ViewGroupSection

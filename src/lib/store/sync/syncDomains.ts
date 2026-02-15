@@ -10,32 +10,37 @@ export type DomainStateType = {
     categories: CategoriesSchemaType
 };
 
+async function getDomains(): Promise<GroupsAndMembershipsSchemaType | null | undefined> {
 
-async function getDomains(): Promise<GroupsAndMembershipsSchemaType> {
-    const events = await trpcClient.events.list.mutate();
-    const groups = await trpcClient.groups.list.mutate();
-    const categories = await trpcClient.categories.getAllCategories.mutate();
+    const [eventsRes, groupsRes, categoriesRes] = await Promise.allSettled([
+        trpcClient.events.list.mutate(),
+        trpcClient.groups.list.mutate(),
+        trpcClient.categories.getAllCategories.mutate(),
+    ])
 
     return {
-        events,
-        groups,
-        categories
+        events: eventsRes.status === "fulfilled" ? eventsRes.value : [],
+        groups: groupsRes.status === "fulfilled" ? groupsRes.value : [],
+        categories: categoriesRes.status === "fulfilled" ? categoriesRes.value : []
     }
+
 };
 
 async function syncDomains(): Promise<DomainStateType> {
-    const {
-        groups,
-        events,
-        categories
-    } = await getDomains();
+    const result = await getDomains();
 
+    return result
+        ? {
+            events: result.events,
+            groups: result.groups,
+            categories: result.categories
+        }
 
-    return {
-        events,
-        groups,
-        categories
-    }
+        : {
+            events: [],
+            groups: [],
+            categories: []
+        }
 };
 
 export { syncDomains };

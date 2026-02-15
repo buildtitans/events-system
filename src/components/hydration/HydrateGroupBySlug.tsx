@@ -36,9 +36,18 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
 
     useEffect(() => {
         const handlePayload = async (
-            group: GroupSchemaType,
+            group: GroupSchemaType | null,
             events: EventsPages
         ): Promise<void> => {
+
+            if (!group) {
+                dispatch(groupOpened({
+                    status: "failed",
+                    error: "Group hydration error"
+                }));
+                return;
+            };
+
             await wait(500);
             handleSyncGroupOpened(group);
             await wait(1200);

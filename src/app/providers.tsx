@@ -12,7 +12,6 @@ import Spinner from '../components/ui/feedback/pending/spinner';
 
 const theme = createTheme({
     palette: {
-
         info: {
             main: '#FFF'
         },

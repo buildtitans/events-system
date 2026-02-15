@@ -1,9 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import { DomainStatus } from "@/src/lib/types/tokens/types";
 
 type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
 type GroupNameByGroupID = Record<string, string>;
+
+export type EventsDomainType = { status: "initial" }
+    | { status: "pending" }
+    | { status: "ready", data: EventsPages }
+    | { status: "failed", error: string };
 
 export type EventsPages = Array<LayoutSlotSchemaType[]>;
 

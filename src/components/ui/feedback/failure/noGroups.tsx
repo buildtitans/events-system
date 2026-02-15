@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
 const MotionBox = motion.create(Box);
 
-export default function NoGroups(): JSX.Element {
+export default function NoGroup(): JSX.Element {
 
     return (
         <MotionBox
@@ -25,7 +25,7 @@ export default function NoGroups(): JSX.Element {
             }} >
             <NotFound />
             <Typography component={"h4"} color="info">
-                No groups found
+                Group does not exist
             </Typography>
         </MotionBox>
     )
