@@ -1,3 +1,4 @@
+"use client"
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,9 +10,11 @@ export function Search() {
             width: { xs: '100%', md: '25ch' }
         }} variant="outlined">
             <OutlinedInput
+                value={""}
                 size="small"
                 id="search"
                 placeholder="Search…"
+                autoComplete="off"
                 sx={{
                     flexGrow: 1,
                     transition: 'ease-in-out',

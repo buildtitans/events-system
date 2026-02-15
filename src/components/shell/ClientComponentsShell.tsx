@@ -1,5 +1,5 @@
 "use client";
-import AppAppBar from "@/src/components/ui/nav/AppBar";
+import TopNav from "@/src/components/ui/nav/TopNav";
 import TopLayerHost from '@/src/components/layers/topLayerHost';
 import AppBootstrapHydrator from "@/src/components/hydration/AppBootstrapHydrator";
 import Footer from "@/src/components/sections/footer/footer";
@@ -18,7 +18,7 @@ export default function ClientComponentsShell({
 
     return (
         <>
-            <AppAppBar />
+            <TopNav />
             <TopLayerHost />
             <AppBootstrapHydrator
                 domains={domains}

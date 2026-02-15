@@ -1,22 +1,20 @@
 "use client";
 import { JSX } from "react";
-import type { MountStatus } from "@/src/lib/types/tokens/types";
-import type { DomainStateType } from "@/src/lib/store/sync/syncDomains";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
+import type { SyncDomainsResult } from "@/src/lib/store/sync/syncDomains";
 
-export const AppMountedPipeline = (
-    status: MountStatus,
+export const AppMountPipeline = (
     children: React.ReactNode,
-    domains: DomainStateType
+    domains: SyncDomainsResult
 ): JSX.Element | null => {
 
-    switch (status) {
-        case "active":
+    switch (domains.status) {
+        case "fulfilled":
             return (
                 <ClientComponentsShell
-                    domains={domains}
+                    domains={domains.data}
                 >
                     <Container
                         key="content_container"
@@ -28,7 +26,7 @@ export const AppMountedPipeline = (
                     </Container>
                 </ClientComponentsShell>
 
-            )
+            );
 
         default: {
             return (

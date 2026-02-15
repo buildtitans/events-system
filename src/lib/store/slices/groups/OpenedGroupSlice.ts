@@ -8,7 +8,7 @@ export type GroupHydrated = { status: "idle" }
     | { status: "failed", error: "Group hydration error" }
     | { status: "ready", data: GroupSchemaType };
 
-export type HydratedEventsForOpenedGroup = { status: "idle" }
+export type HydratedEventsForOpenedGroup = { status: "initial" } | { status: "idle" }
     | { status: "pending" }
     | { status: "refreshing" }
     | { status: "warning", message: "No events have been scheduled for this group" }

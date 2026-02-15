@@ -8,6 +8,7 @@ import { syncEventsForGroup } from "@/src/lib/store/sync/syncEvents";
 
 
 export const useRefreshGroupEvents = () => {
+    const openGroupEventsStatus = useSelector((s: RootState) => s.openGroup.events.status);
     const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
     const alert = useSelector((s: RootState) => s.rendering.alert);
     const dispatch = useDispatch<AppDispatch>();
@@ -19,9 +20,8 @@ export const useRefreshGroupEvents = () => {
         return (eventCreated || eventStatusUpdated);
     }, [snackbar, alert]);
 
-
     useEffect(() => {
-        if (group.status !== "ready" || !triggerRefresh) return;
+        if ((group.status !== "ready") || (!triggerRefresh) || (openGroupEventsStatus === "initial")) return;
 
         const executeGroupEventsRefresh = async () => {
             await wait(300);
@@ -45,6 +45,7 @@ export const useRefreshGroupEvents = () => {
         void executeGroupEventsRefresh();
 
     }, [
+        openGroupEventsStatus,
         snackbar.kind,
         snackbar.status,
         alert.action,

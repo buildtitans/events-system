@@ -3,7 +3,6 @@ import type { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups
 import { LinearIndeterminate } from "../../ui/feedback";
 import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
-import GroupEventsLayout from "../../sections/events/groupEventsLayout";
 import EventsLayout from "../../sections/events/eventsLayout";
 
 type RenderEventsForGroupProps = {
