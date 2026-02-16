@@ -13,6 +13,7 @@ export function createScheduleNotificatoin(
     return {
         priority: "high",
         group_id: event.group_id,
+        subject: "Event Status Update",
         message: getScheduleNotificationMessage(event, updates)
     }
 }
@@ -46,6 +47,7 @@ export function createNewEventNotification(
     const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
 
     return {
+        subject: `${group.name} scheduled a new event`,
         priority: "low",
         group_id: event.group_id,
         message: ` New event: ${event.title} for group: ${group.name} was scheduled for ${string_date}, `

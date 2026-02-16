@@ -50,14 +50,6 @@ export default function () {
                 <NotificationBadge badgeContent={notifs} handleClick={handleOpen} />
             </Box>
             {(notifications.status === "ready") && <NotificationsList props={props} notifications={notifications.data.new} />}
-
-            {(notifications.status === "pending") &&
-                Array.from(
-                    { length: 4 },
-                    (_, index) => (
-                        <ListItemSkeleton key={index} />
-                    ))}
-
         </React.Fragment>
     );
 }

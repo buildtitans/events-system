@@ -1,6 +1,6 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/src/lib/store";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/src/lib/store";
 import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
@@ -48,7 +48,7 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
                 return;
             };
 
-            await wait(500);
+
             handleSyncGroupOpened(group);
             await wait(1200);
             handleSyncEventsOfGroup(events);
@@ -62,6 +62,8 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
                 events,
                 group
             } = await syncOpenedGroup(slug);
+
+            await wait(1000);
 
             await handlePayload(group, events);
 

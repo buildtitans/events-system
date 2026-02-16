@@ -24,6 +24,10 @@ export async function up(db: Kysely<any>): Promise<void> {
                 .references("users.id")
                 .onDelete("cascade")
         )
+        .addColumn("subject", "text", (col) =>
+            col
+                .notNull()
+        )
         .addColumn("created_at", "timestamptz", col =>
             col
                 .notNull()

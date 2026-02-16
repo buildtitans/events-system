@@ -33,7 +33,6 @@ export default function NotificationsList({
     return (
         <Menu
             anchorEl={anchorEl}
-            id="account-menu"
             open={open}
             onClose={handleClose}
             onClick={handleClose}
@@ -41,7 +40,8 @@ export default function NotificationsList({
                 list: {
                     sx: {
                         width: 250,
-                        backgroundColor: 'black',
+                        minHeight: 180,
+                        backgroundColor: '#242424',
                         height: "auto",
                         borderRadius: 2
                     }
@@ -54,7 +54,6 @@ export default function NotificationsList({
                         overflowX: 'hidden',
                         overflowY: "auto",
                         borderRadius: 2,
-                        "&hover": {}
                     }
 
                 }

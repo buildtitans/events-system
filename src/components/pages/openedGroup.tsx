@@ -8,9 +8,9 @@ import OpenedGroupSidebar from "../ui/sidebars/openedGroupSidebar";
 
 export default function OpenedGroup(): JSX.Element | null {
     const {
-        events,
         group
     } = useSelector((s: RootState) => s.openGroup);
+
 
     return (
         <Container sx={{
@@ -19,7 +19,6 @@ export default function OpenedGroup(): JSX.Element | null {
         }}>
             <OpenedGroupSidebar />
             <RenderOpenedGroup
-                events={events}
                 group={group}
             />
         </Container>

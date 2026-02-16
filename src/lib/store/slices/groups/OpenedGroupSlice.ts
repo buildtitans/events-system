@@ -8,7 +8,7 @@ export type GroupHydrated = { status: "idle" }
     | { status: "failed", error: "Group hydration error" }
     | { status: "ready", data: GroupSchemaType };
 
-export type HydratedEventsForOpenedGroup = { status: "initial" } | { status: "idle" }
+export type HydratedEventsForOpenedGroup = { status: "initial" }
     | { status: "pending" }
     | { status: "refreshing" }
     | { status: "warning", message: "No events have been scheduled for this group" }
@@ -18,13 +18,15 @@ export type HydratedEventsForOpenedGroup = { status: "initial" } | { status: "id
 type InitialState = {
     group: GroupHydrated,
     events: HydratedEventsForOpenedGroup,
-    syncStatus: LoadingStatus
+    syncStatus: LoadingStatus,
+    currPage: number
 };
 
 const initialState: InitialState = {
     group: { status: "idle" },
-    events: { status: "idle" },
-    syncStatus: "idle"
+    events: { status: "initial" },
+    syncStatus: "idle",
+    currPage: 0
 };
 
 

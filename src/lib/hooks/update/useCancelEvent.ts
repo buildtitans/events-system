@@ -12,7 +12,10 @@ import { wait } from "../../utils/helpers/wait";
 
 export const useCancelEvent = (
     event: EventSchemaType,
-    organizer_id: string | null | undefined
+    organizer_id:
+        string
+        | null
+        | undefined
 
 ): CancelEventHook => {
     const [isUpdated, setIsUpdated] = useState<boolean>(false);
@@ -32,17 +35,20 @@ export const useCancelEvent = (
 
     function handleUpdateResult(updateStatus: "success" | "failure" | undefined): void {
 
-        dispatch(enqueueSnackbar({
-            kind: "changeEventScheduling",
-            status: (updateStatus === "success")
-                ? "success"
-                : "failed"
-        }));
+        if (updateStatus === "success") {
+            dispatch(enqueueSnackbar({
+                kind: "changeEventScheduling",
+                status: "success"
+            }));
 
-        if (updateStatus === "success") dispatch(getGroupEvents({ status: 'refreshing' }));
-
+            dispatch(getGroupEvents({ status: 'refreshing' }));
+        } else {
+            dispatch(enqueueSnackbar({
+                kind: "changeEventScheduling",
+                status: "failed"
+            }))
+        };
     };
-
 
     const handleSubmit = async (
         e: React.MouseEvent<HTMLButtonElement>

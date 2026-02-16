@@ -28,8 +28,9 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
         setFocusedCardIndex(null);
     };
 
+
     return (
-        <AnimatePresence initial={false} mode='wait'>
+        <AnimatePresence >
             {(page) && <MotionGrid
                 key={currentPage}
                 variants={fadeInOut}
@@ -39,20 +40,13 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
                 container
                 spacing={2}
                 columns={12}
-                sx={{
-                    willChange: "transform",
-                    transform: "translate3d(0,0,0)",
-                    backfaceVisibility: "hidden",
-                    contain: "layout paint style",
-                }}
             >
-                {
-                    RenderEventsLayout(
-                        page,
-                        handleBlur,
-                        handleFocus,
-                        focusedCardIndex)
-                }
+                <RenderEventsLayout
+                    slots={page}
+                    handleBlur={handleBlur}
+                    handleFocus={handleFocus}
+                    focusedCardIndex={focusedCardIndex}
+                />
             </MotionGrid>}
         </AnimatePresence>
     );

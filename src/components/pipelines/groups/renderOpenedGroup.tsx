@@ -1,19 +1,17 @@
 "use client";
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
-import type { GroupHydrated, HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import Container from "@mui/material/Container";
-import DrawerSpinner from "../../ui/feedback/pending/drawerSpinner";
+import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 
 type RenderOpenedGroupProps = {
     group: GroupHydrated,
-    events: HydratedEventsForOpenedGroup
 };
 
 export function RenderOpenedGroup({
     group,
-    events
 }: RenderOpenedGroupProps
 ): JSX.Element | null {
 
@@ -33,7 +31,7 @@ export function RenderOpenedGroup({
                         alignItems: 'center'
                     }}
                 >
-                    <DrawerSpinner />
+                    <SimpleBackdrop />
                 </Container>
 
             )
@@ -44,7 +42,6 @@ export function RenderOpenedGroup({
                 <ViewGroupSection
                     key="opened-group"
                     group={group.data}
-                    events={events}
                 />
             )
     }

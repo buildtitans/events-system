@@ -8,6 +8,7 @@ export default function HomeButton(): JSX.Element {
 
     return (
         <Button
+            LinkComponent={Link}
             href="/"
             startIcon={<HomeIcon />}
             variant="contained"

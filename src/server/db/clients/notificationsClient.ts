@@ -83,7 +83,8 @@ export class NotificationsClient {
                 user_id: id,
                 group_id: notification.group_id,
                 priority: notification.priority,
-                message: notification.message
+                message: notification.message,
+                subject: notification.subject
             })
         });
         return insertableRows
@@ -121,6 +122,7 @@ export class NotificationsClient {
                 user_id: row.user_id,
                 group_id: row.group_id,
                 message: row.message,
+                subject: row.subject,
                 created_at: row.created_at.toISOString(),
                 updated_at: row.updated_at?.toISOString() ?? row.created_at.toISOString(),
                 status: row.status,

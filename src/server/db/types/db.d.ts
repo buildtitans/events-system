@@ -80,6 +80,7 @@ export interface Notifications {
   message: string;
   priority: string;
   status: Generated<string>;
+  subject: string;
   updated_at: Timestamp | null;
   user_id: string;
 }

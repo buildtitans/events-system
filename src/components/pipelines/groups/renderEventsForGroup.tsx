@@ -1,39 +1,31 @@
 "use client";
-import type { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { LinearIndeterminate } from "../../ui/feedback";
 import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 import EventsLayout from "../../sections/events/eventsLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
-type RenderEventsForGroupProps = {
-    events: HydratedEventsForOpenedGroup
-}
 
-export const RenderEventsForGroup = ({
-    events
-}: RenderEventsForGroupProps) => {
+export const RenderEventsForGroup = () => {
+    const events = useSelector((s: RootState) => s.openGroup.events);
 
-    switch (events.status) {
-        case "refreshing":
-            return (
-                <LinearIndeterminate />
-            )
-        case "pending":
-            return (
-                <LinearIndeterminate />
-            )
-        case "warning":
-            return (
-                <NoScheduledEvents />
-            )
-        case "ready":
-            return (
-                <EventsLayout eventsPages={events.data} />
-            )
 
-        case "failed":
-            return (
-                <NoEventsFound />
-            )
+    if ((events.status === "pending") || (events.status === "refreshing")) {
+
+        return (<LinearIndeterminate />)
+    }
+
+    if (events.status === "ready") {
+        return (
+            <EventsLayout eventsPages={events.data} />
+        )
+    }
+
+
+    if (events.status === "warning") {
+        return (
+            <NoScheduledEvents />
+        )
     }
 }

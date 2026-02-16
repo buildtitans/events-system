@@ -7,6 +7,7 @@ export const NotificationSchema = Type.Object({
     created_at: Type.String({ format: "date-time" }),
     group_id: Type.String({ format: "uuid" }),
     id: Type.String({ format: "uuid" }),
+    subject: Type.String(),
     message: Type.String(),
     priority: Type.String(),
     status: Type.Union([Type.Literal("new"), Type.Literal("viewed"),]),
@@ -22,6 +23,7 @@ export const CreateNotificationSchema = Type.Object({
     group_id: Type.String({ format: "uuid" }),
     priority: Type.String(),
     message: Type.String(),
+    subject: Type.String()
 });
 
 const ViewedNotificationsIdsSchema = Type.Array(Type.String());

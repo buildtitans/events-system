@@ -4,15 +4,12 @@ import { JSX } from "react";
 import GroupHeadSecton from "./groupHeadSection";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { RenderEventsForGroup } from "../../pipelines/groups/renderEventsForGroup";
-import { HydratedEventsForOpenedGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 type ViewGroupSectionProps = {
-    events: HydratedEventsForOpenedGroup,
     group: GroupSchemaType,
 }
 
 export default function ViewGroupSection({
-    events,
     group,
 }: ViewGroupSectionProps): JSX.Element {
 
@@ -46,7 +43,7 @@ export default function ViewGroupSection({
                     height: '100%'
                 }}
             >
-                <RenderEventsForGroup events={events} />
+                <RenderEventsForGroup />
             </Box>
         </Box>
     )
