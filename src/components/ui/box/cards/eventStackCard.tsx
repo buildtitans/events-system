@@ -1,7 +1,7 @@
 "use client"
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
-import { Author } from '@/src/components/ui/box/cards/author';
+import { CardFooter } from '@/src/components/ui/box/cards/cardFooter';
 import { EventCardProps } from './eventHeroCard';
 import type { EventSchemaType } from '@/src/schemas/events/eventSchema';
 import Box from '@mui/material/Box';
@@ -61,7 +61,7 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                 </Box>
 
             </StyledCardContent>
-            <Author authors={event.authors} />
+            <CardFooter authors={event.authors} location={event.meeting_location} />
         </StyledCard>
     )
 }

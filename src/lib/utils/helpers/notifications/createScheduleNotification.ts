@@ -42,13 +42,13 @@ export function createNewEventNotification(
     group: GroupSchemaType
 ): CreateNotificationSchemaType {
 
-    const utcDate = dayjs(event.starts_at).utc().toDate().toLocaleDateString();
+    const utcDate = dayjs(event.starts_at).utc().toDate().toDateString();
     const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
 
     return {
         subject: `${group.name} scheduled a new event`,
         priority: "low",
         group_id: event.group_id,
-        message: ` New event: ${event.title} for group: ${group.name} was scheduled for ${string_date}, `
+        message: ` New event: ${event.title} scheduled for ${string_date}, `
     };
 };

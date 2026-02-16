@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import { Author } from './author';
+import { CardFooter } from './cardFooter';
 import type { GroupSchemaType } from '@/src/schemas/groups/groupSchema';
 
 
@@ -109,7 +109,7 @@ function Group({
                     {group.description}
                 </StyledTypography>
 
-                <Author authors={[{ name: group.location ?? "Bloomington IL", avatar: "@/public/next.svg" }]} />
+                <CardFooter authors={[{ name: group.location ?? "Bloomington IL", avatar: "@/public/next.svg" }]} />
             </Box>
         </Grid>
     )

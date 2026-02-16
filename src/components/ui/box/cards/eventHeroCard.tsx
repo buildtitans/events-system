@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
-import { Author } from '@/src/components/ui/box/cards/author';
+import { CardFooter } from '@/src/components/ui/box/cards/cardFooter';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/events/eventSchema';
 import dayjs from 'dayjs';
@@ -55,7 +55,7 @@ function EventHeroCard(
     }: EventCardProps
 ): JSX.Element {
     const scheduled_at = useMemo(() => {
-        const utcDate = dayjs(event.starts_at).utc().toDate().toLocaleDateString();
+        const utcDate = dayjs(event.starts_at).utc().toDate().toDateString();
         const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
         return string_date;
     }, [event])
@@ -112,7 +112,7 @@ function EventHeroCard(
                         {event.description}
                     </StyledTypography>
                 </StyledCardContent>
-                <Author authors={event.authors} scheduled_at={scheduled_at} />
+                <CardFooter authors={event.authors} scheduled_at={scheduled_at} location={event.meeting_location} />
             </StyledCard>
         </Grid>
     )

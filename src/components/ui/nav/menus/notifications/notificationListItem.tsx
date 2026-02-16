@@ -8,6 +8,9 @@ import {
 import Typography from '@mui/material/Typography';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Box from "@mui/material/Box";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 type NotificationListItemProps = {
     notification: NotificationSchemaType
