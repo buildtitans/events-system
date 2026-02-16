@@ -4,7 +4,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import type { LoginCredentials } from "../validation/useValidateCredentialsInput";
+import type { LoginCredentials } from "../../types/tokens/types";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import type { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
