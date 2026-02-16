@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 
 function HomePage(): JSX.Element {
 
-
   return (
     <Stack
       sx={{

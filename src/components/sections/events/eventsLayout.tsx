@@ -11,8 +11,7 @@ import { EventsPages } from '@/src/lib/store/slices/events/EventsSlice';
 const MotionGrid = motion(Grid);
 
 
-function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Element | null {
-    const currentPage = useSelector((s: RootState) => s.events.currentPage);
+function EventsLayout({ eventsPages, currentPage }: { eventsPages: EventsPages, currentPage: number }): JSX.Element | null {
     const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
     const page = useMemo(() => {
         const pg = eventsPages[currentPage];
@@ -32,6 +31,7 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
     return (
         <AnimatePresence >
             {(page) && <MotionGrid
+
                 key={currentPage}
                 variants={fadeInOut}
                 initial="initial"
