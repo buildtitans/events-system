@@ -5,7 +5,7 @@ import GroupActionsMenu from "../../ui/nav/menus/groupActionsMenu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 
 export default function GroupOranizerOnly({ roleType }: { roleType: GroupMembersSchemaType["role"] }): JSX.Element | null {

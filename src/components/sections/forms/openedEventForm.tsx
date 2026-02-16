@@ -13,14 +13,11 @@ import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type UpdateViewerAttendanceFormProps = {
-    currentStatus: EventAttendantStatusSchemaType, event_id: EventSchemaType["id"],
-
-    role: GroupMembersSchemaType["role"]
-
-}
+    currentStatus: EventAttendantStatusSchemaType,
+    event_id: EventSchemaType["id"],
+};
 
 type UpdateAttendanceStatusForm = {
     status: EventAttendantStatusSchemaType | null,
@@ -29,7 +26,6 @@ type UpdateAttendanceStatusForm = {
 export default function UpdateViewerAttendanceForm({
     currentStatus,
     event_id,
-    role
 }: UpdateViewerAttendanceFormProps
 ): JSX.Element {
     const { control } = useForm<UpdateAttendanceStatusForm>();
@@ -37,7 +33,7 @@ export default function UpdateViewerAttendanceForm({
         newStatus,
         handleStatusChange,
         handleSubmit
-    } = useUpdateAttendance(currentStatus, event_id, role);
+    } = useUpdateAttendance(currentStatus, event_id);
 
 
     return (

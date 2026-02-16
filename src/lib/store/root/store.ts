@@ -29,8 +29,6 @@ type RootState = ReturnType<typeof store.getState>;
 
 type AppDispatch = typeof store.dispatch;
 
-console.log({ "@/src/lib/store": store })
-
 export { store };
 
 export type { RootState, AppDispatch };

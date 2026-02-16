@@ -155,7 +155,7 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         void executeNotifyMembers();
 
 
-    }, [currentGroup, newEvent, snackbar, createNotification]);
+    }, [currentGroup, newEvent, snackbar, createNotification, dispatch]);
 
     return {
         schedule,

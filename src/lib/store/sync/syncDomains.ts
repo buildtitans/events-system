@@ -21,7 +21,7 @@ type Domains = "events" | "groups" | "categories";
 type DomainPromises = Record<Domains, Promise<unknown>>;
 
 
-async function runSync(): Promise<any> {
+async function runSync(): Promise<Record<Domains, PromiseSettledResult<unknown>>> {
 
     const map = {
         events: trpcClient.events.list.mutate(),

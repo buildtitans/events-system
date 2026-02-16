@@ -6,8 +6,6 @@ import {
     ViewedNotificationsIdsSchemaType,
     CompiledViewedNotificationsIdsSchema,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { wrap } from "module";
-import { Static, TypeBoxError } from "@sinclair/typebox";
 
 const createNotificationInput = typeboxInput<CreateNotificationSchemaType>(CompiledCreateNotificationSchema);
 

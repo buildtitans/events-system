@@ -8,9 +8,8 @@ import NotificationsList, { NotificationsListProps } from "./notificationsList";
 import NotificationBadge from "../../../badges/notificationBadge";
 import { markSeen } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { syncSeenNotifications } from "@/src/lib/store/sync/syncNotifications";
-import ListItemSkeleton from "../../../skeletons/notificationListItemSkeleton";
 
-export default function () {
+export default function Notifications() {
     const notifications = useSelector((s: RootState) => s.notifications.notifications);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);

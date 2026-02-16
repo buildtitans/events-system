@@ -2,8 +2,6 @@
 import Grid from '@mui/material/Grid';
 import { useMemo, useState } from 'react';
 import type { JSX } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
 import { RenderEventsLayout } from '@/src/components/pipelines/events/renderEventsLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';

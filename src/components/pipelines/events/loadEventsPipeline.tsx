@@ -9,7 +9,7 @@ import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 
-const loadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: EventsPages): JSX.Element | null => {
+const LoadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: EventsPages): JSX.Element | null => {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
 
     switch (eventLoadingStatus) {
@@ -48,4 +48,4 @@ const loadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: Event
     }
 };
 
-export { loadEventsPipeline };
+export { LoadEventsPipeline };

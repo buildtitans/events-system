@@ -31,7 +31,6 @@ function getScheduleNotificationMessage(
             return `The event: ${event.title} is back on, set for ${event.starts_at}`;
 
         default: {
-            const exhaustive: never = updates.status;
             return `there was an update to the scheduling of ${event.title}`
         }
     }

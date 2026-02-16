@@ -37,8 +37,9 @@ export const useRefreshGroupEvents = () => {
 
     }, [
         dispatch,
-        group.status,
-        groupEvents.status
+        group,
+        groupEvents.status,
+
     ]);
 
 }

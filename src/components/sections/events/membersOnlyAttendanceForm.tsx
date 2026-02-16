@@ -12,14 +12,13 @@ type MembersOnlyAttendanceFormProps = {
     role: GroupMembersSchemaType["role"]
 };
 
-export default function MembersOnlyAttendanceForm({ scheduleStatus, role }: MembersOnlyAttendanceFormProps): JSX.Element | null {
+export default function MembersOnlyAttendanceForm({ scheduleStatus }: MembersOnlyAttendanceFormProps): JSX.Element | null {
     const viewer = useSelector((s: RootState) => s.eventDrawer.viewerAttendanceInfo);
 
     return (
         <AnimatePresence mode="wait">
             {(viewer) && (scheduleStatus === "scheduled") &&
                 <UpdateViewerAttendanceForm
-                    role={role}
                     key={"update-status-form"}
                     currentStatus={viewer.status ?? "not_going"}
                     event_id={viewer.event_id}

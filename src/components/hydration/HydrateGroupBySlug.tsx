@@ -13,28 +13,32 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
     const dispatch = useDispatch<AppDispatch>();
     useRefreshGroupEvents();
 
-    const handleSyncGroupOpened = (group: GroupSchemaType) => {
-        dispatch(groupOpened({
-            status: "ready",
-            data: group
-        }));
-    }
 
-    const handleSyncEventsOfGroup = (events: EventsPages) => {
-        if (events.length > 0) {
-            dispatch(getGroupEvents({
-                status: "ready",
-                data: events
-            }));
-            return;
-        };
-        dispatch(getGroupEvents({
-            status: "warning",
-            message: "No events have been scheduled for this group"
-        }));
-    };
 
     useEffect(() => {
+        const handleSyncGroupOpened = (group: GroupSchemaType) => {
+            dispatch(groupOpened({
+                status: "ready",
+                data: group
+            }));
+        }
+
+        const handleSyncEventsOfGroup = (events: EventsPages) => {
+            if (events.length > 0) {
+                dispatch(getGroupEvents({
+                    status: "ready",
+                    data: events
+                }));
+                return;
+            };
+            dispatch(getGroupEvents({
+                status: "warning",
+                message: "No events have been scheduled for this group"
+            }));
+        };
+
+
+
         const handlePayload = async (
             group: GroupSchemaType | null,
             events: EventsPages

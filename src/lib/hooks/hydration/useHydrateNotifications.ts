@@ -26,5 +26,5 @@ export const useHydrateNotifications = () => {
 
         void hydrateNotifications();
 
-    }, [userKind]);
+    }, [userKind, dispatch]);
 };

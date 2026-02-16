@@ -1,4 +1,3 @@
-import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import TaskIcon from '@mui/icons-material/Task';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
