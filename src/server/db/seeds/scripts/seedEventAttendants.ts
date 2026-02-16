@@ -1,6 +1,6 @@
 import { db } from "@/src/server/db/db";
 import type { MembersByGroupId } from "./seedGroupMembers";
-import type { EventAttendantsSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 type AttendanceStatus = EventAttendantsSchemaType["status"];
 

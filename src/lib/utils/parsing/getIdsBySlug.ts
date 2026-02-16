@@ -1,4 +1,4 @@
-import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export type OrganizerAndUserIdsType = {
     groupId: string | undefined | null,

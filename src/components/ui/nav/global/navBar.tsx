@@ -13,7 +13,6 @@ import ColorModeIconDropdown from '../ColorModelIconDropdown';
 import { useState } from 'react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { UserKind } from '@/src/lib/store/slices/auth/AuthSlice';
-import { AuthenticationSchemaType } from '@/src/schemas/loginCredentialsSchema';
 import { Search } from '@/src/features/search/search';
 import HomeButton from '../../buttons/homeButton';
 
@@ -36,8 +35,6 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 type NavLinksProps = {
     userKind: UserKind,
-    handleSignout: () => Promise<void>,
-    handleLogoutResponse: (success: AuthenticationSchemaType["success"]) => void
 };
 
 

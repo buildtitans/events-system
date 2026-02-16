@@ -1,3 +1,5 @@
+type PromiseAllSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
+
 type MountStatus =
     "active"
     | "idle";
@@ -7,6 +9,8 @@ type LoadingStatus =
     | "pending"
     | "failed"
     | "warning";
+
+type DomainStatus = LoadingStatus | 'initial';
 
 type RequestStatus =
     "idle"
@@ -85,5 +89,7 @@ export type {
     AlertMessages,
     AlertMessagesType,
     LoginCredentials,
-    ValidationState
+    ValidationState,
+    DomainStatus,
+    PromiseAllSettledResult
 }

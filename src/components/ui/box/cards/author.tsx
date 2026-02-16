@@ -1,4 +1,4 @@
-import { EventSchemaType } from '@/src/schemas/eventSchema';
+import { EventSchemaType } from '@/src/schemas/events/eventSchema';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';

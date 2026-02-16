@@ -1,6 +1,6 @@
 "use client";
 import { useCancelEvent } from "@/src/lib/hooks/update/useCancelEvent";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
 import { CheckCancelEventButton } from "../../ui/buttons/CheckCancelEventButton";
 import { useMemo, useState } from "react";

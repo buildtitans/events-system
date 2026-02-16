@@ -1,4 +1,4 @@
-import { CardDesignationSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { CardDesignationSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { getCardSizing } from "./getCardSizing";
 
 export type LayoutSlot =

@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import { type JSX } from "react";
 import { useJoinGroup } from "@/src/lib/hooks/insert/useJoinGroup";
-import type { GroupSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type JoinGroupButtonProps = {
     group_id: GroupSchemaType["id"],

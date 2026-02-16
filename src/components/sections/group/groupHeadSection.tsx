@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import { JSX } from "react";
 import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import GroupEventsHeader from "./groupEventsHeader";
 

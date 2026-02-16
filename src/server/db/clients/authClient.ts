@@ -1,7 +1,7 @@
 import { Kysely } from "kysely";
 import { DB } from "../types/db";
 import argon2 from "argon2";
-import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/userSchema";
+import { DbUserSchemaType, PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 import crypto from "crypto";
 import type { StoredSession, AuthClientLoginResponse } from "./types/types";
 

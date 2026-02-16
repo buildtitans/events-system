@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
 import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { formatDateForUI } from "@/src/lib/utils/rendering/formatDateForUI";
 import OpenedEventImage from "../box/cards/openedEventImage";
 

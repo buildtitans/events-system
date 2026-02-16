@@ -1,17 +1,24 @@
 import { JSX, useCallback } from "react";
 import EventHeroCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
-import { LayoutSlotSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { fillEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
-function RenderEventsLayout(
+type RenderEventsLayoutProps = {
     slots: LayoutSlotSchemaType[],
     handleBlur: EventCardProps["handleBlur"],
     handleFocus: EventCardProps["handleFocus"],
     focusedCardIndex: EventCardProps["focusedCardIndex"]
+}
+
+function RenderEventsLayout({
+    slots,
+    handleBlur,
+    handleFocus,
+    focusedCardIndex }: RenderEventsLayoutProps
 ): JSX.Element[] {
     const groupNamesById = useSelector((s: RootState) => s.events.nameByGroupId);
     const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +29,7 @@ function RenderEventsLayout(
             dispatch(enqueueDrawer("event drawer"));
         }
     }, [dispatch]);
+
 
     return slots.map((slot, i: number) => {
 

@@ -13,9 +13,7 @@ function ActiveCategory(): JSX.Element {
 
 
     const handleClick = useCallback((category: PresentedCategory) => {
-        return () => {
-            dispatch(selectCategory(category))
-        }
+        dispatch(selectCategory(category));
     }, [dispatch]);
 
     return (

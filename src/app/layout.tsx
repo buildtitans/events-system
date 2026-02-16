@@ -28,11 +28,16 @@ export const metadata: Metadata = buildMetaData();
 
 type RootLayoutType = Readonly<{ children: React.ReactNode }>;
 
-async function RootLayout({ children }: RootLayoutType): Promise<React.ReactNode> {
+async function RootLayout({
+  children
+}: RootLayoutType): Promise<React.ReactNode> {
   const domains = await syncDomains();
 
   return (
-    <html lang="en" className={roboto.variable}>
+    <html
+      lang="en"
+      className={roboto.variable}
+    >
       <body
         className={`
           ${geistSans.variable} 

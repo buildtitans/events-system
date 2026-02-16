@@ -5,7 +5,7 @@ import { fadeInOut } from "@/src/styles/motion/variants"
 import Grid from "@mui/material/Grid"
 import Group from "@/src/components/ui/box/cards/group";
 import type { CategoryMap } from "./groupsPages"
-import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema"
+import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema"
 import { getCategoryName } from "@/src/lib/utils/rendering/getCategoryName"
 const MotionGrid = motion.create(Grid);
 

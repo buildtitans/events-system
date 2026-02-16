@@ -1,5 +1,5 @@
-import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groupSchema";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 
 function getGroupSlugRoute(groups: GroupsSchemaType, event: EventSchemaType | null): string {

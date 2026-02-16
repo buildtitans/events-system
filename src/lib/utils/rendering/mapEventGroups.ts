@@ -2,7 +2,7 @@ import type { GroupNameByGroupID } from "@/src/lib/store/slices/events/EventsSli
 import {
     GroupSchemaType,
     GroupsSchemaType
-} from "@/src/schemas/groupSchema";
+} from "@/src/schemas/groups/groupSchema";
 
 function mapEventGroups(groups: GroupsSchemaType): GroupNameByGroupID {
 

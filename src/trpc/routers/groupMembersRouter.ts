@@ -1,8 +1,8 @@
 
 import { router, publicProcedure } from "@/src/trpc/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { GroupIDForInsertSchemaType, GroupIDForInsertSchemaValidator } from "@/src/schemas/groupMembersSchema";
-import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupIDForInsertSchemaType, GroupIDForInsertSchemaValidator } from "@/src/schemas/groups/groupMembersSchema";
+import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 const groupMembersRouter = router({
     addNewMember:

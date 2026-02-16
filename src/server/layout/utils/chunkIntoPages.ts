@@ -1,4 +1,4 @@
-import { EventsArraySchemaType } from "@/src/schemas/eventSchema";
+import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 
 function chunkEventsIntoPages(
     events: EventsArraySchemaType,

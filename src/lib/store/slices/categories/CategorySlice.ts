@@ -1,4 +1,4 @@
-import { CategoriesSchemaType } from "@/src/schemas/categoriesSchema";
+import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type CategoriesSliceInitialState = {

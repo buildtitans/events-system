@@ -29,6 +29,7 @@
     "@trpc/next": "^11.8.1",
     "@trpc/react-query": "^11.8.1",
     "@trpc/server": "^11.8.1",
+    "@typeschema/typebox": "^0.14.0",
     "argon2": "^0.44.0",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",

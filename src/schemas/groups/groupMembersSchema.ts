@@ -1,7 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { Static } from "@sinclair/typebox";
-import { createValidator } from "../lib/utils/validation/validateSchema";
+import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 
 const GroupMembersSchema = Type.Object({
     group_id: Type.String(),

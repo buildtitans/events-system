@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
-import { EventSchemaType, NewEventInputSchema } from "@/src/schemas/eventSchema";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
+import { EventSchemaType, NewEventInputSchema, NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { parseInputSchema } from "@/src/lib/utils/validation/parseInputSchema";
 import { Dayjs } from "dayjs";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
+import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
+import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
+import { wait } from "../../utils/helpers/wait";
+import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 
 export type NewEventType = {
     title: EventSchemaType["title"] | null,
@@ -25,8 +29,10 @@ function getPicDate() {
 
 export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEventHook => {
     const dispatch = useDispatch<AppDispatch>();
-    const timerRef = useRef<number | null>(null);
+    const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
+    const groups = useSelector((s: RootState) => s.groups.communities);
     const picDate = getPicDate();
+    const [createNotification, setCreateNotification] = useState<boolean>();
     const [newEvent, setNewEvent] = useState<NewEventType>({
         title: null,
         description: null,
@@ -46,6 +52,10 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         );
         return !filledOutForm;
     }, [newEvent]);
+    const currentGroup = useMemo(() => {
+        const thisGroup = groups.find((grp) => grp.id === group_id);
+        return thisGroup
+    }, [group_id, groups]);
 
 
     const handleTitle = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -84,38 +94,68 @@ export const useCreateEvent = (group_id: EventSchemaType["group_id"]): CreateEve
         }));
     };
 
+    const handleScheduleResult = async (result: EventSchemaType | null) => {
 
-    const handleScheduleResult = (result: EventSchemaType | null) => {
 
-        timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: null, status: 'idle' }))
-            dispatch(enqueueAlert({ kind: result ? 'success' : 'error', action: 'createEvent' }))
-            dispatch(enqueueDrawer(null))
+        await wait(400)
+        if (result) dispatch(getGroupEvents({ status: "refreshing" }));
 
-            timerRef.current = null;
-        }, 800);
-    }
+        dispatch(enqueueSnackbar({ kind: null, status: 'idle' }))
+        dispatch(enqueueAlert({
+            kind: result
+                ? 'success'
+                : 'error',
+            action: 'createEvent'
+        }))
+        setCreateNotification(true)
+    };
 
     const scheduleEvent = async (newEvent: NewEventType) => {
-
         const parsedEvent = parseInputSchema(newEvent, NewEventInputSchema);
         return await trpcClient.events.newEvent.mutate(parsedEvent);
-
-    }
+    };
 
     const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         dispatch(enqueueSnackbar({ kind: 'newEvent', status: 'pending' }))
         const result = await scheduleEvent(newEvent);
-        handleScheduleResult(result);
-    }
+        await handleScheduleResult(result);
+    };
+
+
 
     useEffect(() => {
+        if (!currentGroup || !createNotification) return;
 
-        return () => {
-            if (timerRef.current !== null) clearTimeout(timerRef.current);
-        }
-    }, []);
+        const executeNotifyMembers = async () => {
+            const scheduledEvent = newEvent as NewEventInputSchemaType;
+            const notification = createNewEventNotification(
+                scheduledEvent,
+                currentGroup
+            );
+
+            const result = await trpcClient
+                .notifications
+                .createNotification
+                .mutate(notification);
+
+            dispatch(appendNewNotification({
+                status: "ready", data: {
+                    new: [result.items[0]],
+                    seen: []
+                }
+            })
+            );
+
+            setCreateNotification(false);
+            dispatch(enqueueDrawer(null));
+        };
+
+
+        void executeNotifyMembers();
+
+
+    }, [currentGroup, newEvent, snackbar, createNotification, dispatch]);
 
     return {
         schedule,

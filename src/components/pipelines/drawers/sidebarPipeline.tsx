@@ -2,7 +2,7 @@ import { RootState } from "@/src/lib/store";
 import { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RenderSidebarContents } from "./renderAuthenticatedSidebar";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 
 export const SidebarPipeline = (group_id: GroupSchemaType["id"]): JSX.Element | null => {

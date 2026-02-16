@@ -7,7 +7,7 @@ import {
     EventIdSchemaValidator,
     UpdatedAttendanceResponseSchemaType,
     UpdatedAttendanceResponseSchemaValidator
-} from "@/src/schemas/eventAttendantsSchema";
+} from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventAttendantsRouter = router({
     getAttendants:

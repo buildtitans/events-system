@@ -1,6 +1,6 @@
 import { router, publicProcedure } from "../init";
-import type { LoginCredentialsSchemaType } from "@/src/schemas/loginCredentialsSchema";
-import { CompiledLoginCredentials } from "@/src/schemas/loginCredentialsSchema";
+import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
+import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
 export const authRouter = router({

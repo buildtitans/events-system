@@ -2,10 +2,10 @@ import { Insertable, Kysely, Selectable } from "kysely";
 import { DB } from "../types/db";
 import type { Events } from "../types/db";
 import { compileEventsLayout } from "../../layout/compileEventsLayout";
-import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { PaginatedLayoutSchemaType } from "@/src/schemas/layoutSlotSchema";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 dayjs.extend(utc);
 
@@ -51,7 +51,7 @@ export class EventsClient {
 
     private async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
 
-        const raw = this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
+        const raw = await this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
 
         return raw;
 

@@ -5,11 +5,16 @@ import { AppDispatch } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
-import { JSX } from "react";
+import type { JSX } from "react";
+import Notifications from "../menus/notifications/notifications";
 
-export default function NavActions({ userKind, handleSignout }: { userKind: UserKind, handleSignout: () => Promise<void> }): JSX.Element | null {
+type NavActionsProps = { userKind: UserKind, handleSignout: () => Promise<void> }
+
+export default function NavActions({
+    userKind,
+    handleSignout
+}: NavActionsProps): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
-
 
     return (
         <Stack
@@ -18,6 +23,8 @@ export default function NavActions({ userKind, handleSignout }: { userKind: User
             <Container
                 sx={{ display: { xs: 'none', md: 'flex', alignItems: 'center', justifyContent: 'center', gap: (userKind === 'authenticated') ? 40 : 12 } }}
             >
+                {(userKind === "authenticated") && <Notifications />}
+
                 {(userKind === 'authenticated') &&
                     <Button onClick={() => dispatch(enqueueDrawer("new group"))} variant="text" color="info" size="medium" sx={{
                         borderRadius: 999,

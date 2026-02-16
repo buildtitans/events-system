@@ -1,6 +1,6 @@
 import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Groups } from "@/src/server/db/types/db";
-import { GroupSchemaType, GroupsSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType, GroupsSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupSchemaValidator, GroupsSchemaValidator } from "@/src/lib/utils/validation/validateSchema";
 import { slugify } from "@/src/lib/utils/helpers/slugify";
 
@@ -81,6 +81,14 @@ export class GroupsClient {
             .executeTakeFirstOrThrow();
     }
 
+    private toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
+        if (!group) return null;
+        const formatted = this.formatGroup(group);
+        const validGroup = GroupSchemaValidator(formatted);
+        if (validGroup) return validGroup;
+        return null;
+    }
+
     private formatGroup(group: Selectable<Groups>): GroupSchemaType {
         return {
             id: group.id,
@@ -95,11 +103,5 @@ export class GroupsClient {
         };
     }
 
-    private toGroupSchema(group: Selectable<Groups> | null): GroupSchemaType | null {
-        if (!group) return null;
-        const formatted = this.formatGroup(group);
-        const validGroup = GroupSchemaValidator(formatted);
-        if (validGroup) return validGroup;
-        return null;
-    }
+
 };

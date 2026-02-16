@@ -1,7 +1,7 @@
 
 import { router, publicProcedure } from "@/src/trpc/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { GroupSlugSchemaType, GroupSlugSchemaValidator, NewGroupInputSchemaType, NewGroupInputSchemaValidator } from "@/src/schemas/groupSchema";
+import { GroupSlugSchemaType, GroupSlugSchemaValidator, NewGroupInputSchemaType, NewGroupInputSchemaValidator } from "@/src/schemas/groups/groupSchema";
 
 export const groupsRouter = router({
     list: publicProcedure

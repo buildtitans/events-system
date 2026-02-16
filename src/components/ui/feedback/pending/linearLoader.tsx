@@ -1,18 +1,31 @@
 "use client"
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
+import Stack from '@mui/material/Stack';
 
 function LinearIndeterminate() {
     return (
-        <Box sx={{
-            width: '100%',
-            height: '400px',
-            margin: 'auto',
-            paddingTop: '20px',
-            zIndex: 100
-        }}>
-            <LinearProgress />
-        </Box>
+
+        <Stack
+            sx={{
+                height: "500px",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center"
+            }}
+        >
+
+            <Box
+                sx={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: "100%"
+                }}
+            >
+                <LinearProgress />
+            </Box>
+        </Stack>
+
     );
 }
 

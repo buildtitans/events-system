@@ -9,7 +9,7 @@ import {
 import {
     EventAttendantsSchemaType,
     ValidateRawAttendants
-} from "@/src/schemas/eventAttendantsSchema";
+} from "@/src/schemas/events/eventAttendantsSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);

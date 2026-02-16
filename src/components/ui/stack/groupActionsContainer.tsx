@@ -1,7 +1,7 @@
 "use client";
 import Box from "@mui/material/Box";
 import { JSX } from "react";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { SidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
 
 type GroupActonsContainerProps = {

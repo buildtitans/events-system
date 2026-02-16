@@ -14,5 +14,13 @@
     {
         "email": "dave@example.com",
         "password": "password4"
+    },
+    {
+        "email": "wil@buildtitans.com",
+        "password": "password5"
+    },
+    {
+        "email": "trentirvin875@gmail.com",
+        "password": "password6"
     }
 ]

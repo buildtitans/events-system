@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/styledComponents/styledCard';
 import { Author } from '@/src/components/ui/box/cards/author';
 import { EventCardProps } from './eventHeroCard';
-import type { EventSchemaType } from '@/src/schemas/eventSchema';
+import type { EventSchemaType } from '@/src/schemas/events/eventSchema';
 import Box from '@mui/material/Box';
 import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';
 
@@ -27,8 +27,9 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
             onBlur={handleBlur}
             tabIndex={0}
             className={focusedCardIndex === 3 ? 'Mui-focused' : ''}
-            sx={{ height: '100%' }}
+            sx={{ height: '100%', position: 'relative' }}
         >
+            {(event.status === "cancelled") && <EventCancelledOverlay />}
             <StyledCardContent
                 sx={{
                     display: 'flex',
@@ -38,9 +39,6 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                     position: "relative"
                 }}
             >
-                {(event.status === "cancelled") && <EventCancelledOverlay />}
-
-
                 <Box sx={{
                     position: "relative",
                     height: '100%',
@@ -61,6 +59,7 @@ function EventStackCard({ handleBlur, handleFocus, focusedCardIndex, event, grou
                         {event.description}
                     </StyledTypography>
                 </Box>
+
             </StyledCardContent>
             <Author authors={event.authors} />
         </StyledCard>

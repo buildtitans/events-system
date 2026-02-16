@@ -1,7 +1,7 @@
 "use client";
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import type { UpdateEventArgsSchemaType } from '@/src/schemas/eventSchema';
+import type { UpdateEventArgsSchemaType } from '@/src/schemas/events/eventSchema';
 import { CancelEventHook } from '@/src/lib/types/hooks/types';
 
 type CheckCancelEventButtonProps = {

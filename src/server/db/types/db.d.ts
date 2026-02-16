@@ -73,6 +73,18 @@ export interface Groups {
   updated_at: Generated<Timestamp>;
 }
 
+export interface Notifications {
+  created_at: Generated<Timestamp>;
+  group_id: string;
+  id: Generated<string>;
+  message: string;
+  priority: string;
+  status: Generated<string>;
+  subject: string;
+  updated_at: Timestamp | null;
+  user_id: string;
+}
+
 export interface Sessions {
   created_at: Generated<Timestamp>;
   expires_at: Timestamp;
@@ -93,6 +105,7 @@ export interface DB {
   events: Events;
   group_members: GroupMembers;
   groups: Groups;
+  notifications: Notifications;
   sessions: Sessions;
   users: Users;
 }

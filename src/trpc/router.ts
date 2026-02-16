@@ -5,6 +5,7 @@ import { eventsRouter } from "./routers/eventsRouter";
 import { groupsRouter } from "./routers/groupsRouter";
 import { groupMembersRouter } from "./routers/groupMembersRouter";
 import { eventAttendantsRouter } from "./routers/eventAttendantsRouter";
+import { notificationsRouter } from "./routers/notificationsRouter";
 
 export const appRouter = router({
     events: eventsRouter,
@@ -12,7 +13,8 @@ export const appRouter = router({
     auth: authRouter,
     categories: categoriesRouter,
     groupMembers: groupMembersRouter,
-    eventAttendants: eventAttendantsRouter
+    eventAttendants: eventAttendantsRouter,
+    notifications: notificationsRouter
 });
 
 export type AppRouter = typeof appRouter;

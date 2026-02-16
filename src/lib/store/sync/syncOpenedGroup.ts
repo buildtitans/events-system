@@ -1,27 +1,44 @@
 import { EventsPages } from "../slices/events/EventsSlice";
-import type { GroupSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 export type SyncOpenGroupPayload = {
-    group: GroupSchemaType,
+    group: GroupSchemaType | null,
     events: EventsPages
 };
 
-export async function syncOpenedGroup(slug: GroupSchemaType["slug"]): Promise<SyncOpenGroupPayload> {
+export async function syncOpenedGroup(
+    slug: GroupSchemaType["slug"]
+): Promise<SyncOpenGroupPayload> {
 
-    const group = await trpcClient
-        .groups
-        .groupBySlug
-        .mutate(slug);
+    try {
+        const group = await trpcClient
+            .groups
+            .groupBySlug
+            .mutate(slug);
 
-    const events = await trpcClient
-        .events
-        .groupEvents
-        .mutate(group.id) ?? [];
+        if (!group) {
+            return {
+                group: null,
+                events: []
+            }
+        }
 
-    return {
-        group,
-        events
+        const events = await trpcClient
+            .events
+            .groupEvents
+            .mutate(group.id) ?? [];
+
+        return {
+            group,
+            events
+        }
+
+    } catch (err) {
+        console.error(err)
+        return {
+            group: null,
+            events: []
+        }
     }
-
-}
+};

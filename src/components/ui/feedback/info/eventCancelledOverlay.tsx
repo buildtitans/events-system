@@ -15,14 +15,14 @@ export default function EventCancelledOverlay(): JSX.Element | null {
                     "linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.65))",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
             }}
         >
             <Chip
                 label="Cancelled"
-                color="error"
+                color="info"
                 icon={<CancelIcon />}
-                sx={{ fontWeight: 600, letterSpacing: 1 }}
+                sx={{ fontWeight: 600, letterSpacing: 1, opacity: 0.7 }}
             />
         </Box>
     )

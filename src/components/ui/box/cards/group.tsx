@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { Author } from './author';
-import type { GroupSchemaType } from '@/src/schemas/groupSchema';
+import type { GroupSchemaType } from '@/src/schemas/groups/groupSchema';
 
 
 const StyledTypography = styled(Typography)({

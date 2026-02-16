@@ -9,4 +9,9 @@ const groupSidebarStyles = {
     borderColor: "rgba(38, 38, 38, 0.7)"
 };
 
-export { groupSidebarStyles };
+const DAY_MONTH_YEAR_HOUR_FORMAT = 'MMMM D, YYYY h:mm A';
+
+export {
+    groupSidebarStyles,
+    DAY_MONTH_YEAR_HOUR_FORMAT
+};

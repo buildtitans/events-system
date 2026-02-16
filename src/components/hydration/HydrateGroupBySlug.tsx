@@ -4,7 +4,7 @@ import type { AppDispatch } from "@/src/lib/store";
 import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
-import { GroupSchemaType } from "@/src/schemas/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 import { wait } from "@/src/lib/utils/helpers/wait";
@@ -13,33 +13,46 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
     const dispatch = useDispatch<AppDispatch>();
     useRefreshGroupEvents();
 
-    const handleSyncGroupOpened = (group: GroupSchemaType) => {
-        dispatch(groupOpened({
-            status: "ready",
-            data: group
-        }));
-    }
 
-    const handleSyncEventsOfGroup = (events: EventsPages) => {
-        if (events.length > 0) {
-            dispatch(getGroupEvents({
-                status: "ready",
-                data: events
-            }));
-            return;
-        };
-        dispatch(getGroupEvents({
-            status: "warning",
-            message: "No events have been scheduled for this group"
-        }));
-    };
 
     useEffect(() => {
+        const handleSyncGroupOpened = (group: GroupSchemaType) => {
+            dispatch(groupOpened({
+                status: "ready",
+                data: group
+            }));
+        }
+
+        const handleSyncEventsOfGroup = (events: EventsPages) => {
+            if (events.length > 0) {
+                dispatch(getGroupEvents({
+                    status: "ready",
+                    data: events
+                }));
+                return;
+            };
+            dispatch(getGroupEvents({
+                status: "warning",
+                message: "No events have been scheduled for this group"
+            }));
+        };
+
+
+
         const handlePayload = async (
-            group: GroupSchemaType,
+            group: GroupSchemaType | null,
             events: EventsPages
         ): Promise<void> => {
-            await wait(500);
+
+            if (!group) {
+                dispatch(groupOpened({
+                    status: "failed",
+                    error: "Group hydration error"
+                }));
+                return;
+            };
+
+
             handleSyncGroupOpened(group);
             await wait(1200);
             handleSyncEventsOfGroup(events);
@@ -53,6 +66,8 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
                 events,
                 group
             } = await syncOpenedGroup(slug);
+
+            await wait(1000);
 
             await handlePayload(group, events);
 

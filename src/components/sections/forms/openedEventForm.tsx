@@ -2,25 +2,22 @@
 import { type JSX } from "react";
 import Container from "@mui/material/Container";
 import { useForm, Controller } from 'react-hook-form';
-import { useUpdateAttendance } from "@/src/lib/hooks/update/useUpdateEventStatus";
-import { EventAttendantStatusSchemaType } from "@/src/schemas/eventAttendantsSchema";
+import { useUpdateAttendance } from "@/src/lib/hooks/update/useUpdateAttendance";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { ATTENDANCE_OPTIONS } from "@/src/lib/tokens/attentanceStatusTokens";
-import { EventSchemaType } from "@/src/schemas/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
 
 type UpdateViewerAttendanceFormProps = {
-    currentStatus: EventAttendantStatusSchemaType, event_id: EventSchemaType["id"],
-
-    role: GroupMembersSchemaType["role"]
-
-}
+    currentStatus: EventAttendantStatusSchemaType,
+    event_id: EventSchemaType["id"],
+};
 
 type UpdateAttendanceStatusForm = {
     status: EventAttendantStatusSchemaType | null,
@@ -29,7 +26,6 @@ type UpdateAttendanceStatusForm = {
 export default function UpdateViewerAttendanceForm({
     currentStatus,
     event_id,
-    role
 }: UpdateViewerAttendanceFormProps
 ): JSX.Element {
     const { control } = useForm<UpdateAttendanceStatusForm>();
@@ -37,7 +33,7 @@ export default function UpdateViewerAttendanceForm({
         newStatus,
         handleStatusChange,
         handleSubmit
-    } = useUpdateAttendance(currentStatus, event_id, role);
+    } = useUpdateAttendance(currentStatus, event_id);
 
 
     return (

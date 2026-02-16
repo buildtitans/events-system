@@ -1,4 +1,4 @@
-import type { GroupsSchemaType } from "@/src/schemas/groupSchema";
+import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 
 function chunkGroupsIntoPages(groups: GroupsSchemaType, size: number = 6): GroupsSchemaType[] {
