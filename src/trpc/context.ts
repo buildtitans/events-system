@@ -9,7 +9,10 @@ export type Context = {
     req: FastifyRequest
 };
 
-export function createContext({ req, res }: CreateFastifyContextOptions): Context {
+export function createContext({
+    req,
+    res
+}: CreateFastifyContextOptions): Context {
     return {
         api: req.server.db,
         user: req.user ?? null,

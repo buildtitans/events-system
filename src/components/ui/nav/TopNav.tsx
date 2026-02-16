@@ -11,7 +11,7 @@ import NavActions from './global/navActions';
 import NavBar from './global/navBar';
 import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';
 import { getViewerPermissions } from '@/src/lib/store/slices/viewer/PermissionsSlice';
-import { wait } from '@/src/lib/utils/helpers/wait';
+import { wait } from '@/src/lib/utils/rendering/wait';
 
 export default function TopNav() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);

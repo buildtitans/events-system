@@ -40,12 +40,10 @@ export const eventsRouter = router({
         .mutation(async ({ ctx, input }) => {
 
             if (!input) return null;
-
             return await ctx
                 .api
                 .events
                 .getGroupEvents(input);
-
         }),
 
     updateEventStatus:

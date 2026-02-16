@@ -26,27 +26,38 @@ export const authRouter = router({
                     expires: new Date(session.expires_at),
                 })
 
-                ctx.user = { id: user.id, role: "user" }
+                ctx.user = {
+                    id: user.id,
+                    role: "user"
+                };
 
                 return res ? { success: true } : { success: false }
             }),
 
-    signout: publicProcedure
-        .mutation(async ({ ctx }) => {
+    signout:
+        publicProcedure
+            .mutation(async ({ ctx }) => {
 
-            const token = ctx.req.cookies.session;
+                const token = ctx
+                    .req
+                    .cookies
+                    .session;
 
-            if (!token) return null;
+                if (!token) return null;
 
-            const res = await ctx.api.auth.logOut(token);
+                const res = await ctx
+                    .api
+                    .auth
+                    .logOut(token);
 
-            if (res) {
-                ctx.reply.clearCookie("session");
+                if (res) {
+                    ctx
+                        .reply
+                        .clearCookie("session");
+                };
 
-            }
-
-            return res;
-        }),
+                return res;
+            }),
 
     recover:
         publicProcedure

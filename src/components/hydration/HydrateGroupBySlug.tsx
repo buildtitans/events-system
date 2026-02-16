@@ -7,7 +7,7 @@ import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
-import { wait } from "@/src/lib/utils/helpers/wait";
+import { wait } from "@/src/lib/utils/rendering/wait";
 
 export default function HydrateGroupBySlug({ slug }: { slug: string }): React.ReactNode {
     const dispatch = useDispatch<AppDispatch>();

@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
+import { getNumAttendants, getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
+
 
 function getViewerFromAttendants(
     user_id: string,
@@ -63,9 +64,18 @@ export const useHydrateEventDrawer = () => {
                 if (!user_id) return;
 
                 if (!attendants) {
+                    dispatch(getNumAttendants({ status: "none" }));
+
                     throw new Error("Failed to get attendants")
-                }
-                handleAttendants(attendants, user_id, event.data.id);
+                };
+
+                dispatch(getNumAttendants({ status: "ready", data: attendants.length }))
+
+                handleAttendants(
+                    attendants,
+                    user_id,
+                    event.data.id
+                );
 
             } catch (err) {
                 console.error(err);

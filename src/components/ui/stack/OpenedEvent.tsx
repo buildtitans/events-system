@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { formatDateForUI } from "@/src/lib/utils/rendering/formatDateForUI";
 import OpenedEventImage from "../box/cards/openedEventImage";
+import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
 const stackProps = {
     marginX: 3,
@@ -18,7 +19,7 @@ const stackProps = {
 }
 
 
-export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.Element {
+export default function OpenedEvent({ event, numAttendants }: { event: EventSchemaType, numAttendants?: NumberOfAttendantsType }): JSX.Element {
     const thumbnail = event.img;
     const startTime = formatDateForUI(event.starts_at);
 
@@ -48,9 +49,35 @@ export default function OpenedEvent({ event }: { event: EventSchemaType }): JSX.
                 <StartTime
                     startTime={startTime}
                 />
+
+                {(numAttendants) && <EventAttendants numAttendants={numAttendants} />}
+
             </Stack>
 
         </FadeInOutBox>
+    )
+}
+
+
+function EventAttendants({ numAttendants }: { numAttendants: NumberOfAttendantsType }) {
+
+    return (
+        <Box
+            sx={{
+                width: "90%",
+                height: "auto",
+                textAlign: "left",
+                color: "white",
+                paddingY: 2
+            }}
+        >
+            {numAttendants.status === "ready" &&
+                <Typography variant="caption" fontSize={"16px"}>
+                    {(numAttendants.data > 1) && `${numAttendants.data} people are going`}
+                    {(numAttendants.data === 1) && `${numAttendants.data} person is going`}
+                    {(numAttendants.data === 0) && "Nobody is attending yet"}
+                </Typography>}
+        </Box>
     )
 }
 

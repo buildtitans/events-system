@@ -9,7 +9,7 @@ import { Dayjs } from "dayjs";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
-import { wait } from "../../utils/helpers/wait";
+import { wait } from "../../utils/rendering/wait";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 
 export type NewEventType = {

@@ -8,7 +8,7 @@ import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/Ren
 import { CancelEventHook } from "../../types/hooks/types";
 import { createScheduleNotificatoin } from "../../utils/helpers/notifications/createScheduleNotification";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { wait } from "../../utils/helpers/wait";
+import { wait } from "../../utils/rendering/wait";
 
 export const useCancelEvent = (
     event: EventSchemaType,

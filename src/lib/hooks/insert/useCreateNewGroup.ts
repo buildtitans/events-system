@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { GroupSchemaType, NewGroupInputSchema, NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
-import { validateNewGroupInput } from "../../utils/helpers/validateNewGroupInput";
+import { validateNewGroupInput } from "../../utils/parsing/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../../store/slices/groups/GroupsSlice";
 import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";

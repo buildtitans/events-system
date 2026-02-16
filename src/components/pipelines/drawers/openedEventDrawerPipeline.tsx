@@ -12,6 +12,7 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
     useHydrateEventDrawer();
     const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
     const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
+    const numAttendants = useSelector((s: RootState) => s.eventDrawer.numberAttending);
 
     switch (openedEvent.status) {
         case "ready":
@@ -19,6 +20,7 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
                 <RenderEventDrawerContents
                     role={permissions[openedEvent.data.group_id]}
                     event={openedEvent.data}
+                    numAttendants={numAttendants}
                 />
             );
 

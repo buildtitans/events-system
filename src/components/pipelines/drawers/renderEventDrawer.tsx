@@ -6,15 +6,18 @@ import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import RescheduleEventForm from "../../sections/forms/rescheduleEventForm";
+import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
 type RenderEventDrawerContentsProps = {
     role: GroupMembersSchemaType["role"],
-    event: EventSchemaType
+    event: EventSchemaType,
+    numAttendants: NumberOfAttendantsType
 }
 
 export default function RenderEventDrawerContents({
     role,
-    event
+    event,
+    numAttendants
 }: RenderEventDrawerContentsProps): JSX.Element | null {
 
     switch (role) {
@@ -23,6 +26,7 @@ export default function RenderEventDrawerContents({
                 <>
                     <OpenedEvent
                         event={event}
+                        numAttendants={numAttendants}
                     />
                     <MembersOnlyAttendanceForm
                         role={role}
@@ -35,6 +39,7 @@ export default function RenderEventDrawerContents({
                 <>
                     <OpenedEvent
                         event={event}
+                        numAttendants={numAttendants}
                     />
                     <MembersOnlyAttendanceForm
                         role={role}

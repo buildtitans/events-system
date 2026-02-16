@@ -7,17 +7,22 @@ export type OpenedEvent = { status: "idle" }
     | { status: "ready", data: EventSchemaType }
     | { status: "failed", error: string }
 
-type UserAttendantInfo = EventAttendantsSchemaType
+type UserAttendantInfo = EventAttendantsSchemaType;
+
+export type NumberOfAttendantsType = { status: "initial" }
+    | { status: "none" }
+    | { status: "ready", data: number }
 
 type InitialState = {
     event: OpenedEvent,
-    viewerAttendanceInfo: EventAttendantsSchemaType | null
-
+    viewerAttendanceInfo: EventAttendantsSchemaType | null,
+    numberAttending: NumberOfAttendantsType
 };
 
 const initialState: InitialState = {
     event: { status: 'idle' },
-    viewerAttendanceInfo: null
+    viewerAttendanceInfo: null,
+    numberAttending: { status: "initial" }
 };
 
 const EventDrawerSlice = createSlice({
@@ -30,6 +35,9 @@ const EventDrawerSlice = createSlice({
         getViewerAttendance: (state: InitialState, action: PayloadAction<UserAttendantInfo>) => {
             state.viewerAttendanceInfo = action.payload;
         },
+        getNumAttendants: (state: InitialState, action: PayloadAction<NumberOfAttendantsType>) => {
+            state.numberAttending = action.payload;
+        },
         closeEventDrawer: () => initialState
     }
 });
@@ -39,6 +47,7 @@ export type EventDrawerSliceType = ReturnType<typeof EventDrawerSlice.reducer>;
 export const {
     fillEventDrawer,
     closeEventDrawer,
+    getNumAttendants,
     getViewerAttendance,
 } = EventDrawerSlice.actions;
 

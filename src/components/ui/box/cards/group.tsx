@@ -109,7 +109,7 @@ function Group({
                     {group.description}
                 </StyledTypography>
 
-                <CardFooter authors={[{ name: group.location ?? "Bloomington IL", avatar: "@/public/next.svg" }]} />
+                <CardFooter groupName={group.name} />
             </Box>
         </Grid>
     )
