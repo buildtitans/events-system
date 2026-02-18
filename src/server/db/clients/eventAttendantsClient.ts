@@ -44,10 +44,6 @@ export class EventAttendantsClient {
                 newStatus
             );
 
-        console.log({
-            "Raw Updated Attendant": updatedRaw
-        });
-
         return this
             .parseRawAttendant(updatedRaw);
     };

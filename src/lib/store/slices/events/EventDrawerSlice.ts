@@ -13,16 +13,22 @@ export type NumberOfAttendantsType = { status: "initial" }
     | { status: "none" }
     | { status: "ready", data: number }
 
+export type NameOfGroup = { status: "initial" } | { status: "ready", data: string }
+
 type InitialState = {
     event: OpenedEvent,
+    groupName: NameOfGroup,
     viewerAttendanceInfo: EventAttendantsSchemaType | null,
-    numberAttending: NumberOfAttendantsType
+    numberAttending: NumberOfAttendantsType,
+    numberInterested: NumberOfAttendantsType
 };
 
 const initialState: InitialState = {
     event: { status: 'idle' },
+    groupName: { status: "initial" },
     viewerAttendanceInfo: null,
-    numberAttending: { status: "initial" }
+    numberAttending: { status: "initial" },
+    numberInterested: { status: "initial" }
 };
 
 const EventDrawerSlice = createSlice({
@@ -38,6 +44,12 @@ const EventDrawerSlice = createSlice({
         getNumAttendants: (state: InitialState, action: PayloadAction<NumberOfAttendantsType>) => {
             state.numberAttending = action.payload;
         },
+        getNumInterested: (state: InitialState, action: PayloadAction<NumberOfAttendantsType>) => {
+            state.numberInterested = action.payload;
+        },
+        getGroupName: (state: InitialState, action: PayloadAction<NameOfGroup>) => {
+            state.groupName = action.payload;
+        },
         closeEventDrawer: () => initialState
     }
 });
@@ -49,6 +61,8 @@ export const {
     closeEventDrawer,
     getNumAttendants,
     getViewerAttendance,
+    getNumInterested,
+    getGroupName
 } = EventDrawerSlice.actions;
 
 export default EventDrawerSlice.reducer;

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getNumAttendants, getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
+import { getGroupName, getNumAttendants, getNumInterested, getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
 
@@ -33,6 +33,7 @@ export const useHydrateEventDrawer = () => {
     const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
     const event = useSelector((s: RootState) => s.eventDrawer.event);
     const userKind = useSelector((s: RootState) => s.auth.userKind);
+    const groups = useSelector((s: RootState) => s.groups.communities);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -44,7 +45,6 @@ export const useHydrateEventDrawer = () => {
             attendantsReq: EventAttendantsSchemaType[],
             user_id: string,
             event_id: string
-
         ) => {
             dispatch(getEventAttendants(attendantsReq));
             const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
@@ -69,7 +69,19 @@ export const useHydrateEventDrawer = () => {
                     throw new Error("Failed to get attendants")
                 };
 
-                dispatch(getNumAttendants({ status: "ready", data: attendants.length }))
+                const group = groups.find((group) => group.id === event.data.group_id)
+
+                const name = group?.name;
+
+                const attending = attendants.filter((el) => el.status === "going");
+
+                const interested = attendants.filter((el) => el.status === "interested");
+
+                if (name) dispatch(getGroupName({ status: "ready", data: name }));
+
+                dispatch(getNumAttendants({ status: "ready", data: attending.length }));
+
+                dispatch(getNumInterested({ status: "ready", data: interested.length }));
 
                 handleAttendants(
                     attendants,

@@ -6,7 +6,7 @@ import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import OpenedEventImage from "../box/cards/openedEventImage";
-import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { NameOfGroup, NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 
@@ -22,27 +22,32 @@ const stackProps = {
 
 type OpenedEventProps = {
     event: EventSchemaType,
-    numAttendants?: NumberOfAttendantsType
+    numAttendants?: NumberOfAttendantsType,
+    numInterested?: NumberOfAttendantsType,
+    name: NameOfGroup
 };
 
 
 export default function OpenedEvent({
     event,
-    numAttendants
+    numAttendants,
+    numInterested,
+    name
 }: OpenedEventProps): JSX.Element {
     const thumbnail = event.img;
     const startTime = toMonthDayYearHour(event.starts_at);
 
     return (
         <FadeInOutBox>
-            <Stack sx={stackProps} spacing={1}>
-                <Typography component={"h1"} sx={{
+            <Stack sx={stackProps} spacing={0.5}>
+
+                {(name.status === "ready") && <Typography component={"h1"} sx={{
                     color: 'rgba(255, 255, 255, 0.6)',
                     fontSize: "28px",
                     fontWeight: "light"
                 }} >
-                    Event
-                </Typography>
+                    {name.data}
+                </Typography>}
 
                 <EventTitle
                     title={event.title}
@@ -60,7 +65,7 @@ export default function OpenedEvent({
                     startTime={startTime}
                 />
 
-                {(numAttendants) && <EventAttendants numAttendants={numAttendants} />}
+                {(numAttendants) && <EventAttendants numAttendants={numAttendants} numInterested={numInterested} />}
 
             </Stack>
 
@@ -69,7 +74,7 @@ export default function OpenedEvent({
 }
 
 
-function EventAttendants({ numAttendants }: { numAttendants: NumberOfAttendantsType }) {
+function EventAttendants({ numAttendants, numInterested }: { numAttendants: NumberOfAttendantsType, numInterested?: NumberOfAttendantsType }) {
 
     return (
         <Box
@@ -78,15 +83,31 @@ function EventAttendants({ numAttendants }: { numAttendants: NumberOfAttendantsT
                 height: "auto",
                 textAlign: "left",
                 color: "white",
-                paddingY: 2
+                paddingY: 2,
+                display: 'flex',
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "start"
             }}
         >
+
             {numAttendants.status === "ready" &&
                 <Typography variant="caption" fontSize={"16px"}>
                     {(numAttendants.data > 1) && `${numAttendants.data} people are going`}
                     {(numAttendants.data === 1) && `${numAttendants.data} person is going`}
                     {(numAttendants.data === 0) && "Nobody is attending yet"}
                 </Typography>}
+
+            {(numInterested) && (numInterested.status === "ready") &&
+                <Typography variant="caption" fontSize={"16px"} sx={{
+                    color: 'rgba(255, 255, 255, 0.6)'
+                }}>
+                    {(numInterested.data > 1) && `${numInterested.data} people have expressed interest`}
+                    {(numInterested.data === 1) && `${numInterested.data} person is interested`}
+                </Typography>
+            }
+
+
         </Box>
     )
 }
@@ -139,7 +160,7 @@ function EventDescription({ description }: { description: EventSchemaType["descr
                 borderBottom: 1,
                 borderColor: 'rgb(255, 255, 255, 0.15)'
             }}>
-                Details
+                Event Details
             </Typography>
 
             <Typography component={"p"} sx={{

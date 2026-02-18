@@ -2,16 +2,22 @@ import type { FastifyInstance } from "fastify";
 
 export async function registerSessionHook(app: FastifyInstance) {
     app.addHook("preHandler", async (req) => {
-        const token = req.cookies.session;
-        if (!token) {
-            console.log(`********** NO COOKIE ***************`)
-            return;
-        };
+        req.user = undefined;
 
-        const validated_user = await app.db.auth.authenticate(token);
+        try {
+            const token = req.cookies.session;
 
-        if (validated_user) {
+            if (!token) return;
+
+            const validated_user = await app.db.auth.authenticate(token);
+
+            if (!validated_user) return;
+
             req.user = { id: validated_user.id, role: "user" };
+
+        } catch (err) {
+
+            app.log.error({ err }, "Session authentication failed");
         }
     });
 }

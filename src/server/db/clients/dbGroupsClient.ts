@@ -2,7 +2,7 @@ import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Groups } from "@/src/server/db/types/db";
 import { GroupSchemaType, GroupsSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupSchemaValidator, GroupsSchemaValidator } from "@/src/lib/utils/validation/validateSchema";
-import { slugify } from "@/src/lib/utils/helpers/slugify";
+import { slugify } from "@/src/lib/utils/parsing/slugify";
 
 
 export class GroupsClient {

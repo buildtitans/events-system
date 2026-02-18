@@ -6,18 +6,22 @@ import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import RescheduleEventForm from "../../sections/forms/rescheduleEventForm";
-import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { NameOfGroup, NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
 type RenderEventDrawerContentsProps = {
     role: GroupMembersSchemaType["role"],
     event: EventSchemaType,
-    numAttendants: NumberOfAttendantsType
+    numAttendants: NumberOfAttendantsType,
+    numInterested: NumberOfAttendantsType,
+    name: NameOfGroup
 }
 
 export default function RenderEventDrawerContents({
     role,
     event,
-    numAttendants
+    numAttendants,
+    numInterested,
+    name
 }: RenderEventDrawerContentsProps): JSX.Element | null {
 
     switch (role) {
@@ -27,6 +31,8 @@ export default function RenderEventDrawerContents({
                     <OpenedEvent
                         event={event}
                         numAttendants={numAttendants}
+                        numInterested={numInterested}
+                        name={name}
                     />
                     <MembersOnlyAttendanceForm
                         role={role}
@@ -40,13 +46,17 @@ export default function RenderEventDrawerContents({
                     <OpenedEvent
                         event={event}
                         numAttendants={numAttendants}
+                        numInterested={numInterested}
+                        name={name}
                     />
                     <MembersOnlyAttendanceForm
                         role={role}
                         scheduleStatus={event.status}
                     />
 
-                    <RescheduleEventForm event={event} />
+                    <RescheduleEventForm
+                        event={event}
+                    />
                 </>
             )
         default: {
@@ -55,6 +65,7 @@ export default function RenderEventDrawerContents({
                 <>
                     <OpenedEvent
                         event={event}
+                        name={name}
                     />
 
                     <CheckOutGroupButton
