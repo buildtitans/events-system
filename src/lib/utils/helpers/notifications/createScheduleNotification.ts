@@ -1,11 +1,9 @@
 import type { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
-dayjs.extend(utc);
+import { toMonthDayYearHour } from "../../parsing/toMonthDayYearHour";
 
-export function createScheduleNotificatoin(
+export function createScheduleNotification(
     event: EventSchemaType,
     updates: UpdateEventArgsSchemaType
 ): CreateNotificationSchemaType {
@@ -22,13 +20,14 @@ function getScheduleNotificationMessage(
     event: EventSchemaType,
     updates: UpdateEventArgsSchemaType
 ) {
+    const date = toMonthDayYearHour(event.starts_at);
 
     switch (updates.status) {
         case "cancelled":
             return `The event: ${event.title} has been cancelled`;
 
         case "scheduled":
-            return `The event: ${event.title} is back on, set for ${event.starts_at}`;
+            return `The event: ${event.title} is back on, set for ${date}`;
 
         default: {
             return `there was an update to the scheduling of ${event.title}`
@@ -42,13 +41,12 @@ export function createNewEventNotification(
     group: GroupSchemaType
 ): CreateNotificationSchemaType {
 
-    const utcDate = dayjs(event.starts_at).utc().toDate().toDateString();
-    const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
+    const date = toMonthDayYearHour(event.starts_at);
 
     return {
         subject: `${group.name} scheduled a new event`,
         priority: "low",
         group_id: event.group_id,
-        message: ` New event: ${event.title} scheduled for ${string_date}, `
+        message: ` New event: ${event.title} scheduled for ${date}`
     };
 };

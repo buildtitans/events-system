@@ -8,10 +8,8 @@ import { StyledCard, StyledCardContent, StyledTypography } from '@/src/styles/st
 import { CardFooter } from '@/src/components/ui/box/cards/cardFooter';
 import type { JSX } from 'react';
 import type { EventSchemaType } from '@/src/schemas/events/eventSchema';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import EventCancelledOverlay from '../../feedback/info/eventCancelledOverlay';
-dayjs.extend(utc);
+import { toMonthDayYearHour } from '@/src/lib/utils/parsing/toMonthDayYearHour';
 
 export type MobileEventCard = 12;
 
@@ -55,9 +53,7 @@ function EventHeroCard(
     }: EventCardProps
 ): JSX.Element {
     const scheduled_at = useMemo(() => {
-        const utcDate = dayjs(event.starts_at).utc().toDate().toDateString();
-        const string_date = dayjs(utcDate).format('MMMM D, YYYY h:mm A');
-        return string_date;
+        return toMonthDayYearHour(event.starts_at)
     }, [event])
 
 

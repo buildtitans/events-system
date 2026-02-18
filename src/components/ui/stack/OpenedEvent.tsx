@@ -5,9 +5,9 @@ import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
 import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { formatDateForUI } from "@/src/lib/utils/rendering/formatDateForUI";
 import OpenedEventImage from "../box/cards/openedEventImage";
 import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 
 const stackProps = {
@@ -31,7 +31,7 @@ export default function OpenedEvent({
     numAttendants
 }: OpenedEventProps): JSX.Element {
     const thumbnail = event.img;
-    const startTime = formatDateForUI(event.starts_at);
+    const startTime = toMonthDayYearHour(event.starts_at);
 
     return (
         <FadeInOutBox>

@@ -7,13 +7,19 @@ import type {
     DomainStateType
 } from "@/src/lib/types/server/types"
 
-
-const domainState: DomainStateType = {
+const createDomainStateFallback = (): DomainStateType => ({
     events: [],
     groups: [],
     categories: [],
-};
+});
 
+
+
+async function syncDomains(): Promise<SyncDomainsResult> {
+    const requests = await runSync();
+    const results = handleResults(requests);
+    return results
+};
 
 async function runSync(): Promise<SyncResults> {
 
@@ -22,22 +28,10 @@ async function runSync(): Promise<SyncResults> {
         groups: trpcClient.groups.list.mutate(),
         categories: trpcClient.categories.getAllCategories.mutate(),
     } satisfies DomainPromises;
-
     const keys = Object.keys(map) as Domains[];
-
     const promises = await Promise.allSettled(Object.values(map));
 
     return Object.fromEntries(promises.map((res, i) => [keys[i], res])) as SyncResults;
-};
-
-
-async function syncDomains(): Promise<SyncDomainsResult> {
-
-    const requests = await runSync();
-
-    const results = handleResults(requests);
-
-    return results
 };
 
 
@@ -52,9 +46,10 @@ function handleResults(
     if (allRejected) {
         return {
             status: "rejected",
-            data: domainState
+            data: createDomainStateFallback()
         }
     }
+
     return {
         status: "fulfilled",
         data: {
@@ -63,6 +58,6 @@ function handleResults(
             categories: results.categories.status === "fulfilled" ? results.categories.value : []
         } as DomainStateType
     }
-}
+};
 
 export { syncDomains };

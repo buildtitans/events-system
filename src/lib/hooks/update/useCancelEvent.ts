@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { CancelEventHook } from "../../types/hooks/types";
-import { createScheduleNotificatoin } from "../../utils/helpers/notifications/createScheduleNotification";
+import { createScheduleNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 import { wait } from "../../utils/rendering/wait";
 
@@ -84,7 +84,7 @@ export const useCancelEvent = (
     useEffect(() => {
         const executeCreateNotifications = async () => {
 
-            const notification = createScheduleNotificatoin(event, options);
+            const notification = createScheduleNotification(event, options);
 
             await trpcClient
                 .notifications

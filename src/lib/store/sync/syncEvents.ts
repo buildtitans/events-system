@@ -2,8 +2,6 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import type { EventsPages } from "../slices/events/EventsSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
-
-
 export async function syncEvents(): Promise<EventsPages> {
 
     const result = await trpcClient.events.list.mutate();
