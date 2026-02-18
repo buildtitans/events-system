@@ -3,8 +3,6 @@ import { EventsPages } from "../slices/events/EventsSlice";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
-type PromiseAllSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
-
 export type DomainStateType = {
     events: EventsPages,
     groups: GroupsSchemaType,
@@ -18,10 +16,15 @@ export type SyncDomainsResult = {
 
 type Domains = "events" | "groups" | "categories";
 
-type DomainPromises = Record<Domains, Promise<unknown>>;
+type DomainPromise<K extends keyof DomainStateType> = Promise<DomainStateType[K]>;
+
+type DomainPromises = { [K in keyof DomainStateType]: DomainPromise<K> };
+
+type SyncResults = { [K in keyof DomainStateType]: PromiseSettledResult<DomainStateType[K]> };
 
 
-async function runSync(): Promise<Record<Domains, PromiseSettledResult<unknown>>> {
+
+async function runSync(): Promise<SyncResults> {
 
     const map = {
         events: trpcClient.events.list.mutate(),
@@ -33,7 +36,7 @@ async function runSync(): Promise<Record<Domains, PromiseSettledResult<unknown>>
 
     const promises = await Promise.allSettled(Object.values(map));
 
-    return Object.fromEntries(promises.map((res, i) => [keys[i], res])) as Record<Domains, PromiseSettledResult<unknown>>;
+    return Object.fromEntries(promises.map((res, i) => [keys[i], res])) as SyncResults;
 };
 
 
@@ -49,7 +52,9 @@ async function syncDomains(): Promise<SyncDomainsResult> {
 };
 
 
-function handleResults(results: Record<Domains, PromiseAllSettledResult<unknown>>): SyncDomainsResult {
+function handleResults(
+    results: SyncResults
+): SyncDomainsResult {
 
     const allRejected = Object.values(results).every((result) => result.status === "rejected");
 
