@@ -3,7 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { ReduxProvider } from '@/src/lib/store';
-import { SyncDomainsResult } from '../lib/store/sync/syncDomains';
+import { SyncDomainsResult } from '@/src/lib/types/server/types';
 import type { PropsWithChildren } from 'react';
 import { AppMountPipeline } from '../components/pipelines/mount/appMountPipeline';
 

@@ -3,7 +3,7 @@ import { JSX, PropsWithChildren } from "react";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
-import type { SyncDomainsResult } from "@/src/lib/store/sync/syncDomains";
+import type { SyncDomainsResult } from "@/src/lib/types/server/types";
 
 type AppMountPipelineProps = PropsWithChildren<{
     children: React.ReactNode,

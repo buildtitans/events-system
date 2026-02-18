@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { signalDomainStatus } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useEffect } from "react";
-import { DomainStateType } from "@/src/lib/store/sync/syncDomains";
+import { DomainStateType } from "@/src/lib/types/server/types";
 import { getAllGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";

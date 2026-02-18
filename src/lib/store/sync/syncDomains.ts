@@ -1,27 +1,18 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { EventsPages } from "../slices/events/EventsSlice";
-import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type {
+    Domains,
+    DomainPromises,
+    SyncResults,
+    SyncDomainsResult,
+    DomainStateType
+} from "@/src/lib/types/server/types"
 
-export type DomainStateType = {
-    events: EventsPages,
-    groups: GroupsSchemaType,
-    categories: CategoriesSchemaType
+
+const domainState: DomainStateType = {
+    events: [],
+    groups: [],
+    categories: [],
 };
-
-export type SyncDomainsResult = {
-    status: "fulfilled" | "rejected",
-    data: DomainStateType
-}
-
-type Domains = "events" | "groups" | "categories";
-
-type DomainPromise<K extends keyof DomainStateType> = Promise<DomainStateType[K]>;
-
-type DomainPromises = { [K in keyof DomainStateType]: DomainPromise<K> };
-
-type SyncResults = { [K in keyof DomainStateType]: PromiseSettledResult<DomainStateType[K]> };
-
 
 
 async function runSync(): Promise<SyncResults> {
@@ -47,8 +38,6 @@ async function syncDomains(): Promise<SyncDomainsResult> {
     const results = handleResults(requests);
 
     return results
-
-
 };
 
 
@@ -56,17 +45,14 @@ function handleResults(
     results: SyncResults
 ): SyncDomainsResult {
 
-    const allRejected = Object.values(results).every((result) => result.status === "rejected");
-
+    const allRejected = Object
+        .values(results)
+        .every((result) => result.status === "rejected");
 
     if (allRejected) {
         return {
             status: "rejected",
-            data: {
-                events: [],
-                groups: [],
-                categories: []
-            }
+            data: domainState
         }
     }
     return {
