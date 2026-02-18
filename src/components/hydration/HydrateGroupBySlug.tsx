@@ -54,7 +54,6 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
 
 
             handleSyncGroupOpened(group);
-            await wait(1200);
             handleSyncEventsOfGroup(events);
         }
 
@@ -67,10 +66,7 @@ export default function HydrateGroupBySlug({ slug }: { slug: string }): React.Re
                 group
             } = await syncOpenedGroup(slug);
 
-            await wait(1000);
-
             await handlePayload(group, events);
-
         }
         void executeHydration();
 

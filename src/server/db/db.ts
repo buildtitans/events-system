@@ -5,10 +5,10 @@ import type { DB } from "@/src/server/db/types/db";
 
 const dialect = new PostgresDialect({
     pool: new Pool({
-        database: "events_db",
-        host: "localhost",
-        user: "events_user",
-        password: "eventspassword",
+        database: process.env.PGDATABASE,
+        host: process.env.PGHOST,
+        user: process.env.PGUSER,
+        password: process.env.PGPASSWORD,
         port: 5433,
         max: 10
     })

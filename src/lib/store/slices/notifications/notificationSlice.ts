@@ -32,7 +32,6 @@ export const NotificationSlice = createSlice({
 
         populateNewNotifications: (state: InitialState, action: PayloadAction<NotificationState>) => {
             state.notifications = action.payload;
-            console.log(state.notifications)
         },
         markSeenNotificaton: (state: InitialState, action: PayloadAction<ReadyNotificationState>) => {
 

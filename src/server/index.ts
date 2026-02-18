@@ -1,3 +1,6 @@
+import path from "path";
+import { config } from "dotenv";
+config({ path: path.resolve(process.cwd(), ".env") });
 import { buildServer } from "@/src/server/app";
 
 const server = buildServer();

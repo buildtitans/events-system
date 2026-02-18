@@ -12,7 +12,7 @@ function ensureEnvLoaded() {
 
 const ENV_MAP = {
     dbPassword: "PGPASSWORD",
-    fastifyUrl: "FASTIFY_SERVER_URL",
+    fastifyUrl: "NEXT_PUBLIC_FASTIFY_SERVER_URL",
     port: "FASTIFY_SERVER_PORT",
     events_endpoint: "GET_EVENTS_ENDPOINT",
     groups_endpoint: "GET_GROUPS_ENDPOINT",

@@ -9,6 +9,7 @@ import { formatDateForUI } from "@/src/lib/utils/rendering/formatDateForUI";
 import OpenedEventImage from "../box/cards/openedEventImage";
 import { NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
 
+
 const stackProps = {
     marginX: 3,
     paddingTop: 2,
@@ -16,10 +17,19 @@ const stackProps = {
     alignItems: "start",
     borderBottom: 1,
     borderColor: 'rgb(255, 255, 255, 0.15)'
-}
+};
 
 
-export default function OpenedEvent({ event, numAttendants }: { event: EventSchemaType, numAttendants?: NumberOfAttendantsType }): JSX.Element {
+type OpenedEventProps = {
+    event: EventSchemaType,
+    numAttendants?: NumberOfAttendantsType
+};
+
+
+export default function OpenedEvent({
+    event,
+    numAttendants
+}: OpenedEventProps): JSX.Element {
     const thumbnail = event.img;
     const startTime = formatDateForUI(event.starts_at);
 
