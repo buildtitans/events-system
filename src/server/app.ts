@@ -23,7 +23,25 @@ function buildServer() {
     const client_url = getEnv("client_url");
 
     const app = Fastify({
-        logger: true,
+        logger: {
+            transport: {
+                target: 'pino-pretty'
+            },
+            serializers: {
+                res(reply) {
+                    return {
+                        statusCode: reply.statusCode
+                    }
+                },
+                req(request) {
+                    return {
+                        method: request.method,
+                        url: request.url,
+                    };
+                }
+            }
+        },
+
         routerOptions: {
             maxParamLength: 500
         }
