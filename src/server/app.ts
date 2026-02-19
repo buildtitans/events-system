@@ -1,7 +1,6 @@
 import cors from "@fastify/cors";
 import Fastify from 'fastify';
 import fastifyCookie from "@fastify/cookie";
-import { getEnv } from '@/src/lib/utils/init/getEnv';
 import { registerSessionHook } from './hooks/registerSessionHook';
 import { createContext } from "@/src/trpc/context";
 import {
@@ -16,14 +15,21 @@ import {
     type AppRouter,
     appRouter
 } from "@/src/trpc/router";
+import { getEnv } from "../lib/utils/init/getEnv";
+
+
 
 function buildServer() {
+    const client_url = getEnv("client_url");
+
     const app = Fastify({
         logger: true,
-        maxParamLength: 500
+        routerOptions: {
+            maxParamLength: 500
+        }
     });
     app.register(cors, {
-        origin: "http://localhost:3000",
+        origin: client_url,
         credentials: true,
     });
 

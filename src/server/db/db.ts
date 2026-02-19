@@ -1,7 +1,9 @@
+import path from "path";
+import { config } from "dotenv";
+config({ path: path.resolve(process.cwd(), ".env") });
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import type { DB } from "@/src/server/db/types/db";
-
 
 const dialect = new PostgresDialect({
     pool: new Pool({

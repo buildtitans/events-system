@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { DB, Notifications } from "../types/db";
+import { DB, Notifications } from "@/src/server/db/types/db";
 import type { Insertable, Selectable } from "kysely";
 import {
     CreateNotificationSchemaType,
@@ -7,7 +7,7 @@ import {
     NotificationSchemaArrayValidator,
     NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { NotificationCreationProcedure } from "./types/types";
+import { NotificationCreationProcedure } from "@/src/server/db/clients/types/types";
 
 export class NotificationsClient {
 

@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { DB, GroupMembers } from "../types/db";
+import { DB, GroupMembers } from "../../types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import type {

@@ -20,7 +20,9 @@ const ENV_MAP = {
     dbPort: "PGPORT",
     postgresDb: "PGDATABASE",
     db_user: "PGUSER",
-    cookies_secret: "COOKIES_SECRET"
+    cookies_secret: "COOKIES_SECRET",
+    client_url: "CLIENT_URL",
+    dev_host: "DEV_FASTIFY_HOST"
 } as const;
 
 type EnvKey = keyof typeof ENV_MAP;

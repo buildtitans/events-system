@@ -1,7 +1,6 @@
 import { Insertable, Kysely, Selectable } from "kysely";
-import { DB } from "../types/db";
-import type { Events } from "../types/db";
-import { compileEventsLayout } from "../../layout/compileEventsLayout";
+import { DB, Events } from "../../types/db";
+import { compileEventsLayout } from "../../../layout/compileEventsLayout";
 import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
