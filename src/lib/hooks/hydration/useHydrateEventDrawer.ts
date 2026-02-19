@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getGroupName, getNumAttendants, getNumInterested, getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
+import { getGroupName, getGroupSlug, getNumAttendants, getNumInterested, getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
 
@@ -69,13 +69,17 @@ export const useHydrateEventDrawer = () => {
                     throw new Error("Failed to get attendants")
                 };
 
-                const group = groups.find((group) => group.id === event.data.group_id)
+                const group = groups.find((group) => group.id === event.data.group_id);
+
+                const slug = group?.slug;
 
                 const name = group?.name;
 
                 const attending = attendants.filter((el) => el.status === "going");
 
                 const interested = attendants.filter((el) => el.status === "interested");
+
+                if (slug) dispatch(getGroupSlug({ status: "ready", data: slug }));
 
                 if (name) dispatch(getGroupName({ status: "ready", data: name }));
 

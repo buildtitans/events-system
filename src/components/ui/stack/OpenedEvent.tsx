@@ -6,9 +6,17 @@ import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import OpenedEventImage from "../box/cards/openedEventImage";
-import { NameOfGroup, NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import {
+    GroupSlug,
+    NameOfGroup,
+    NumberOfAttendantsType
+} from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
-
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/src/lib/store";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { TitleTypography } from "../box/cards/group";
 
 const stackProps = {
     marginX: 3,
@@ -24,7 +32,8 @@ type OpenedEventProps = {
     event: EventSchemaType,
     numAttendants?: NumberOfAttendantsType,
     numInterested?: NumberOfAttendantsType,
-    name: NameOfGroup
+    name: NameOfGroup,
+    slug: GroupSlug
 };
 
 
@@ -32,22 +41,21 @@ export default function OpenedEvent({
     event,
     numAttendants,
     numInterested,
-    name
+    name,
+    slug
 }: OpenedEventProps): JSX.Element {
     const thumbnail = event.img;
     const startTime = toMonthDayYearHour(event.starts_at);
+
 
     return (
         <FadeInOutBox>
             <Stack sx={stackProps} spacing={0.5}>
 
-                {(name.status === "ready") && <Typography component={"h1"} sx={{
-                    color: 'rgba(255, 255, 255, 0.6)',
-                    fontSize: "28px",
-                    fontWeight: "light"
-                }} >
-                    {name.data}
-                </Typography>}
+                <GroupName
+                    slug={slug}
+                    name={name}
+                />
 
                 <EventTitle
                     title={event.title}
@@ -71,7 +79,47 @@ export default function OpenedEvent({
 
         </FadeInOutBox>
     )
-}
+};
+
+type GroupNameProps = {
+    slug: GroupSlug,
+    name: NameOfGroup
+};
+
+function GroupName({
+    slug,
+    name
+}: GroupNameProps): JSX.Element | null {
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+    if (slug.status !== 'ready' || name.status !== "ready") return null;
+
+    const openGroupBySlug = () => {
+        const route = `/group/${slug.data}`;
+        router.push(route);
+        dispatch(enqueueDrawer(null));
+    };
+
+    return (
+        <Box
+            onClick={openGroupBySlug}
+            component={"div"}
+            sx={{
+                cursor: "pointer",
+                width: '100%'
+
+            }}
+        >
+            <TitleTypography
+                gutterBottom
+                variant="h5"
+            >
+                {name.data}
+            </TitleTypography>
+        </Box>
+
+    )
+};
 
 
 function EventAttendants({ numAttendants, numInterested }: { numAttendants: NumberOfAttendantsType, numInterested?: NumberOfAttendantsType }) {

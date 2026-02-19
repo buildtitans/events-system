@@ -6,14 +6,19 @@ import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import RescheduleEventForm from "../../sections/forms/rescheduleEventForm";
-import { NameOfGroup, NumberOfAttendantsType } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import {
+    GroupSlug,
+    NameOfGroup,
+    NumberOfAttendantsType
+} from "@/src/lib/store/slices/events/EventDrawerSlice";
 
 type RenderEventDrawerContentsProps = {
     role: GroupMembersSchemaType["role"],
     event: EventSchemaType,
     numAttendants: NumberOfAttendantsType,
     numInterested: NumberOfAttendantsType,
-    name: NameOfGroup
+    name: NameOfGroup,
+    slug: GroupSlug
 }
 
 export default function RenderEventDrawerContents({
@@ -21,7 +26,8 @@ export default function RenderEventDrawerContents({
     event,
     numAttendants,
     numInterested,
-    name
+    name,
+    slug
 }: RenderEventDrawerContentsProps): JSX.Element | null {
 
     switch (role) {
@@ -33,6 +39,8 @@ export default function RenderEventDrawerContents({
                         numAttendants={numAttendants}
                         numInterested={numInterested}
                         name={name}
+                        slug={slug}
+
                     />
                     <MembersOnlyAttendanceForm
                         role={role}
@@ -48,6 +56,7 @@ export default function RenderEventDrawerContents({
                         numAttendants={numAttendants}
                         numInterested={numInterested}
                         name={name}
+                        slug={slug}
                     />
                     <MembersOnlyAttendanceForm
                         role={role}
@@ -66,6 +75,7 @@ export default function RenderEventDrawerContents({
                     <OpenedEvent
                         event={event}
                         name={name}
+                        slug={slug}
                     />
 
                     <CheckOutGroupButton

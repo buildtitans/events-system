@@ -12,7 +12,7 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
     useHydrateEventDrawer();
     const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
     const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
-    const { numberAttending, numberInterested, groupName } = useSelector((s: RootState) => s.eventDrawer, shallowEqual);
+    const { numberAttending, numberInterested, groupName, groupSlug } = useSelector((s: RootState) => s.eventDrawer, shallowEqual);
 
 
     switch (openedEvent.status) {
@@ -24,6 +24,7 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
                     numAttendants={numberAttending}
                     numInterested={numberInterested}
                     name={groupName}
+                    slug={groupSlug}
                 />
             );
 

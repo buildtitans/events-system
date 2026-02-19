@@ -16,7 +16,7 @@ const StyledTypography = styled(Typography)({
     textOverflow: 'ellipsis',
 });
 
-const TitleTypography = styled(Typography)(({ theme }) => ({
+export const TitleTypography = styled(Typography)(({ theme }) => ({
     position: 'relative',
     textDecoration: 'none',
     '&:hover': { cursor: 'pointer' },
