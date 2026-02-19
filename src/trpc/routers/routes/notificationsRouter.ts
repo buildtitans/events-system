@@ -1,5 +1,5 @@
-import { router, publicProcedure } from "@/src/trpc/init";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
+import { router, publicProcedure } from "@/src/trpc/init/init";
+import { typeboxInput } from "../../adaptors/typeBoxValidation";
 import {
     CreateNotificationSchemaType,
     CompiledCreateNotificationSchema,
