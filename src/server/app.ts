@@ -2,7 +2,7 @@ import cors from "@fastify/cors";
 import Fastify from 'fastify';
 import fastifyCookie from "@fastify/cookie";
 import { registerSessionHook } from './hooks/registerSessionHook';
-import { createContext } from "@/src/trpc/context";
+import { createContext } from "@/src/trpc/init/context";
 import {
     fastifyTRPCPlugin,
     FastifyTRPCPluginOptions,
@@ -14,7 +14,8 @@ import {
 import {
     type AppRouter,
     appRouter
-} from "@/src/trpc/router";
+} from "@/src/trpc/routers/router";
+import type { TRPCError } from "@trpc/server";
 import { getEnv } from "../lib/utils/init/getEnv";
 
 
@@ -23,7 +24,25 @@ function buildServer() {
     const client_url = getEnv("client_url");
 
     const app = Fastify({
-        logger: true,
+        logger: {
+            transport: {
+                target: 'pino-pretty'
+            },
+            serializers: {
+                res(reply) {
+                    return {
+                        statusCode: reply.statusCode
+                    }
+                },
+                req(request) {
+                    return {
+                        method: request.method,
+                        url: request.url,
+                    };
+                }
+            }
+        },
+
         routerOptions: {
             maxParamLength: 500
         }
@@ -46,10 +65,10 @@ function buildServer() {
         trpcOptions: {
             router: appRouter,
             createContext,
-            onError({ path, error }) {
+            onError({ path, error }: { path: any, error: TRPCError }) {
                 console.error(`Error in tRPC handler on path ${path} — ${error}`)
             }
-        } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions']
+        } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"]
     })
 
     return app;

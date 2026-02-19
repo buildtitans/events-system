@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "../init";
+import { router, publicProcedure } from "@/src/trpc/init/init";
 
 export const categoriesRouter = router({
     getAllCategories: publicProcedure

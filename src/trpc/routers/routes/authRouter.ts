@@ -1,7 +1,7 @@
-import { router, publicProcedure } from "../init";
+import { router, publicProcedure } from "@/src/trpc/init/init";
 import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
+import { typeboxInput } from "../../adaptors/typeBoxValidation";
 
 export const authRouter = router({
     login:
@@ -89,7 +89,4 @@ export const authRouter = router({
         return session
 
     })
-
-
-
 })

@@ -1,5 +1,5 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "@/src/trpc/router";
+import type { AppRouter } from "@/src/trpc/routers/router";
 import superjson from "superjson";
 import { env } from "../lib/utils/init/requireEnv";
 

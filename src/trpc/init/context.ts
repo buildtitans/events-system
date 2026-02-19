@@ -1,4 +1,4 @@
-import { DBClient } from "../server/db";
+import { DBClient } from "../../server/db";
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { FastifyReply, FastifyRequest } from "fastify";
 

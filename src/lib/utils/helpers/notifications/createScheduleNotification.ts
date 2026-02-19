@@ -24,13 +24,13 @@ function getScheduleNotificationMessage(
 
     switch (updates.status) {
         case "cancelled":
-            return `The event: ${event.title} has been cancelled`;
+            return `The event: "${event.title}" has been cancelled`;
 
         case "scheduled":
-            return `The event: ${event.title} is back on, set for ${date}`;
+            return `The event: "${event.title}" is back on, set for ${date}`;
 
         default: {
-            return `there was an update to the scheduling of ${event.title}`
+            return `there was an update to the scheduling of "${event.title}"`
         }
     }
 };
