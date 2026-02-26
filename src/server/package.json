@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "tsx src/server/index.ts",
+        "fastify": "tsx index.ts",
         "lint": "eslint",
         "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
         "db:migrate": "tsx src/server/db/migrations/migrate.ts",
@@ -12,9 +12,7 @@
     "dependencies": {
         "@fastify/cookie": "^11.0.2",
         "@fastify/cors": "^11.2.0",
-        "@sinclair/typebox": "^0.34.41",
         "@trpc/server": "^11.8.1",
-        "@typeschema/typebox": "^0.14.0",
         "argon2": "^0.44.0",
         "dayjs": "^1.11.19",
         "dotenv": "^17.2.3",

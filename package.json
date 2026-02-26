@@ -20,7 +20,7 @@
     "@mui/material-nextjs": "^7.3.6",
     "@mui/x-date-pickers": "^8.26.0",
     "@reduxjs/toolkit": "^2.11.2",
-    "@sinclair/typebox": "^0.34.41",
+    "@sinclair/typebox": "0.33.9",
     "@trpc/client": "^11.8.1",
     "@trpc/next": "^11.8.1",
     "@trpc/react-query": "^11.8.1",
