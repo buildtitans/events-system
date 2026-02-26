@@ -14,7 +14,7 @@ import {
 import {
     type AppRouter,
     appRouter
-} from "@/src/trpc/router/router";
+} from "@/src/server/router/router";
 import type { TRPCError } from "@trpc/server";
 import { getEnv } from "@/src/lib/utils/init/getEnv";
 

@@ -6,7 +6,7 @@ import {
     UpdateEventArgsSchemaType,
     UpdateEventArgsSchemaValidator
 } from "@/src/schemas/events/eventSchema";
-import { typeboxInput } from "../../adaptors/typeBoxValidation";
+import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "@/src/server/bootstrap/init";
 
 

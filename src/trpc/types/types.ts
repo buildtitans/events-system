@@ -48,4 +48,13 @@ type LoginBody = {
 
 type LoginResponse = boolean;
 
-export type { ApiPath, Endpoints, FastifyServerUrl, EventsResponse, GroupsResponse, LoginBody, LoginResponse, GroupResponse }
+export type {
+    ApiPath,
+    Endpoints,
+    FastifyServerUrl,
+    EventsResponse,
+    GroupsResponse,
+    LoginBody,
+    LoginResponse,
+    GroupResponse
+};
