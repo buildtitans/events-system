@@ -1,7 +1,15 @@
 
-import { router, publicProcedure } from "@/src/trpc/init/init";
+import {
+    router,
+    publicProcedure
+} from "@/src/server/bootstrap/init";
 import { typeboxInput } from "../../adaptors/typeBoxValidation";
-import { GroupSlugSchemaType, GroupSlugSchemaValidator, NewGroupInputSchemaType, NewGroupInputSchemaValidator } from "@/src/schemas/groups/groupSchema";
+import {
+    GroupSlugSchemaType,
+    GroupSlugSchemaValidator,
+    NewGroupInputSchemaType,
+    NewGroupInputSchemaValidator
+} from "@/src/schemas/groups/groupSchema";
 
 export const groupsRouter = router({
     list: publicProcedure
@@ -15,19 +23,24 @@ export const groupsRouter = router({
         .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
         .mutation(async ({ ctx, input }) => {
             const user_id = ctx.user?.id;
-
             if (!user_id) return null;
 
-            const group = await ctx.api.groups.createGroup(input, user_id);
+            const group = await ctx
+                .api
+                .groups
+                .createGroup(input, user_id);
 
             if (group && group.organizer_id) {
                 const { id, organizer_id } = group;
 
-                await ctx.api.groupMembers.addOrganizer({ user_id: organizer_id, group_id: id });
-
-            }
-
-
+                await ctx
+                    .api
+                    .groupMembers
+                    .addOrganizer({
+                        user_id: organizer_id,
+                        group_id: id
+                    });
+            };
             return group
         }),
 
@@ -35,6 +48,9 @@ export const groupsRouter = router({
         .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
         .mutation(async ({ ctx, input }) => {
 
-            return await ctx.api.groups.getGroupBySlug(input);
+            return await ctx
+                .api
+                .groups
+                .getGroupBySlug(input);
         })
-})
+});

@@ -1,4 +1,4 @@
-import { router } from "@/src/trpc/init/init";
+import { router } from "@/src/server/bootstrap/init";
 import { authRouter } from "./routes/authRouter";
 import { categoriesRouter } from "./routes/categoriesRouter";
 import { eventsRouter } from "./routes/eventsRouter";

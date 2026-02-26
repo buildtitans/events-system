@@ -1,8 +1,8 @@
 import cors from "@fastify/cors";
 import Fastify from 'fastify';
 import fastifyCookie from "@fastify/cookie";
-import { registerSessionHook } from './hooks/registerSessionHook';
-import { createContext } from "@/src/trpc/init/context";
+import { registerSessionHook } from '../hooks/registerSessionHook';
+import { createContext } from "@/src/server/bootstrap/context";
 import {
     fastifyTRPCPlugin,
     FastifyTRPCPluginOptions,
@@ -14,11 +14,9 @@ import {
 import {
     type AppRouter,
     appRouter
-} from "@/src/trpc/routers/router";
+} from "@/src/trpc/router/router";
 import type { TRPCError } from "@trpc/server";
-import { getEnv } from "../lib/utils/init/getEnv";
-
-
+import { getEnv } from "@/src/lib/utils/init/getEnv";
 
 function buildServer() {
     const client_url = getEnv("client_url");

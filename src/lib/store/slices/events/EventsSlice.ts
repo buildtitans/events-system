@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
-type PresentedCategory = 'Popular Events' | 'Upcoming events';
+type PresentedCategory = 'Popular Events' | 'Upcoming events' | "Local events" | "Tech Events";
 
 type GroupNameByGroupID = Record<string, string>;
 

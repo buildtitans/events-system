@@ -1,12 +1,17 @@
+import { CategoryLookupType } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type CatLookupState = { status: 'initial' } | { status: 'ready', data: CategoryLookupType };
+
 type CategoriesSliceInitialState = {
-    categories: CategoriesSchemaType
+    categories: CategoriesSchemaType,
+    categoryLookup: CatLookupState
 }
 
 const initialState: CategoriesSliceInitialState = {
-    categories: []
+    categories: [],
+    categoryLookup: { status: "initial" }
 }
 
 const CategoriesSlice = createSlice({
@@ -15,12 +20,18 @@ const CategoriesSlice = createSlice({
     reducers: {
         getAllCategories: (state: CategoriesSliceInitialState, action: PayloadAction<CategoriesSchemaType>) => {
             state.categories = action.payload;
+        },
+        getCatLookup: (state: CategoriesSliceInitialState, action: PayloadAction<CatLookupState>) => {
+            state.categoryLookup = action.payload;
         }
     }
 })
 
 
-export const { getAllCategories } = CategoriesSlice.actions;
+export const {
+    getAllCategories,
+    getCatLookup
+} = CategoriesSlice.actions;
 
 export default CategoriesSlice.reducer;
 

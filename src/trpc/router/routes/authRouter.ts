@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "@/src/trpc/init/init";
+import { router, publicProcedure } from "@/src/server/bootstrap/init";
 import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
 import { typeboxInput } from "../../adaptors/typeBoxValidation";

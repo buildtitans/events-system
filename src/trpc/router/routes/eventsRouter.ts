@@ -7,7 +7,7 @@ import {
     UpdateEventArgsSchemaValidator
 } from "@/src/schemas/events/eventSchema";
 import { typeboxInput } from "../../adaptors/typeBoxValidation";
-import { router, publicProcedure } from "@/src/trpc/init/init";
+import { router, publicProcedure } from "@/src/server/bootstrap/init";
 
 
 export const eventsRouter = router({

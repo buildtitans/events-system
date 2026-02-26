@@ -1,14 +1,14 @@
 "use client"
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
+import type { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
 
 type EventCategoriesProps = {
     handleClick: (category: PresentedCategory) => void
 }
 
 export function EventCategories({ handleClick }: EventCategoriesProps) {
-    const categories = ["Upcoming events", "Popular Events", "Local events", "Tech Events"];
+    const categories: PresentedCategory[] = ["Upcoming events", "Popular Events", "Local events", "Tech Events"];
 
     return (
         <Box
@@ -21,7 +21,12 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
         >
 
             {categories.map((category) => (
-                <Chip key={category} onClick={() => handleClick("Popular Events")} size="medium" label={category} />
+                <Chip
+                    key={category}
+                    onClick={() => handleClick("Popular Events")}
+                    size="medium"
+                    label={category}
+                />
             ))}
 
         </Box>

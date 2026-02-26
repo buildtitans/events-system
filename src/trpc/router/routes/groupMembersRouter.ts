@@ -1,5 +1,5 @@
 
-import { router, publicProcedure } from "@/src/trpc/init/init";
+import { router, publicProcedure } from "@/src/server/bootstrap/init";
 import { typeboxInput } from "../../adaptors/typeBoxValidation";
 import { GroupIDForInsertSchemaType, GroupIDForInsertSchemaValidator } from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";

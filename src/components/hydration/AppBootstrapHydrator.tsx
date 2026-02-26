@@ -7,6 +7,8 @@ import { DomainStateType } from "@/src/lib/types/server/types";
 import { getAllGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
+import { createCategoryLookup } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
+import { getCatLookup } from "@/src/lib/store/slices/categories/CategorySlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
 
@@ -31,6 +33,11 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
 
             dispatch(getAllGroups(groups));
             dispatch(chunkEventPages(events));
+
+            const lookup = createCategoryLookup(groups);
+
+            dispatch(getCatLookup({ status: "ready", data: lookup }));
+
             dispatch(getAllCategories(categories));
 
             dispatch(signalDomainStatus("idle"));
