@@ -15,18 +15,21 @@ export class EventsClient {
 
     async getEvents() {
         const raw = await this.getRawEvents();
-        const layout = compileEventsLayout(raw);
-        return layout;
+        return compileEventsLayout(raw);
     }
 
-    async getGroupEvents(group_id: Selectable<Events>["group_id"]): Promise<PaginatedLayoutSchemaType> {
+    async getGroupEvents(
+        group_id: Selectable<Events>["group_id"]
+    ): Promise<PaginatedLayoutSchemaType> {
 
         const raw = await this.getRawEventsFromGroup(group_id);
         if (!Array.isArray(raw) || (raw.length === 0)) return [];
         return compileEventsLayout(raw);
     }
 
-    async updateEventStatus(eventUpdate: UpdateEventArgsSchemaType): Promise<{ updateStatus: "success" | "failure" }> {
+    async updateEventStatus(
+        eventUpdate: UpdateEventArgsSchemaType
+    ): Promise<{ updateStatus: "success" | "failure" }> {
 
         const update = await this.db
             .updateTable("events")
@@ -44,21 +47,27 @@ export class EventsClient {
         return this.db
             .selectFrom("events")
             .selectAll()
+            .where("status", "=", "scheduled")
             .orderBy("created_at", "desc")
             .execute();
     }
 
-    private async getRawEventsFromGroup(group_id: Selectable<Events>["group_id"]): Promise<Selectable<Events>[] | undefined> {
+    private async getRawEventsFromGroup(
+        group_id: Selectable<Events>["group_id"]
+    ): Promise<Selectable<Events>[] | undefined> {
 
-        const raw = await this.db.selectFrom("events").selectAll().where("group_id", "=", group_id).orderBy("created_at").execute()
-
+        const raw = await this.db.
+            selectFrom("events")
+            .selectAll().
+            where("group_id", "=", group_id)
+            .orderBy("created_at")
+            .execute()
         return raw;
+    };
 
-    }
-
-
-
-    async createNewEvent(newEvent: NewEventInputSchemaType): Promise<EventSchemaType | null> {
+    async createNewEvent(
+        newEvent: NewEventInputSchemaType
+    ): Promise<EventSchemaType | null> {
         const insertable = this.toInsertableEvent(newEvent);
         const inserted = await this.insertNewEvent(insertable);
         const event = inserted ? this.formatEvent(inserted) : inserted;
@@ -66,47 +75,50 @@ export class EventsClient {
     };
 
 
-    toInsertableEvent(newEvent: NewEventInputSchemaType): Insertable<Events> {
+    private toInsertableEvent(
+        newEvent: NewEventInputSchemaType
+    ): Insertable<Events> {
 
-        const { title, description, starts_at, group_id, authors, meeting_location } = newEvent;
+        const start_time = dayjs(newEvent.starts_at)
+            .utc()
+            .format('YYYY-MM-DDTHH:mm:ss.sssZ');
+        const stringified_authors = JSON.stringify(newEvent.authors);
 
-        const start_time = dayjs(starts_at).utc().format('YYYY-MM-DDTHH:mm:ss.sssZ');
-
-        const stringified_authors = JSON.stringify(authors);
-
-        const parsed: Insertable<Events> = {
-            title: title,
-            description: description,
+        return {
+            title: newEvent.title,
+            description: newEvent.description,
             img: "https://picsum.photos/800/450?random=2",
-            group_id: group_id,
+            group_id: newEvent.group_id,
             authors: stringified_authors,
             starts_at: start_time,
             created_at: new Date(),
             tag: "placeholder tag",
-            meeting_location: meeting_location,
+            meeting_location: newEvent.meeting_location,
             status: "scheduled"
         }
-
-        return parsed;
     }
 
 
-    private async insertNewEvent(newEvent: Insertable<Events>): Promise<Selectable<Events> | null> {
+    private async insertNewEvent(
+        newEvent: Insertable<Events>
+    ): Promise<Selectable<Events>> {
 
-        const inserted = await this.db
+        return await this.db
             .insertInto("events")
             .values(newEvent)
             .returningAll()
-            .executeTakeFirst()
-
-        return inserted ? inserted : null
+            .executeTakeFirstOrThrow();
     }
 
 
-    private formatEvent(raw: Selectable<Events>): EventSchemaType {
-        const parsed_authors = typeof raw.authors === "string" ? JSON.parse(raw.authors) : raw.authors
+    private formatEvent(
+        raw: Selectable<Events>
+    ): EventSchemaType {
+        const parsed_authors = (typeof raw.authors === "string")
+            ? JSON.parse(raw.authors)
+            : raw.authors
 
-        const parsed = eventValidator({
+        return eventValidator({
             id: raw.id,
             tag: raw.tag,
             title: raw.title,
@@ -120,8 +132,5 @@ export class EventsClient {
             meeting_location: raw.meeting_location,
             status: raw.status
         });
-
-        return parsed
     }
-
 }

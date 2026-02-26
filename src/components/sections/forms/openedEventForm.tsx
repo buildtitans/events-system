@@ -35,6 +35,8 @@ export default function UpdateViewerAttendanceForm({
         handleSubmit
     } = useUpdateAttendance(currentStatus, event_id);
 
+    const selectOptions = ATTENDANCE_OPTIONS.filter((option) => option.value !== currentStatus);
+
 
     return (
         <FadeInOutBox>
@@ -75,10 +77,13 @@ export default function UpdateViewerAttendanceForm({
                                 >
                                     {ATTENDANCE_OPTIONS.map((option) => (
                                         <MenuItem
+                                            sx={{
+                                                opacity: currentStatus === option.value ? 0.5 : 1
+                                            }}
                                             key={option.label}
                                             value={option.value}
                                         >
-                                            {option.label}
+                                            {(option.value === currentStatus) ? `${option.label} (current)` : option.label}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -89,7 +94,7 @@ export default function UpdateViewerAttendanceForm({
                     <FormControl >
                         <Button
                             startIcon={<UpdateIcon />}
-                            disabled={false}
+                            disabled={newStatus === currentStatus}
                             type="submit"
                             variant="contained"
                         >

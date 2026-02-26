@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "fastify": "tsx index.ts",
+        "serve:fastify": "tsx index.ts",
         "lint": "eslint",
         "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
         "db:migrate": "tsx src/server/db/migrations/migrate.ts",

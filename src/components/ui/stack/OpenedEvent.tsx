@@ -50,7 +50,7 @@ export default function OpenedEvent({
 
     return (
         <FadeInOutBox>
-            <Stack sx={stackProps} spacing={0.5}>
+            <Stack sx={stackProps} spacing={1}>
 
                 <GroupName
                     slug={slug}
@@ -73,7 +73,7 @@ export default function OpenedEvent({
                     startTime={startTime}
                 />
 
-                {(numAttendants) && <EventAttendants numAttendants={numAttendants} numInterested={numInterested} />}
+                {(numAttendants) && (event.status === "scheduled") && <EventAttendants numAttendants={numAttendants} numInterested={numInterested} />}
 
             </Stack>
 
@@ -250,7 +250,7 @@ function StartTime({ startTime }: { startTime: string }) {
                 fontWeight: "light",
 
             }}>
-                Starts at {startTime}
+                Scheduled for {startTime}
             </Typography>
 
 
