@@ -5,9 +5,9 @@
     "scripts": {
         "serve:fastify": "tsx index.ts",
         "lint": "eslint",
-        "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types/db.d.ts",
-        "db:migrate": "tsx src/server/db/migrations/migrate.ts",
-        "db:seed": "tsx src/server/db/seeds/scripts/seedDB.ts"
+        "db:codegen": "kysely-codegen --dialect postgres --out-file db/types/db.d.ts",
+        "db:migrate": "tsx db/migrations/migrate.ts",
+        "db:seed": "tsx db/seeds/scripts/seedDB.ts"
     },
     "dependencies": {
         "@fastify/cookie": "^11.0.2",

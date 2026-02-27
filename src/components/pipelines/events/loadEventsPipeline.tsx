@@ -8,6 +8,7 @@ import { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
 import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import Spinner, { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 
 const LoadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: EventsPages): JSX.Element | null => {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
@@ -40,12 +41,16 @@ const LoadEventsPipeline = (eventLoadingStatus: DomainStatus, eventsPages: Event
 
         default: {
             return (
-                <LinearIndeterminate
-                    key={"linearLoader"}
-                />
+                <RelativeSpinner key={"spinner"} />
+
             )
         }
     }
 };
 
 export { LoadEventsPipeline };
+
+
+{/*<LinearIndeterminate
+                    key={"linearLoader"}
+                /> */}

@@ -1,12 +1,12 @@
 import type { DB } from "@/src/server/db/types/db";
 import type { Kysely } from "kysely";
-import { EventsClient } from "@/src/server/db/clients/repositories/EventsClient";
-import { GroupsClient } from "@/src/server/db/clients/repositories/GroupsClient";
-import { AuthClient } from "@/src/server/db/clients/repositories/authClient";
-import { CategoriesClient } from "@/src/server/db/clients/repositories/CategoriesClient";
-import { GroupMembersClient } from "@/src/server/db/clients/repositories/GroupMembersCleint";
-import { EventAttendantsClient } from "@/src/server/db/clients/repositories/eventAttendantsClient";
-import { NotificationsClient } from "@/src/server/db/clients/repositories/notificationsClient";
+import { EventsClient } from "@/src/server/db/clients/subClients/EventsClient";
+import { GroupsClient } from "@/src/server/db/clients/subClients/GroupsClient";
+import { AuthClient } from "@/src/server/db/clients/subClients/authClient";
+import { CategoriesClient } from "@/src/server/db/clients/subClients/CategoriesClient";
+import { GroupMembersClient } from "@/src/server/db/clients/subClients/GroupMembersCleint";
+import { EventAttendantsClient } from "@/src/server/db/clients/subClients/eventAttendantsClient";
+import { NotificationsClient } from "@/src/server/db/clients/subClients/notificationsClient";
 
 export class DBClient {
     public readonly events: EventsClient;

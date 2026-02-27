@@ -27,6 +27,16 @@ export class EventsClient {
         return compileEventsLayout(raw);
     }
 
+    async getPopularEvents(): Promise<any> {
+
+
+    }
+
+
+
+
+
+
     async updateEventStatus(
         eventUpdate: UpdateEventArgsSchemaType
     ): Promise<{ updateStatus: "success" | "failure" }> {
