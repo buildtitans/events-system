@@ -4,7 +4,7 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 type PopularEventsIds = EventSchemaType["id"][];
 type AttendantsCountMap = Map<EventSchemaType["id"], number>;
 
-const MIN_POPULAR = 2;
+const MIN_POPULAR = 1;
 
 function getIdsFromMap(
     map: AttendantsCountMap

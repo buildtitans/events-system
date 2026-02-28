@@ -88,7 +88,7 @@ export class EventsClient {
             .selectAll()
             .where("id", "in", ids)
             .where("status", "=", "scheduled")
-            .execute();
+            .execute()
     }
 
     private async getRawEventsFromGroup(
