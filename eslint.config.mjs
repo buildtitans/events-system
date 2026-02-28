@@ -6,7 +6,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    files: ["src/server/db/migrations/**/*.ts"],
+    files: ["src/server/src/db/migrations/**/*.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     }

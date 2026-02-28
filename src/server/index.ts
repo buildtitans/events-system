@@ -1,8 +1,8 @@
 import path from "path";
 import { config } from "dotenv";
 config({ path: path.resolve(process.cwd(), ".env") });
-import { buildServer } from "@/src/server/main/app";
-import { getEnv } from "@/src/server/lib/init/getEnv";
+import { buildServer } from "@/src/server/src/main/app";
+import { getEnv } from "@/src/server/src/lib/init/getEnv";
 
 const server = buildServer();
 
