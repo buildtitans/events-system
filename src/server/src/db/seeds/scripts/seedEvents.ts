@@ -1,7 +1,7 @@
 import { db } from "@/src/server/src/db/db";
 import type { Insertable } from "kysely";
 import type { Events } from "@/src/server/src/db/types/db";
-import rawEvents from "@/src/server/db/seeds/data/placeholder-events.json";
+import rawEvents from "@/src/server/src/db/seeds/data/placeholder-events.json";
 
 export async function seedEvents(groupsBySlug: Record<string, string>) {
 
