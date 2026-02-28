@@ -24,6 +24,13 @@ export class EventAttendantsClient {
         private readonly db: Kysely<DB>
     ) { }
 
+    async getAllAttendanceRecords() {
+
+        const raw = await this.db.selectFrom("event_attendants").selectAll().execute();
+
+        return this.parseRawAttendants(raw);
+    }
+
     async getAttendants(
         event_id: string
     ): Promise<EventAttendantsSchemaType[]> {

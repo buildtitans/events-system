@@ -1,7 +1,15 @@
-import { Insertable, Kysely, Selectable } from "kysely";
+import {
+    Insertable,
+    Kysely,
+    Selectable
+} from "kysely";
 import { DB, Events } from "../../types/db";
 import { compileEventsLayout } from "../../../layout/compileEventsLayout";
-import { EventSchemaType, NewEventInputSchemaType, UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
+import {
+    EventSchemaType,
+    NewEventInputSchemaType,
+    UpdateEventArgsSchemaType
+} from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
@@ -18,6 +26,7 @@ export class EventsClient {
         return compileEventsLayout(raw);
     }
 
+
     async getGroupEvents(
         group_id: Selectable<Events>["group_id"]
     ): Promise<PaginatedLayoutSchemaType> {
@@ -27,14 +36,11 @@ export class EventsClient {
         return compileEventsLayout(raw);
     }
 
-    async getPopularEvents(): Promise<any> {
 
-
+    async getEventsByIds(ids: EventSchemaType["id"][]): Promise<PaginatedLayoutSchemaType> {
+        const raw = await this.getRawEventsByIds(ids);
+        return compileEventsLayout(raw);
     }
-
-
-
-
 
 
     async updateEventStatus(
@@ -53,12 +59,35 @@ export class EventsClient {
     }
 
 
+    async createNewEvent(
+        newEvent: NewEventInputSchemaType
+    ): Promise<EventSchemaType | null> {
+        const insertable = this.toInsertableEvent(newEvent);
+        const inserted = await this.insertNewEvent(insertable);
+        const event = inserted ? this.formatEvent(inserted) : inserted;
+        return event
+    }
+
+
+
     private async getRawEvents(): Promise<Selectable<Events>[]> {
         return this.db
             .selectFrom("events")
             .selectAll()
             .where("status", "=", "scheduled")
             .orderBy("created_at", "desc")
+            .execute();
+    }
+
+
+    private async getRawEventsByIds(
+        ids: EventSchemaType["id"][]
+    ) {
+        return await this.db
+            .selectFrom("events")
+            .selectAll()
+            .where("id", "in", ids)
+            .where("status", "=", "scheduled")
             .execute();
     }
 
@@ -73,17 +102,7 @@ export class EventsClient {
             .orderBy("created_at")
             .execute()
         return raw;
-    };
-
-    async createNewEvent(
-        newEvent: NewEventInputSchemaType
-    ): Promise<EventSchemaType | null> {
-        const insertable = this.toInsertableEvent(newEvent);
-        const inserted = await this.insertNewEvent(insertable);
-        const event = inserted ? this.formatEvent(inserted) : inserted;
-        return event
-    };
-
+    }
 
     private toInsertableEvent(
         newEvent: NewEventInputSchemaType

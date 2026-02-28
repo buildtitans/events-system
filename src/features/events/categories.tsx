@@ -7,13 +7,15 @@ import { RootState } from "@/src/lib/store";
 import { CATEGORIES } from "@/src/lib/tokens/categoryTokens";
 
 type EventCategoriesProps = {
-    handleClick: (category: PresentedCategory) => void
+    handleFilter: (category: PresentedCategory) => void
 }
 
 export function EventCategories({
-    handleClick
+    handleFilter
 }: EventCategoriesProps) {
     const active = useSelector((s: RootState) => s.events.displayed);
+
+    console.log(active)
 
     return (
         <Box
@@ -30,7 +32,7 @@ export function EventCategories({
                     color={(active === category) ? 'primary' : "default"}
                     clickable={true}
                     key={category}
-                    onClick={() => handleClick(category)}
+                    onClick={() => handleFilter(category)}
                     size="medium"
                     label={category}
                 />

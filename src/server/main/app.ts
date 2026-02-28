@@ -42,7 +42,7 @@ function buildServer() {
         },
 
         routerOptions: {
-            maxParamLength: 500
+            maxParamLength: 1000
         }
     });
     app.register(cors, {

@@ -8,6 +8,7 @@ import {
     UpdatedAttendanceResponseSchemaType,
     UpdatedAttendanceResponseSchemaValidator
 } from "@/src/schemas/events/eventAttendantsSchema";
+import { curatePopularEventsIds } from "../../lib/curatePopularEvents";
 
 export const eventAttendantsRouter = router({
     getAttendants:
@@ -44,4 +45,12 @@ export const eventAttendantsRouter = router({
                 return res;
             }),
 
+    getPopularEventIds:
+        publicProcedure
+            .mutation(async ({ ctx }) => {
+
+                const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
+
+                return curatePopularEventsIds(records)
+            })
 });

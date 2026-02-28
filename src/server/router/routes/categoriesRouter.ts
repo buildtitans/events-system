@@ -6,5 +6,5 @@ export const categoriesRouter = router({
 
             return await ctx.api.categories.getCategories();
 
-        })
-})
+        }),
+});

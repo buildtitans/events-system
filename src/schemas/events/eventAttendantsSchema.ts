@@ -29,6 +29,8 @@ const EventAttendantKeySchema = Type.Object({
 const EventIdSchema = Type
     .String();
 
+const EventIdsSchema = Type.Array(EventIdSchema);
+
 const AttendanceUpdateInputSchema = Type.Object({
     event_id: EventIdSchema,
     newStatus: EventAttendantStatusSchema
@@ -37,6 +39,8 @@ const AttendanceUpdateInputSchema = Type.Object({
 const UpdatedAttendanceResponseSchema = Type.Union([
     EventAttendantsSchema, Type.Null()
 ]);
+
+type EventIdsSchemaType = Static<typeof EventIdsSchema>;
 
 type UpdatedAttendanceResponseSchemaType = Static<typeof UpdatedAttendanceResponseSchema>;
 
@@ -50,6 +54,7 @@ type EventAttendantStatusSchemaType = Static<typeof EventAttendantStatusSchema>;
 
 type EventAttendantKeySchemaType = Static<typeof EventAttendantKeySchema>;
 
+const CompiledEventIdsSchema = TypeCompiler.Compile(EventIdsSchema);
 
 const UpdatedAttendanceResponseSchemaValidator = TypeCompiler.Compile(UpdatedAttendanceResponseSchema);
 
@@ -69,19 +74,22 @@ export type {
     EventIdSchemaType,
     EventAttendantKeySchemaType,
     AttendanceUpdateInputSchemaType,
-    UpdatedAttendanceResponseSchemaType
+    UpdatedAttendanceResponseSchemaType,
+    EventIdsSchemaType
 };
 
 export {
     EventAttendantsSchema,
     EventAttendantStatusSchema,
     EventIdSchema,
+    EventIdsSchema,
     EventAttendantKeySchema,
     AttendanceUpdateInputSchema,
-    UpdatedAttendanceResponseSchema
+    UpdatedAttendanceResponseSchema,
 };
 
 export {
+    CompiledEventIdsSchema,
     EventIdSchemaValidator,
     EventAttendantsSchemaValidator,
     EventAttendantsStatusSchemaValidator,

@@ -6,6 +6,10 @@ import {
     UpdateEventArgsSchemaType,
     UpdateEventArgsSchemaValidator
 } from "@/src/schemas/events/eventSchema";
+import {
+    CompiledEventIdsSchema,
+    EventIdsSchemaType
+} from "@/src/schemas/events/eventAttendantsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "@/src/server/bootstrap/init";
 
@@ -57,5 +61,14 @@ export const eventsRouter = router({
                     .api
                     .events
                     .updateEventStatus(input);
+            }),
+
+    filterPopularEvents:
+        publicProcedure
+            .input(typeboxInput<EventIdsSchemaType>(CompiledEventIdsSchema))
+            .mutation(async ({ ctx, input }) => {
+
+                return await ctx.api.events.getEventsByIds(input);
             })
+
 });
