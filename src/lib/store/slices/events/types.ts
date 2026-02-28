@@ -11,9 +11,7 @@ export type GroupNameByGroupID = Record<string, string>;
 export type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 export type EventsDomainType = { status: "initial" }
-    | { status: "pending", filter?: PresentedCategory }
-    | { status: "ready", data: EventsPages, filter?: PresentedCategory }
+    | { status: "pending" }
+    | { status: "ready", data: EventsPages }
     | { status: "n/a", message: "No events found" }
     | { status: "failed", error: string };
-
-

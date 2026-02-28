@@ -9,9 +9,26 @@ const groupSidebarStyles = {
     borderColor: "rgba(38, 38, 38, 0.7)"
 };
 
+const activeCategorySx = {
+    display: 'flex',
+    flexDirection: {
+        xs: 'column-reverse',
+        md: 'row'
+    },
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: {
+        xs: 'start',
+        md: 'center'
+    },
+    gap: 2,
+    overflow: 'auto'
+};
+
 const DAY_MONTH_YEAR_HOUR_FORMAT = 'MMMM D, YYYY h:mm A';
 
 export {
     groupSidebarStyles,
-    DAY_MONTH_YEAR_HOUR_FORMAT
+    DAY_MONTH_YEAR_HOUR_FORMAT,
+    activeCategorySx
 };

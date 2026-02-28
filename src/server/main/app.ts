@@ -16,7 +16,8 @@ import {
     appRouter
 } from "@/src/server/router/router";
 import type { TRPCError } from "@trpc/server";
-import { getEnv } from "@/src/lib/utils/init/getEnv";
+import { getEnv } from "@/src/server/lib/init/getEnv";
+
 
 function buildServer() {
     const client_url = getEnv("client_url");
@@ -63,7 +64,7 @@ function buildServer() {
         trpcOptions: {
             router: appRouter,
             createContext,
-            onError({ path, error }: { path: any, error: TRPCError }) {
+            onError({ path, error }: { path?: string, error: TRPCError }) {
                 console.error(`Error in tRPC handler on path ${path} — ${error}`)
             }
         } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"]

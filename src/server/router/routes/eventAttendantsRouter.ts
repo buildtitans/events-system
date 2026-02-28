@@ -1,5 +1,8 @@
-import { router, publicProcedure } from "@/src/server/bootstrap/init";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
+import {
+    router,
+    publicProcedure
+} from "@/src/server/bootstrap/init";
+
 import {
     AttendanceUpdateInputSchemaType,
     AttendanceUpdateInputSchemaValidator,
@@ -8,7 +11,9 @@ import {
     UpdatedAttendanceResponseSchemaType,
     UpdatedAttendanceResponseSchemaValidator
 } from "@/src/schemas/events/eventAttendantsSchema";
-import { curatePopularEventsIds } from "../../lib/curatePopularEvents";
+import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
+import { typeboxInput } from "../adaptors/typeBoxValidation";
+
 
 export const eventAttendantsRouter = router({
     getAttendants:
@@ -49,7 +54,10 @@ export const eventAttendantsRouter = router({
         publicProcedure
             .mutation(async ({ ctx }) => {
 
-                const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
+                const records = await ctx
+                    .api
+                    .eventAttendants
+                    .getAllAttendanceRecords();
 
                 return curatePopularEventsIds(records)
             })

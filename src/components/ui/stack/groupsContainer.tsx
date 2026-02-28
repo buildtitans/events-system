@@ -12,7 +12,6 @@ function GroupsContainer(): JSX.Element | null {
         return chunkGroupsIntoPages(groups);
     }, [groups]);
 
-
     return (
         <GroupsPagesContainer groupsPages={groupsPages} />
     )

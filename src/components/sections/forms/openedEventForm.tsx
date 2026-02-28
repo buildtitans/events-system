@@ -35,9 +35,6 @@ export default function UpdateViewerAttendanceForm({
         handleSubmit
     } = useUpdateAttendance(currentStatus, event_id);
 
-    const selectOptions = ATTENDANCE_OPTIONS.filter((option) => option.value !== currentStatus);
-
-
     return (
         <FadeInOutBox>
             <Container

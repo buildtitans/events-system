@@ -1,16 +1,23 @@
 import type { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
-import type { UserInGroupRoleType, LoadingStatus } from "@/src/lib/types/tokens/types";
+import type { UserInGroupRoleType, LoadingStatus, DomainStatus } from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
-import { EventsPages } from "../../store/slices/events/EventsSlice";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import type { EventsDomainType, EventsPages, PresentedCategory } from "../../store/slices/events/types";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
 import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
-import React from "react";
+import React, { type SetStateAction } from "react";
+
+
+type ChangeActiveCategoryHook = {
+    setFilter: React.Dispatch<SetStateAction<PresentedCategory | null>>,
+    eventStatus: EventsDomainType["status"],
+    mountStatus: DomainStatus
+}
 
 type CreateEventHook = {
     handleStartsAt: (value: Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void,
@@ -84,5 +91,6 @@ export type {
     JoinGroupHook,
     UpdateAttendanceStatusHook,
     ValidateCredentialsHook,
-    CancelEventHook
+    CancelEventHook,
+    ChangeActiveCategoryHook
 }

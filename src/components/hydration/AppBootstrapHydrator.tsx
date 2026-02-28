@@ -34,7 +34,7 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
 
             dispatch(getAllGroups(groups));
 
-            dispatch(populateEvents({ status: "ready", data: events, filter: "All Events" }));
+            dispatch(populateEvents({ status: "ready", data: events }));
 
             const lookup = createCategoryLookup(groups);
 
@@ -49,7 +49,7 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
         const hydrateDomains = async () => {
 
             dispatch(signalDomainStatus("pending"));
-            dispatch(populateEvents({ status: "pending", filter: "All Events" }));
+            dispatch(populateEvents({ status: "pending" }));
 
             await wait(1200);
 

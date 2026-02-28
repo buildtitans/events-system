@@ -90,7 +90,7 @@ export const useHydrateEventDrawer = () => {
                 handleAttendants(
                     attendants,
                     user_id,
-                    event.data.id
+                    event.data.id,
                 );
 
             } catch (err) {
@@ -99,7 +99,13 @@ export const useHydrateEventDrawer = () => {
         };
 
         void executeGetViewerAttendance();
-    }, [event, dispatch, userKind, drawerActive]);
+    }, [
+        event,
+        dispatch,
+        userKind,
+        drawerActive,
+        groups
+    ]);
 
     return;
 }
