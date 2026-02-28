@@ -1,14 +1,19 @@
 "use client"
 import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
+import CategoryChip from "./categoryChip";
+import type { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
+import { FILTERS } from "@/src/lib/tokens/categoryTokens";
 
-type EventCategoriesProps = {
-    handleClick: (category: PresentedCategory) => void
+export type EventCategoriesProps = {
+    handleFilter: (filter: PresentedCategory) => void
 }
 
-export function EventCategories({ handleClick }: EventCategoriesProps) {
-    const categories = ["Upcoming events", "Popular Events", "Local events", "Tech Events"];
+export function EventCategories({
+    handleFilter
+}: EventCategoriesProps) {
+    const active = useSelector((s: RootState) => s.events.displayed);
 
     return (
         <Box
@@ -19,11 +24,15 @@ export function EventCategories({ handleClick }: EventCategoriesProps) {
                 overflow: 'auto',
             }}
         >
-
-            {categories.map((category) => (
-                <Chip key={category} onClick={() => handleClick("Popular Events")} size="medium" label={category} />
+            {FILTERS.map((filter) => (
+                <CategoryChip
+                    key={filter}
+                    isActive={filter === active}
+                    filter={filter}
+                    handleFilter={handleFilter}
+                />
             ))}
 
         </Box>
     )
-}
+};

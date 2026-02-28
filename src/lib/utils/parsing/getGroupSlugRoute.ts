@@ -2,7 +2,10 @@ import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSch
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 
-function getGroupSlugRoute(groups: GroupsSchemaType, event: EventSchemaType | null): string {
+function getGroupSlugRoute(
+    groups: GroupsSchemaType,
+    event: EventSchemaType | null
+): string {
     if (!event) {
         return "/"
     }

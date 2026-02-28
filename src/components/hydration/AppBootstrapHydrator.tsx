@@ -5,10 +5,13 @@ import { signalDomainStatus } from "@/src/lib/store/slices/rendering/RenderingSl
 import { useEffect } from "react";
 import { DomainStateType } from "@/src/lib/types/server/types";
 import { getAllGroups } from "@/src/lib/store/slices/groups/GroupsSlice";
-import { chunkEventPages } from "@/src/lib/store/slices/events/EventsSlice";
+import { populateEvents } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
+import { createCategoryLookup } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
+import { getCatLookup } from "@/src/lib/store/slices/categories/CategorySlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
+import { wait } from "@/src/lib/utils/rendering/wait";
 
 export default function AppBootstrapHydrator({ domains }: { domains: DomainStateType }): React.ReactNode {
     useRecoverSession();
@@ -30,7 +33,13 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
             }
 
             dispatch(getAllGroups(groups));
-            dispatch(chunkEventPages(events));
+
+            dispatch(populateEvents({ status: "ready", data: events }));
+
+            const lookup = createCategoryLookup(groups);
+
+            dispatch(getCatLookup({ status: "ready", data: lookup }));
+
             dispatch(getAllCategories(categories));
 
             dispatch(signalDomainStatus("idle"));
@@ -40,19 +49,15 @@ export default function AppBootstrapHydrator({ domains }: { domains: DomainState
         const hydrateDomains = async () => {
 
             dispatch(signalDomainStatus("pending"));
+            dispatch(populateEvents({ status: "pending" }));
 
-            const {
-                events,
-                groups,
-                categories
-            } = domains;
+            await wait(1200);
 
             dispatchDomains(
-                events,
-                groups,
-                categories
+                domains.events,
+                domains.groups,
+                domains.categories
             );
-
         };
 
         void hydrateDomains();

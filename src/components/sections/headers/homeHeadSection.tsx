@@ -1,7 +1,7 @@
 "use client"
 import Box from '@mui/material/Box';
 import type { JSX } from 'react';
-import { ActiveCategory } from '@/src/features/events/activeCategory';
+import { CategoryChips } from '@/src/features/events/categoryChips';
 import { MobileEventsSearch } from '@/src/components/ui/nav/landingSubNav';
 import { LandingHeader } from '@/src/components/ui/typography/landingHeader';
 import { overrides } from '@/src/styles/sx/sx';
@@ -18,7 +18,7 @@ export default function HomeHeadSection(): JSX.Element {
             <Box
                 sx={overrides}
             >
-                <ActiveCategory />
+                <CategoryChips />
             </Box>
         </Container>
     )

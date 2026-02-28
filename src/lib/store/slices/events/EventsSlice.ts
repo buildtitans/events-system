@@ -1,29 +1,25 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import {
+    createSlice,
+    PayloadAction
+} from "@reduxjs/toolkit";
+import type {
+    PresentedCategory,
+    EventsDomainType,
+    GroupNameByGroupID
+} from "./types";
 
-type PresentedCategory = 'Popular Events' | 'Upcoming events';
 
-type GroupNameByGroupID = Record<string, string>;
-
-
-//TODO: implement discriminated union type for eventsPages —> must align with loadEventsPipeline() 
-export type EventsDomainType = { status: "initial" }
-    | { status: "pending" }
-    | { status: "ready", data: EventsPages }
-    | { status: "failed", error: string };
-
-export type EventsPages = Array<LayoutSlotSchemaType[]>;
 
 type EventCategoryState = {
     displayed: PresentedCategory,
-    eventPages: EventsPages,
+    eventPages: EventsDomainType,
     currentPage: number,
     nameByGroupId: GroupNameByGroupID
 };
 
 const initialState: EventCategoryState = {
-    displayed: 'Upcoming events',
-    eventPages: [],
+    displayed: "All Events",
+    eventPages: { status: "initial" },
     currentPage: 0,
     nameByGroupId: {}
 };
@@ -32,39 +28,53 @@ export const EventsSlice = createSlice({
     name: 'Events/Categories',
     initialState: initialState,
     reducers: {
-        selectCategory: (state: EventCategoryState, action: PayloadAction<PresentedCategory>) => {
+        selectCategory: (
+            state: EventCategoryState,
+            action: PayloadAction<PresentedCategory>
+        ) => {
             state.displayed = action.payload
         },
-        chunkEventPages: (state: EventCategoryState, action: PayloadAction<EventsPages>) => {
+        populateEvents: (
+            state: EventCategoryState,
+            action: PayloadAction<EventsDomainType>
+        ) => {
             state.eventPages = action.payload
             state.currentPage = 0;
         },
-        nextEventsPage: (state: EventCategoryState) => {
-            if ((state.currentPage) < (state.eventPages.length - 1)) {
+        nextEventsPage: (
+            state: EventCategoryState
+        ) => {
+            const isHydratedAndCanIncrement: boolean =
+                (state.eventPages.status === "ready") &&
+                ((state.currentPage) < (state.eventPages.data.length - 1));
+
+            if (isHydratedAndCanIncrement) {
                 state.currentPage += 1;
             }
         },
-        prevEventsPage: (state: EventCategoryState) => {
+        prevEventsPage: (
+            state: EventCategoryState
+        ) => {
             if (state.currentPage >= 1) {
                 state.currentPage -= 1;
             }
         },
-        goToEventsPage: (state: EventCategoryState, action: PayloadAction<number>) => {
+        goToEventsPage: (
+            state: EventCategoryState,
+            action: PayloadAction<number>
+        ) => {
             state.currentPage = action.payload;
         },
-        populateEventGroups: (state: EventCategoryState, action: PayloadAction<GroupNameByGroupID>) => {
-            state.nameByGroupId = action.payload;
-        },
+
     }
 });
 
 export const {
     selectCategory,
-    chunkEventPages,
+    populateEvents,
     nextEventsPage,
     prevEventsPage,
     goToEventsPage,
-    populateEventGroups
 } = EventsSlice.actions;
 
 export default EventsSlice.reducer;

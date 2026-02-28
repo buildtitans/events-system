@@ -2,13 +2,19 @@ import { AppDispatch, RootState } from "@/src/lib/store";
 import { goToEventsPage } from "@/src/lib/store/slices/events/EventsSlice";
 import Box from "@mui/material/Box";
 import { useDispatch, useSelector } from "react-redux";
-import type { JSX } from "react";
+import { useMemo, type JSX } from "react";
 import Pagination from "@mui/material/Pagination";
 
 function PaginateEvents(): JSX.Element {
     const layoutSlots = useSelector((s: RootState) => s.events.eventPages);
     const dispatch = useDispatch<AppDispatch>();
-    const count = layoutSlots.length;
+    const count = useMemo(() => {
+        if (layoutSlots.status === "ready") {
+            return layoutSlots.data.length
+        };
+
+        return 1;
+    }, [layoutSlots])
     const handleClick = (e: React.ChangeEvent<unknown>, page: number) => {
         const pageClicked = page - 1;
         dispatch(goToEventsPage(pageClicked));

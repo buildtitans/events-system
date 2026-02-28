@@ -4,7 +4,8 @@ import { type JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { loadGroupsPipeline } from '@/src/components/pipelines/groups/loadGroupsPipeline';
-import { LoadEventsPipeline } from '@/src/components/pipelines/events/loadEventsPipeline';
+import { EventsPipeline } from '../../pipelines/events/eventsPipeline';
+//import { LoadEventsPipeline } from '@/src/components/pipelines/events/loadEventsPipeline';
 
 export default function HomeContent(): JSX.Element {
     const events = useSelector((s: RootState) => s.events.eventPages);
@@ -22,7 +23,7 @@ export default function HomeContent(): JSX.Element {
         >
 
 
-            {LoadEventsPipeline(initialLoadStatus, events)}
+            {EventsPipeline(events)}
 
             {loadGroupsPipeline(initialLoadStatus)}
         </Box>

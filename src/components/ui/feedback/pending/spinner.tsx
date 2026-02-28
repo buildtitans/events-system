@@ -7,4 +7,14 @@ export default function Spinner() {
             <CircularProgress />
         </Box>
     );
+};
+
+
+export function RelativeSpinner() {
+
+    return (
+        <Box sx={{ position: 'relative', display: 'flex', height: '600px', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <CircularProgress />
+        </Box>
+    )
 }
