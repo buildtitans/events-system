@@ -3,6 +3,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
+//TODO: implement search hook w/debounced query on new input/onChange
+
 export function Search() {
     return (
         <OutlinedInput
