@@ -25,6 +25,11 @@ export class EventsClient {
     return compileEventsLayout(raw);
   }
 
+  async getFlattenedEvents(): Promise<EventsArraySchemaType> {
+    const raw = await this.db.selectFrom("events").selectAll().execute();
+    return formatRawEvents(raw);
+  }
+
   async searchEventByTitle(
     query: EventSearchSchemaType,
   ): Promise<EventsArraySchemaType> {

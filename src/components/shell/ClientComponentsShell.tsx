@@ -23,6 +23,7 @@ export default function ClientComponentsShell({
             <AppBootstrapHydrator
                 domains={domains}
             />
+           
             {children}
             <Footer />
         </>

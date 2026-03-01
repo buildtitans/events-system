@@ -56,6 +56,10 @@ export const eventsRouter = router({
       return await ctx.api.events.getEventsByIds(input);
     }),
 
+  getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.api.events.getFlattenedEvents();
+  }),
+
   search: publicProcedure
     .input(typeboxInput<EventSearchSchemaType>(CompiledEventSearchSchema))
     .mutation(async ({ ctx, input }) => {
