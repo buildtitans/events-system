@@ -6,30 +6,29 @@ import { seedGroupMembers } from "./seedGroupMembers";
 import { seedEventAttendants } from "./seedEventAttendants";
 
 async function seedDB() {
-    console.log("Seeding DB…");
+  console.log("Seeding DB…");
 
-    const categoriesBySlug = await seedCategories();
-    console.log("Categories OK");
+  const categoriesBySlug = await seedCategories();
+  console.log("Categories OK");
 
-    const usersByEmail = await seedUsers();
-    console.log("Users OK");
-    const groupsBySlug = await seedGroups(categoriesBySlug, usersByEmail);
-    console.log("Groups OK");
+  const usersByEmail = await seedUsers();
+  console.log("Users OK");
+  const groupsBySlug = await seedGroups(categoriesBySlug, usersByEmail);
+  console.log("Groups OK");
 
-    await seedEvents(groupsBySlug);
-    console.log("Events OK");
+  await seedEvents(groupsBySlug);
+  console.log("Events OK");
 
-    const membersByGroupId = await seedGroupMembers(groupsBySlug)
-    console.log("Group Members OK");
+  const membersByGroupId = await seedGroupMembers(groupsBySlug);
+  console.log("Group Members OK");
 
-    await seedEventAttendants(membersByGroupId);
-    console.log("Event Attendants OK");
+  await seedEventAttendants(membersByGroupId);
+  console.log("Event Attendants OK");
 
-
-    process.exit(0);
+  process.exit(0);
 }
 
-seedDB().catch(err => {
-    console.error("Seed failed", err);
-    process.exit(1);
+seedDB().catch((err) => {
+  console.error("Seed failed", err);
+  process.exit(1);
 });

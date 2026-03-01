@@ -1,31 +1,31 @@
 import type { DB } from "@/src/server/src/db/types/db";
 import type { Kysely } from "kysely";
 import {
-    EventsClient,
-    GroupMembersClient,
-    GroupsClient,
-    AuthClient,
-    CategoriesClient,
-    EventAttendantsClient,
-    NotificationsClient
+  EventsClient,
+  GroupMembersClient,
+  GroupsClient,
+  AuthClient,
+  CategoriesClient,
+  EventAttendantsClient,
+  NotificationsClient,
 } from "@/src/server/src/db/clients/subClients";
 
 export class DBClient {
-    public readonly events: EventsClient;
-    public readonly groups: GroupsClient;
-    public readonly auth: AuthClient;
-    public readonly categories: CategoriesClient;
-    public readonly groupMembers: GroupMembersClient;
-    public readonly eventAttendants: EventAttendantsClient;
-    public readonly notifications: NotificationsClient;
-    constructor(private db: Kysely<DB>) {
-        this.db = db;
-        this.groupMembers = new GroupMembersClient(this.db);
-        this.events = new EventsClient(this.db);
-        this.groups = new GroupsClient(db);
-        this.auth = new AuthClient(db);
-        this.categories = new CategoriesClient(db);
-        this.eventAttendants = new EventAttendantsClient(db);
-        this.notifications = new NotificationsClient(db)
-    };
-};
+  public readonly events: EventsClient;
+  public readonly groups: GroupsClient;
+  public readonly auth: AuthClient;
+  public readonly categories: CategoriesClient;
+  public readonly groupMembers: GroupMembersClient;
+  public readonly eventAttendants: EventAttendantsClient;
+  public readonly notifications: NotificationsClient;
+  constructor(private db: Kysely<DB>) {
+    this.db = db;
+    this.groupMembers = new GroupMembersClient(this.db);
+    this.events = new EventsClient(this.db);
+    this.groups = new GroupsClient(db);
+    this.auth = new AuthClient(db);
+    this.categories = new CategoriesClient(db);
+    this.eventAttendants = new EventAttendantsClient(db);
+    this.notifications = new NotificationsClient(db);
+  }
+}

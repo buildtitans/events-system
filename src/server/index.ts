@@ -8,14 +8,17 @@ const server = buildServer();
 
 const devPort = getEnv("dev_host");
 
-server.listen({
+server.listen(
+  {
     port: 3001,
-    host: devPort
-}, (err) => {
+    host: devPort,
+  },
+  (err) => {
     if (err) {
-        server.log.error(err);
-        process.exit(1);
+      server.log.error(err);
+      process.exit(1);
     }
-});
+  },
+);
 
 export { server };

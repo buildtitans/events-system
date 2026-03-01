@@ -8,30 +8,28 @@ import { syncPermissions } from "../../store/sync/syncPermissions";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 
 const useRecoverSession = (): void => {
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        const executeRecoverSession = async () => {
-            try {
-                const result = await trpcClient.auth.recover.mutate();
+  useEffect(() => {
+    const executeRecoverSession = async () => {
+      try {
+        const result = await trpcClient.auth.recover.mutate();
 
-                if (result) {
-                    dispatch(loginSuccess());
+        if (result) {
+          dispatch(loginSuccess());
 
-                    const permissions = await syncPermissions();
-                    dispatch(getViewerPermissions(permissions));
+          const permissions = await syncPermissions();
+          dispatch(getViewerPermissions(permissions));
+        } else {
+          dispatch(logout());
+        }
+      } catch {
+        dispatch(logout());
+      }
+    };
 
-                } else {
-                    dispatch(logout());
-                }
-
-            } catch {
-                dispatch(logout());
-            }
-        };
-
-        void executeRecoverSession();
-    }, [dispatch]);
+    void executeRecoverSession();
+  }, [dispatch]);
 };
 
 export { useRecoverSession };

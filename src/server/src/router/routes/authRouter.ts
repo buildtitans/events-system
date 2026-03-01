@@ -4,89 +4,65 @@ import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSch
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
 export const authRouter = router({
-    login:
-        publicProcedure
-            .input(
-                typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials)
-            )
-            .mutation(async ({ ctx, input }) => {
+  login: publicProcedure
+    .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
+    .mutation(async ({ ctx, input }) => {
+      const res = await ctx.api.auth.login(input.email, input.password);
+      const { session, user } = res;
 
+      ctx.reply.setCookie("session", session.id, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        expires: new Date(session.expires_at),
+      });
 
-                const res = await ctx.api.auth.login(
-                    input.email,
-                    input.password
-                );
-                const { session, user } = res;
+      ctx.user = {
+        id: user.id,
+        role: "user",
+      };
 
-                ctx.reply.setCookie("session", session.id, {
-                    httpOnly: true,
-                    path: "/",
-                    sameSite: "lax",
-                    secure: process.env.NODE_ENV === "production",
-                    expires: new Date(session.expires_at),
-                })
+      return res ? { success: true } : { success: false };
+    }),
 
-                ctx.user = {
-                    id: user.id,
-                    role: "user"
-                };
+  signout: publicProcedure.mutation(async ({ ctx }) => {
+    const token = ctx.req.cookies.session;
 
-                return res ? { success: true } : { success: false }
-            }),
+    if (!token) return null;
 
-    signout:
-        publicProcedure
-            .mutation(async ({ ctx }) => {
+    const res = await ctx.api.auth.logOut(token);
 
-                const token = ctx
-                    .req
-                    .cookies
-                    .session;
+    if (res) {
+      ctx.reply.clearCookie("session");
+    }
 
-                if (!token) return null;
+    return res;
+  }),
 
-                const res = await ctx
-                    .api
-                    .auth
-                    .logOut(token);
+  recover: publicProcedure.mutation(async ({ ctx }) => {
+    const token = ctx.req.cookies.session;
 
-                if (res) {
-                    ctx
-                        .reply
-                        .clearCookie("session");
-                };
+    if (!token) return null;
 
-                return res;
-            }),
+    const session = await ctx.api.auth.getSession(token);
 
-    recover:
-        publicProcedure
-            .mutation(async ({ ctx }) => {
+    if (!session) {
+      ctx.reply.clearCookie("session");
+      return undefined;
+    }
+    ctx.user = { id: session.user_id, role: "user" };
 
-                const token = ctx.req.cookies.session;
+    return session;
+  }),
 
-                if (!token) return null;
+  session: publicProcedure.mutation(async ({ ctx }) => {
+    const token = ctx.req.cookies.session;
 
-                const session = await ctx.api.auth.getSession(token);
+    if (!token) return null;
 
-                if (!session) {
-                    ctx.reply.clearCookie("session");
-                    return undefined;
-                };
-                ctx.user = { id: session.user_id, role: 'user' };
+    const session = await ctx.api.auth.getSession(token);
 
-                return session;
-            }),
-
-    session: publicProcedure.mutation(async ({ ctx }) => {
-
-        const token = ctx.req.cookies.session;
-
-        if (!token) return null;
-
-        const session = await ctx.api.auth.getSession(token)
-
-        return session
-
-    })
-})
+    return session;
+  }),
+});

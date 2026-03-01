@@ -1,49 +1,45 @@
-
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { GroupIDForInsertSchemaType, GroupIDForInsertSchemaValidator } from "@/src/schemas/groups/groupMembersSchema";
+import {
+  GroupIDForInsertSchemaType,
+  GroupIDForInsertSchemaValidator,
+} from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 const groupMembersRouter = router({
-    addNewMember:
-        publicProcedure
-            .input(typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator))
-            .mutation(async ({ ctx, input }) => {
-                const token = ctx.req.cookies.session;
-                if (!token) return null;
-                const sess = await ctx.api.auth.getSession(token);
-                if (!sess?.user_id) return null;
+  addNewMember: publicProcedure
+    .input(
+      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const token = ctx.req.cookies.session;
+      if (!token) return null;
+      const sess = await ctx.api.auth.getSession(token);
+      if (!sess?.user_id) return null;
 
-                const newMember: Pick<GroupMembersSchemaType, "group_id" | "user_id"> = {
-                    group_id: input,
-                    user_id: sess.user_id
-                };
+      const newMember: Pick<GroupMembersSchemaType, "group_id" | "user_id"> = {
+        group_id: input,
+        user_id: sess.user_id,
+      };
 
-                return await ctx.api.groupMembers.addNewMember(newMember);
+      return await ctx.api.groupMembers.addNewMember(newMember);
+    }),
 
+  getGroupMembers: publicProcedure
+    .input(
+      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.groupMembers.getGroupMembers(input);
+    }),
 
-            }),
+  viewerMemberships: publicProcedure.mutation(async ({ ctx }) => {
+    const user_id = ctx.user?.id;
 
-    getGroupMembers:
-        publicProcedure
-            .input(typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator))
-            .mutation(async ({ ctx, input }) => {
+    if (!user_id) return null;
 
-                return await ctx.api.groupMembers.getGroupMembers(input)
-            }),
-
-    viewerMemberships:
-        publicProcedure
-            .mutation(async ({ ctx }) => {
-
-                const user_id = ctx.user?.id;
-
-                if (!user_id) return null;
-
-                return ctx.api.groupMembers.getViewerMemberships(user_id);
-
-            })
-
-})
+    return ctx.api.groupMembers.getViewerMemberships(user_id);
+  }),
+});
 
 export { groupMembersRouter };

@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
-import { enqueueAlert, enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
+import {
+  enqueueAlert,
+  enqueueDrawer,
+  enqueueSnackbar,
+} from "../../store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
@@ -15,64 +19,66 @@ import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice"
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
 export const useUpdateAttendance = (
-    currentStatus: EventAttendantStatusSchemaType,
-    event_id: EventSchemaType["id"],
+  currentStatus: EventAttendantStatusSchemaType,
+  event_id: EventSchemaType["id"],
 ): UpdateAttendanceStatusHook => {
-    const [newStatus, setNewStatus] = useState<EventAttendantStatusSchemaType>(currentStatus);
-    const timerRef = useRef<number | null>(null);
-    const dispatch = useDispatch<AppDispatch>();
+  const [newStatus, setNewStatus] =
+    useState<EventAttendantStatusSchemaType>(currentStatus);
+  const timerRef = useRef<number | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
-    const handleStatusChange = (e: SelectChangeEvent) => {
-        const value = e.target.value as EventAttendantStatusSchemaType;
-        setNewStatus(value);
+  const handleStatusChange = (e: SelectChangeEvent) => {
+    const value = e.target.value as EventAttendantStatusSchemaType;
+    setNewStatus(value);
+  };
+
+  function handleResult(result: UpdatedAttendanceResponseSchemaType) {
+    timerRef.current = window.setTimeout(() => {
+      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      dispatch(
+        enqueueAlert({
+          action: "updateAttendance",
+          kind: result ? "success" : "error",
+        }),
+      );
+
+      if (result) {
+        dispatch(getViewerAttendance(result));
+      }
+
+      dispatch(enqueueDrawer(null));
+      timerRef.current = null;
+    }, 1200);
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(
+      enqueueSnackbar({ kind: "updatingAttendance", status: "pending" }),
+    );
+
+    try {
+      const result =
+        await trpcClient.eventAttendants.updateViewerAttendance.mutate({
+          event_id: event_id,
+          newStatus: newStatus,
+        });
+
+      handleResult(result);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    function handleResult(result: UpdatedAttendanceResponseSchemaType) {
-
-        timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: null, status: 'idle' }));
-            dispatch(enqueueAlert({ action: "updateAttendance", kind: result ? "success" : "error" }));
-
-            if (result) {
-                dispatch(getViewerAttendance(result))
-            }
-
-            dispatch(enqueueDrawer(null));
-            timerRef.current = null;
-        }, 1200)
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) clearTimeout(timerRef.current);
     };
+  }, []);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        dispatch(enqueueSnackbar({ kind: "updatingAttendance", status: "pending" }));
-
-        try {
-            const result = await trpcClient
-                .eventAttendants
-                .updateViewerAttendance
-                .mutate(
-                    {
-                        event_id: event_id,
-                        newStatus: newStatus
-                    }
-                );
-
-            handleResult(result);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    useEffect(() => {
-
-        return () => {
-            if (timerRef.current !== null) clearTimeout(timerRef.current);
-        }
-    }, [])
-
-    return {
-        newStatus,
-        handleStatusChange,
-        handleSubmit
-    }
-}
+  return {
+    newStatus,
+    handleStatusChange,
+    handleSubmit,
+  };
+};

@@ -4,57 +4,55 @@ import type { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
-import { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
 import { syncPermissions } from "@/src/lib/store/sync/syncPermissions";
 
 const useJoinGroup = (): JoinGroupHook => {
-    const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
-    const dispatch = useDispatch<AppDispatch>();
-    const timerRef = useRef<number | null>(null);
+  const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
+  const dispatch = useDispatch<AppDispatch>();
+  const timerRef = useRef<number | null>(null);
 
-    async function handleResult(res: GroupMembersSchemaType | null) {
-        if (res) {
-            const permissions = await syncPermissions();
-            dispatch(getViewerPermissions(permissions));
-            dispatch(enqueueSnackbar({ kind: 'joiningGroup', status: 'success' }));
-        }
+  async function handleResult(res: GroupMembersSchemaType | null) {
+    if (res) {
+      const permissions = await syncPermissions();
+      dispatch(getViewerPermissions(permissions));
+      dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "success" }));
+    }
 
-        timerRef.current = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "idle" }))
-            timerRef.current = null;
-        }, 800);
+    timerRef.current = window.setTimeout(() => {
+      dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "idle" }));
+      timerRef.current = null;
+    }, 800);
+  }
+
+  const joinGroup = async (
+    group_id: GroupSchemaType["id"],
+  ): Promise<GroupMembersSchemaType | null> => {
+    const res = await trpcClient.groupMembers.addNewMember.mutate(group_id);
+    return res;
+  };
+
+  const handleClick = async (group_id: GroupSchemaType["id"]) => {
+    if (snackbar.status !== "idle") return;
+    dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "pending" }));
+    const result = await joinGroup(group_id);
+    handleResult(result);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
     };
+  }, []);
 
-    const joinGroup = async (group_id: GroupSchemaType["id"]): Promise<GroupMembersSchemaType | null> => {
-        const res = await trpcClient
-            .groupMembers
-            .addNewMember
-            .mutate(group_id);
-        return res;
-    };
-
-    const handleClick = async (group_id: GroupSchemaType["id"]) => {
-        if (snackbar.status !== "idle") return;
-        dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "pending" }))
-        const result = await joinGroup(group_id);
-        handleResult(result);
-    };
-
-    useEffect(() => {
-
-        return () => {
-            if (timerRef.current !== null) {
-                clearTimeout(timerRef.current)
-            }
-        }
-    }, []);
-
-    return {
-        handleClick,
-    };
+  return {
+    handleClick,
+  };
 };
 
 export { useJoinGroup };

@@ -1,53 +1,52 @@
-import {
-    router,
-    publicProcedure
-} from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 
 import {
-    AttendanceUpdateInputSchemaType,
-    AttendanceUpdateInputSchemaValidator,
-    EventIdSchemaType,
-    EventIdSchemaValidator,
-    UpdatedAttendanceResponseSchemaType,
-    UpdatedAttendanceResponseSchemaValidator
+  AttendanceUpdateInputSchemaType,
+  AttendanceUpdateInputSchemaValidator,
+  EventIdSchemaType,
+  EventIdSchemaValidator,
+  UpdatedAttendanceResponseSchemaType,
+  UpdatedAttendanceResponseSchemaValidator,
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
-
 export const eventAttendantsRouter = router({
-    getAttendants:
-        publicProcedure
-            .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
-            .mutation(async ({ ctx, input }) => {
+  getAttendants: publicProcedure
+    .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.eventAttendants.getAttendants(input);
+    }),
 
-                return await ctx.api.eventAttendants.getAttendants(input);
-            }),
+  updateViewerAttendance: publicProcedure
+    .input(
+      typeboxInput<AttendanceUpdateInputSchemaType>(
+        AttendanceUpdateInputSchemaValidator,
+      ),
+    )
+    .output(
+      typeboxInput<UpdatedAttendanceResponseSchemaType>(
+        UpdatedAttendanceResponseSchemaValidator,
+      ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user_id = ctx.user?.id;
 
-    updateViewerAttendance:
-        publicProcedure
-            .input(typeboxInput<AttendanceUpdateInputSchemaType>(AttendanceUpdateInputSchemaValidator))
-            .output(typeboxInput<UpdatedAttendanceResponseSchemaType>(UpdatedAttendanceResponseSchemaValidator))
-            .mutation(async ({ ctx, input }) => {
-                const user_id = ctx.user?.id;
+      if (!user_id) {
+        console.error("Authenticated session required to use this endpoint");
+        return null;
+      }
 
-                if (!user_id) {
-                    console.error("Authenticated session required to use this endpoint");
-                    return null;
-                }
+      return await ctx.api.eventAttendants.updateAttendanceStatus(
+        { event_id: input.event_id, user_id: user_id },
+        input.newStatus,
+      );
+    }),
 
-                return await ctx
-                    .api
-                    .eventAttendants
-                    .updateAttendanceStatus({ event_id: input.event_id, user_id: user_id }, input.newStatus);
-            }),
-
-    getPopularEventIds:
-        publicProcedure
-            .mutation(async ({ ctx }) => {
-                const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
-                return curatePopularEventsIds(records);
-            })
+  getPopularEventIds: publicProcedure.mutation(async ({ ctx }) => {
+    const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
+    return curatePopularEventsIds(records);
+  }),
 });
 
 export type EventAttendantsRouter = typeof eventAttendantsRouter;

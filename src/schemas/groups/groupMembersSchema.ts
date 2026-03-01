@@ -4,14 +4,14 @@ import type { Static } from "@sinclair/typebox";
 import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 
 const GroupMembersSchema = Type.Object({
-    group_id: Type.String(),
-    user_id: Type.String(),
-    role: Type.Union([
-        Type.Literal("member"),
-        Type.Literal("organizer"),
-        Type.Literal("anonymous")
-    ]),
-    joined_at: Type.String()
+  group_id: Type.String(),
+  user_id: Type.String(),
+  role: Type.Union([
+    Type.Literal("member"),
+    Type.Literal("organizer"),
+    Type.Literal("anonymous"),
+  ]),
+  joined_at: Type.String(),
 });
 
 const GroupIDForInsertSchema = Type.String();
@@ -26,12 +26,25 @@ type GroupIDForInsertSchemaType = Static<typeof GroupIDForInsertSchema>;
 
 export { GroupMembersSchema, GroupIDForInsertSchema };
 
-export type { GroupMembersSchemaType, GroupIDForInsertSchemaType, GroupMembersArraySchemaType };
+export type {
+  GroupMembersSchemaType,
+  GroupIDForInsertSchemaType,
+  GroupMembersArraySchemaType,
+};
 
-export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(GroupIDForInsertSchema);
+export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(
+  GroupIDForInsertSchema,
+);
 
-export const GroupMembersSchemaValidator = TypeCompiler.Compile(GroupMembersSchema);
+export const GroupMembersSchemaValidator =
+  TypeCompiler.Compile(GroupMembersSchema);
 
-export const ValidateGroupMember = createValidator(GroupMembersSchema, "GroupMembersSchema")
+export const ValidateGroupMember = createValidator(
+  GroupMembersSchema,
+  "GroupMembersSchema",
+);
 
-export const ValidateGroupMembersArray = createValidator(GroupMembersArraySchema, "GroupMembersArraySchema");
+export const ValidateGroupMembersArray = createValidator(
+  GroupMembersArraySchema,
+  "GroupMembersArraySchema",
+);

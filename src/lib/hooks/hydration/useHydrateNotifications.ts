@@ -6,25 +6,35 @@ import { populateNewNotifications } from "../../store/slices/notifications/notif
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 export const useHydrateNotifications = () => {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const dispatch = useDispatch<AppDispatch>();
+  const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        if (userKind === "anonymous") return;
+  useEffect(() => {
+    if (userKind === "anonymous") return;
 
-        const hydrateNotifications = async () => {
-            dispatch(populateNewNotifications({ status: "pending" }))
+    const hydrateNotifications = async () => {
+      dispatch(populateNewNotifications({ status: "pending" }));
 
-            const notifications = await trpcClient.notifications.getNotifications.mutate();
+      const notifications =
+        await trpcClient.notifications.getNotifications.mutate();
 
-            if (Array.isArray(notifications) && notifications.length > 0) {
-                dispatch(populateNewNotifications({ status: "ready", data: { new: notifications, seen: [] } }))
-            } else {
-                dispatch(populateNewNotifications({ status: "ready", data: { new: [], seen: [] } }))
-            }
-        };
+      if (Array.isArray(notifications) && notifications.length > 0) {
+        dispatch(
+          populateNewNotifications({
+            status: "ready",
+            data: { new: notifications, seen: [] },
+          }),
+        );
+      } else {
+        dispatch(
+          populateNewNotifications({
+            status: "ready",
+            data: { new: [], seen: [] },
+          }),
+        );
+      }
+    };
 
-        void hydrateNotifications();
-
-    }, [userKind, dispatch]);
+    void hydrateNotifications();
+  }, [userKind, dispatch]);
 };

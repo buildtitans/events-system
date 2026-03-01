@@ -1,39 +1,27 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
+  await sql`create extension if not exists "pgcrypto"`.execute(db);
 
-    await sql`create extension if not exists "pgcrypto"`.execute(db);
+  await db.schema
+    .createTable("categories")
+    .ifNotExists()
+    .addColumn("id", "uuid", (col) =>
+      col
+        .primaryKey()
+        .notNull()
+        .defaultTo(sql`gen_random_uuid()`),
+    )
+    .addColumn("slug", "text", (col) => col.notNull().unique())
+    .addColumn("name", "text", (col) => col.unique().notNull())
+    .addColumn("icon", "text", (col) => col.notNull())
+    .execute();
 
-    await db.schema
-        .createTable("categories").ifNotExists()
-        .addColumn("id", "uuid", (col) => (
-            col
-                .primaryKey()
-                .notNull()
-                .defaultTo(sql`gen_random_uuid()`)
-        ))
-        .addColumn("slug", "text", (col) =>
-            col
-                .notNull()
-                .unique()
-        )
-        .addColumn("name", "text", (col) => (
-            col
-                .unique()
-                .notNull()
-        ))
-        .addColumn("icon", "text", (col) => (
-            col
-                .notNull()
-        ))
-        .execute()
-
-
-    await sql`
+  await sql`
     
   `.execute(db);
 
-    await sql`
+  await sql`
     
   `.execute(db);
 }
