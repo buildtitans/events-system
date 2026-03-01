@@ -1,7 +1,7 @@
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
-type PopularEventsIds = EventSchemaType["id"][];
+export type PopularEventsIds = EventSchemaType["id"][];
 type AttendantsCountMap = Map<EventSchemaType["id"], number>;
 
 const MIN_POPULAR = 1;

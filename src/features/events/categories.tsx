@@ -7,11 +7,13 @@ import { RootState } from "@/src/lib/store";
 import { FILTERS } from "@/src/lib/tokens/categoryTokens";
 
 export type EventCategoriesProps = {
-    handleFilter: (filter: PresentedCategory) => void
+    handleFilter: (filter: PresentedCategory) => void,
+    pendingFilter: boolean
 }
 
 export function EventCategories({
-    handleFilter
+    handleFilter,
+    pendingFilter
 }: EventCategoriesProps) {
     const active = useSelector((s: RootState) => s.events.displayed);
 
@@ -30,6 +32,7 @@ export function EventCategories({
                     isActive={filter === active}
                     filter={filter}
                     handleFilter={handleFilter}
+                    pendingFilter={pendingFilter}
                 />
             ))}
 

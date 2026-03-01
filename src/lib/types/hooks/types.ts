@@ -12,11 +12,13 @@ import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
 
+export type FilterType = PresentedCategory | "initial";
 
 type ChangeActiveCategoryHook = {
-    setFilter: React.Dispatch<SetStateAction<PresentedCategory | null>>,
+    setFilter: React.Dispatch<SetStateAction<FilterType>>,
     eventStatus: EventsDomainType["status"],
-    mountStatus: DomainStatus
+    mountStatus: DomainStatus,
+    pendingFilter: boolean
 }
 
 type CreateEventHook = {

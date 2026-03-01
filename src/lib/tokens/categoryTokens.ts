@@ -3,9 +3,8 @@ import type { PresentedCategory } from "../store/slices/events/EventsSlice";
 const FILTERS: PresentedCategory[] = [
     "All Events",
     'Popular Events',
-    //'Upcoming events',
+    'Upcoming events',
     //"Local events",
-    //"Tech Events"
 ];
 
 export { FILTERS };

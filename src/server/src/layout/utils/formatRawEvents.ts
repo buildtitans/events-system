@@ -12,9 +12,8 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
             throw new Error("Invalid authors JSON");
         }
 
-        const parsed_authors = typeof row.authors === "string" ? JSON.parse(row.authors) : row.authors
-
-
+        const parsed_authors = typeof row.authors === "string" ? JSON.parse(row.authors) : row.authors;
+        const startsAtMs = row.starts_at.getTime();
 
         const parsed = eventValidator({
             id: String(row.id),
@@ -22,6 +21,7 @@ function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
             tag: row.tag,
             title: row.title,
             description: row.description,
+            starts_at_ms: startsAtMs,
             starts_at: row.starts_at.toISOString(),
             meeting_location: row.meeting_location,
             group_id: row.group_id,

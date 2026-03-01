@@ -1,12 +1,14 @@
 import type { DB } from "@/src/server/src/db/types/db";
 import type { Kysely } from "kysely";
-import { EventsClient } from "@/src/server/src/db/clients/subClients/EventsClient";
-import { GroupsClient } from "@/src/server/src/db/clients/subClients/GroupsClient";
-import { AuthClient } from "@/src/server/src/db/clients/subClients/authClient";
-import { CategoriesClient } from "@/src/server/src/db/clients/subClients/CategoriesClient";
-import { GroupMembersClient } from "@/src/server/src/db/clients/subClients/GroupMembersCleint";
-import { EventAttendantsClient } from "@/src/server/src/db/clients/subClients/eventAttendantsClient";
-import { NotificationsClient } from "@/src/server/src/db/clients/subClients/notificationsClient";
+import {
+    EventsClient,
+    GroupMembersClient,
+    GroupsClient,
+    AuthClient,
+    CategoriesClient,
+    EventAttendantsClient,
+    NotificationsClient
+} from "@/src/server/src/db/clients/subClients";
 
 export class DBClient {
     public readonly events: EventsClient;

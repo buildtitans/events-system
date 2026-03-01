@@ -1,5 +1,4 @@
 "use client";
-
 import {
     useEffect,
     useRef,
@@ -17,90 +16,163 @@ import {
     populateEvents,
     selectCategory
 } from "@/src/lib/store/slices/events/EventsSlice";
-import { PresentedCategory } from "../../store/slices/events/types";
+import {
+    EventsPages,
+    PresentedCategory
+} from "../../store/slices/events/types";
 import { wait } from "@/src/lib/utils/rendering/wait";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import type { ChangeActiveCategoryHook } from "../../types/hooks/types";
-
+import type {
+    ChangeActiveCategoryHook,
+    FilterType
+} from "../../types/hooks/types";
+import {
+    curateUpcomingEventIds,
+    UpcomingEventIds
+} from "../../utils/dates/curateUpcomingEventIds";
+import { PopularEventsIds } from "@/src/server/src/lib/utils/curatePopularEventsIds";
 
 export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     const hydrateStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
     const status = useSelector((s: RootState) => s.events.eventPages.status);
-    const [filter, setFilter] = useState<PresentedCategory | null>(null);
-    const prevFilterRef = useRef<PresentedCategory | null>(null);
+    const [filter, setFilter] = useState<FilterType>("initial");
     const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        if (status === "pending" || status === "initial") return;
-        if (!filter) return;
-        if (hydrateStatus !== "idle") return;
-        if (prevFilterRef.current === filter) return;
 
-        const getAllActiveEvents = async (): Promise<void> => {
 
-            dispatch(selectCategory(filter));
-            const allActiveEvents = await trpcClient
-                .events
-                .list
-                .mutate();
+    const getUpcomingEvents = async (
+        ids: UpcomingEventIds,
+    ) => {
+        const upcomingEvents = await trpcClient
+            .events
+            .eventsById
+            .mutate(ids);
 
+        dispatch(populateEvents({
+            status: "ready",
+            data: upcomingEvents
+        }));
+    };
+
+    const executeGetUpcomingEvents = async (
+        filter: Extract<FilterType, PresentedCategory>
+    ): Promise<void> => {
+        const eventsPages = await trpcClient
+            .events
+            .list
+            .mutate();
+
+        const ids = curateUpcomingEventIds(eventsPages);
+
+        if (ids.length === 0) {
             dispatch(populateEvents({
-                status: 'ready',
-                data: allActiveEvents
+                status: "failed",
+                error: "Couldn't find any events for that filter"
             }));
-            prevFilterRef.current = filter;
-            setFilter(null);
-        };
-
-        const getPopularEvents = async () => {
-            dispatch(selectCategory(filter));
-            const ids = await trpcClient
-                .eventAttendants
-                .getPopularEventIds
-                .mutate();
-
-            const popularEvents = await trpcClient
-                .events
-                .filterPopularEvents
-                .mutate(ids);
-
-            dispatch(populateEvents({ status: "ready", data: popularEvents }));
-            prevFilterRef.current = filter;
-            setFilter(null);
-
+            return;
         }
+        await getUpcomingEvents(ids);
+    };
 
-        const executeFilterEvents = async () => {
+    const getAllActiveEvents = async (
+        filter: Extract<FilterType, PresentedCategory>
+    ): Promise<void> => {
+
+        dispatch(selectCategory(filter));
+        const allActiveEvents = await trpcClient
+            .events
+            .list
+            .mutate();
+
+        dispatch(populateEvents({
+            status: 'ready',
+            data: allActiveEvents
+        }));
+    };
+
+    const compilePopularEventIds = async (): Promise<PopularEventsIds> => {
+        return await trpcClient
+            .eventAttendants
+            .getPopularEventIds
+            .mutate();
+    };
+
+    const retrievePopularEvents = async (
+        ids: PopularEventsIds
+    ): Promise<EventsPages> => {
+        const events = await trpcClient
+            .events
+            .eventsById
+            .mutate(ids);
+
+        return events
+    };
+
+    const getPopularEvents = async (
+
+    ) => {
+        const ids = await compilePopularEventIds();
+        const popularEvents = await retrievePopularEvents(ids);
+        dispatch(populateEvents({
+            status: "ready",
+            data: popularEvents
+        }));
+    };
+
+    console.log({ "Events Status": status })
+
+
+    useEffect(() => {
+        if (hydrateStatus !== "idle") return;
+        if (filter === "initial") return;
+
+        const executeFilterEvents = async (
+            filter: FilterType
+        ) => {
             dispatch(populateEvents({ status: "pending" }));
 
-            await wait(1200);
+            await wait(3000);
 
             switch (filter) {
                 case "All Events":
-                    await getAllActiveEvents();
+                    await getAllActiveEvents(filter);
+                    dispatch(selectCategory(filter));
+
+                    setFilter("initial")
                     return;
                 case "Popular Events":
                     await getPopularEvents();
+                    dispatch(selectCategory(filter));
+                    setFilter("initial")
                     return;
+
+                case "Upcoming events":
+                    await executeGetUpcomingEvents(filter);
+                    dispatch(selectCategory(filter));
+
+                    setFilter("initial")
+                    return
+
+                case "initial": {
+                    return
+                }
                 default: {
                     return;
                 }
             };
         };
 
-        void executeFilterEvents();
-
+        void executeFilterEvents(filter);
     }, [
-        status,
         hydrateStatus,
         filter,
         dispatch
     ]);
 
-
     return {
         setFilter,
         eventStatus: status,
-        mountStatus: hydrateStatus
+        mountStatus: hydrateStatus,
+        pendingFilter: (status === "pending")
     };
 };

@@ -19,6 +19,7 @@ const EventSchema = Type.Object({
     group_id: Type.String(),
     status: EventStatusSchema,
     starts_at: Type.String(),
+    starts_at_ms: Type.Integer({ minimum: 0 }),
     img: Type.Union([Type.String(), Type.Null()]),
     tag: Type.Union([Type.String(), Type.Null()]),
     title: Type.String(),

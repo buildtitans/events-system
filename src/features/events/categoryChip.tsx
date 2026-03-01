@@ -6,13 +6,15 @@ import type { PresentedCategory } from "@/src/lib/store/slices/events/types"
 type CategoryChipProps = {
     isActive: boolean,
     handleFilter: (category: PresentedCategory) => void,
-    filter: PresentedCategory
+    filter: PresentedCategory,
+    pendingFilter: boolean
 };
 
 function CategoryChip({
     isActive,
     filter,
-    handleFilter
+    handleFilter,
+    pendingFilter
 }: CategoryChipProps
 ): React.JSX.Element {
 
@@ -27,6 +29,7 @@ function CategoryChip({
             onClick={requestFilter}
             size="medium"
             label={filter}
+            disabled={pendingFilter}
         />
     )
 };

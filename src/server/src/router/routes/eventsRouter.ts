@@ -63,7 +63,7 @@ export const eventsRouter = router({
                     .updateEventStatus(input);
             }),
 
-    filterPopularEvents:
+    eventsById:
         publicProcedure
             .input(typeboxInput<EventIdsSchemaType>(CompiledEventIdsSchema))
             .mutation(async ({ ctx, input }) => {

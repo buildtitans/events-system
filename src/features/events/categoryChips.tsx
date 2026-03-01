@@ -15,7 +15,8 @@ function CategoryChips(): JSX.Element {
     const {
         setFilter,
         mountStatus,
-        eventStatus
+        eventStatus,
+        pendingFilter
     } = useChangeActiveCategory();
 
     const handleFilter = useCallback((
@@ -25,13 +26,18 @@ function CategoryChips(): JSX.Element {
     }, [setFilter]);
 
     return (
-        <Box
-            sx={activeCategorySx}
-        >
+        <Box sx={activeCategorySx}>
+
             <EventCategories
                 handleFilter={handleFilter}
+                pendingFilter={pendingFilter}
             />
-            {RenderEventPagination(eventStatus, mountStatus, pages)}
+
+            {RenderEventPagination(
+                eventStatus,
+                mountStatus,
+                pages
+            )}
         </Box>
     );
 }

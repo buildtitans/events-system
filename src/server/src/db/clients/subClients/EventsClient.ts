@@ -41,10 +41,12 @@ export class EventsClient {
     }
 
 
-    async getEventsByIds(ids: EventSchemaType["id"][]): Promise<PaginatedLayoutSchemaType> {
+    async getEventsByIds(
+        ids: EventSchemaType["id"][]
+    ): Promise<PaginatedLayoutSchemaType> {
         const raw = await this.getRawEventsByIds(ids);
         return compileEventsLayout(raw);
-    }
+    };
 
 
     async updateEventStatus(

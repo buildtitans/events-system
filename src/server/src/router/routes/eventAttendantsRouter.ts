@@ -29,7 +29,6 @@ export const eventAttendantsRouter = router({
             .input(typeboxInput<AttendanceUpdateInputSchemaType>(AttendanceUpdateInputSchemaValidator))
             .output(typeboxInput<UpdatedAttendanceResponseSchemaType>(UpdatedAttendanceResponseSchemaValidator))
             .mutation(async ({ ctx, input }) => {
-
                 const user_id = ctx.user?.id;
 
                 if (!user_id) {
@@ -37,28 +36,18 @@ export const eventAttendantsRouter = router({
                     return null;
                 }
 
-                const res = await ctx
+                return await ctx
                     .api
                     .eventAttendants
-                    .updateAttendanceStatus(
-                        {
-                            event_id: input.event_id,
-                            user_id: user_id
-                        },
-                        input.newStatus
-                    );
-                return res;
+                    .updateAttendanceStatus({ event_id: input.event_id, user_id: user_id }, input.newStatus);
             }),
 
     getPopularEventIds:
         publicProcedure
             .mutation(async ({ ctx }) => {
-
-                const records = await ctx
-                    .api
-                    .eventAttendants
-                    .getAllAttendanceRecords();
-
-                return curatePopularEventsIds(records)
+                const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
+                return curatePopularEventsIds(records);
             })
 });
+
+export type EventAttendantsRouter = typeof eventAttendantsRouter;

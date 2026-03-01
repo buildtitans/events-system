@@ -13,6 +13,7 @@ function compileEventsLayout(
 
     const raw = formatRawEvents(rows);
     const layout = buildLayoutSlots(raw);
+
     return layoutSlotValidator(layout);
 };
 
