@@ -102,7 +102,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     const executeFilterEvents = async (filter: FilterType) => {
       dispatch(populateEvents({ status: "pending" }));
 
-      await wait(3000);
+      await wait(800);
 
       switch (filter) {
         case "All Events":
