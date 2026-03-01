@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import {
   populateEvents,
-  selectCategory,
+  selectDisplayFilter,
 } from "@/src/lib/store/slices/events/EventsSlice";
 import {
   EventsPages,
-  PresentedCategory,
+  EventDisplayFilter,
 } from "../../store/slices/events/types";
 import { wait } from "@/src/lib/utils/rendering/wait";
 import { trpcClient } from "@/src/trpc/trpcClient";
@@ -58,10 +58,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     await getUpcomingEvents(ids);
   };
 
-  const getAllActiveEvents = async (
-    filter: Extract<FilterType, PresentedCategory>,
-  ): Promise<void> => {
-    dispatch(selectCategory(filter));
+  const getAllActiveEvents = async (): Promise<void> => {
     const allActiveEvents = await trpcClient.events.list.mutate();
 
     dispatch(
@@ -106,20 +103,19 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
 
       switch (filter) {
         case "All Events":
-          await getAllActiveEvents(filter);
-          dispatch(selectCategory(filter));
-
+          await getAllActiveEvents();
+          dispatch(selectDisplayFilter(filter));
           setFilter("initial");
           return;
         case "Popular Events":
           await getPopularEvents();
-          dispatch(selectCategory(filter));
+          dispatch(selectDisplayFilter(filter));
           setFilter("initial");
           return;
 
         case "Upcoming events":
           await executeGetUpcomingEvents();
-          dispatch(selectCategory(filter));
+          dispatch(selectDisplayFilter(filter));
 
           setFilter("initial");
           return;

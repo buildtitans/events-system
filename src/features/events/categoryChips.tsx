@@ -2,7 +2,7 @@
 import { type JSX, useCallback } from "react";
 import Box from '@mui/material/Box';
 import { EventCategories } from "./categories";
-import type { PresentedCategory } from "@/src/lib/store/slices/events/EventsSlice";
+import type { EventDisplayFilter } from "@/src/lib/store/slices/events/types";
 import { useChangeActiveCategory } from "@/src/lib/hooks/filters/useChangeActiveCategory";
 import { RenderEventPagination } from "@/src/components/pipelines/buttons/renderEventPagination";
 import { activeCategorySx } from "@/src/lib/tokens/sxTokens";
@@ -20,7 +20,7 @@ function CategoryChips(): JSX.Element {
     } = useChangeActiveCategory();
 
     const handleFilter = useCallback((
-        filter: PresentedCategory
+        filter: EventDisplayFilter
     ) => {
         setFilter(filter);
     }, [setFilter]);
