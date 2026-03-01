@@ -12,7 +12,7 @@ export default function OpenedGroupSidebar(): JSX.Element | null {
     const group = useSelector((s: RootState) => s.openGroup.group);
     const status = group.status;
 
-    if (userKind === "anonymous") return null;
+    if (userKind === "anonymous") return null; // TODO: implement actions for split view of group info or expanded event -> userKind gaurd no longer needed
 
     return (
         <Drawer
