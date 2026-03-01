@@ -2,42 +2,26 @@
 import { useState, useCallback, useRef } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import type { AutocompleteInputChangeReason } from "@mui/material/useAutocomplete";
-import {
-  EventsArraySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
-
+import type { AutoCompleteOptions } from "../../store/slices/search/types";
+import { compileSearchOptions } from "../../utils/helpers/search/compileSearchLookup";
+import type { DebouncedSearchHook } from "../../types/hooks/types";
 const WAIT_DURATION = 400;
 
-type SuggestionType = {
-  title: EventSchemaType["title"];
-  event_id: EventSchemaType["id"];
-};
-
-type SuggestionOptions = Array<SuggestionType>;
-
-type AutoCompleteOptions =
-  | { status: "initial"; data: SuggestionOptions }
-  | { status: "pending"; data: SuggestionOptions }
-  | { status: "ready"; data: SuggestionOptions }
-  | { status: "n/a"; data: SuggestionOptions; message: "Matched 0 terms" }
-  | {
-      status: "warnign";
-      data: SuggestionOptions;
-      error: "oops. something went wrong";
-    };
-
-export const useDebouncedSerach = () => {
+export const useDebouncedSerach = (): DebouncedSearchHook => {
   const timerRef = useRef<number | null>(null);
-
+  const requestIdRef = useRef<number>(0);
   const [input, setInput] = useState<string>("");
 
   const [suggestions, setSuggestions] = useState<AutoCompleteOptions>({
     status: "initial",
     data: [],
+    message: null,
+    error: null,
   });
 
   const sendRequest = useCallback(async (query: string) => {
+    const requestId = ++requestIdRef.current;
+
     if (!query.trim()) {
       setSuggestions((prev: AutoCompleteOptions) => ({
         ...prev,
@@ -52,23 +36,30 @@ export const useDebouncedSerach = () => {
     }));
 
     try {
-      const request = await trpcClient.events.search.mutate(query);
-      const lookup = mapSuggestions(request);
+      const events = await trpcClient.events.search.mutate(query);
+      const groups = await trpcClient.groups.searchGroups.mutate(query);
+
+      if (requestId !== requestIdRef.current) return; // prevent commit of new state
+
+      const lookup = compileSearchOptions(events, groups);
 
       if (lookup.length > 0) {
-        setSuggestions({ status: "ready", data: lookup });
+        setSuggestions((prev: AutoCompleteOptions) => ({
+          ...prev,
+          status: "ready",
+          data: lookup,
+        }));
       } else {
-        setSuggestions(() => ({
+        setSuggestions((prev: AutoCompleteOptions) => ({
+          ...prev,
           status: "n/a",
-          data: [],
-          message: "Matched 0 terms",
         }));
       }
     } catch {
       setSuggestions((prev: AutoCompleteOptions) => ({
         ...prev,
-        status: "warnign",
-        error: "oops. something went wrong",
+        status: "warning",
+        error: "Unexpected error on search",
       }));
     }
   }, []);
@@ -112,25 +103,12 @@ export const useDebouncedSerach = () => {
     [debounce],
   );
 
-  function mapSuggestions(events: EventsArraySchemaType): SuggestionOptions {
-    const arr: SuggestionOptions = [];
-
-    for (const event of events) {
-      arr.push({
-        title: event.title,
-        event_id: event.id,
-      });
-    }
-
-    return arr;
-  }
-
   return {
     input,
     onInputChange,
     suggestions: suggestions.data,
     status: suggestions.status,
-    message: suggestions.status === "n/a" ? suggestions.message : undefined,
-    error: suggestions.status === "warnign" ? suggestions.error : undefined,
+    message: suggestions.message,
+    error: suggestions.error,
   };
 };

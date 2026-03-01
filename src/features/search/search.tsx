@@ -5,21 +5,29 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useDebouncedSerach } from '@/src/lib/hooks/search/useDebouncedSearch';
 import { searchBarSx } from '@/src/styles/sx/sx';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/src/lib/store';
+
+
+//TODO: build out an 'expanded event' section in the @/src/app/group/[slug] route, to have an actionable click event when the user selects a search option
 
 export function Search() {
+  const mountStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
     const { 
         suggestions, 
         input, 
         onInputChange, 
-        status, 
-        message 
+       // status, 
+       // message 
     } = useDebouncedSerach();
 
     return (
         <Autocomplete
+        clearOnEscape
+        disabled={mountStatus !== "idle"}
         inputValue={input}
         onInputChange={onInputChange}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={(option) => `${option.kind === "event" ? "Event:" : "Group:"} ${option.label}`}
   disablePortal
   options={suggestions}
   renderInput={(params) => (
@@ -45,27 +53,3 @@ export function Search() {
 />
     )
 }
-
-//export function Search({ input }: { input: string}) {
-//    return (
-//        <OutlinedInput
-//            value={input}
-//            size="small"
-//            id="search"
-//            placeholder="Search…"
-//            autoComplete="off"
-//            sx={searchBarSx}
-//            startAdornment={
-//                <InputAdornment position="start" sx={{ color: 'text.primary' }}>
-//                    <SearchRoundedIcon fontSize="small" />
-//                </InputAdornment>
-//            }
-//            inputProps={{
-//                'aria-label': 'search',
-//            }}
-//        />
-//
-//    );
-//}
-//
-

@@ -19,8 +19,27 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
+import type { SyntheticEvent } from "react";
+import type { AutocompleteInputChangeReason } from "@mui/material/useAutocomplete";
+import type {
+  AutoCompleteOptions,
+  SuggestionOptions,
+} from "../../store/slices/search/types";
 
 export type FilterType = EventDisplayFilter | "initial";
+
+type DebouncedSearchHook = {
+  input: string;
+  onInputChange: (
+    _event: SyntheticEvent<Element, Event>,
+    value: string,
+    reason: AutocompleteInputChangeReason,
+  ) => void;
+  suggestions: SuggestionOptions;
+  status: AutoCompleteOptions["status"];
+  message: AutoCompleteOptions["message"];
+  error: AutoCompleteOptions["error"];
+};
 
 type ChangeActiveCategoryHook = {
   setFilter: React.Dispatch<SetStateAction<FilterType>>;
@@ -113,4 +132,5 @@ export type {
   ValidateCredentialsHook,
   CancelEventHook,
   ChangeActiveCategoryHook,
+  DebouncedSearchHook,
 };
