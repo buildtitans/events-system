@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { EventLookupMap, SearchLookupType } from "./types";
+import type { SearchLookupType } from "./types";
 
 type InitialState = {
   lookup: SearchLookupType;

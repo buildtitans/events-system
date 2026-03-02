@@ -32,7 +32,9 @@ export function Search(): JSX.Element {
           key: React.Key;
         },
         option: SuggestionType,
-      ) => <SearchSuggestion props={props} key={option.slug} option={option} />}
+      ) =>  { 
+        const { key, ...rest } = props;
+        return (<SearchSuggestion props={rest} key={key} option={option} />)}}
       disablePortal
       options={suggestions}
       renderInput={(params: AutocompleteRenderInputParams) => (

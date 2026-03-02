@@ -11,9 +11,7 @@ import React from "react";
 
 type SearchSuggestionProps = {
   option: SuggestionType;
-  props: HTMLAttributes<HTMLLIElement> & {
-    key: React.Key;
-  };
+  props: HTMLAttributes<HTMLLIElement>
 };
 
 export default function SearchSuggestion({
@@ -21,12 +19,11 @@ export default function SearchSuggestion({
   props,
 }: SearchSuggestionProps) {
 
-  const { key, ...rest  } = props
 
   return (
     <Box
       component="li"
-      {...rest}
+      {...props}
       sx={{
         display: "flex",
         alignItems: "center",

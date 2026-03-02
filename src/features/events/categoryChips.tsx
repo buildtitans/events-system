@@ -1,7 +1,7 @@
 "use client"
 import { type JSX, useCallback } from "react";
 import Box from '@mui/material/Box';
-import { EventCategories, EventCategoriesProps } from "./categories";
+import { EventCategoriesProps } from "./categories";
 import type { EventDisplayFilter } from "@/src/lib/store/slices/events/types";
 import { useChangeActiveCategory } from "@/src/lib/hooks/filters/useChangeActiveCategory";
 import { RenderEventPagination } from "@/src/components/pipelines/buttons/renderEventPagination";
