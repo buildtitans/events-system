@@ -28,9 +28,9 @@ function mapEventSuggestions(
   const arr: SuggestionOptions = [];
 
   for (const event of events) {
-    let groupSlug = slugsByIds[event.group_id];
+    const groupSlug = slugsByIds[event.group_id];
 
-    let itemLabel = `Event: \n ${event.title}`;
+    const itemLabel = `Event: \n ${event.title}`;
 
     arr.push({
       kind: "event",
@@ -48,7 +48,7 @@ function mapGroupSuggestions(groups: GroupsSchemaType): SuggestionOptions {
   const arr: SuggestionOptions = [];
 
   for (const group of groups) {
-    let itemLabel = `Group: \n ${group.name}`;
+    const itemLabel = `Group: \n ${group.name}`;
 
     arr.push({
       kind: "group",

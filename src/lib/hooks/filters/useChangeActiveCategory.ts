@@ -6,10 +6,7 @@ import {
   populateEvents,
   selectDisplayFilter,
 } from "@/src/lib/store/slices/events/EventsSlice";
-import {
-  EventsPages,
-  EventDisplayFilter,
-} from "../../store/slices/events/types";
+import { EventsPages } from "../../store/slices/events/types";
 import { wait } from "@/src/lib/utils/rendering/wait";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import type {
@@ -30,69 +27,69 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
   const [filter, setFilter] = useState<FilterType>("initial");
   const dispatch = useDispatch<AppDispatch>();
 
-  const getUpcomingEvents = async (ids: UpcomingEventIds) => {
-    const upcomingEvents = await trpcClient.events.eventsById.mutate(ids);
+  useEffect(() => {
+    const getUpcomingEvents = async (ids: UpcomingEventIds) => {
+      const upcomingEvents = await trpcClient.events.eventsById.mutate(ids);
 
-    dispatch(
-      populateEvents({
-        status: "ready",
-        data: upcomingEvents,
-      }),
-    );
-  };
-
-  const executeGetUpcomingEvents = async (): Promise<void> => {
-    const eventsPages = await trpcClient.events.list.mutate();
-
-    const ids = curateUpcomingEventIds(eventsPages);
-
-    if (ids.length === 0) {
       dispatch(
         populateEvents({
-          status: "failed",
-          error: "Couldn't find any events for that filter",
+          status: "ready",
+          data: upcomingEvents,
         }),
       );
-      return;
-    }
-    await getUpcomingEvents(ids);
-  };
+    };
 
-  const getAllActiveEvents = async (): Promise<void> => {
-    const allActiveEvents = await trpcClient.events.list.mutate();
+    const executeGetUpcomingEvents = async (): Promise<void> => {
+      const eventsPages = await trpcClient.events.list.mutate();
 
-    dispatch(
-      populateEvents({
-        status: "ready",
-        data: allActiveEvents,
-      }),
-    );
-  };
+      const ids = curateUpcomingEventIds(eventsPages);
 
-  const compilePopularEventIds = async (): Promise<PopularEventsIds> => {
-    return await trpcClient.eventAttendants.getPopularEventIds.mutate();
-  };
+      if (ids.length === 0) {
+        dispatch(
+          populateEvents({
+            status: "failed",
+            error: "Couldn't find any events for that filter",
+          }),
+        );
+        return;
+      }
+      await getUpcomingEvents(ids);
+    };
 
-  const retrievePopularEvents = async (
-    ids: PopularEventsIds,
-  ): Promise<EventsPages> => {
-    const events = await trpcClient.events.eventsById.mutate(ids);
+    const getAllActiveEvents = async (): Promise<void> => {
+      const allActiveEvents = await trpcClient.events.list.mutate();
 
-    return events;
-  };
+      dispatch(
+        populateEvents({
+          status: "ready",
+          data: allActiveEvents,
+        }),
+      );
+    };
 
-  const getPopularEvents = async () => {
-    const ids = await compilePopularEventIds();
-    const popularEvents = await retrievePopularEvents(ids);
-    dispatch(
-      populateEvents({
-        status: "ready",
-        data: popularEvents,
-      }),
-    );
-  };
+    const compilePopularEventIds = async (): Promise<PopularEventsIds> => {
+      return await trpcClient.eventAttendants.getPopularEventIds.mutate();
+    };
 
-  useEffect(() => {
+    const retrievePopularEvents = async (
+      ids: PopularEventsIds,
+    ): Promise<EventsPages> => {
+      const events = await trpcClient.events.eventsById.mutate(ids);
+
+      return events;
+    };
+
+    const getPopularEvents = async () => {
+      const ids = await compilePopularEventIds();
+      const popularEvents = await retrievePopularEvents(ids);
+      dispatch(
+        populateEvents({
+          status: "ready",
+          data: popularEvents,
+        }),
+      );
+    };
+
     if (hydrateStatus !== "idle") return;
     if (filter === "initial") return;
 

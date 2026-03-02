@@ -20,10 +20,13 @@ export default function SearchSuggestion({
   option,
   props,
 }: SearchSuggestionProps) {
+
+  const { key, ...rest  } = props
+
   return (
     <Box
       component="li"
-      {...props}
+      {...rest}
       sx={{
         display: "flex",
         alignItems: "center",
