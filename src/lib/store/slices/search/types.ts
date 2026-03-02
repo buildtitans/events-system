@@ -8,6 +8,11 @@ export type EventLookupMap = Record<
 
 export type SearchResultKind = GroupSchemaType | EventSchemaType;
 
+export type GroupSlugsByIds = Record<
+  GroupSchemaType["id"],
+  GroupSchemaType["slug"]
+>;
+
 export type SearchLookupType =
   | { status: "initial" }
   | { status: "pending" }
@@ -21,14 +26,21 @@ export type SuggestionType =
       label: EventSchemaType["title"] | GroupSchemaType["name"];
       event_id: string;
       group_id: string;
+      slug: GroupSchemaType["slug"];
     }
   | {
       kind: "event" | "group";
       label: EventSchemaType["title"] | GroupSchemaType["name"];
       group_id: string;
+      slug: GroupSchemaType["slug"];
     };
 
 export type SuggestionOptions = Array<SuggestionType>;
+
+export type GroupSuggestionOptionsAndSlugs = {
+  groupSuggestions: SuggestionOptions;
+  slugsByIds: GroupSlugsByIds;
+};
 
 type AutoCompleteMessageType = "Matched 0 terms" | null;
 

@@ -20,10 +20,14 @@ import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
 import type { SyntheticEvent } from "react";
-import type { AutocompleteInputChangeReason } from "@mui/material/useAutocomplete";
+import type {
+  AutocompleteInputChangeReason,
+  AutocompleteChangeReason,
+} from "@mui/material/useAutocomplete";
 import type {
   AutoCompleteOptions,
   SuggestionOptions,
+  SuggestionType,
 } from "../../store/slices/search/types";
 
 export type FilterType = EventDisplayFilter | "initial";
@@ -34,6 +38,11 @@ type DebouncedSearchHook = {
     _event: SyntheticEvent<Element, Event>,
     value: string,
     reason: AutocompleteInputChangeReason,
+  ) => void;
+  selectOption: (
+    event: React.SyntheticEvent,
+    value: SuggestionType | null,
+    reason: AutocompleteChangeReason,
   ) => void;
   suggestions: SuggestionOptions;
   status: AutoCompleteOptions["status"];

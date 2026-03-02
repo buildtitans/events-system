@@ -2,32 +2,42 @@ import type { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 import type {
   SuggestionOptions,
   SuggestionType,
+  GroupSlugsByIds,
 } from "@/src/lib/store/slices/search/types";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export function compileSearchOptions(
   events: EventsArraySchemaType,
   groups: GroupsSchemaType,
+  storedGroups: GroupsSchemaType,
 ): SuggestionOptions {
   let options: SuggestionType[] = [];
 
-  const eventSuggestions = mapEventSuggestions(events);
+  const slugsByIds = mapSlugsByGroupIds(storedGroups);
   const groupSuggestions = mapGroupSuggestions(groups);
+  const eventSuggestions = mapEventSuggestions(events, slugsByIds);
 
   options = [...eventSuggestions, ...groupSuggestions];
-
   return options;
 }
 
-function mapEventSuggestions(events: EventsArraySchemaType): SuggestionOptions {
+function mapEventSuggestions(
+  events: EventsArraySchemaType,
+  slugsByIds: GroupSlugsByIds,
+): SuggestionOptions {
   const arr: SuggestionOptions = [];
 
   for (const event of events) {
+    let groupSlug = slugsByIds[event.group_id];
+
+    let itemLabel = `Event: \n ${event.title}`;
+
     arr.push({
       kind: "event",
-      label: event.title,
+      label: itemLabel,
       event_id: event.id,
       group_id: event.group_id,
+      slug: groupSlug,
     });
   }
 
@@ -37,15 +47,23 @@ function mapEventSuggestions(events: EventsArraySchemaType): SuggestionOptions {
 function mapGroupSuggestions(groups: GroupsSchemaType): SuggestionOptions {
   const arr: SuggestionOptions = [];
 
-  console.log({ "Groups Passed": groups });
-
   for (const group of groups) {
+    let itemLabel = `Group: \n ${group.name}`;
+
     arr.push({
       kind: "group",
-      label: group.name,
+      label: itemLabel,
       group_id: group.id,
+      slug: group.slug,
     });
   }
-
   return arr;
+}
+
+function mapSlugsByGroupIds(storedGroups: GroupsSchemaType): GroupSlugsByIds {
+  const slugHash: GroupSlugsByIds = {};
+  for (const group of storedGroups) {
+    slugHash[group.id] = group.slug;
+  }
+  return slugHash;
 }

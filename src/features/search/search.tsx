@@ -1,55 +1,43 @@
-"use client"
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import Autocomplete from '@mui/material/Autocomplete';
-import { useDebouncedSerach } from '@/src/lib/hooks/search/useDebouncedSearch';
-import { searchBarSx } from '@/src/styles/sx/sx';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
+"use client";
+import Autocomplete, {
+  AutocompleteRenderInputParams,
+} from "@mui/material/Autocomplete";
+import { useDebouncedSerach } from "@/src/lib/hooks/search/useDebouncedSearch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
+import type { HTMLAttributes } from "react";
+import { JSX } from "react";
+import SearchSuggestion from "./searchSuggestion";
+import SearchBar from "./searchBar";
+import { SuggestionType } from "@/src/lib/store/slices/search/types";
 
+export function Search(): JSX.Element {
+  const mountStatus = useSelector(
+    (s: RootState) => s.rendering.initialLoadStatus,
+  );
+  const { suggestions, input, onInputChange, selectOption, status } =
+    useDebouncedSerach();
 
-//TODO: build out an 'expanded event' section in the @/src/app/group/[slug] route, to have an actionable click event when the user selects a search option
-
-export function Search() {
-  const mountStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
-    const { 
-        suggestions, 
-        input, 
-        onInputChange, 
-       // status, 
-       // message 
-    } = useDebouncedSerach();
-
-    return (
-        <Autocomplete
-        clearOnEscape
-        disabled={mountStatus !== "idle"}
-        inputValue={input}
-        onInputChange={onInputChange}
-        getOptionLabel={(option) => `${option.kind === "event" ? "Event:" : "Group:"} ${option.label}`}
-  disablePortal
-  options={suggestions}
-  renderInput={(params) => (
-    <OutlinedInput
-      {...params.InputProps}
-      inputProps={{
-        ...params.inputProps,
-        'aria-label': 'search',
-      }}
-      placeholder="Search…"
-      startAdornment={
-        <>
-          <InputAdornment position="start" sx={{ color: 'text.primary' }}>
-            <SearchRoundedIcon fontSize="small" />
-          </InputAdornment>
-          {params.InputProps.startAdornment}
-        </>
-      }
-      sx={searchBarSx}
-      size="small"
+  return (
+    <Autocomplete
+      loading={status === "pending"}
+      disabled={mountStatus !== "idle"}
+      noOptionsText={"Query matched 0 results"}
+      inputValue={input}
+      onChange={selectOption}
+      onInputChange={onInputChange}
+      getOptionLabel={(option) => option.label}
+      renderOption={(
+        props: HTMLAttributes<HTMLLIElement> & {
+          key: any;
+        },
+        option: SuggestionType,
+      ) => <SearchSuggestion props={props} key={option.slug} option={option} />}
+      disablePortal
+      options={suggestions}
+      renderInput={(params: AutocompleteRenderInputParams) => (
+        <SearchBar params={params} />
+      )}
     />
-  )}
-/>
-    )
+  );
 }

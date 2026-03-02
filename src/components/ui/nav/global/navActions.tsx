@@ -1,3 +1,4 @@
+"use client";
 import Button from "@mui/material/Button";
 import { useDispatch } from 'react-redux';
 import { enqueueDrawer } from '@/src/lib/store/slices/rendering/RenderingSlice';
