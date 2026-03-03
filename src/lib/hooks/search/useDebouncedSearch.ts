@@ -5,10 +5,7 @@ import type {
   AutocompleteChangeReason,
   AutocompleteInputChangeReason,
 } from "@mui/material/useAutocomplete";
-import type {
-  AutoCompleteOptions,
-  SuggestionType,
-} from "../../store/slices/search/types";
+import type { AutoCompleteOptions, SuggestionType } from "./types";
 import { compileSearchOptions } from "../../utils/helpers/search/compileSearchLookup";
 import type { DebouncedSearchHook } from "../../types/hooks/types";
 import { useRouter } from "next/navigation";

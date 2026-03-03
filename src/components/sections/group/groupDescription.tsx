@@ -1,0 +1,66 @@
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import type { JSX } from "react";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+
+type GroupDescriptionProps = {
+  group: GroupSchemaType;
+};
+
+export default function GroupDescription({
+  group,
+}: GroupDescriptionProps): JSX.Element {
+  return (
+    <Stack
+      sx={{
+        width: "100%",
+      }}
+      gap={2}
+    >
+      <Stack
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            Community Details
+          </Typography>
+        </Box>
+
+        <Box>
+          <Typography>{group.description}</Typography>
+        </Box>
+      </Stack>
+
+      <Stack
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            Location
+          </Typography>
+        </Box>
+
+        <Box>
+          <Typography>
+            {group.location === "Online"
+              ? "This group hosts events online"
+              : group.location}
+          </Typography>
+        </Box>
+      </Stack>
+    </Stack>
+  );
+}

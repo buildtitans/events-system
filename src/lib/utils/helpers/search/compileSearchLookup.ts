@@ -3,7 +3,7 @@ import type {
   SuggestionOptions,
   SuggestionType,
   GroupSlugsByIds,
-} from "@/src/lib/store/slices/search/types";
+} from "@/src/lib/hooks/search/types";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export function compileSearchOptions(
