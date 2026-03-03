@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import { PropsWithChildren, type JSX } from "react";
 
-type LocalGroupNavProps = PropsWithChildren<{ children: React.ReactNode }>;
+type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 
 export default function LocalGroupNav({
   children,

@@ -40,6 +40,11 @@ export const authRouter = router({
     return res;
   }),
 
+  signup: publicProcedure
+    .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.auth.signUp(input.email, input.password);
+    }),
   recover: publicProcedure.mutation(async ({ ctx }) => {
     const token = ctx.req.cookies.session;
 

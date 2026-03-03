@@ -4,7 +4,11 @@ import {
   DbUserSchemaType,
   PublicUserSchemaType,
 } from "@/src/schemas/auth/userSchema";
-import type { StoredSession, AuthClientLoginResponse } from "../types/types";
+import type {
+  StoredSession,
+  AuthClientLoginResponse,
+  NewUserResponse,
+} from "../types/types";
 import crypto from "crypto";
 import argon2 from "argon2";
 
@@ -49,6 +53,19 @@ export class AuthClient {
     return Number(result[0].numDeletedRows ?? 0) > 0;
   }
 
+  async signUp(email: string, password: string): Promise<NewUserResponse> {
+    const hashedPw = await this.hashNewPassword(password);
+
+    return await this.db
+      .insertInto("users")
+      .values({
+        email,
+        password_hash: hashedPw,
+      })
+      .returning(["id", "email"])
+      .executeTakeFirstOrThrow();
+  }
+
   private async verifyCredentials(
     input_email: string,
     input_password: string,
@@ -68,6 +85,10 @@ export class AuthClient {
       throw new Error(`Invalid email or password`);
     }
     return user;
+  }
+
+  private async hashNewPassword(password: string): Promise<string> {
+    return argon2.hash(password);
   }
 
   private async createSession(user_id: string): Promise<StoredSession> {

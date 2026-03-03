@@ -8,11 +8,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 
 export default function OpenedGroupSidebar(): JSX.Element | null {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
     const group = useSelector((s: RootState) => s.openGroup.group);
     const status = group.status;
-
-    if (userKind === "anonymous") return null; // TODO: implement actions for split view of group info or expanded event -> userKind gaurd no longer needed
 
     return (
         <Drawer

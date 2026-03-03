@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { emailFormat } from "../../utils/regex/regex";
 import type {
   ValidationState,
   LoginCredentials,
@@ -22,7 +23,7 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
   });
 
   function validateInputs(email: string, password: string): void {
-    const invalidEmailFormat = !/\S+@\S+\.\S+/.test(email);
+    const invalidEmailFormat = !emailFormat.test(email);
     const invalidPassword = !password || password.length < 6;
 
     setEmailError({

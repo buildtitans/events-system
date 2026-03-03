@@ -19,7 +19,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
-import type { SyntheticEvent } from "react";
+import type { SyntheticEvent, ChangeEvent } from "react";
 import type {
   AutocompleteInputChangeReason,
   AutocompleteChangeReason,
@@ -28,7 +28,24 @@ import type {
   AutoCompleteOptions,
   SuggestionOptions,
   SuggestionType,
-} from "../../store/slices/search/types";
+} from "../../hooks/search/types";
+import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
+
+export type ValidateSignupCredsHook = {
+  handleEmailInput: (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => Promise<void>;
+  handlePasswordInput: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => Promise<void>;
+  handleConfirmingPassword: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => Promise<void>;
+  password: string;
+  email: string;
+  errors: InputErrorsType;
+  isValidated: boolean;
+};
 
 export type FilterType = EventDisplayFilter | "initial";
 
