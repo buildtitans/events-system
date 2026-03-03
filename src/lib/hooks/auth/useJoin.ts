@@ -44,9 +44,7 @@ export const useSignUp = (email: string, password: string) => {
       email: email,
       password: password,
     });
-
-    await wait(2000);
-
+    await wait(1000);
     await handleLoginResult(loginReques);
   };
 
@@ -56,7 +54,7 @@ export const useSignUp = (email: string, password: string) => {
     password: string,
   ) => {
     if (res && res.email) {
-      await wait(2500);
+      await wait(1500);
       await followUpLogin(email, password);
     } else {
       dispatch(enqueueSnackbar({ kind: "signup", status: "failed" }));
