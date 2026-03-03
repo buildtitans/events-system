@@ -4,8 +4,10 @@ import {
   enqueueDrawer,
   enqueueAlert,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { useCallback } from "react";
+import type { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { useDispatch } from "react-redux";
+import { syncPermissions } from "../../store/sync/syncPermissions";
+import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess } from "../../store/slices/auth/AuthSlice";
@@ -16,22 +18,46 @@ type NewUser = {
   email: string;
 };
 
-export const useSignUp = (
-  email: string,
-  password: string,
-  validated: boolean,
-) => {
+export const useSignUp = (email: string, password: string) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleResponse = async (res: NewUser | undefined) => {
-    if (res && res.email) {
+  const handleLoginResult = async (
+    result: AuthenticationSchemaType,
+  ): Promise<void> => {
+    const { success } = result;
+
+    dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+
+    if (success) {
       dispatch(loginSuccess());
-      dispatch(enqueueSnackbar({ kind: "signup", status: "idle" }));
-
-      await wait(200);
-
+      const permissions = await syncPermissions();
+      dispatch(getViewerPermissions(permissions));
       dispatch(enqueueDrawer(null));
       dispatch(enqueueAlert({ kind: "success", action: "signup" }));
+    }
+  };
+
+  const followUpLogin = async (email: string, password: string) => {
+    dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
+
+    const loginReques = await trpcClient.auth.login.mutate({
+      email: email,
+      password: password,
+    });
+
+    await wait(2000);
+
+    await handleLoginResult(loginReques);
+  };
+
+  const handleResponse = async (
+    res: NewUser | undefined,
+    email: string,
+    password: string,
+  ) => {
+    if (res && res.email) {
+      await wait(2500);
+      await followUpLogin(email, password);
     } else {
       dispatch(enqueueSnackbar({ kind: "signup", status: "failed" }));
     }
@@ -41,31 +67,15 @@ export const useSignUp = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-
-    const res = await sendRequest();
-
-    void handleResponse(res);
+    const res = await sendRequest(email, password);
+    await handleResponse(res, email, password);
   };
 
-  const sendRequest = useCallback(async () => {
-    if (!validated) return;
-
+  const sendRequest = async (email: string, password: string) => {
     dispatch(enqueueSnackbar({ kind: "signup", status: "pending" }));
-
-    try {
-      const request = await trpcClient.auth.signup.mutate({ email, password });
-
-      if (!request) {
-        throw new Error("Unexpected error on signup request");
-      }
-      await wait(500);
-
-      return request;
-    } catch (error) {
-      console.error(error);
-    }
-  }, [validated, email, password]);
-
+    const request = await trpcClient.auth.signup.mutate({ email, password });
+    return request;
+  };
   return {
     handleSubmit,
   };

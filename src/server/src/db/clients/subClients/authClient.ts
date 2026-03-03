@@ -29,6 +29,21 @@ export class AuthClient {
     return user;
   }
 
+  async signUp(email: string, password: string): Promise<NewUserResponse> {
+    const hashedPw = await this.hashNewPassword(password);
+
+    const newUser = await this.db
+      .insertInto("users")
+      .values({
+        email,
+        password_hash: hashedPw,
+      })
+      .returning(["id", "email"])
+      .executeTakeFirstOrThrow();
+
+    return newUser;
+  }
+
   async login(
     input_email: string,
     input_password: string,
@@ -51,19 +66,6 @@ export class AuthClient {
       .execute();
 
     return Number(result[0].numDeletedRows ?? 0) > 0;
-  }
-
-  async signUp(email: string, password: string): Promise<NewUserResponse> {
-    const hashedPw = await this.hashNewPassword(password);
-
-    return await this.db
-      .insertInto("users")
-      .values({
-        email,
-        password_hash: hashedPw,
-      })
-      .returning(["id", "email"])
-      .executeTakeFirstOrThrow();
   }
 
   private async verifyCredentials(

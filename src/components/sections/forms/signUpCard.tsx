@@ -25,8 +25,9 @@ export default function SignUpCard() {
     } = useValidateSignupCredentials();
     const {
         handleSubmit
-     } = useSignUp(email, password, isValidated)
+     } = useSignUp(email, password);
 
+ 
     return (
          <Stack
             sx={{
@@ -79,11 +80,12 @@ export default function SignUpCard() {
                     label="Remember me"
                 />
                 <Button 
+
                 onClick={(e) => handleSubmit(e)}
                 type="submit" 
                 fullWidth 
                 variant="contained" 
-                disabled={((errors.invalidEmail === "" && errors.invalidPassword === "Password must be at least 8 characters" && errors.needPasswordConfirmation === ""))}>
+                disabled={!isValidated}>
                     Sign up
                 </Button>
             </Box>

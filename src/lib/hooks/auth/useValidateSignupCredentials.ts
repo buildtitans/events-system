@@ -31,17 +31,16 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
   });
 
   const isValidated = useMemo(() => {
-    const isEmpty =
-      credentials.email === "" ||
-      credentials.password === "" ||
-      credentials.confirmPassword === "";
+    const metRequiredFields =
+      (credentials.email !== "" && credentials.password !== "") ||
+      credentials.confirmPassword !== "";
 
-    const isInvalid =
-      inputErrors.invalidEmail !== "" ||
-      inputErrors.invalidPassword !== "" ||
-      inputErrors.needPasswordConfirmation !== "";
+    const isValid =
+      inputErrors.invalidEmail === "" &&
+      inputErrors.invalidPassword === "" &&
+      inputErrors.needPasswordConfirmation === "";
 
-    return !isEmpty && !isInvalid;
+    return metRequiredFields && isValid;
   }, [
     inputErrors,
     credentials.email,
@@ -92,17 +91,10 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
 
   const confirmPassword = useCallback(
     (pw: string, confirmPw: string) => {
-      const isConfirming = pw !== "" && confirmPw !== "";
       const matches = pw === confirmPw;
-
-      switch (isConfirming) {
+      switch (matches) {
         case true: {
-          if (matches) {
-            setInputErrors((prev: InputErrorsType) => ({
-              ...prev,
-              needPasswordConfirmation: "Password must match",
-            }));
-          } else if (matches && inputErrors.needPasswordConfirmation !== "") {
+          if (matches && inputErrors.needPasswordConfirmation !== "") {
             setInputErrors((prev: InputErrorsType) => ({
               ...prev,
               needPasswordConfirmation: "",
@@ -110,6 +102,13 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
           }
           return;
         }
+        case false: {
+          setInputErrors((prev: InputErrorsType) => ({
+            ...prev,
+            needPasswordConfirmation: "Password must match",
+          }));
+        }
+
         default: {
           return;
         }
@@ -140,9 +139,11 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const value = e.target.value;
 
+      const trimmed = value.trim();
+
       setCredentials((prev: SignupCredentialsType) => ({
         ...prev,
-        password: value,
+        password: trimmed,
       }));
 
       await wait(300);
@@ -156,9 +157,11 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     async (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const value = e.target.value;
 
+      const trimmed = value.trim();
+
       setCredentials((prev: SignupCredentialsType) => ({
         ...prev,
-        password: value,
+        confirmPassword: trimmed,
       }));
 
       await wait(300);
