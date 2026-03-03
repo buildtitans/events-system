@@ -6,6 +6,7 @@ import NewEventDrawerContents from "../../ui/containers/NewEventDrawerContents";
 import CreateNewGroupForm from "../../sections/forms/createNewGroupForm";
 import Spinner from "../../ui/feedback/pending/spinner";
 import OpenedEventDrawerPipeline from "./openedEventDrawerPipeline";
+import SignUpCard from "../../sections/forms/signUpCard";
 
 export const OpenedDrawerContents = ({ drawerType }: { drawerType: ActiveDrawer }): JSX.Element | null => {
 
@@ -21,6 +22,13 @@ export const OpenedDrawerContents = ({ drawerType }: { drawerType: ActiveDrawer 
                 <SignInDrawerContents />
             );
 
+
+        case "sign up drawer": {
+            return (
+                <SignUpCard />
+            )
+        }
+            
         case "event drawer":
             return (
                 <OpenedEventDrawerPipeline />

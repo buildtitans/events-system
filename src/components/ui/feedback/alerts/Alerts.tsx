@@ -45,7 +45,7 @@ export function AlertResult({ variant, severity, message }: AlertResultPropertie
                 bottom: 20,
                 right: 400,
                 left: 400,
-                zIndex: 900
+                zIndex: 1500
             }} variant={variant} severity={severity}>
             {message}
         </MotionSuccessAlert>

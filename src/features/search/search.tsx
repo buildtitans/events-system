@@ -1,31 +1,45 @@
-"use client"
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+"use client";
+import Autocomplete, {
+  AutocompleteRenderInputParams,
+} from "@mui/material/Autocomplete";
+import { useDebouncedSerach } from "@/src/lib/hooks/search/useDebouncedSearch";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
+import type { HTMLAttributes } from "react";
+import React, { JSX } from "react";
+import SearchSuggestion from "./searchSuggestion";
+import SearchBar from "./searchBar";
+import { SuggestionType } from "@/src/lib/store/slices/search/types";
 
-export function Search() {
-    return (
-        <OutlinedInput
-            value={""}
-            size="small"
-            id="search"
-            placeholder="Search…"
-            autoComplete="off"
-            sx={{
-                transition: 'ease-in-out',
-                transitionDuration: '200ms',
-                borderRadius: 999,
-                xs: '100%', md: '25ch'
-            }}
-            startAdornment={
-                <InputAdornment position="start" sx={{ color: 'text.primary' }}>
-                    <SearchRoundedIcon fontSize="small" />
-                </InputAdornment>
-            }
-            inputProps={{
-                'aria-label': 'search',
-            }}
-        />
+export function Search(): JSX.Element {
+  const mountStatus = useSelector(
+    (s: RootState) => s.rendering.initialLoadStatus,
+  );
+  const { suggestions, input, onInputChange, selectOption, status } =
+    useDebouncedSerach();
 
-    );
+  return (
+    <Autocomplete
+      loading={status === "pending"}
+      disabled={mountStatus !== "idle"}
+      noOptionsText={"Query matched 0 results"}
+      inputValue={input}
+      onChange={selectOption}
+      onInputChange={onInputChange}
+      getOptionLabel={(option: SuggestionType) => option.label}
+      renderOption={(
+        props: HTMLAttributes<HTMLLIElement> & {
+          key: React.Key;
+        },
+        option: SuggestionType,
+      ) =>  { 
+        const { key, ...rest } = props;
+        return (<SearchSuggestion props={rest} key={key} option={option} />)}}
+      disablePortal
+      options={suggestions}
+      renderInput={(params: AutocompleteRenderInputParams) => (
+        <SearchBar params={params} />
+      )}
+    />
+  );
 }

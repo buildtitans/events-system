@@ -1,4 +1,7 @@
-import type { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
+import type {
+  PublicUserSchemaType,
+  DbUserSchemaType,
+} from "@/src/schemas/auth/userSchema";
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 
 type StoredSession = {
@@ -17,8 +20,11 @@ type NotificationCreationProcedure = {
   items: NotificationSchemaArrayType;
 };
 
+type NewUserResponse = Pick<DbUserSchemaType, "email" | "id">;
+
 export type {
   StoredSession,
   AuthClientLoginResponse,
   NotificationCreationProcedure,
+  NewUserResponse,
 };

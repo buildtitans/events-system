@@ -7,23 +7,23 @@ import Box from "@mui/material/Box";
 
 type PasswordInputProps = {
     handleClickOpen?: () => void,
-    handlePassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    handleConfirmingPassword: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     passwordError: boolean,
     passwordErrorMessage: string
 }
 
-function Password({
+function ConfirmPassword({
     handleClickOpen,
-    handlePassword,
+    handleConfirmingPassword,
     passwordError,
     passwordErrorMessage
 }: PasswordInputProps): JSX.Element {
 
     return (
         <FormControl>
-            <FormLabel htmlFor="password">Password</FormLabel>
+            <FormLabel htmlFor="password">Confirm Password</FormLabel>
             <TextField
-                onChange={(e) => handlePassword(e)}
+                onChange={(e) => handleConfirmingPassword(e)}
                 error={passwordError}
                 helperText={passwordErrorMessage}
                 name="password"
@@ -37,20 +37,8 @@ function Password({
                 variant="outlined"
                 color={passwordError ? 'error' : 'primary'}
             />
-            <Box sx={{ display: 'flex', justifyContent: 'end', paddingTop: 1 }}>
-
-                <Link
-                    component="button"
-                    type="button"
-                    onClick={handleClickOpen}
-                    variant="body2"
-                    sx={{ alignSelf: 'baseline' }}
-                >
-                    Forgot your password?
-                </Link>
-            </Box>
         </FormControl>
     )
 };
 
-export default Password;
+export default ConfirmPassword;
