@@ -13,6 +13,7 @@ import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 import { compileEventsLayout } from "@/src/server/src/layout/compileEventsLayout";
 import { EventSearchSchemaType } from "@/src/schemas/events/eventsSearchSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);
 
 export class EventsClient {
@@ -48,6 +49,18 @@ export class EventsClient {
     const raw = await this.getRawEventsFromGroup(group_id);
     if (!Array.isArray(raw) || raw.length === 0) return [];
     return compileEventsLayout(raw);
+  }
+
+  async getGroupEventsByGroupId(
+    group_id: GroupSchemaType["id"],
+  ): Promise<EventsArraySchemaType> {
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("group_id", "=", group_id)
+      .execute();
+
+    return formatRawEvents(raw);
   }
 
   async getEventsByIds(

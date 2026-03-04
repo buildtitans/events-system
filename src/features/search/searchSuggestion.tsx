@@ -5,9 +5,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
-import type { SuggestionType } from "@/src/lib/store/slices/search/types";
+import type { SuggestionType } from "@/src/lib/hooks/search/types";
 import type { HTMLAttributes } from "react";
-import React from "react";
 
 type SearchSuggestionProps = {
   option: SuggestionType;

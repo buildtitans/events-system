@@ -24,6 +24,7 @@ export default function NavActions({
 
   return (
     <Stack
+    
       sx={{
         display: {
           xs: "none",
@@ -47,6 +48,7 @@ export default function NavActions({
         {userKind === "authenticated" && <Notifications />}
         {userKind === "authenticated" && (
           <Button
+            suppressHydrationWarning={true}
             onClick={() => dispatch(enqueueDrawer("new group"))}
             variant="text"
             color="info"
@@ -67,6 +69,7 @@ export default function NavActions({
         )}
         {userKind === "anonymous" && (
           <Button
+           suppressHydrationWarning={true}
             onClick={() => dispatch(enqueueDrawer("sign in drawer"))}
             color="info"
             variant="contained"
@@ -85,6 +88,7 @@ export default function NavActions({
         )}{" "}
         {userKind === "anonymous" && (
           <Button
+           suppressHydrationWarning={true}
             onClick={openSignupDrawer}
             sx={{
               borderRadius: 999,
@@ -103,6 +107,7 @@ export default function NavActions({
         )}
         {userKind === "authenticated" && (
           <Button
+           suppressHydrationWarning={true}
             sx={{
               borderRadius: 999,
               ":hover": {

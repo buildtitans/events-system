@@ -40,6 +40,12 @@ export const eventsRouter = router({
       return await ctx.api.events.getGroupEvents(input);
     }),
 
+  groupHistory: publicProcedure
+    .input(typeboxInput<GroupIdSchemaType>(GroupIdSchemaValidator))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.events.getGroupEventsByGroupId(input);
+    }),
+
   updateEventStatus: publicProcedure
     .input(
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),

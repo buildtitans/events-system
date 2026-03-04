@@ -9,7 +9,7 @@ import type { HTMLAttributes } from "react";
 import React, { JSX } from "react";
 import SearchSuggestion from "./searchSuggestion";
 import SearchBar from "./searchBar";
-import { SuggestionType } from "@/src/lib/store/slices/search/types";
+import type { SuggestionType } from "@/src/lib/hooks/search/types";
 
 export function Search(): JSX.Element {
   const mountStatus = useSelector(

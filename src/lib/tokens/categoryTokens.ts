@@ -4,7 +4,6 @@ const FILTERS: EventDisplayFilter[] = [
   "All Events",
   "Popular Events",
   "Upcoming events",
-  //"Local events",
 ];
 
 export { FILTERS };

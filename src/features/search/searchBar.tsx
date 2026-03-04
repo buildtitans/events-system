@@ -14,6 +14,7 @@ export default function SearchBar({ params }: SearchBarProps): JSX.Element {
 
     return (
         <OutlinedInput
+        suppressHydrationWarning={true}
       autoComplete={"off"}
       {...params.InputProps}
       inputProps={{

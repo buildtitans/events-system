@@ -1,21 +1,21 @@
 "use client";
 import Box from "@mui/material/Box";
-import { JSX, useState } from "react";
+import type { JSX} from "react";
 import GroupHeadSecton from "./groupHeadSection";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { RenderEventsForGroup } from "../../pipelines/groups/renderEventsForGroup";
 import { RenderCurrentView } from "../../pipelines/groups/renderCurrentView";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
 type ViewGroupSectionProps = {
     group: GroupSchemaType,
 }
 
-export type ViewType = 'overview' | 'expanded event' | 'group events';
 
 export default function ViewGroupSection({
     group,
 }: ViewGroupSectionProps): JSX.Element {
-    const [viewing, setViewing] = useState<ViewType>("overview");
+    const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
 
 
     return (
@@ -48,7 +48,7 @@ export default function ViewGroupSection({
                     height: '100%'
                 }}
             >
-                {RenderCurrentView(viewing, group)}
+                {RenderCurrentView(displayed, group)}
             </Box>
         </Box>
     )

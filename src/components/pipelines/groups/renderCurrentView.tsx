@@ -1,25 +1,25 @@
 "use client";
-import type { ViewType } from "@/src/components/sections/group/viewGroupSection";
 import { RenderEventsForGroup } from "./renderEventsForGroup";
 import { JSX } from "react";
-import GroupDescription from "../../sections/group/groupDescription";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import Overview from "../../sections/group/displays/overview";
+import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import GroupHistory from "../../sections/group/displays/groupHistory";
 
 
-export const RenderCurrentView = (view: ViewType, group: GroupSchemaType): JSX.Element => {
+export const RenderCurrentView = (
+    view: CurrentDisplay, 
+    group: GroupSchemaType
+): JSX.Element => {
 
 
     switch(view) {
-
         case "overview": {
-            return(
-                <>
-                <GroupDescription 
-                group={group}
-                />
-                <RenderEventsForGroup />
-                </>
-            )
+            return <Overview group={group} />
+        }
+
+        case "group history": {
+            return <GroupHistory />
         }
         
         default: {

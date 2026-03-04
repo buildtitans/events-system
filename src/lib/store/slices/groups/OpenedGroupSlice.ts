@@ -1,58 +1,96 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventsPages } from "../events/EventsSlice";
+import type { EventsPages } from "../events/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
+import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 
-export type GroupHydrated = { status: "idle" }
-    | { status: "pending" }
-    | { status: "failed", error: "Group hydration error" }
-    | { status: "ready", data: GroupSchemaType };
+export type GroupHydrated =
+  | { status: "idle" }
+  | { status: "pending" }
+  | { status: "failed"; error: "Group hydration error" }
+  | { status: "ready"; data: GroupSchemaType };
 
-export type HydratedEventsForOpenedGroup = { status: "initial" }
-    | { status: "pending" }
-    | { status: "refreshing" }
-    | { status: "warning", message: "No events have been scheduled for this group" }
-    | { status: "failed", error: "Error hydrating events for opened group" }
-    | { status: "ready", data: EventsPages };
+export type HydratedEventsForOpenedGroup =
+  | { status: "initial" }
+  | { status: "pending" }
+  | { status: "refreshing" }
+  | {
+      status: "warning";
+      message: "No events have been scheduled for this group";
+    }
+  | { status: "failed"; error: "Error hydrating events for opened group" }
+  | { status: "ready"; data: EventsPages };
+
+export type GroupHistoryType =
+  | { status: "initial" }
+  | { status: "pending" }
+  | { status: "ready"; data: EventsArraySchemaType }
+  | { status: "failed"; error: string };
+
+export type CurrentDisplay = "overview" | "expanded event" | "group history";
 
 type InitialState = {
-    group: GroupHydrated,
-    events: HydratedEventsForOpenedGroup,
-    syncStatus: LoadingStatus,
-    currPage: number
+  group: GroupHydrated;
+  events: HydratedEventsForOpenedGroup;
+  syncStatus: LoadingStatus;
+  currPage: number;
+  activeSection: CurrentDisplay;
+  history: GroupHistoryType;
 };
 
 const initialState: InitialState = {
-    group: { status: "idle" },
-    events: { status: "initial" },
-    syncStatus: "idle",
-    currPage: 0
+  group: { status: "idle" },
+  events: { status: "initial" },
+  history: { status: "initial" },
+  syncStatus: "idle",
+  currPage: 0,
+  activeSection: "overview",
 };
 
-
 const OpenedGroupSlice = createSlice({
-    name: "OpenedGroup",
-    initialState: initialState,
-    reducers: {
+  name: "OpenedGroup",
+  initialState: initialState,
+  reducers: {
+    getGroupEvents: (
+      state: InitialState,
+      action: PayloadAction<HydratedEventsForOpenedGroup>,
+    ) => {
+      state.events = action.payload;
+    },
+    groupOpened: (
+      state: InitialState,
+      action: PayloadAction<GroupHydrated>,
+    ) => {
+      state.group = action.payload;
+    },
 
-        getGroupEvents: (state: InitialState, action: PayloadAction<HydratedEventsForOpenedGroup>) => {
-            state.events = action.payload
-        },
-        groupOpened: (state: InitialState, action: PayloadAction<GroupHydrated>) => {
-            state.group = action.payload
-        },
-
-        groupEventsStatus: (state: InitialState, action: PayloadAction<LoadingStatus>) => {
-            state.syncStatus = action.payload;
-        },
-
-    }
+    groupEventsStatus: (
+      state: InitialState,
+      action: PayloadAction<LoadingStatus>,
+    ) => {
+      state.syncStatus = action.payload;
+    },
+    displaySection: (
+      state: InitialState,
+      action: PayloadAction<CurrentDisplay>,
+    ) => {
+      state.activeSection = action.payload;
+    },
+    getGroupHistory: (
+      state: InitialState,
+      action: PayloadAction<GroupHistoryType>,
+    ) => {
+      state.history = action.payload;
+    },
+  },
 });
 
 export const {
-    getGroupEvents,
-    groupOpened,
-    groupEventsStatus
+  getGroupEvents,
+  groupOpened,
+  groupEventsStatus,
+  displaySection,
+  getGroupHistory,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;
