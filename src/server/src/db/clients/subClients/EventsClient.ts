@@ -1,15 +1,18 @@
 import { Insertable, Kysely, Selectable } from "kysely";
 import { DB, Events } from "../../types/db";
 import {
+  EventsArraySchemaType,
   EventSchemaType,
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { formatRawEvents } from "../../../layout/utils";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 import { compileEventsLayout } from "@/src/server/src/layout/compileEventsLayout";
+import { EventSearchSchemaType } from "@/src/schemas/events/eventsSearchSchema";
 dayjs.extend(utc);
 
 export class EventsClient {
@@ -20,6 +23,23 @@ export class EventsClient {
   async getEvents() {
     const raw = await this.getRawEvents();
     return compileEventsLayout(raw);
+  }
+
+  async getFlattenedEvents(): Promise<EventsArraySchemaType> {
+    const raw = await this.db.selectFrom("events").selectAll().execute();
+    return formatRawEvents(raw);
+  }
+
+  async searchEventByTitle(
+    query: EventSearchSchemaType,
+  ): Promise<EventsArraySchemaType> {
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("title", "ilike", `%${query}%`)
+      .execute();
+
+    return formatRawEvents(raw);
   }
 
   async getGroupEvents(

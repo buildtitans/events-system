@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/lib/store';
 import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/auth/AuthSlice';
-import { enqueueSnackbar } from '@/src/lib/store/slices/rendering/RenderingSlice';
+import { enqueueDrawer, enqueueSnackbar } from '@/src/lib/store/slices/rendering/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/auth/loginCredentialsSchema';
 import NavActions from './global/navActions';
 import NavBar from './global/navBar';
@@ -25,6 +25,10 @@ export default function TopNav() {
 
         const permissions = await syncPermissions();
         dispatch(getViewerPermissions(permissions))
+    };
+
+    const openSignupDrawer = () => {
+        dispatch(enqueueDrawer("sign up drawer"));
     };
 
 
@@ -57,6 +61,7 @@ export default function TopNav() {
                 <NavActions
                     userKind={userKind}
                     handleSignout={handleSignout}
+                    openSignupDrawer={openSignupDrawer}
                 />
             </Container>
         </AppBar>

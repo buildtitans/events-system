@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { SidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
+import LocalGroupNav from "./localGroupNav";
 
 type GroupActonsContainerProps = {
     group_id: GroupSchemaType["id"],
@@ -25,7 +26,10 @@ export default function GroupActonsContainer({
                 paddingY: 10,
                 overflow: 'hidden'
             }}>
+            <LocalGroupNav>
             {SidebarPipeline(group_id)}
+            </LocalGroupNav>
+            
         </Box>
     )
 }

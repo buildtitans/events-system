@@ -20,6 +20,16 @@ export class GroupsClient {
     return formatted;
   }
 
+  async searchGroups(query: string): Promise<GroupsSchemaType> {
+    const raw = await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("name", "ilike", `%${query}%`)
+      .execute();
+
+    return this.formatRawGroups(raw);
+  }
+
   private async getRawGroups(): Promise<Selectable<Groups>[]> {
     return this.db
       .selectFrom("groups")

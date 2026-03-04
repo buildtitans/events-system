@@ -6,6 +6,10 @@ import {
   NewGroupInputSchemaType,
   NewGroupInputSchemaValidator,
 } from "@/src/schemas/groups/groupSchema";
+import {
+  CompiledEventSearchSchema,
+  EventSearchSchemaType,
+} from "@/src/schemas/events/eventsSearchSchema";
 
 export const groupsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -37,5 +41,11 @@ export const groupsRouter = router({
     .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.groups.getGroupBySlug(input);
+    }),
+
+  searchGroups: publicProcedure
+    .input(typeboxInput<EventSearchSchemaType>(CompiledEventSearchSchema)) //TODO: naming convention change on search input schema
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.groups.searchGroups(input);
     }),
 });

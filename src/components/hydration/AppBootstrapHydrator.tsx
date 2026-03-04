@@ -13,56 +13,52 @@ import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
 import { wait } from "@/src/lib/utils/rendering/wait";
 
-export default function AppBootstrapHydrator({ domains }: { domains: DomainStateType }): React.ReactNode {
-    useRecoverSession();
-    useHydrateNotifications();
-    const dispatch = useDispatch<AppDispatch>();
+export default function AppBootstrapHydrator({
+  domains,
+}: {
+  domains: DomainStateType;
+}): React.ReactNode {
+  useRecoverSession();
+  useHydrateNotifications();
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        if (!domains) return;
+  useEffect(() => {
+    if (!domains) return;
 
-        const dispatchDomains = (
-            events: DomainStateType["events"],
-            groups: DomainStateType["groups"],
-            categories: DomainStateType["categories"]
-        ) => {
+    const dispatchDomains = (
+      events: DomainStateType["events"],
+      groups: DomainStateType["groups"],
+      categories: DomainStateType["categories"],
+    ) => {
+      if (groups.length === 0 || events.length === 0) {
+        dispatch(signalDomainStatus("failed"));
+        return;
+      }
 
-            if ((groups.length === 0) || (events.length === 0)) {
-                dispatch(signalDomainStatus("failed"));
-                return;
-            }
+      dispatch(getAllGroups(groups));
 
-            dispatch(getAllGroups(groups));
+      dispatch(populateEvents({ status: "ready", data: events }));
 
-            dispatch(populateEvents({ status: "ready", data: events }));
+      const lookup = createCategoryLookup(groups);
 
-            const lookup = createCategoryLookup(groups);
+      dispatch(getCatLookup({ status: "ready", data: lookup }));
 
-            dispatch(getCatLookup({ status: "ready", data: lookup }));
+      dispatch(getAllCategories(categories));
 
-            dispatch(getAllCategories(categories));
+      dispatch(signalDomainStatus("idle"));
+    };
 
-            dispatch(signalDomainStatus("idle"));
+    const hydrateDomains = async () => {
+      dispatch(signalDomainStatus("pending"));
+      dispatch(populateEvents({ status: "pending" }));
 
-        };
+      await wait(1200);
 
-        const hydrateDomains = async () => {
+      dispatchDomains(domains.events, domains.groups, domains.categories);
+    };
 
-            dispatch(signalDomainStatus("pending"));
-            dispatch(populateEvents({ status: "pending" }));
+    void hydrateDomains();
+  }, [domains, dispatch]);
 
-            await wait(1200);
-
-            dispatchDomains(
-                domains.events,
-                domains.groups,
-                domains.categories
-            );
-        };
-
-        void hydrateDomains();
-
-    }, [domains, dispatch]);
-
-    return null;
-};
+  return null;
+}

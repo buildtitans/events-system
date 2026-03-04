@@ -1,10 +1,10 @@
-import type { PresentedCategory } from "../store/slices/events/EventsSlice";
+import type { EventDisplayFilter } from "../store/slices/events/types";
 
-const FILTERS: PresentedCategory[] = [
+const FILTERS: EventDisplayFilter[] = [
   "All Events",
   "Popular Events",
   "Upcoming events",
-  "Local events",
+  //"Local events",
 ];
 
 export { FILTERS };

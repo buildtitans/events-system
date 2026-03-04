@@ -27,7 +27,7 @@ function AuthenticatonSnackbar({
 
         const timer = window.setTimeout(() => {
             dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-        }, 2500);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, [status, dispatch]);

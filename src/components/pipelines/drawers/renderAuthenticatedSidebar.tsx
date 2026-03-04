@@ -1,6 +1,6 @@
 import JoinGroupButton from "../../ui/buttons/joinGroupButton";
 import GroupOranizerOnly from "../../sections/group/GroupOrganizerOnly";
-import type { GroupMembersSchemaType } from "@/src/schemas/groupMembersSchema";
+import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { JSX } from "react";
 import MemberActionsMenu from "../../ui/menus/memberActionsMenu";
 

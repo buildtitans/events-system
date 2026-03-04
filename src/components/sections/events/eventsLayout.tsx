@@ -5,7 +5,7 @@ import type { JSX } from 'react';
 import { RenderEventsLayout } from '@/src/components/pipelines/events/renderEventsLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
-import { EventsPages } from '@/src/lib/store/slices/events/EventsSlice';
+import type { EventsPages } from '@/src/lib/store/slices/events/types';
 const MotionGrid = motion(Grid);
 
 

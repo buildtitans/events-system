@@ -23,10 +23,10 @@ export default function GroupHeadSecton(
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'start',
-                    justifyContent: 'center',
+                    justifyContent: "start",
                     gap: 6,
                     width: 'auto',
-                    height: '100%'
+                    height: '100%',
                 }}>
 
 

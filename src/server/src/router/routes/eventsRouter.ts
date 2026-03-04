@@ -7,6 +7,10 @@ import {
   UpdateEventArgsSchemaValidator,
 } from "@/src/schemas/events/eventSchema";
 import {
+  EventSearchSchemaType,
+  CompiledEventSearchSchema,
+} from "@/src/schemas/events/eventsSearchSchema";
+import {
   CompiledEventIdsSchema,
   EventIdsSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
@@ -50,5 +54,15 @@ export const eventsRouter = router({
     .input(typeboxInput<EventIdsSchemaType>(CompiledEventIdsSchema))
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.events.getEventsByIds(input);
+    }),
+
+  getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.api.events.getFlattenedEvents();
+  }),
+
+  search: publicProcedure
+    .input(typeboxInput<EventSearchSchemaType>(CompiledEventSearchSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.events.searchEventByTitle(input);
     }),
 });

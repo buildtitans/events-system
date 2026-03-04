@@ -1,5 +1,4 @@
 "use client"
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -8,43 +7,29 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '@/src/components/ui/icons/CustomIcons';
 import Email from '@/src/components/sections/inputs/Email';
-import Password from '@/src/components/sections/inputs/Password';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
-import ForgotPassword from '@/src/features/auth/ForgotPassword';
-import type { ValidateCredentialsHook } from '@/src/lib/types/hooks/types';
-import { UseLoginHook } from '@/src/lib/types/hooks/types';
 import Stack from '@mui/material/Stack';
+import { useValidateSignupCredentials } from '@/src/lib/hooks/auth/useValidateSignupCredentials';
+import ConfirmPassword from '../inputs/ConfirmPassword';
+import { useSignUp } from '@/src/lib/hooks/auth/useJoin';
+import CreatePassword from '../inputs/CreatePassword';
 
-type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
-    handleSubmit: UseLoginHook["handleSubmit"]
-}
+export default function SignUpCard() {
+    const { 
+        email,
+        password,
+        handleEmailInput, 
+        handlePasswordInput, 
+        handleConfirmingPassword, 
+        errors,
+        isValidated 
+    } = useValidateSignupCredentials();
+    const {
+        handleSubmit
+     } = useSignUp(email, password);
 
-
-export default function SignInCard({
-    isSubmittable,
-    emailErrorMessage,
-    emailError,
-    passwordError,
-    passwordErrorMessage,
-    handleEmail,
-    handlePassword,
-    handleSubmit
-}: SignInCardProps) {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-
+ 
     return (
-        <Stack
+         <Stack
             sx={{
                 width: '80%',
                 height: 'auto',
@@ -66,33 +51,42 @@ export default function SignInCard({
                 variant="h4"
                 sx={{ width: '100%', fontSize: '28px', fontWeight: 'light', borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.2)', marginBottom: 4 }}
             >
-                Sign in
+                Sign up
             </Typography>
             <Box
                 component="form"
                 method="POST"
                 noValidate
-                onSubmit={(e) => handleSubmit(e)}
                 sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
             >
                 <Email
-                    handleEmail={handleEmail}
-                    emailError={emailError}
-                    emailErrorMessage={emailErrorMessage}
+                    handleEmail={handleEmailInput}
+                    emailError={(errors.invalidEmail !== "")}
+                    emailErrorMessage={errors.invalidEmail}
                 />
-                <Password
-                    handlePassword={handlePassword}
-                    passwordError={passwordError}
-                    passwordErrorMessage={passwordErrorMessage}
-                    handleClickOpen={handleClickOpen}
+                <CreatePassword
+                    handlePassword={handlePasswordInput}
+                    passwordError={(errors.invalidPassword !== "")}
+                    passwordErrorMessage={errors.invalidPassword}
                 />
+                <ConfirmPassword 
+                handleConfirmingPassword={handleConfirmingPassword}
+                passwordError={(errors.needPasswordConfirmation !== "")}
+                passwordErrorMessage={errors.needPasswordConfirmation}
+                />
+
                 <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
                 />
-                <ForgotPassword open={open} handleClose={handleClose} />
-                <Button type="submit" fullWidth variant="contained" disabled={(!isSubmittable) || (userKind === "authenticated")}>
-                    Sign in
+                <Button 
+
+                onClick={(e) => handleSubmit(e)}
+                type="submit" 
+                fullWidth 
+                variant="contained" 
+                disabled={!isValidated}>
+                    Sign up
                 </Button>
             </Box>
             <Divider>or</Divider>
@@ -114,6 +108,6 @@ export default function SignInCard({
                     Sign in with Facebook
                 </Button>
             </Box>
-        </Stack>
-    );
+            </Stack>
+    )
 }

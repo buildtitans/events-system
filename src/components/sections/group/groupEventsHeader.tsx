@@ -17,33 +17,32 @@ export default function GroupEventsHeader(
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+                alignItems: "start",
                 justifyContent: 'center',
-                width: '100%'
             }}
         >
             <Typography
                 component={"h2"}
                 sx={{
-                    color: 'white',
-                    fontSize: '32px',
-                    fontWeight: 'light',
-                    textAlign: "center"
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '36px',
+                    textAlign: "left",
+                    fontWeight: "light"
                 }}
             >
-                {groupName}
+                Group
             </Typography>
             <Typography
                 component={"h2"}
                 sx={{
                     color: 'white',
-                    fontSize: '32px',
-                    fontWeight: 'light',
-                    textAlign: "center"
+                    fontSize: '36px',
+                    textAlign: "left"
                 }}
             >
-                Upcoming Events
+                {groupName}
             </Typography>
+            
         </Box>
     )
 }

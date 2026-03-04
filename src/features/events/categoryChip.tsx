@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import Chip from "@mui/material/Chip"
-import type { PresentedCategory } from "@/src/lib/store/slices/events/types"
+import type { EventDisplayFilter } from "@/src/lib/store/slices/events/types"
 
 type CategoryChipProps = {
     isActive: boolean,
-    handleFilter: (category: PresentedCategory) => void,
-    filter: PresentedCategory,
+    handleFilter: (filter: EventDisplayFilter) => void,
+    filter: EventDisplayFilter,
     pendingFilter: boolean
 };
 
