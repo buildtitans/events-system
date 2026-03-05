@@ -6,61 +6,73 @@ import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { LoginCredentials } from "../../types/tokens/types";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
-import type { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
-import { enqueueDrawer, enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
-import { syncPermissions } from "../../store/sync/syncPermissions";
+import {
+  enqueueDrawer,
+  enqueueSnackbar,
+} from "../../store/slices/rendering/RenderingSlice";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
+import { RBACType } from "@/src/server/src/db/clients/types/types";
+
+type LoginResType = {
+  success: boolean;
+  permissions: RBACType;
+};
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const { status } = useSelector((s: RootState) => s.rendering.snackbar);
+  const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const { status } = useSelector((s: RootState) => s.rendering.snackbar);
 
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
-    const handleLoginResult = async (result: AuthenticationSchemaType): Promise<void> => {
-        const { success } = result;
+  const handleLoginResult = async (result: LoginResType): Promise<void> => {
+    const { success, permissions } = result;
 
-        dispatch(enqueueSnackbar({ kind: "login", status: success ? "success" : "failed" }));
+    dispatch(
+      enqueueSnackbar({
+        kind: "login",
+        status: success ? "success" : "failed",
+      }),
+    );
 
-        if (success) {
-            dispatch(loginSuccess());
-            const permissions = await syncPermissions();
+    if (success) {
+      dispatch(loginSuccess());
+      dispatch(getViewerPermissions(permissions));
+      dispatch(enqueueDrawer(null));
+    }
+  };
 
-            dispatch(getViewerPermissions(permissions));
+  const login = async (
+    email: string,
+    password: string,
+  ): Promise<{ success: boolean; permissions: RBACType }> => {
+    const result = await trpcClient.auth.login.mutate({
+      email,
+      password,
+    });
+    return result;
+  };
 
-            dispatch(enqueueDrawer(null));
-        }
-    };
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
+    e.preventDefault();
 
-    const login = async (email: string, password: string): Promise<AuthenticationSchemaType> => {
-        const result = await trpcClient.auth.login.mutate({
-            email,
-            password,
-        });
-        return result;
-    };
+    const { email, password } = credentials;
+    if (!email || !password) return;
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
+    dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
 
-        const { email, password } = credentials;
-        if (!email || !password) return;
+    const result = await login(email, password);
+    await handleLoginResult(result);
+  };
 
-        dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
+  useEffect(() => {
+    if (userKind === "anonymous" || status === "idle") return;
+  }, [userKind, status]);
 
-        const result = await login(email, password);
-        await handleLoginResult(result);
-    };
-
-    useEffect(() => {
-        if (userKind === "anonymous" || status === "idle") return;
-
-
-    }, [userKind, status]);
-
-    return {
-        handleSubmit,
-    };
+  return {
+    handleSubmit,
+  };
 };
 
 export { useLogin };

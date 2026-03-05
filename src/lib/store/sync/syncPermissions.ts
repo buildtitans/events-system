@@ -5,17 +5,16 @@ import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSc
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 function handlePermissions(
-    groups: GroupsSchemaType,
-    memberships: GroupMembersSchemaType[] | null
+  groups: GroupsSchemaType,
+  memberships: GroupMembersSchemaType[] | null,
 ) {
-    const permissions = mapGroupAccessPermissions(groups, memberships);
+  const permissions = mapGroupAccessPermissions(groups, memberships);
 
-    return permissions;
-};
+  return permissions;
+}
 
 export async function syncPermissions(): Promise<ViewerAccess> {
-
-    const groups = await trpcClient.groups.list.mutate();
-    const memberships = await trpcClient.groupMembers.viewerMemberships.mutate();
-    return handlePermissions(groups, memberships);
-};
+  const groups = await trpcClient.groups.list.mutate();
+  const memberships = await trpcClient.groupMembers.viewerMemberships.mutate();
+  return handlePermissions(groups, memberships);
+}

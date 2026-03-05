@@ -16,6 +16,7 @@ import {
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -27,8 +28,14 @@ export const eventsRouter = router({
   newEvent: publicProcedure
     .input(typeboxInput<NewEventInputSchemaType>(NewEventInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const user_id = ctx.user?.id;
-      if (!user_id) return null;
+      const permitted = ctx.auth.rbac.can("create event", input.group_id);
+
+      if (!permitted) {
+        throw new TRPCResolverError(
+          403,
+          "Permission denied to create a new event",
+        );
+      }
 
       return await ctx.api.events.createNewEvent(input);
     }),
@@ -51,7 +58,13 @@ export const eventsRouter = router({
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
     .mutation(({ ctx, input }) => {
-      if (ctx.user?.id !== input.organizer_id) return null;
+      const permitted = ctx.auth.rbac.can("update event", input.group_id);
+      if (!permitted) {
+        throw new TRPCResolverError(
+          403,
+          "Permission denied to RSVP for this event",
+        );
+      }
 
       return ctx.api.events.updateEventStatus(input);
     }),

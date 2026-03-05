@@ -38,7 +38,10 @@ const groupMembersRouter = router({
 
     if (!user_id) return null;
 
-    return ctx.api.groupMembers.getViewerMemberships(user_id);
+    const memberships =
+      await ctx.api.groupMembers.getViewerMemberships(user_id);
+
+    return memberships;
   }),
 });
 

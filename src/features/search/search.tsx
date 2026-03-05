@@ -20,6 +20,9 @@ export function Search(): JSX.Element {
 
   return (
     <Autocomplete
+      sx={{
+        display: { xl: 'flex', xs: 'none'}
+      }}
       loading={status === "pending"}
       disabled={mountStatus !== "idle"}
       noOptionsText={"Query matched 0 results"}

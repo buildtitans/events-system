@@ -57,6 +57,7 @@ const UpdateEventArgsSchema = Type.Object({
   event_id: Type.String({ format: "uuid" }),
   status: EventStatusSchema,
   organizer_id: Type.String({ format: "uuid" }),
+  group_id: Type.String({ format: "uuid" }),
 });
 
 type UpdateEventArgsSchemaType = Static<typeof UpdateEventArgsSchema>;

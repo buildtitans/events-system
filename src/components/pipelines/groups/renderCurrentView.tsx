@@ -4,7 +4,7 @@ import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import Overview from "../../sections/group/displays/overview";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import GroupHistory from "../../sections/group/displays/groupHistory";
+import RenderGroupHistory from "./renderGroupHistory";
 
 
 export const RenderCurrentView = (
@@ -19,7 +19,7 @@ export const RenderCurrentView = (
         }
 
         case "group history": {
-            return <GroupHistory />
+            return <RenderGroupHistory />
         }
         
         default: {

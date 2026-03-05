@@ -2,12 +2,13 @@ import { Static, Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 
 const LoginCredentialsSchema = Type.Object({
-    email: Type.String(),
-    password: Type.String()
+  email: Type.String(),
+  password: Type.String(),
 });
 
 const AuthenticationSchema = Type.Object({
-    success: Type.Boolean()
+  success: Type.Boolean(),
+  permissions: Type.Object({ role: Type.String() }),
 });
 
 type LoginCredentialsSchemaType = Static<typeof LoginCredentialsSchema>;
@@ -18,6 +19,9 @@ export { LoginCredentialsSchema };
 
 export type { LoginCredentialsSchemaType };
 
-export const CompiledLoginCredentials = TypeCompiler.Compile(LoginCredentialsSchema);
+export const CompiledLoginCredentials = TypeCompiler.Compile(
+  LoginCredentialsSchema,
+);
 
-export const AuthenticationSchemaValidator = TypeCompiler.Compile(AuthenticationSchema);
+export const AuthenticationSchemaValidator =
+  TypeCompiler.Compile(AuthenticationSchema);

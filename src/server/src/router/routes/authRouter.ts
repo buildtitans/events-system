@@ -9,7 +9,6 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.api.auth.login(input.email, input.password);
       const { session, user } = res;
-
       ctx.reply.setCookie("session", session.id, {
         httpOnly: true,
         path: "/",
@@ -23,7 +22,9 @@ export const authRouter = router({
         role: "user",
       };
 
-      return res ? { success: true } : { success: false };
+      return res
+        ? { success: true, permissions: ctx.auth.cache.roleLookupMap }
+        : { success: false, permissions: ctx.auth.cache.roleLookupMap };
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {

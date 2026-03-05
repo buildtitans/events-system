@@ -52,8 +52,8 @@ export default function TopNav() {
                 py: 1,
             }}
         >
-            <Container maxWidth={"lg"} disableGutters
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            <Container  disableGutters
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: { md: 'md', lg: 'lg'} }}
             >
                 <NavBar
                     userKind={userKind}

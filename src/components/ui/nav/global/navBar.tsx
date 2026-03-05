@@ -53,7 +53,7 @@ export default function NavBar({ userKind }: NavLinksProps) {
             minWidth: { xs: '400px', md: '600px' }
         }}>
             <HomeButton />
-            <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
+            <Box sx={{ display: { xs: 'flex', xl: 'none' }, gap: 1 }}>
                 <ColorModeIconDropdown size="medium" />
                 <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
                     <MenuIcon />

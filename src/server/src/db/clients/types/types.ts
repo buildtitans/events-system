@@ -3,6 +3,7 @@ import type {
   DbUserSchemaType,
 } from "@/src/schemas/auth/userSchema";
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
+import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type StoredSession = {
   id: string;
@@ -22,9 +23,15 @@ type NotificationCreationProcedure = {
 
 type NewUserResponse = Pick<DbUserSchemaType, "email" | "id">;
 
+type RBACType = Record<
+  GroupMembersSchemaType["group_id"],
+  GroupMembersSchemaType["role"]
+>;
+
 export type {
   StoredSession,
   AuthClientLoginResponse,
   NotificationCreationProcedure,
   NewUserResponse,
+  RBACType,
 };
