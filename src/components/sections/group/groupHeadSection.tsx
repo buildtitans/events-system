@@ -18,15 +18,15 @@ export default function GroupHeadSecton(
 
     return (
         <AnimatePresence>
-            {(groupName) && <FadeInOutBox styles={{ width: '100%' }}>
+            {(groupName) && <FadeInOutBox styles={{ width: '100%', height: 'auto' }}>
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'start',
                     justifyContent: "start",
-                    gap: 6,
+                    gap: 4,
                     width: 'auto',
-                    height: '100%',
+                    height: 'auto',
                 }}>
 
 

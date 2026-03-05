@@ -4,8 +4,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import { PropsWithChildren, type JSX } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
 import { CurrentDisplay, displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
 
@@ -16,6 +16,7 @@ type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 export default function LocalGroupNav({
   children,
 }: LocalGroupNavProps): JSX.Element {
+  const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = (option: CurrentDisplay) => {
@@ -26,6 +27,10 @@ export default function LocalGroupNav({
 
   return (
     <Stack
+      sx={{
+        width: "95%",
+          marginX: 'auto',
+      }}
       direction={"column"}
       spacing={2}
       divider={<Divider orientation="horizontal" flexItem />}
@@ -50,7 +55,8 @@ export default function LocalGroupNav({
                   key={option}
                   value={option}
             sx={{
-              borderRadius: 1.5,
+              borderRadius: 2,
+              backgroundColor: (displayed === option) ? 'rgba(255, 255, 255, 0.2)' : 'transparent'
             }}
           >
             {label}

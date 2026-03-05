@@ -25,7 +25,7 @@ export default function ViewGroupSection({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'start',
                 minHeight: '100vh',
                 width: '100%'
             }}

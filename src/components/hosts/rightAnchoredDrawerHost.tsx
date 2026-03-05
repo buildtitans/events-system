@@ -17,7 +17,7 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
             onClose={() => dispatch(enqueueDrawer(null))}
             transitionDuration={{ enter: 300, exit: 250 }}
             sx={{
-                height: '100%',
+                height: { xs: "200px", md: "100%"},
             }}
             slotProps={{
                 paper: {

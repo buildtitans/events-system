@@ -11,11 +11,10 @@ export default function OpenedGroup(): JSX.Element | null {
         group
     } = useSelector((s: RootState) => s.openGroup);
 
-
     return (
         <Container sx={{
             minHeight: "100svh",
-            minWidth: "100%"
+            width: { xs: "100%", md: "80%", xl: "100%" }
         }}>
             <OpenedGroupSidebar />
             <RenderOpenedGroup
