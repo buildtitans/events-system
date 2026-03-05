@@ -6,6 +6,7 @@ import {
 } from "@/src/schemas/events/eventAttendantsSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
@@ -40,6 +41,22 @@ export class EventAttendantsClient {
     const updatedRaw = await this.upsertStatus(attendant, newStatus);
 
     return this.parseRawAttendant(updatedRaw);
+  }
+
+  async getUserAttendanceRecords(
+    user_id: DbUserSchemaType["id"],
+  ): Promise<EventAttendantsSchemaType[]> {
+    const raw = await this.db
+      .selectFrom("event_attendants")
+      .selectAll()
+      .where("user_id", "=", user_id)
+      .execute();
+
+    console.log({
+      "User Attendance Records": raw,
+    });
+
+    return this.parseRawAttendants(raw);
   }
 
   async getRawAttendants(

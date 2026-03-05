@@ -7,40 +7,36 @@ import { JSX } from "react";
 import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
 
-
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
-    useHydrateEventDrawer();
-    const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
-    const permissions = useSelector((s: RootState) => s.groupMembers.accessPermissions);
-    const { numberAttending, numberInterested, groupName, groupSlug } = useSelector((s: RootState) => s.eventDrawer, shallowEqual);
+  useHydrateEventDrawer();
+  const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
+  const permissions = useSelector(
+    (s: RootState) => s.groupMembers.accessPermissions,
+  );
+  const { numberAttending, numberInterested, groupName, groupSlug } =
+    useSelector((s: RootState) => s.eventDrawer, shallowEqual);
 
+  switch (openedEvent.status) {
+    case "ready":
+      return (
+        <RenderEventDrawerContents
+          role={permissions[openedEvent.data.group_id]}
+          event={openedEvent.data}
+          numAttendants={numberAttending}
+          numInterested={numberInterested}
+          name={groupName}
+          slug={groupSlug}
+        />
+      );
 
-    switch (openedEvent.status) {
-        case "ready":
-            return (
-                <RenderEventDrawerContents
-                    role={permissions[openedEvent.data.group_id]}
-                    event={openedEvent.data}
-                    numAttendants={numberAttending}
-                    numInterested={numberInterested}
-                    name={groupName}
-                    slug={groupSlug}
-                />
-            );
+    case "idle":
+      return null;
 
-        case "idle":
-            return null;
+    case "failed":
+      return <NoEventsFound />;
 
-        case "failed":
-            return (
-                <NoEventsFound />
-            )
-
-        default: {
-            return (
-                <DrawerSpinner />
-            )
-        }
+    default: {
+      return <DrawerSpinner />;
     }
-
+  }
 }

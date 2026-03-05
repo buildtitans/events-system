@@ -22,9 +22,11 @@ export const authRouter = router({
         role: "user",
       };
 
-      return res
-        ? { success: true, permissions: ctx.auth.cache.roleLookupMap }
-        : { success: false, permissions: ctx.auth.cache.roleLookupMap };
+      return {
+        success: res.user.id ? true : false,
+        permissions: ctx.auth.cache.roleLookupMap,
+        attendanceDictionary: ctx.auth.cache.attendanceDictionary,
+      };
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {

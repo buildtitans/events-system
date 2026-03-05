@@ -1,77 +1,81 @@
 "use client";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
-import { getGroupEvents, groupOpened } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
+import {
+  getGroupEvents,
+  groupOpened,
+} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 
-export default function HydrateGroupBySlug({ slug }: { slug: string }): React.ReactNode {
-    const dispatch = useDispatch<AppDispatch>();
-    useRefreshGroupEvents();
+export default function HydrateGroupBySlug({
+  slug,
+}: {
+  slug: string;
+}): React.ReactNode {
+  const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const dispatch = useDispatch<AppDispatch>();
+  useRefreshGroupEvents();
 
+  useEffect(() => {
+    const handleSyncGroupOpened = (group: GroupSchemaType) => {
+      dispatch(
+        groupOpened({
+          status: "ready",
+          data: group,
+        }),
+      );
+    };
 
+    const handleSyncEventsOfGroup = (events: EventsPages) => {
+      if (events.length > 0) {
+        dispatch(
+          getGroupEvents({
+            status: "ready",
+            data: events,
+          }),
+        );
+        return;
+      }
+      dispatch(
+        getGroupEvents({
+          status: "warning",
+          message: "No events have been scheduled for this group",
+        }),
+      );
+    };
 
-    useEffect(() => {
-        const handleSyncGroupOpened = (group: GroupSchemaType) => {
-            dispatch(groupOpened({
-                status: "ready",
-                data: group
-            }));
-        }
+    const handlePayload = async (
+      group: GroupSchemaType | null,
+      events: EventsPages,
+    ): Promise<void> => {
+      if (!group) {
+        dispatch(
+          groupOpened({
+            status: "failed",
+            error: "Group hydration error",
+          }),
+        );
+        return;
+      }
 
-        const handleSyncEventsOfGroup = (events: EventsPages) => {
-            if (events.length > 0) {
-                dispatch(getGroupEvents({
-                    status: "ready",
-                    data: events
-                }));
-                return;
-            };
-            dispatch(getGroupEvents({
-                status: "warning",
-                message: "No events have been scheduled for this group"
-            }));
-        };
+      handleSyncGroupOpened(group);
+      handleSyncEventsOfGroup(events);
+    };
 
+    const executeHydration = async () => {
+      dispatch(groupOpened({ status: "pending" }));
+      dispatch(getGroupEvents({ status: "pending" }));
 
+      const { events, group } = await syncOpenedGroup(slug);
 
-        const handlePayload = async (
-            group: GroupSchemaType | null,
-            events: EventsPages
-        ): Promise<void> => {
+      await handlePayload(group, events);
+    };
+    void executeHydration();
+  }, [slug, userKind, dispatch]);
 
-            if (!group) {
-                dispatch(groupOpened({
-                    status: "failed",
-                    error: "Group hydration error"
-                }));
-                return;
-            };
-
-
-            handleSyncGroupOpened(group);
-            handleSyncEventsOfGroup(events);
-        }
-
-        const executeHydration = async () => {
-            dispatch(groupOpened({ status: "pending" }))
-            dispatch(getGroupEvents({ status: "pending" }))
-
-            const {
-                events,
-                group
-            } = await syncOpenedGroup(slug);
-
-            await handlePayload(group, events);
-        }
-        void executeHydration();
-
-
-
-    }, [slug, dispatch]);
-
-    return null;
+  return null;
 }

@@ -13,15 +13,16 @@ type MembersOnlyAttendanceFormProps = {
 };
 
 export default function MembersOnlyAttendanceForm({ scheduleStatus }: MembersOnlyAttendanceFormProps): JSX.Element | null {
-    const viewer = useSelector((s: RootState) => s.eventDrawer.viewerAttendanceInfo);
+    const event = useSelector((s: RootState) => s.eventDrawer.event);
+    const attendanceStatus = useSelector((s: RootState)=> s.eventDrawer.viewerAttendanceStatus);
 
     return (
         <AnimatePresence mode="wait">
-            {(viewer) && (scheduleStatus === "scheduled") &&
+            {(attendanceStatus) && (event.status === "ready") && (scheduleStatus === "scheduled") &&
                 <UpdateViewerAttendanceForm
                     key={"update-status-form"}
-                    currentStatus={viewer.status ?? "not_going"}
-                    event_id={viewer.event_id}
+                    currentStatus={attendanceStatus}
+                    event_id={event.data.id}
                 />}
 
         </AnimatePresence>

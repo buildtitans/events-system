@@ -18,6 +18,15 @@ export const eventAttendantsRouter = router({
       return await ctx.api.eventAttendants.getAttendants(input);
     }),
 
+  getViewerAttendance: publicProcedure
+    .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
+    .mutation(async ({ ctx, input }) => {
+      const attendance = ctx.auth.cache.attendanceDictionary;
+
+      const userRecord = attendance[`${input}`];
+
+      return userRecord;
+    }),
   updateViewerAttendance: publicProcedure
     .input(
       typeboxInput<AttendanceUpdateInputSchemaType>(

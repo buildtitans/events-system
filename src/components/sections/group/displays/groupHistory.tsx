@@ -6,15 +6,19 @@ import {
   EventsArraySchemaType,
   EventSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
 type HistoryTimelineProps = {
   history: EventsArraySchemaType;
 };
 
 export default function HistoryTimeline({ history }: HistoryTimelineProps) {
+  const attendance = useSelector((s: RootState) => s.groupMembers.viewerAttendance);
+
+  console.log(attendance);
+
   return (
     <Container
       sx={{
@@ -23,18 +27,29 @@ export default function HistoryTimeline({ history }: HistoryTimelineProps) {
         height: "100%",
       }}
     >
-      <Stack gap={2}>
-        <Box>
-          <Typography component={"h2"} sx={{ fontSize: "32px", fontWeight: "light"}}>History</Typography>
-        </Box>
-        <List
+      
         
+          <Typography
+            component={"h2"}
+            sx={{
+              fontSize: "32px",
+              fontWeight: "light",
+            }}
+          >
+            History
+          </Typography>
+        
+        <List
+        sx={{
+          width: '100%'
+        }}
         >
-          {history.map((log: EventSchemaType) => (
-            <TimelineItem historyLog={log} key={log.id} />
-          ))}
+          {history.map((log: EventSchemaType) => { 
+            
+            return (
+            <TimelineItem historyLog={log} key={log.id} rsvpStatus={attendance[log.id]}/>
+          )})}
         </List>
-      </Stack>
     </Container>
   );
 }

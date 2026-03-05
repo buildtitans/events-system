@@ -4,6 +4,10 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../db";
 import { FastifyRequest } from "fastify";
 import { mapRoleBasedAccessControls } from "../lib/utils/mapRoleBasedAccessControls";
+import {
+  mapAttendanceDictionary,
+  type AttendanceDictionaryType,
+} from "../lib/utils/mapAttendanceDictionary";
 
 type RBACAction = "create event" | "cancel event" | "update event";
 
@@ -16,6 +20,7 @@ type RBACMethods = {
 
 type RBACCacheType = {
   roleLookupMap: RBACType;
+  attendanceDictionary: AttendanceDictionaryType;
 };
 
 export type RBACContextType = {
@@ -28,12 +33,26 @@ export async function buildRbacContext(
   user: FastifyRequest["user"] | null,
 ): Promise<RBACContextType> {
   const groups = await api.groups.getGroups();
+  const events = await api.events.getFlattenedEvents();
   const memberships = user?.id
     ? await api.groupMembers.getViewerMemberships(user.id)
     : null;
 
-  const ids = groups.map((grp) => grp.id);
-  const roles = mapRoleBasedAccessControls(ids, memberships);
+  const attendance = user?.id
+    ? await api.eventAttendants.getUserAttendanceRecords(user?.id)
+    : [];
+
+  const eventIds = events.map((ev) => ev.id);
+  const groupIds = groups.map((grp) => grp.id);
+  const roles = mapRoleBasedAccessControls(groupIds, memberships);
+  const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
+
+  console.dir({
+    cached: {
+      Roles: roles,
+      Attendance: attendanceDict,
+    },
+  });
 
   function getRoleForGroup(
     group_id: GroupSchemaType["id"],
@@ -58,6 +77,7 @@ export async function buildRbacContext(
   return {
     cache: {
       roleLookupMap: roles,
+      attendanceDictionary: attendanceDict,
     },
     rbac: {
       can,

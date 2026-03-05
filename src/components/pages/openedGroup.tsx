@@ -10,6 +10,7 @@ export default function OpenedGroup(): JSX.Element | null {
     const {
         group
     } = useSelector((s: RootState) => s.openGroup);
+    
 
     return (
         <Container sx={{

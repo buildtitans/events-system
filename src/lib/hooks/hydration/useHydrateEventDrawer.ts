@@ -8,10 +8,12 @@ import {
   getGroupSlug,
   getNumAttendants,
   getNumInterested,
+  getUserAttendanceStatus,
   getViewerAttendance,
 } from "../../store/slices/events/EventDrawerSlice";
 import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
 import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
+import { trpcClient } from "@/src/trpc/trpcClient";
 
 function getViewerFromAttendants(
   user_id: string,
@@ -60,6 +62,13 @@ export const useHydrateEventDrawer = () => {
     const executeGetViewerAttendance = async () => {
       try {
         const result = await syncUserAttendanceToEvent(event.data);
+
+        const attendanceStatus =
+          await trpcClient.eventAttendants.getViewerAttendance.mutate(
+            event.data.id,
+          );
+
+        dispatch(getUserAttendanceStatus(attendanceStatus));
 
         const user_id = result.user_id;
         const attendants = result.attendantsReq;

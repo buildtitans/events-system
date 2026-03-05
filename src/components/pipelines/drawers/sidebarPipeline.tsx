@@ -13,6 +13,11 @@ export const SidebarPipeline = (
   );
   const role = access[group_id];
 
+  console.log({
+    "User Kind": userKind,
+    "Role": role
+  });
+
   switch (userKind) {
     case "authenticated":
       return RenderSidebarContents(role, group_id);
