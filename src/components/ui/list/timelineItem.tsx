@@ -10,6 +10,7 @@ import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 
 type TimelineItemProps = {
@@ -24,6 +25,11 @@ export default function TimelineItem({
   
   const date = new Date(historyLog.starts_at);
   const current = isFutureOrNow(date);
+
+  console.log({
+    "Current": current,
+    "RSVP Status": rsvpStatus
+  })  
 
   return (
     <ListItem
@@ -49,8 +55,8 @@ export default function TimelineItem({
         }}
         >
           {(!current) && <EventBusyIcon />}
-          {(current) && (rsvpStatus === "interested" || rsvpStatus === "not_going") && <EventRoundedIcon />}
-          {(current) && (rsvpStatus === "going") && <EventAvailableIcon />}
+          {(current) && (rsvpStatus !== "going") && <EventRoundedIcon />}
+          {(current) && (rsvpStatus === "going") && <CheckCircleOutlineIcon/>}
         </Avatar>
       </ListItemAvatar>
 

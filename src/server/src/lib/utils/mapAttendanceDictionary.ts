@@ -28,5 +28,7 @@ export function mapAttendanceDictionary(
     }
   }
 
+  console.log({ "Attendance Dictionary": dictionary });
+
   return dictionary;
 }

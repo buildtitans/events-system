@@ -10,19 +10,17 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function OpenedGroupSidebar(): JSX.Element | null {
   const isMobile = useMediaQuery("(max-width: 900px)");
+  const isMdToLarge = useMediaQuery('min-width(1000px)')
   const group = useSelector((s: RootState) => s.openGroup.group);
   const status = group.status;
-
-  console.log(status)
-
   const drawerWidth = 200;
 
   return (
     <Drawer
       variant="persistent"
       elevation={0}
-      anchor={isMobile ? "bottom" : "left"}
-      open={status !== "idle"}
+      anchor="left"
+      open={status !== "idle" && !isMobile}
       transitionDuration={{ enter: 300, exit: 250 }}
       sx={{
 width: drawerWidth,

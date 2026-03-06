@@ -10,6 +10,7 @@ export default function Overview({group}: {group: GroupSchemaType}) {
 
     return (
         <Container
+        disableGutters
         >
             <Stack
             gap={6}

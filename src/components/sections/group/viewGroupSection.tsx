@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 type ViewGroupSectionProps = {
   group: GroupSchemaType;
@@ -17,6 +18,7 @@ export default function ViewGroupSection({
   group,
 }: ViewGroupSectionProps): JSX.Element {
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
+  const xsToLarge = useMediaQuery('min-width(1200px)');
 
   return (
     <Container
@@ -29,6 +31,7 @@ export default function ViewGroupSection({
     >
       <Stack
       id="opened-group-stack"
+      alignItems={xsToLarge ? "end" : "start"}
         gap={12}
         sx={{
           width: "100%",
