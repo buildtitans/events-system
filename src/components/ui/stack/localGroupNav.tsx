@@ -9,7 +9,7 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { CurrentDisplay, displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
 
-const options: CurrentDisplay[] = ["overview", "group history", "expanded event"];
+const options: CurrentDisplay[] = ["overview", "group history", "calandar"];
 
 type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 
@@ -29,9 +29,11 @@ export default function LocalGroupNav({
     <Stack
       sx={{
         width: "95%",
+        height: "100%",
           marginX: 'auto',
       }}
       direction={"column"}
+      alignItems={"center"}
       spacing={2}
       divider={<Divider orientation="horizontal" flexItem />}
     >
@@ -40,8 +42,8 @@ export default function LocalGroupNav({
         variant="outlined"
         sx={{
           width: "100%",
-          height: "auto",
-          backgroundColor: "transparent",
+          height: "100%",
+          backgroundColor: "paper.background",
           border: "none",
         }}
       >
@@ -63,9 +65,9 @@ export default function LocalGroupNav({
           </MenuItem>      
               )
           })}
+          {children}
         </MenuList>
       </Paper>
-      {children}
     </Stack>
   );
 }

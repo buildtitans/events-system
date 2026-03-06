@@ -12,6 +12,9 @@ import NavBar from './global/navBar';
 import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';
 import { getViewerPermissions } from '@/src/lib/store/slices/viewer/PermissionsSlice';
 import { wait } from '@/src/lib/utils/rendering/wait';
+import { PANEL_GRAY } from '@/src/styles/sx/sx';
+import Box from '@mui/material/Box';
+import OpenedGroupSidebar from '../sidebars/openedGroupSidebar';
 
 export default function TopNav() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -40,16 +43,20 @@ export default function TopNav() {
 
 
     return (
+        <Box
+        sx={{ display: 'flex' }}
+        >
         <AppBar
             component={"nav"}
             position="absolute"
             enableColorOnDark
+            elevation={24}
             sx={{
                 boxShadow: 0,
-                bgcolor: 'transparent',
+                bgcolor: PANEL_GRAY,
                 backgroundImage: 'none',
-                mt: 'calc(var(--template-frame-height, 0px) + 20px)',
-                py: 1,
+                py: 3,
+                 zIndex: (theme) => theme.zIndex.drawer + 1
             }}
         >
             <Container  disableGutters
@@ -65,5 +72,8 @@ export default function TopNav() {
                 />
             </Container>
         </AppBar>
+        <OpenedGroupSidebar />    
+        </Box>
+        
     );
 }

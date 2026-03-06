@@ -9,6 +9,7 @@ const LoginCredentialsSchema = Type.Object({
 const AuthenticationSchema = Type.Object({
   success: Type.Boolean(),
   permissions: Type.Object({ role: Type.String() }),
+  attendanceDict: Type.Object({ record: Type.String() }),
 });
 
 type LoginCredentialsSchemaType = Static<typeof LoginCredentialsSchema>;

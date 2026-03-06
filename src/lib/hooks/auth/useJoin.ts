@@ -12,18 +12,24 @@ import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess } from "../../store/slices/auth/AuthSlice";
 import { wait } from "../../utils/rendering/wait";
+import type { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
+import type { RBACType } from "@/src/server/src/db/clients/types/types";
 
 type NewUser = {
   id: string;
   email: string;
 };
 
+type LoginRespType = {
+  success: boolean;
+  permissions: RBACType;
+  attendanceDictionary: AttendanceDictionaryType;
+};
+
 export const useSignUp = (email: string, password: string) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleLoginResult = async (
-    result: AuthenticationSchemaType,
-  ): Promise<void> => {
+  const handleLoginResult = async (result: LoginRespType): Promise<void> => {
     const { success } = result;
 
     dispatch(enqueueSnackbar({ kind: null, status: "idle" }));

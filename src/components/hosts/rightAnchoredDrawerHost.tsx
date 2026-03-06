@@ -18,6 +18,7 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
             transitionDuration={{ enter: 300, exit: 250 }}
             sx={{
                 height: { xs: "200px", md: "100%"},
+                zIndex: (theme) => theme.zIndex.drawer + 2
             }}
             slotProps={{
                 paper: {

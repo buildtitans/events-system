@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { strictEqual } from "assert";
 
 export type OpenedEvent =
   | { status: "idle" }
@@ -28,20 +30,20 @@ type InitialState = {
   event: OpenedEvent;
   groupName: NameOfGroup;
   groupSlug: GroupSlug;
-  viewerAttendanceInfo: EventAttendantsSchemaType | null;
   viewerAttendanceStatus: EventAttendantsSchemaType["status"];
   numberAttending: NumberOfAttendantsType;
   numberInterested: NumberOfAttendantsType;
+  drawerViewerRole: GroupMembersSchemaType["role"];
 };
 
 const initialState: InitialState = {
   event: { status: "idle" },
   groupName: { status: "initial" },
   groupSlug: { status: "initial" },
-  viewerAttendanceInfo: null,
   viewerAttendanceStatus: "not_going",
   numberAttending: { status: "initial" },
   numberInterested: { status: "initial" },
+  drawerViewerRole: "anonymous",
 };
 
 const EventDrawerSlice = createSlice({
@@ -54,11 +56,11 @@ const EventDrawerSlice = createSlice({
     ) => {
       state.event = action.payload;
     },
-    getViewerAttendance: (
+    getDrawerViewerRole: (
       state: InitialState,
-      action: PayloadAction<UserAttendantInfo>,
+      action: PayloadAction<GroupMembersSchemaType["role"]>,
     ) => {
-      state.viewerAttendanceInfo = action.payload;
+      state.drawerViewerRole = action.payload;
     },
     getNumAttendants: (
       state: InitialState,
@@ -94,11 +96,11 @@ export const {
   fillEventDrawer,
   closeEventDrawer,
   getNumAttendants,
-  getViewerAttendance,
   getNumInterested,
   getGroupName,
   getGroupSlug,
   getUserAttendanceStatus,
+  getDrawerViewerRole,
 } = EventDrawerSlice.actions;
 
 export default EventDrawerSlice.reducer;

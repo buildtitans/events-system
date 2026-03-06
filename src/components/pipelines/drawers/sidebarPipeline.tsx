@@ -3,24 +3,22 @@ import { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RenderSidebarContents } from "./renderAuthenticatedSidebar";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
-export const SidebarPipeline = (
-  group_id: GroupSchemaType["id"],
-): JSX.Element | null => {
+type SidebarPipelineProps = {
+  group_id: GroupSchemaType["id"];
+  role: GroupMembersSchemaType["role"];
+};
+
+export const SidebarPipeline = ({
+  group_id,
+  role,
+}: SidebarPipelineProps): JSX.Element | null => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
-  const access = useSelector(
-    (s: RootState) => s.groupMembers.accessPermissions,
-  );
-  const role = access[group_id];
-
-  console.log({
-    "User Kind": userKind,
-    "Role": role
-  });
 
   switch (userKind) {
     case "authenticated":
-      return RenderSidebarContents(role, group_id);
+      return RenderSidebarContents({ role, group_id });
     case "anonymous":
       return null;
 

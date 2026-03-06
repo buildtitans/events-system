@@ -27,7 +27,7 @@ export type GroupHistoryType =
   | { status: "ready"; data: EventsArraySchemaType }
   | { status: "failed"; error: string };
 
-export type CurrentDisplay = "overview" | "expanded event" | "group history";
+export type CurrentDisplay = "overview" | "calandar" | "group history";
 
 type InitialState = {
   group: GroupHydrated;
@@ -82,6 +82,7 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.history = action.payload;
     },
+    clearOpenedGroupSlice: () => initialState,
   },
 });
 
@@ -91,6 +92,7 @@ export const {
   groupEventsStatus,
   displaySection,
   getGroupHistory,
+  clearOpenedGroupSlice,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

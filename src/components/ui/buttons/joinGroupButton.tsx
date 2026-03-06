@@ -20,9 +20,9 @@ export default function JoinGroupButton({
             variant="contained"
             startIcon={<AddIcon />}
             size="medium"
-            sx={{ width: '100px', borderRadius: 999 }}
+            sx={{ width: '100%', borderRadius: 999, marginX: 'auto' }}
         >
-            Join
+            Join Group
         </Button>
     );
 }

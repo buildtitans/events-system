@@ -6,6 +6,8 @@ type MountStatus = "active" | "idle";
 
 type LoadingStatus = "idle" | "pending" | "failed" | "warning";
 
+type LeaveGroupStatus = LoadingStatus | "initial";
+
 type DomainStatus = LoadingStatus | "initial";
 
 type RequestStatus = "idle" | "success" | "pending" | "failed";
@@ -19,6 +21,7 @@ type SnackbarMessages = {
   updatingAttendance: Record<RequestStatus, string>;
   changeEventScheduling: Record<RequestStatus, string>;
   signup: Record<RequestStatus, string>;
+  leaveGroup: Record<RequestStatus, string>;
 };
 
 type UserInGroupRoleType = "anonymous" | "member" | "organizer";
@@ -80,4 +83,5 @@ export type {
   ValidationState,
   DomainStatus,
   PromiseAllSettledResult,
+  LeaveGroupStatus,
 };

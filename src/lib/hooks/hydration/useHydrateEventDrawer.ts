@@ -2,38 +2,15 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import {
+  getDrawerViewerRole,
   getGroupName,
   getGroupSlug,
   getNumAttendants,
   getNumInterested,
   getUserAttendanceStatus,
-  getViewerAttendance,
 } from "../../store/slices/events/EventDrawerSlice";
-import { getEventAttendants } from "../../store/slices/events/EventAttendantsSlice";
-import { syncUserAttendanceToEvent } from "../../store/sync/syncUserAttendanceToEvent";
 import { trpcClient } from "@/src/trpc/trpcClient";
-
-function getViewerFromAttendants(
-  user_id: string,
-  attendants: EventAttendantsSchemaType[],
-): EventAttendantsSchemaType | undefined {
-  return attendants.find((a) => a.user_id === user_id);
-}
-
-function ifNotAttendant(
-  user_id: string,
-  event_id: string,
-): EventAttendantsSchemaType {
-  return {
-    user_id: user_id,
-    event_id: event_id,
-    status: "not_going",
-    created_at: new Date().toISOString(),
-    updated_at: null,
-  };
-}
 
 export const useHydrateEventDrawer = () => {
   const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
@@ -47,69 +24,38 @@ export const useHydrateEventDrawer = () => {
     if (userKind === "anonymous") return;
     if (drawerActive !== "event drawer") return;
 
-    const handleAttendants = (
-      attendantsReq: EventAttendantsSchemaType[],
-      user_id: string,
-      event_id: string,
-    ) => {
-      dispatch(getEventAttendants(attendantsReq));
-      const viewerAttendance = getViewerFromAttendants(user_id, attendantsReq);
-      const notYetDecided = ifNotAttendant(user_id, event_id);
+    function getSlugAndName(group_id: string) {
+      const group = groups.find((group) => group.id === group_id);
+      const slug = group?.slug;
+      const name = group?.name;
+      return { slug, name };
+    }
 
-      dispatch(getViewerAttendance(viewerAttendance ?? notYetDecided));
-    };
-
-    const executeGetViewerAttendance = async () => {
+    const executeHydrateEventDrawer = async () => {
       try {
-        const result = await syncUserAttendanceToEvent(event.data);
+        const roleInGroup = await trpcClient.groupMembers.getViewerRole.mutate(
+          event.data.group_id,
+        );
 
-        const attendanceStatus =
+        const { currentUserStatus, numGoing, numInterested } =
           await trpcClient.eventAttendants.getViewerAttendance.mutate(
             event.data.id,
           );
+        dispatch(getDrawerViewerRole(roleInGroup));
 
-        dispatch(getUserAttendanceStatus(attendanceStatus));
+        dispatch(getUserAttendanceStatus(currentUserStatus));
+        dispatch(getNumAttendants({ status: "ready", data: numGoing }));
+        dispatch(getNumInterested({ status: "ready", data: numInterested }));
+      } catch (err) {}
 
-        const user_id = result.user_id;
-        const attendants = result.attendantsReq;
+      const { name, slug } = getSlugAndName(event.data.group_id);
 
-        if (!user_id) return;
+      if (slug) dispatch(getGroupSlug({ status: "ready", data: slug }));
 
-        if (!attendants) {
-          dispatch(getNumAttendants({ status: "none" }));
-
-          throw new Error("Failed to get attendants");
-        }
-
-        const group = groups.find((group) => group.id === event.data.group_id);
-
-        const slug = group?.slug;
-
-        const name = group?.name;
-
-        const attending = attendants.filter((el) => el.status === "going");
-
-        const interested = attendants.filter(
-          (el) => el.status === "interested",
-        );
-
-        if (slug) dispatch(getGroupSlug({ status: "ready", data: slug }));
-
-        if (name) dispatch(getGroupName({ status: "ready", data: name }));
-
-        dispatch(getNumAttendants({ status: "ready", data: attending.length }));
-
-        dispatch(
-          getNumInterested({ status: "ready", data: interested.length }),
-        );
-
-        handleAttendants(attendants, user_id, event.data.id);
-      } catch (err) {
-        console.error(err);
-      }
+      if (name) dispatch(getGroupName({ status: "ready", data: name }));
     };
 
-    void executeGetViewerAttendance();
+    void executeHydrateEventDrawer();
   }, [event, dispatch, userKind, drawerActive, groups]);
 
   return;

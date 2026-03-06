@@ -10,9 +10,7 @@ import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEvent
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
   useHydrateEventDrawer();
   const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
-  const permissions = useSelector(
-    (s: RootState) => s.groupMembers.accessPermissions,
-  );
+  const drawerViewerRole = useSelector((s: RootState) => s.eventDrawer.drawerViewerRole);
   const { numberAttending, numberInterested, groupName, groupSlug } =
     useSelector((s: RootState) => s.eventDrawer, shallowEqual);
 
@@ -20,7 +18,7 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
     case "ready":
       return (
         <RenderEventDrawerContents
-          role={permissions[openedEvent.data.group_id]}
+          role={drawerViewerRole}
           event={openedEvent.data}
           numAttendants={numberAttending}
           numInterested={numberInterested}

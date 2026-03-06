@@ -146,6 +146,12 @@ type CancelEventHook = {
   handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
 };
 
+type RemoveUserFromGroupHook = {
+  removeUserFromGroup: (
+    group_id: GroupMembersSchemaType["user_id"],
+  ) => Promise<void>;
+};
+
 export type {
   GetGroupRoleAndIdHook,
   CreateEventHook,
@@ -159,4 +165,5 @@ export type {
   CancelEventHook,
   ChangeActiveCategoryHook,
   DebouncedSearchHook,
+  RemoveUserFromGroupHook,
 };

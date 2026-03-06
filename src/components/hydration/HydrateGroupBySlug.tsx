@@ -10,6 +10,8 @@ import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
+import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -51,6 +53,7 @@ export default function HydrateGroupBySlug({
     const handlePayload = async (
       group: GroupSchemaType | null,
       events: EventsPages,
+      role: GroupMembersSchemaType["role"]
     ): Promise<void> => {
       if (!group) {
         dispatch(
@@ -64,15 +67,16 @@ export default function HydrateGroupBySlug({
 
       handleSyncGroupOpened(group);
       handleSyncEventsOfGroup(events);
+      dispatch(getCurrentRole(role));
     };
 
     const executeHydration = async () => {
       dispatch(groupOpened({ status: "pending" }));
       dispatch(getGroupEvents({ status: "pending" }));
 
-      const { events, group } = await syncOpenedGroup(slug);
+      const { events, group, role } = await syncOpenedGroup(slug);
 
-      await handlePayload(group, events);
+      await handlePayload(group, events, role);
     };
     void executeHydration();
   }, [slug, userKind, dispatch]);

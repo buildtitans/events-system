@@ -23,4 +23,6 @@ const searchBarSx = {
   width: "400px",
 };
 
-export { overrides, searchBarSx };
+const PANEL_GRAY = "#212121";
+
+export { overrides, searchBarSx, PANEL_GRAY };

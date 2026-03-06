@@ -1,11 +1,16 @@
 const groupSidebarStyles = {
-  width: { xs: "100%", md: "200px" },
-  backgroundColor: "#202124",
+  width: {
+    xs: "100%",
+    md: "160px",
+    lg: "180px",
+    xl: "200px",
+  },
+  backgroundColor: "#191919",
   display: "flex",
   flexDirection: { xs: "row", sm: "column" },
   justifyContent: "center",
   alignItems: "center",
-  borderColor: "rgba(38, 38, 38, 0.7)",
+  border: "none",
 };
 
 const activeCategorySx = {

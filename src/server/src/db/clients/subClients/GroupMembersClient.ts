@@ -2,13 +2,14 @@ import { Kysely } from "kysely";
 import { DB, GroupMembers } from "../../types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import type { Selectable } from "kysely";
+import type { DeleteResult, Selectable } from "kysely";
 import {
   GroupMembersArraySchemaType,
   GroupMembersSchemaType,
   ValidateGroupMember,
   ValidateGroupMembersArray,
 } from "@/src/schemas/groups/groupMembersSchema";
+import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
@@ -62,6 +63,19 @@ export class GroupMembersClient {
       .executeTakeFirstOrThrow();
 
     return this.parseNewRawMember(inserted) ?? null;
+  }
+
+  async removeMember(
+    user_id: GroupMembersSchemaType["user_id"],
+    group_id: GroupMembersSchemaType["group_id"],
+  ): Promise<boolean> {
+    const result = await this.db
+      .deleteFrom("group_members")
+      .where("group_id", "=", group_id)
+      .where("user_id", "=", user_id)
+      .executeTakeFirstOrThrow();
+
+    return Number(result.numDeletedRows) > 0 ? true : false;
   }
 
   async getGroupMembers(group_id: string): Promise<GroupMembersSchemaType[]> {

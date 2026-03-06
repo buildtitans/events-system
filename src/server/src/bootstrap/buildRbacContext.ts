@@ -8,14 +8,23 @@ import {
   mapAttendanceDictionary,
   type AttendanceDictionaryType,
 } from "../lib/utils/mapAttendanceDictionary";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
-type RBACAction = "create event" | "cancel event" | "update event";
+type RBACAction =
+  | "create event"
+  | "cancel event"
+  | "update event"
+  | "leave group"
+  | "join group";
 
-type RBACMethods = {
+type RBACServices = {
   can: (action: RBACAction, group_id: GroupSchemaType["id"]) => boolean;
   getRoleForGroup: (
     groupId: GroupSchemaType["id"],
   ) => GroupMembersSchemaType["role"];
+  getNumberOfAttendantsForEvent: (
+    event_id: EventSchemaType["id"],
+  ) => Promise<{ numGoing: number; numInterested: number }>;
 };
 
 type RBACCacheType = {
@@ -25,7 +34,7 @@ type RBACCacheType = {
 
 export type RBACContextType = {
   cache: RBACCacheType;
-  rbac: RBACMethods;
+  rbac: RBACServices;
 };
 
 export async function buildRbacContext(
@@ -47,13 +56,6 @@ export async function buildRbacContext(
   const roles = mapRoleBasedAccessControls(groupIds, memberships);
   const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
 
-  console.dir({
-    cached: {
-      Roles: roles,
-      Attendance: attendanceDict,
-    },
-  });
-
   function getRoleForGroup(
     group_id: GroupSchemaType["id"],
   ): GroupMembersSchemaType["role"] {
@@ -71,7 +73,42 @@ export async function buildRbacContext(
           return false;
         }
       }
+
+      case "leave group": {
+        if (roles[group_id] === "member") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      case "join group": {
+        if (roles[group_id] === "anonymous" && user?.id) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
+  }
+
+  async function getNumberOfAttendantsForEvent(
+    event_id: EventSchemaType["id"],
+  ): Promise<{ numGoing: number; numInterested: number }> {
+    const attendants = await api.eventAttendants.getAttendants(event_id);
+
+    const filteredGoing = attendants.filter(
+      (attendant) => attendant.status === "going",
+    );
+
+    const filteredInterested = attendants.filter(
+      (attendant) => attendant.status === "interested",
+    );
+
+    return {
+      numGoing: filteredGoing.length,
+      numInterested: filteredInterested.length,
+    };
   }
 
   return {
@@ -82,6 +119,7 @@ export async function buildRbacContext(
     rbac: {
       can,
       getRoleForGroup,
+      getNumberOfAttendantsForEvent,
     },
   };
 }

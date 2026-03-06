@@ -14,7 +14,10 @@ import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getViewerAttendance } from "../../store/slices/events/EventDrawerSlice";
+import {
+  getDrawerViewerRole,
+  getUserAttendanceStatus,
+} from "../../store/slices/events/EventDrawerSlice";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
@@ -43,7 +46,7 @@ export const useUpdateAttendance = (
       );
 
       if (result) {
-        dispatch(getViewerAttendance(result));
+        dispatch(getUserAttendanceStatus(result.status));
       }
 
       dispatch(enqueueDrawer(null));

@@ -15,10 +15,9 @@ export default function NoPendingNotifications(): JSX.Element {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                cursor: 'initial',
+                cursor: 'pointer',
                 "&hover": {
                     pointerEvents: 'none',
-                    backgroundColor: 'black',
                 }
             }}
         >
@@ -28,7 +27,7 @@ export default function NoPendingNotifications(): JSX.Element {
                 alignItems: 'center',
                 height: '100%',
                 width: '100%',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 gap: 2,
                 paddingY: 4
             }}>
@@ -49,7 +48,7 @@ export default function NoPendingNotifications(): JSX.Element {
                         color: "rgba(255, 255, 255, 0.6)"
                     }}
                 >
-                    No new notifications
+                    All caught up
                 </Typography>
             </Box>
         </MenuItem>

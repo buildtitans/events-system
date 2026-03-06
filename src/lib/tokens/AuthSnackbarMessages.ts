@@ -49,6 +49,12 @@ const snackbarMessages: SnackbarMessages = {
     success: "Account created!",
     failed: "Failed to create account",
   },
+  leaveGroup: {
+    idle: "",
+    pending: "Leaving group...",
+    success: "Left group successfully",
+    failed: "Failed to leave the group",
+  },
 };
 
 export { snackbarMessages };

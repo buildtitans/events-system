@@ -41,7 +41,7 @@ export default function NotificationsList({
                     sx: {
                         width: 250,
                         minHeight: 180,
-                        backgroundColor: '#242424',
+                        bgcolor: 'background.paper',
                         height: "auto",
                         borderRadius: 2
                     }

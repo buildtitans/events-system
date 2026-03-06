@@ -25,7 +25,14 @@ export const eventAttendantsRouter = router({
 
       const userRecord = attendance[`${input}`];
 
-      return userRecord;
+      const { numGoing, numInterested } =
+        await ctx.auth.rbac.getNumberOfAttendantsForEvent(input);
+
+      return {
+        currentUserStatus: userRecord,
+        numGoing: numGoing,
+        numInterested: numInterested,
+      };
     }),
   updateViewerAttendance: publicProcedure
     .input(

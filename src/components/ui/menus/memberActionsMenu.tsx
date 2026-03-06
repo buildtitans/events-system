@@ -7,9 +7,15 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledMenu from '@/src/styles/styledComponents/styledMenu';
+import { useLeaveGroup } from '@/src/lib/hooks/auth/useLeaveGroup';
+import { GroupMembersSchemaType } from '@/src/schemas/groups/groupMembersSchema';
 
+type MemberActionsMenuProps = {
+    group_id: GroupMembersSchemaType["group_id"]
+}
 
-export default function MemberActionsMenu(): JSX.Element {
+export default function MemberActionsMenu({ group_id }: MemberActionsMenuProps): JSX.Element {
+    const { removeUserFromGroup } = useLeaveGroup()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -56,7 +62,7 @@ export default function MemberActionsMenu(): JSX.Element {
                 onClose={handleClose}
             >
 
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={() => removeUserFromGroup(group_id)} disableRipple>
                     <FileCopyIcon />
                     Leave group
                 </MenuItem>

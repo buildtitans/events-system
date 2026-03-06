@@ -13,15 +13,22 @@ export default function OpenedGroupSidebar(): JSX.Element | null {
   const group = useSelector((s: RootState) => s.openGroup.group);
   const status = group.status;
 
+  console.log(status)
+
+  const drawerWidth = 200;
+
   return (
     <Drawer
       variant="persistent"
-      elevation={1}
+      elevation={0}
       anchor={isMobile ? "bottom" : "left"}
-      open={status !== "idle" && !isMobile}
+      open={status !== "idle"}
       transitionDuration={{ enter: 300, exit: 250 }}
       sx={{
-        height: "100%",
+width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          
       }}
       slotProps={{
         paper: {

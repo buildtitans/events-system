@@ -1,10 +1,13 @@
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
+  CompiledMemberToRemoveSchema,
   GroupIDForInsertSchemaType,
   GroupIDForInsertSchemaValidator,
+  MemberToRemoveSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 const groupMembersRouter = router({
   addNewMember: publicProcedure
@@ -25,6 +28,29 @@ const groupMembersRouter = router({
       return await ctx.api.groupMembers.addNewMember(newMember);
     }),
 
+  leaveGroup: publicProcedure
+    .input(typeboxInput<MemberToRemoveSchemaType>(CompiledMemberToRemoveSchema))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.auth.rbac.can("leave group", input.group_id) || !ctx.user?.id) {
+        throw new TRPCResolverError(
+          403,
+          "Current user denied permission to delete this member",
+        );
+      }
+
+      return await ctx.api.groupMembers.removeMember(
+        ctx.user.id,
+        input.group_id,
+      );
+    }),
+
+  getViewerRole: publicProcedure
+    .input(
+      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.auth.rbac.getRoleForGroup(input);
+    }),
   getGroupMembers: publicProcedure
     .input(
       typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),

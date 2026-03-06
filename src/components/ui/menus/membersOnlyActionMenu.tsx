@@ -9,9 +9,16 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import AddIcon from '@mui/icons-material/Add';
+import type { GroupMembersSchemaType } from '@/src/schemas/groups/groupMembersSchema';
+import { useLeaveGroup } from '@/src/lib/hooks/auth/useLeaveGroup';
 
-export default function MembersOnlyActionMenu(): React.JSX.Element {
-    const [open, setOpen] = React.useState(false);
+type MembersOnlyActionsMenuProps = {
+    group_id: GroupMembersSchemaType["group_id"]
+}
+
+export default function MembersOnlyActionMenu({ group_id }:MembersOnlyActionsMenuProps): React.JSX.Element {
+  const { removeUserFromGroup } = useLeaveGroup();
+  const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -22,16 +29,7 @@ export default function MembersOnlyActionMenu(): React.JSX.Element {
       sx={{ width: '100%', marginTop: 2, bgcolor: 'background.paper', borderRadius: 2 }}
       component="nav"
       aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader 
-        component="div" 
-        sx={{
-            borderRadius: 2
-        }}
-        id="nested-list-subheader">
-        Actions
-        </ListSubheader>
-      }
+
     >
       
       
@@ -39,7 +37,9 @@ export default function MembersOnlyActionMenu(): React.JSX.Element {
         <ListItemIcon>
           <SpaceDashboardIcon />
         </ListItemIcon>
-        <ListItemText primary="Actions" />
+        <ListItemText 
+        primary="Actions" 
+        />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -47,6 +47,7 @@ export default function MembersOnlyActionMenu(): React.JSX.Element {
         
         component="div" disablePadding>
           <ListItemButton 
+          onClick={() => removeUserFromGroup(group_id)}
           sx={{ 
             pl: 2,
               }}>
@@ -63,3 +64,15 @@ export default function MembersOnlyActionMenu(): React.JSX.Element {
     </List>
   );
 }
+
+//
+      //subheader={
+      //  <ListSubheader 
+      //  component="div" 
+      //  sx={{
+      //      borderRadius: 2
+      //  }}
+      //  id="nested-list-subheader">
+      //  Actions
+      //  </ListSubheader>
+      //}

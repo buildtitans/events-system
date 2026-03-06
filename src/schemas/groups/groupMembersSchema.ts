@@ -14,9 +14,15 @@ const GroupMembersSchema = Type.Object({
   joined_at: Type.String(),
 });
 
+const MemberToRemoveSchema = Type.Object({
+  group_id: Type.String({ format: "uuid" }),
+});
+
 const GroupIDForInsertSchema = Type.String();
 
 const GroupMembersArraySchema = Type.Array(GroupMembersSchema);
+
+type MemberToRemoveSchemaType = Static<typeof MemberToRemoveSchema>;
 
 type GroupMembersArraySchemaType = Static<typeof GroupMembersArraySchema>;
 
@@ -30,11 +36,15 @@ export type {
   GroupMembersSchemaType,
   GroupIDForInsertSchemaType,
   GroupMembersArraySchemaType,
+  MemberToRemoveSchemaType,
 };
 
 export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(
   GroupIDForInsertSchema,
 );
+
+export const CompiledMemberToRemoveSchema =
+  TypeCompiler.Compile(MemberToRemoveSchema);
 
 export const GroupMembersSchemaValidator =
   TypeCompiler.Compile(GroupMembersSchema);

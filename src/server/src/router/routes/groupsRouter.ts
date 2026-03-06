@@ -40,7 +40,14 @@ export const groupsRouter = router({
   groupBySlug: publicProcedure
     .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.groups.getGroupBySlug(input);
+      const group = await ctx.api.groups.getGroupBySlug(input);
+
+      const userRole = ctx.auth.rbac.getRoleForGroup(group.id);
+
+      return {
+        group: group,
+        role: userRole,
+      };
     }),
 
   searchGroups: publicProcedure
