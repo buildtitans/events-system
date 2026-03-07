@@ -24,7 +24,6 @@ export default function GroupHeadSecton(
                     flexDirection: 'column',
                     alignItems: 'start',
                     justifyContent: "start",
-                    gap: 4,
                     width: 'auto',
                     height: 'auto',
                 }}>

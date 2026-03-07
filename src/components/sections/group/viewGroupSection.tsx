@@ -32,7 +32,7 @@ export default function ViewGroupSection({
       <Stack
       id="opened-group-stack"
       alignItems={xsToLarge ? "end" : "start"}
-        gap={12}
+        gap={4}
         sx={{
           width: "100%",
           minWidth: "100%",

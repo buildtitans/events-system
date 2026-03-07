@@ -11,6 +11,7 @@ import {
     NameOfGroup,
     NumberOfAttendantsType
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { RBACType } from "@/src/server/src/db/clients/types/types";
 
 type RenderEventDrawerContentsProps = {
     role: GroupMembersSchemaType["role"],
@@ -18,7 +19,7 @@ type RenderEventDrawerContentsProps = {
     numAttendants: NumberOfAttendantsType,
     numInterested: NumberOfAttendantsType,
     name: NameOfGroup,
-    slug: GroupSlug
+    slug: GroupSlug,
 }
 
 export default function RenderEventDrawerContents({
@@ -27,7 +28,7 @@ export default function RenderEventDrawerContents({
     numAttendants,
     numInterested,
     name,
-    slug
+    slug,
 }: RenderEventDrawerContentsProps): JSX.Element | null {
 
     switch (role) {

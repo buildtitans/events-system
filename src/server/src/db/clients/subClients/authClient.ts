@@ -11,6 +11,7 @@ import type {
 } from "../types/types";
 import crypto from "crypto";
 import argon2 from "argon2";
+import { Crete_Round } from "next/font/google";
 
 export class AuthClient {
   constructor(private readonly db: Kysely<DB>) {}
@@ -66,6 +67,14 @@ export class AuthClient {
       .execute();
 
     return Number(result[0].numDeletedRows ?? 0) > 0;
+  }
+
+  async getEmailByUserId(user_id: DbUserSchemaType["id"]) {
+    return await this.db
+      .selectFrom("users")
+      .select("email")
+      .where("id", "=", user_id)
+      .executeTakeFirstOrThrow();
   }
 
   private async verifyCredentials(

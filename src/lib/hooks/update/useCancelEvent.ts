@@ -24,6 +24,7 @@ export const useCancelEvent = (
   const [options, setOptions] = useState<UpdateEventArgsSchemaType>({
     status: event.status,
     event_id: event.id,
+    group_id: event.group_id,
     organizer_id: organizer_id ?? "",
   });
   const dispatch = useDispatch<AppDispatch>();

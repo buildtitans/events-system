@@ -15,6 +15,5 @@ export function mapRoleBasedAccessControls(
   memberships?.forEach((membership) => {
     accessPermissions[`${membership.group_id}`] = membership.role;
   });
-
   return accessPermissions;
 }

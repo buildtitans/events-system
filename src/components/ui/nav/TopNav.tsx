@@ -52,10 +52,10 @@ export default function TopNav() {
             enableColorOnDark
             elevation={24}
             sx={{
+                paddingY: 1,
                 boxShadow: 0,
                 bgcolor: PANEL_GRAY,
                 backgroundImage: 'none',
-                py: 3,
                  zIndex: (theme) => theme.zIndex.drawer + 1
             }}
         >

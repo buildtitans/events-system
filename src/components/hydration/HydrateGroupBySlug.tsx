@@ -2,7 +2,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import {
+  getEmailOfGroupOrganizer,
   getGroupEvents,
+  getNumMembers,
   groupOpened,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
@@ -12,6 +14,7 @@ import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
+import { trpcClient } from "@/src/trpc/trpcClient";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -53,7 +56,8 @@ export default function HydrateGroupBySlug({
     const handlePayload = async (
       group: GroupSchemaType | null,
       events: EventsPages,
-      role: GroupMembersSchemaType["role"]
+      role: GroupMembersSchemaType["role"],
+      numMembers: number
     ): Promise<void> => {
       if (!group) {
         dispatch(
@@ -65,6 +69,7 @@ export default function HydrateGroupBySlug({
         return;
       }
 
+      dispatch(getNumMembers(numMembers));
       handleSyncGroupOpened(group);
       handleSyncEventsOfGroup(events);
       dispatch(getCurrentRole(role));
@@ -74,9 +79,15 @@ export default function HydrateGroupBySlug({
       dispatch(groupOpened({ status: "pending" }));
       dispatch(getGroupEvents({ status: "pending" }));
 
-      const { events, group, role } = await syncOpenedGroup(slug);
+      const { events, group, role, numMembers, organizer } = await syncOpenedGroup(slug);
 
-      await handlePayload(group, events, role);
+      if(group) {
+        const organizerEmail = await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id)
+        dispatch(getEmailOfGroupOrganizer(organizerEmail));
+      }
+
+
+      await handlePayload(group, events, role, numMembers);
     };
     void executeHydration();
   }, [slug, userKind, dispatch]);

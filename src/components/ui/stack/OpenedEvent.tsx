@@ -2,6 +2,7 @@
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
+import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { type JSX } from "react";
 import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -50,7 +51,10 @@ export default function OpenedEvent({
 
     return (
         <FadeInOutBox>
-            <Stack sx={stackProps} spacing={1}>
+            <Stack 
+            sx={stackProps}
+            spacing={1}
+            >
 
                 <GroupName
                     slug={slug}
@@ -112,9 +116,18 @@ function GroupName({
         >
             <TitleTypography
                 gutterBottom
-                variant="h5"
+                variant="h6"
+                sx={{ 
+                    fontSize: "16px",
+                    fontWeight: "light",
+                    color: 'rgba(255, 255, 255, 0.6)'
+                }}
             >
                 {name.data}
+                <NavigateNextRoundedIcon
+                        className="arrow"
+                        sx={{ fontSize: '1rem' }}
+                    />
             </TitleTypography>
         </Box>
 
@@ -171,7 +184,7 @@ function EventTitle({ title }: { title: EventSchemaType["title"] }): JSX.Element
             color: "white",
         }} >
             <Typography component={"h2"} sx={{
-                fontSize: "22px",
+                fontSize: "21px",
                 fontWeight: "light",
                 textAlign: "left",
                 textWrap: "wrap"

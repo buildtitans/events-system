@@ -25,30 +25,21 @@ type LoginResType = {
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
-  const { status } = useSelector((s: RootState) => s.rendering.snackbar);
-
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLoginResult = async (result: LoginResType): Promise<void> => {
-    console.log(result);
-
     const { success, permissions, attendanceDictionary } = result;
-
-    dispatch(
-      enqueueSnackbar({
-        kind: "login",
-        status: success ? "success" : "failed",
-      }),
-    );
 
     if (success) {
       dispatch(loginSuccess());
       dispatch(getViewerPermissions(permissions));
       dispatch(getAttendanceDictionary(attendanceDictionary));
-      dispatch(enqueueDrawer(null));
+      dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
+    } else {
+      dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
     }
 
-    console.log(userKind);
+    dispatch(enqueueDrawer(null));
   };
 
   const login = async (
@@ -74,11 +65,9 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
 
     const result = await login(email, password);
     await handleLoginResult(result);
-  };
 
-  useEffect(() => {
-    if (userKind === "anonymous" || status === "idle") return;
-  }, [userKind, status]);
+    console.log({ "User Kind": userKind });
+  };
 
   return {
     handleSubmit,

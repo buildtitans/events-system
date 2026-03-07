@@ -9,6 +9,7 @@ import {
   type AttendanceDictionaryType,
 } from "../lib/utils/mapAttendanceDictionary";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 
 type RBACAction =
   | "create event"
@@ -25,6 +26,9 @@ type RBACServices = {
   getNumberOfAttendantsForEvent: (
     event_id: EventSchemaType["id"],
   ) => Promise<{ numGoing: number; numInterested: number }>;
+  getEmailById: (
+    user_id: DbUserSchemaType["id"],
+  ) => Promise<DbUserSchemaType["email"]>;
 };
 
 type RBACCacheType = {
@@ -56,10 +60,26 @@ export async function buildRbacContext(
   const roles = mapRoleBasedAccessControls(groupIds, memberships);
   const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
 
+  console.log({
+    User: user,
+    Roles: roles,
+  });
+
+  async function getEmailById(
+    user_id: DbUserSchemaType["id"],
+  ): Promise<DbUserSchemaType["email"]> {
+    const { email } = await api.auth.getEmailByUserId(user_id);
+
+    return email;
+  }
+
   function getRoleForGroup(
     group_id: GroupSchemaType["id"],
   ): GroupMembersSchemaType["role"] {
-    return roles[group_id];
+    const userRole = roles[group_id];
+    console.log({ "Role from service layer": userRole });
+
+    return userRole;
   }
 
   function can(action: RBACAction, group_id: GroupSchemaType["id"]): boolean {
@@ -120,6 +140,7 @@ export async function buildRbacContext(
       can,
       getRoleForGroup,
       getNumberOfAttendantsForEvent,
+      getEmailById,
     },
   };
 }

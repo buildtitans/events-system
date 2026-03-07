@@ -3,6 +3,9 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import type { JSX } from "react";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
+import Divider from "@mui/material/Divider";
 
 type GroupDescriptionProps = {
   group: GroupSchemaType;
@@ -11,6 +14,10 @@ type GroupDescriptionProps = {
 export default function GroupDescription({
   group,
 }: GroupDescriptionProps): JSX.Element {
+  const memberCount = useSelector((s: RootState) => s.openGroup.numMembers);
+  const organizerEmail = useSelector((s: RootState) => s.openGroup.organizerEmail);
+
+
   return (
     <Stack
       sx={{
@@ -61,6 +68,52 @@ export default function GroupDescription({
           </Typography>
         </Box>
       </Stack>
+
+      <Stack
+      direction={"row"}
+      divider={<Divider  orientation="vertical"
+      />}
+      >
+                <Stack
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            Number of Members
+          </Typography>
+          <Typography>
+            {memberCount}
+          </Typography>
+        </Box>
+      </Stack>
+
+            <Stack
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Box>
+          <Typography
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            Organizer
+          </Typography>
+          <Typography>
+            {organizerEmail}
+          </Typography>
+        </Box>
+      </Stack>            
+      </Stack>
+
+
     </Stack>
   );
 }

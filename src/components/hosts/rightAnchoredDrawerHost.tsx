@@ -13,12 +13,13 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
     return (
         <Drawer
             anchor="right"
+            variant="temporary"
             open={(drawerType !== null)}
             onClose={() => dispatch(enqueueDrawer(null))}
             transitionDuration={{ enter: 300, exit: 250 }}
             sx={{
                 height: { xs: "200px", md: "100%"},
-                zIndex: (theme) => theme.zIndex.drawer + 2
+                zIndex: 1300
             }}
             slotProps={{
                 paper: {

@@ -30,6 +30,22 @@ export class GroupMembersClient {
     return this.parseRawMembers(raw);
   }
 
+  async getOrganizer(
+    group_id: GroupMembersSchemaType["user_id"],
+  ): Promise<GroupMembersSchemaType["user_id"]> {
+    const raw = await this.db
+      .selectFrom("group_members")
+      .selectAll()
+      .where("group_id", "=", group_id)
+      .where("role", "=", "organizer")
+      .limit(1)
+      .execute();
+
+    const parsed = this.parseRawMembers(raw);
+
+    return parsed[0].user_id;
+  }
+
   async addOrganizer(
     organizer: InsertableMember,
   ): Promise<GroupMembersSchemaType> {

@@ -7,6 +7,8 @@ export type SyncOpenGroupPayload = {
   group: GroupSchemaType | null;
   events: EventsPages;
   role: GroupMembersSchemaType["role"];
+  numMembers: number;
+  organizer?: GroupMembersSchemaType;
 };
 
 export async function syncOpenedGroup(
@@ -20,15 +22,26 @@ export async function syncOpenedGroup(
         group: null,
         events: [],
         role: "anonymous",
+        numMembers: 0,
       };
     }
 
     const events = (await trpcClient.events.groupEvents.mutate(group.id)) ?? [];
 
+    const members = await trpcClient.groupMembers.getGroupMembers.mutate(
+      group.id,
+    );
+
+    const organizer = members.find(
+      (member) => member.role === "organizer",
+    ) as GroupMembersSchemaType;
+
     return {
       group,
       events,
       role,
+      numMembers: members.length,
+      organizer,
     };
   } catch (err) {
     console.error(err);
@@ -36,6 +49,7 @@ export async function syncOpenedGroup(
       group: null,
       events: [],
       role: "anonymous",
+      numMembers: 0,
     };
   }
 }

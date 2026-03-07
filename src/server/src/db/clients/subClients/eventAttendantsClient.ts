@@ -52,10 +52,6 @@ export class EventAttendantsClient {
       .where("user_id", "=", user_id)
       .execute();
 
-    console.log({
-      "User Attendance Records": raw,
-    });
-
     return this.parseRawAttendants(raw);
   }
 

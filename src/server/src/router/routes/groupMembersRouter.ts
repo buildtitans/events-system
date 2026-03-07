@@ -69,6 +69,16 @@ const groupMembersRouter = router({
 
     return memberships;
   }),
+
+  getGroupOrganizerEmail: publicProcedure
+    .input(
+      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organizerId = await ctx.api.groupMembers.getOrganizer(input);
+
+      return await ctx.auth.rbac.getEmailById(organizerId);
+    }),
 });
 
 export { groupMembersRouter };
