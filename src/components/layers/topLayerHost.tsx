@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import RightAnchoredDrawerHost from "@/src/components/hosts/rightAnchoredDrawerHost";
 import AlertsAndSnackbarsHost from "@/src/components/hosts/alertsAndSnackbarsHost";
+import ModalHost from '../hosts/modalHost';
 
 export default function TopLayerHost(): JSX.Element {
 
@@ -8,6 +9,7 @@ export default function TopLayerHost(): JSX.Element {
         <>
             <RightAnchoredDrawerHost />
             <AlertsAndSnackbarsHost />
+            <ModalHost />
         </>
     )
 }

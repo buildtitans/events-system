@@ -30,11 +30,4 @@ export const RenderEventsForGroup = () => {
             </React.Fragment>
         )
     }
-
-
-    if (events.status === "warning") {
-        return (
-            <NoScheduledEvents />
-        )
-    }
 }

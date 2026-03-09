@@ -5,16 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/lib/store';
 import { trpcClient } from '@/src/trpc/trpcClient';
 import { logout } from '@/src/lib/store/slices/auth/AuthSlice';
-import { enqueueDrawer, enqueueSnackbar } from '@/src/lib/store/slices/rendering/RenderingSlice';
+import { enqueueDrawer, enqueueSnackbar, showModal } from '@/src/lib/store/slices/rendering/RenderingSlice';
 import { AuthenticationSchemaType } from '@/src/schemas/auth/loginCredentialsSchema';
-import NavActions from './global/navActions';
-import NavBar from './global/navBar';
+import NavActions from '../global/navActions';
+import NavBar from '../global/navBar';
 import { syncPermissions } from '@/src/lib/store/sync/syncPermissions';
 import { getViewerPermissions } from '@/src/lib/store/slices/viewer/PermissionsSlice';
 import { wait } from '@/src/lib/utils/rendering/wait';
 import { PANEL_GRAY } from '@/src/styles/sx/sx';
 import Box from '@mui/material/Box';
-import OpenedGroupSidebar from '../sidebars/openedGroupSidebar';
+import OpenedGroupSidebar from "@/src/components/ui/sidebars/openedGroupSidebar";
 
 export default function TopNav() {
     const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -33,6 +33,10 @@ export default function TopNav() {
     const openSignupDrawer = () => {
         dispatch(enqueueDrawer("sign up drawer"));
     };
+
+    const showConfirmSignout = () => {
+        dispatch(showModal("confirm signout"));
+    }
 
 
     const handleSignout = async (): Promise<void> => {
@@ -69,6 +73,7 @@ export default function TopNav() {
                     userKind={userKind}
                     handleSignout={handleSignout}
                     openSignupDrawer={openSignupDrawer}
+                    showSignoutModal={showConfirmSignout}
                 />
             </Container>
         </AppBar>

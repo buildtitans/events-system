@@ -13,7 +13,11 @@ type MainContentTabType =
   | "Categories"
   | "Popular Events";
 
-export type ActiveModal = "confirm cancel" | null;
+export type ActiveModal =
+  | "confirm cancel"
+  | "confirm signout"
+  | "confirm leave group"
+  | null;
 
 export type ActiveDrawer =
   | "create event drawer"

@@ -9,17 +9,20 @@ import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { JSX } from "react";
 import Notifications from "../menus/notifications/notifications";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import AddIcon from '@mui/icons-material/Add';
 
 type NavActionsProps = {
   userKind: UserKind;
   handleSignout: () => Promise<void>;
   openSignupDrawer: () => void;
+  showSignoutModal: () => void
 };
 
 export default function NavActions({
   userKind,
   handleSignout,
   openSignupDrawer,
+  showSignoutModal
 }: NavActionsProps): JSX.Element | null {
   const xsToLg = useMediaQuery("min-width(1250px)");
   const dispatch = useDispatch<AppDispatch>();
@@ -56,6 +59,7 @@ export default function NavActions({
             variant="text"
             color="info"
             size={buttonSize}
+            startIcon={<AddIcon />}
             sx={{
               borderRadius: 999,
               backgroundColor: "white",
@@ -127,7 +131,7 @@ export default function NavActions({
                 transition: "all 0.3s ease",
               },
             }}
-            onClick={handleSignout}
+            onClick={showSignoutModal}
             color="info"
             variant="contained"
             size={buttonSize}
