@@ -2,9 +2,9 @@
 import { shallowEqual, useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import RenderEventDrawerContents from "./renderEventDrawer";
-import DrawerSpinner from "../../ui/feedback/pending/drawerSpinner";
+import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
-import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
+import { NoEventsFound } from "../../../ui/box/fallbacks/noEventsFound";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {

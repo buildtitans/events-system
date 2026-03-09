@@ -1,12 +1,12 @@
 "use client";
 import type { JSX } from "react";
 import type { ActiveDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import SignInDrawerContents from "../../ui/drawers/signInDrawerContents";
-import NewEventDrawerContents from "../../ui/containers/NewEventDrawerContents";
-import CreateNewGroupForm from "../../sections/forms/createNewGroupForm";
-import Spinner from "../../ui/feedback/pending/spinner";
-import OpenedEventDrawerPipeline from "./openedEventDrawerPipeline";
-import SignUpCard from "../../sections/forms/signUpCard";
+import SignInDrawerContents from "@/src/components/ui/drawers/signInDrawerContents";
+import OpenedEventDrawerPipeline from "../interfaces/openedEventDrawerPipeline";
+import NewEventDrawerContents from "@/src/components/ui/containers/NewEventDrawerContents";
+import CreateNewGroupForm from "@/src/components/sections/forms/createNewGroupForm";
+import Spinner from "@/src/components/ui/feedback/pending/spinner";
+import SignUpCard from "@/src/components/sections/forms/signUpCard";
 
 export const OpenedDrawerContents = ({ drawerType }: { drawerType: ActiveDrawer }): JSX.Element | null => {
 

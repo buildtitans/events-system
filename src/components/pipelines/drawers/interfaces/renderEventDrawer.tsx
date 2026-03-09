@@ -1,11 +1,11 @@
 "use client";
 import type { JSX } from "react";
-import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
-import OpenedEvent from "../../ui/stack/OpenedEvent";
-import CheckOutGroupButton from "../../ui/buttons/checkOutGroupButton";
+import MembersOnlyAttendanceForm from "../../../sections/events/membersOnlyAttendanceForm";
+import OpenedEvent from "../../../ui/stack/OpenedEvent";
+import CheckOutGroupButton from "../../../ui/buttons/checkOutGroupButton";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import RescheduleEventForm from "../../sections/forms/rescheduleEventForm";
+import RescheduleEventForm from "../../../sections/forms/rescheduleEventForm";
 import {
     GroupSlug,
     NameOfGroup,

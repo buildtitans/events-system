@@ -30,6 +30,16 @@ export class GroupsClient {
     return this.formatRawGroups(raw);
   }
 
+  async getGroupsByOrganizerId(user_id: string) {
+    const raw = await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("organizer_id", "=", user_id)
+      .execute();
+
+    return this.formatRawGroups(raw);
+  }
+
   private async getRawGroups(): Promise<Selectable<Groups>[]> {
     return this.db
       .selectFrom("groups")

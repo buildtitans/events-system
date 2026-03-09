@@ -11,7 +11,7 @@ import NavActions from "../global/navActions";
 import NavBar from "../global/navBar";
 import { PANEL_GRAY } from "@/src/styles/sx/sx";
 import Box from "@mui/material/Box";
-import OpenedGroupSidebar from "@/src/components/ui/sidebars/openedGroupSidebar";
+import LeftAnchoredSidebar from "@/src/components/ui/sidebars/leftAnchoredSidebar";
 
 export default function TopNav() {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -57,7 +57,7 @@ export default function TopNav() {
           />
         </Container>
       </AppBar>
-      <OpenedGroupSidebar />
+      <LeftAnchoredSidebar />
     </Box>
   );
 }

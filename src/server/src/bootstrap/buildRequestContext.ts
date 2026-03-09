@@ -1,5 +1,8 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  GroupSchemaType,
+  GroupsSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../db";
 import { FastifyRequest } from "fastify";
 import { mapRoleBasedAccessControls } from "../lib/utils/mapRoleBasedAccessControls";
@@ -26,6 +29,12 @@ export async function buildRequestContext(
   const groupIds = groups.map((grp) => grp.id);
   const roles = mapRoleBasedAccessControls(groupIds, memberships);
   const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
+
+  async function getGroupsCreated(
+    user_id: DbUserSchemaType["id"],
+  ): Promise<GroupsSchemaType> {
+    return await api.groups.getGroupsByOrganizerId(user_id);
+  }
 
   async function getEmailById(
     user_id: DbUserSchemaType["id"],
@@ -103,6 +112,7 @@ export async function buildRequestContext(
     services: {
       getNumberOfAttendantsForEvent,
       getEmailById,
+      getGroupsCreated,
     },
   };
 }

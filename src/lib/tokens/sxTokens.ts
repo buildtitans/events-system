@@ -1,4 +1,4 @@
-const groupSidebarStyles = {
+const sidebarStyles = {
   width: {
     xs: "100%",
     md: "160px",
@@ -31,4 +31,4 @@ const activeCategorySx = {
 
 const DAY_MONTH_YEAR_HOUR_FORMAT = "MMMM D, YYYY h:mm A";
 
-export { groupSidebarStyles, DAY_MONTH_YEAR_HOUR_FORMAT, activeCategorySx };
+export { sidebarStyles, DAY_MONTH_YEAR_HOUR_FORMAT, activeCategorySx };

@@ -27,6 +27,8 @@ export type ActiveDrawer =
   | "sign up drawer"
   | null;
 
+export type ActiveSidebar = "group" | "user" | null;
+
 type AlertType = {
   action: AlertMessagesType["action"];
   kind: AlertMessagesType["kind"];
@@ -44,6 +46,7 @@ type RenderingInitialState = {
   snackbar: SnackbarStatusAndKind;
   alert: AlertType;
   drawer: ActiveDrawer;
+  sidebar: ActiveSidebar;
 };
 
 const initialState: RenderingInitialState = {
@@ -59,6 +62,7 @@ const initialState: RenderingInitialState = {
     action: null,
     kind: null,
   },
+  sidebar: null,
 };
 
 const RenderingSlice = createSlice({
@@ -82,6 +86,12 @@ const RenderingSlice = createSlice({
       action: PayloadAction<ActiveDrawer>,
     ) => {
       state.drawer = action.payload;
+    },
+    enqueueSidebar: (
+      state: RenderingInitialState,
+      action: PayloadAction<ActiveSidebar>,
+    ) => {
+      state.sidebar = action.payload;
     },
     enqueueSnackbar: (
       state: RenderingInitialState,
@@ -110,6 +120,7 @@ export const {
   enqueueSnackbar,
   enqueueAlert,
   enqueueDrawer,
+  enqueueSidebar,
   signalDomainStatus,
 } = RenderingSlice.actions;
 

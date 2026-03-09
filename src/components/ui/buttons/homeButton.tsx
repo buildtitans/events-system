@@ -6,12 +6,14 @@ import type { JSX } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { clearOpenedGroupSlice } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 export default function HomeButton(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
 
     const handleClick = () => {
         dispatch(clearOpenedGroupSlice());
+        dispatch(enqueueSidebar(null));
     }
 
     return (

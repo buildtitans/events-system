@@ -1,7 +1,7 @@
 import { RootState } from "@/src/lib/store";
 import { JSX } from "react";
 import { useSelector } from "react-redux";
-import { RenderSidebarContents } from "./renderAuthenticatedSidebar";
+import { RenderRoleBasedSidebarContents } from "../forks/renderRoleBasedSidebarContents";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
@@ -17,8 +17,14 @@ export const SidebarActionsPipeline = ({
   const userKind = useSelector((s: RootState) => s.auth.userKind);
 
   switch (userKind) {
-    case "authenticated":
-      return RenderSidebarContents({ role, group_id });
+    case "authenticated": {
+      return (
+        <RenderRoleBasedSidebarContents 
+        group_id={group_id}
+        role={role}
+        />
+      )
+    }
     case "anonymous":
       return null;
 

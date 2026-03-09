@@ -2,14 +2,14 @@ import JoinGroupButton from "@/src/components/ui/buttons/joinGroupButton";
 import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { JSX } from "react";
 import OrganizerOnlyActionsMenu from "@/src/components/ui/menus/organizerOnlyActionsMenu";
-import MembersOnlyActionMenu from "../../ui/menus/membersOnlyActionMenu";
+import MembersOnlyActionMenu from "@/src/components/ui/menus/membersOnlyActionMenu";
 
 type RenderSidebarContentsProps = {
   role: GroupMembersSchemaType["role"],
   group_id: GroupMembersSchemaType["group_id"],
 }
 
-export const RenderSidebarContents = ({
+export const RenderRoleBasedSidebarContents= ({
   role,
   group_id
 }: RenderSidebarContentsProps

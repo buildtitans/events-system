@@ -1,7 +1,10 @@
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  GroupSchemaType,
+  GroupsSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { RBACType } from "../db/clients/types/types";
 import type { AttendanceDictionaryType } from "../lib/utils/mapAttendanceDictionary";
 
@@ -31,6 +34,9 @@ export type ServicesType = {
   getEmailById: (
     user_id: DbUserSchemaType["id"],
   ) => Promise<DbUserSchemaType["email"]>;
+  getGroupsCreated: (
+    user_id: DbUserSchemaType["id"],
+  ) => Promise<GroupsSchemaType>;
 };
 
 export type RBACContextType = {

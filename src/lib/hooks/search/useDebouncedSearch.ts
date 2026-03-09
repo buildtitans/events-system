@@ -9,11 +9,13 @@ import type { AutoCompleteOptions, SuggestionType } from "./types";
 import { compileSearchOptions } from "../../utils/helpers/search/compileSearchLookup";
 import type { DebouncedSearchHook } from "../../types/hooks/types";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
 const WAIT_DURATION = 400;
 
 export const useDebouncedSerach = (): DebouncedSearchHook => {
+  const dispatch = useDispatch<AppDispatch>();
   const storedGroups = useSelector((s: RootState) => s.groups.communities);
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
@@ -134,6 +136,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
 
         const redirectRoute = `/group/${value.slug}`;
         router.push(redirectRoute);
+        dispatch(enqueueSidebar("group"));
       }
     },
     [router],

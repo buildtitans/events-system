@@ -1,7 +1,7 @@
 import { DBClient } from "../db";
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { buildRequestContext } from "./buildRbacContext";
+import { buildRequestContext } from "./buildRequestContext";
 import type { ContextCacheType, RBACMethods, ServicesType } from "./types";
 
 export type Context = {

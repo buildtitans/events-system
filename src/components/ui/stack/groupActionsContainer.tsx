@@ -1,7 +1,7 @@
 "use client";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { SidebarActionsPipeline } from "../../pipelines/drawers/sidebarActionsPipeline";
+import { SidebarActionsPipeline } from "@/src/components/pipelines/drawers/interfaces/sidebarActionsPipeline";
 import LocalGroupNav from "./localGroupNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";

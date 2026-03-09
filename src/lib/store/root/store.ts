@@ -9,6 +9,7 @@ import EventAttendantsSlice from "@/src/lib/store/slices/events/EventAttendantsS
 import EventDrawerSlice from "@/src/lib/store/slices/events/EventDrawerSlice";
 import OpenedGroupSlice from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NotificationSlice from "../slices/notifications/notificationSlice";
+import UserSlice from "@/src/lib/store/slices/user/userSlice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     eventDrawer: EventDrawerSlice,
     openGroup: OpenedGroupSlice,
     notifications: NotificationSlice,
+    user: UserSlice,
   },
 });
 
