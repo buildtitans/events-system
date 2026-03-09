@@ -1,12 +1,12 @@
 "use client";
-import Box from "@mui/material/Box";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { SidebarPipeline } from "../../pipelines/drawers/sidebarPipeline";
+import { SidebarActionsPipeline } from "../../pipelines/drawers/sidebarActionsPipeline";
 import LocalGroupNav from "./localGroupNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Divider from "@mui/material/Divider";
+import Toolbar from "@mui/material/Toolbar";
 
 type GroupActonsContainerProps = {
     group_id: GroupSchemaType["id"],
@@ -18,7 +18,8 @@ export default function GroupActonsContainer({
     const role = useSelector((s: RootState) => s.groupMembers.viewerRole);
 
     return (
-        <Box
+            <Toolbar 
+            disableGutters
             sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -26,16 +27,15 @@ export default function GroupActonsContainer({
                 alignItems: "center",
                 width: "100%",
                 height: "auto",
-                overflow: 'hidden'
+
             }}>
-            <LocalGroupNav>
+                <LocalGroupNav>
             <Divider />
-            <SidebarPipeline 
+            <SidebarActionsPipeline
             group_id={group_id}
             role={role}
             />
             </LocalGroupNav>
-            
-        </Box>
+            </Toolbar>
     )
 }

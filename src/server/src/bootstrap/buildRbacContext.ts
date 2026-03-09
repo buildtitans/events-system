@@ -1,49 +1,16 @@
-import { RBACType } from "../db/clients/types/types";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../db";
 import { FastifyRequest } from "fastify";
 import { mapRoleBasedAccessControls } from "../lib/utils/mapRoleBasedAccessControls";
-import {
-  mapAttendanceDictionary,
-  type AttendanceDictionaryType,
-} from "../lib/utils/mapAttendanceDictionary";
+import { mapAttendanceDictionary } from "../lib/utils/mapAttendanceDictionary";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import type { RBACContextType, RBACAction } from "./types";
 
-type RBACAction =
-  | "create event"
-  | "cancel event"
-  | "update event"
-  | "leave group"
-  | "join group";
-
-type RBACServices = {
-  can: (action: RBACAction, group_id: GroupSchemaType["id"]) => boolean;
-  getRoleForGroup: (
-    groupId: GroupSchemaType["id"],
-  ) => GroupMembersSchemaType["role"];
-  getNumberOfAttendantsForEvent: (
-    event_id: EventSchemaType["id"],
-  ) => Promise<{ numGoing: number; numInterested: number }>;
-  getEmailById: (
-    user_id: DbUserSchemaType["id"],
-  ) => Promise<DbUserSchemaType["email"]>;
-};
-
-type RBACCacheType = {
-  roleLookupMap: RBACType;
-  attendanceDictionary: AttendanceDictionaryType;
-};
-
-export type RBACContextType = {
-  cache: RBACCacheType;
-  rbac: RBACServices;
-};
-
-export async function buildRbacContext(
+export async function buildRequestContext(
   api: DBClient,
-  user: FastifyRequest["user"] | null,
+  user: FastifyRequest["user"] | undefined,
 ): Promise<RBACContextType> {
   const groups = await api.groups.getGroups();
   const events = await api.events.getFlattenedEvents();
@@ -60,11 +27,6 @@ export async function buildRbacContext(
   const roles = mapRoleBasedAccessControls(groupIds, memberships);
   const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
 
-  console.log({
-    User: user,
-    Roles: roles,
-  });
-
   async function getEmailById(
     user_id: DbUserSchemaType["id"],
   ): Promise<DbUserSchemaType["email"]> {
@@ -77,8 +39,6 @@ export async function buildRbacContext(
     group_id: GroupSchemaType["id"],
   ): GroupMembersSchemaType["role"] {
     const userRole = roles[group_id];
-    console.log({ "Role from service layer": userRole });
-
     return userRole;
   }
 
@@ -139,6 +99,8 @@ export async function buildRbacContext(
     rbac: {
       can,
       getRoleForGroup,
+    },
+    services: {
       getNumberOfAttendantsForEvent,
       getEmailById,
     },

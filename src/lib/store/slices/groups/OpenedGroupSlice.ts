@@ -27,7 +27,7 @@ export type GroupHistoryType =
   | { status: "ready"; data: EventsArraySchemaType }
   | { status: "failed"; error: string };
 
-export type CurrentDisplay = "overview" | "calandar" | "group history";
+export type CurrentDisplay = "overview" | "events" | "group history";
 
 type InitialState = {
   group: GroupHydrated;

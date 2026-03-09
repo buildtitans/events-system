@@ -36,12 +36,13 @@ export default function NotificationsList({
             open={open}
             onClose={handleClose}
             onClick={handleClose}
+            elevation={4}
             slotProps={{
                 list: {
                     sx: {
                         width: 250,
                         minHeight: 180,
-                        bgcolor: 'background.paper',
+                        bgcolor: '#373737',
                         height: "auto",
                         borderRadius: 2
                     }

@@ -42,7 +42,7 @@ export const groupsRouter = router({
     .mutation(async ({ ctx, input }) => {
       const group = await ctx.api.groups.getGroupBySlug(input);
 
-      const userRole = ctx.auth.rbac.getRoleForGroup(group.id);
+      const userRole = ctx.auth.getRoleForGroup(group.id);
 
       return {
         group: group,

@@ -27,8 +27,6 @@ export default function GroupHeadSecton(
                     width: 'auto',
                     height: 'auto',
                 }}>
-
-
                     <GroupEventsHeader
                         groupName={groupName}
                     />

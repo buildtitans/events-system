@@ -24,8 +24,8 @@ export const authRouter = router({
 
       return {
         success: res.user.id ? true : false,
-        permissions: ctx.auth.cache.roleLookupMap,
-        attendanceDictionary: ctx.auth.cache.attendanceDictionary,
+        permissions: ctx.cache.roleLookupMap,
+        attendanceDictionary: ctx.cache.attendanceDictionary,
       };
     }),
 

@@ -71,7 +71,9 @@ export default function GroupDescription({
 
       <Stack
       direction={"row"}
-      divider={<Divider  orientation="vertical"
+      divider={<Divider  
+        sx={{ opacity: 0.6 }}
+        orientation="vertical"
       />}
       >
                 <Stack

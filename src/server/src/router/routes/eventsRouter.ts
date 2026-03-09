@@ -28,7 +28,7 @@ export const eventsRouter = router({
   newEvent: publicProcedure
     .input(typeboxInput<NewEventInputSchemaType>(NewEventInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const permitted = ctx.auth.rbac.can("create event", input.group_id);
+      const permitted = ctx.auth.can("create event", input.group_id);
 
       if (!permitted) {
         throw new TRPCResolverError(
@@ -58,7 +58,7 @@ export const eventsRouter = router({
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
     .mutation(({ ctx, input }) => {
-      const permitted = ctx.auth.rbac.can("update event", input.group_id);
+      const permitted = ctx.auth.can("update event", input.group_id);
       if (!permitted) {
         throw new TRPCResolverError(
           403,

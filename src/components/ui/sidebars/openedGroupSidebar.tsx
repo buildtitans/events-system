@@ -3,14 +3,13 @@ import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
 import GroupActonsContainer from "../stack/groupActionsContainer";
 import { groupSidebarStyles } from "@/src/lib/tokens/sxTokens";
-import Skeleton from "@mui/material/Skeleton";
+import SidebarSkeleton from "../skeletons/sidebarSkeleton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function OpenedGroupSidebar(): JSX.Element | null {
   const isMobile = useMediaQuery("(max-width: 900px)");
-  const isMdToLarge = useMediaQuery('min-width(1000px)')
   const group = useSelector((s: RootState) => s.openGroup.group);
   const status = group.status;
   const drawerWidth = 200;
@@ -39,19 +38,5 @@ width: drawerWidth,
 
       {status === "ready" && <GroupActonsContainer group_id={group.data.id} />}
     </Drawer>
-  );
-}
-
-function SidebarSkeleton() {
-  return (
-    <Skeleton
-      variant="rectangular"
-      animation="wave"
-      width="100%"
-      height="100%"
-      sx={{
-        bgcolor: "rgba(255, 255, 255, 0.015)",
-      }}
-    />
   );
 }

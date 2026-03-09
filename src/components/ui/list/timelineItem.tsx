@@ -26,11 +26,6 @@ export default function TimelineItem({
   const date = new Date(historyLog.starts_at);
   const current = isFutureOrNow(date);
 
-  console.log({
-    "Current": current,
-    "RSVP Status": rsvpStatus
-  })  
-
   return (
     <ListItem
       sx={{

@@ -25,7 +25,7 @@ export default function GroupEventsHeader(
                 component={"h2"}
                 sx={{
                     color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '30px',
+                    fontSize: '26px',
                     textAlign: "left",
                     fontWeight: "light"
                 }}
@@ -36,8 +36,9 @@ export default function GroupEventsHeader(
                 component={"h2"}
                 sx={{
                     color: 'white',
-                    fontSize: '36px',
-                    textAlign: "left"
+                    fontSize: '34px',
+                    textAlign: "left",
+                    fontWeight: "light"
                 }}
             >
                 {groupName}

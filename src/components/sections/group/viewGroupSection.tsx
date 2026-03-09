@@ -1,5 +1,4 @@
 "use client";
-import Box from "@mui/material/Box";
 import type { JSX } from "react";
 import GroupHeadSecton from "./groupHeadSection";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
@@ -9,6 +8,9 @@ import { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import GroupDescription from "./groupDescription";
+import Divider from "@mui/material/Divider";
+import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
 
 type ViewGroupSectionProps = {
   group: GroupSchemaType;
@@ -18,7 +20,7 @@ export default function ViewGroupSection({
   group,
 }: ViewGroupSectionProps): JSX.Element {
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
-  const xsToLarge = useMediaQuery('min-width(1200px)');
+  useHydrateGroupHisory();
 
   return (
     <Container
@@ -31,7 +33,7 @@ export default function ViewGroupSection({
     >
       <Stack
       id="opened-group-stack"
-      alignItems={xsToLarge ? "end" : "start"}
+      divider={<Divider />}
         gap={4}
         sx={{
           width: "100%",
@@ -41,6 +43,7 @@ export default function ViewGroupSection({
         }}
       >
         <GroupHeadSecton groupName={group.name} />
+        <GroupDescription group={group} />
         {RenderCurrentView(displayed, group)}
       </Stack>
     </Container>

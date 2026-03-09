@@ -9,7 +9,7 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { CurrentDisplay, displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
 
-const options: CurrentDisplay[] = ["overview", "group history", "calandar"];
+const options: CurrentDisplay[] = ["overview", "events", "group history"];
 
 type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 

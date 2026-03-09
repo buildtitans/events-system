@@ -21,12 +21,12 @@ export const eventAttendantsRouter = router({
   getViewerAttendance: publicProcedure
     .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const attendance = ctx.auth.cache.attendanceDictionary;
+      const attendance = ctx.cache.attendanceDictionary;
 
       const userRecord = attendance[`${input}`];
 
       const { numGoing, numInterested } =
-        await ctx.auth.rbac.getNumberOfAttendantsForEvent(input);
+        await ctx.services.getNumberOfAttendantsForEvent(input);
 
       return {
         currentUserStatus: userRecord,

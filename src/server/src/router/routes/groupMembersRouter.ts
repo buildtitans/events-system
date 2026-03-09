@@ -31,7 +31,7 @@ const groupMembersRouter = router({
   leaveGroup: publicProcedure
     .input(typeboxInput<MemberToRemoveSchemaType>(CompiledMemberToRemoveSchema))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.auth.rbac.can("leave group", input.group_id) || !ctx.user?.id) {
+      if (!ctx.auth.can("leave group", input.group_id) || !ctx.user?.id) {
         throw new TRPCResolverError(
           403,
           "Current user denied permission to delete this member",
@@ -49,7 +49,7 @@ const groupMembersRouter = router({
       typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.auth.rbac.getRoleForGroup(input);
+      return ctx.auth.getRoleForGroup(input);
     }),
   getGroupMembers: publicProcedure
     .input(
@@ -77,7 +77,7 @@ const groupMembersRouter = router({
     .mutation(async ({ ctx, input }) => {
       const organizerId = await ctx.api.groupMembers.getOrganizer(input);
 
-      return await ctx.auth.rbac.getEmailById(organizerId);
+      return await ctx.services.getEmailById(organizerId);
     }),
 });
 

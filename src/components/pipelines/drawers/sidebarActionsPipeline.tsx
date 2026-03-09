@@ -10,7 +10,7 @@ type SidebarPipelineProps = {
   role: GroupMembersSchemaType["role"];
 };
 
-export const SidebarPipeline = ({
+export const SidebarActionsPipeline = ({
   group_id,
   role,
 }: SidebarPipelineProps): JSX.Element | null => {
