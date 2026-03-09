@@ -23,6 +23,18 @@ const searchBarSx = {
   width: "400px",
 };
 
+const navActionsButtonSx = {
+  borderRadius: 999,
+  backgroundColor: "white",
+  color: "black",
+  textWrap: "nowrap",
+  ":hover": {
+    bgcolor: "rgba(255, 255, 255, 0.1)",
+    color: "white",
+    transition: "all 0.3s ease",
+  },
+};
+
 const PANEL_GRAY = "#212121";
 
-export { overrides, searchBarSx, PANEL_GRAY };
+export { overrides, searchBarSx, PANEL_GRAY, navActionsButtonSx };

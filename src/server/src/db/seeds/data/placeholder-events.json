@@ -1,6 +1,6 @@
 [
     {
-        "starts_at": "2026-03-02T18:00:00Z",
+        "starts_at": "2026-04-02T18:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=1",
         "tag": "Engineering",
@@ -9,18 +9,12 @@
         "group": "blono-devs-bloomington-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Remy Sharp",
-                "avatar": "/next.svg"
-            },
-            {
-                "name": "Travis Howard",
-                "avatar": "/next.svg"
-            }
+            { "name": "Remy Sharp", "avatar": "/next.svg" },
+            { "name": "Travis Howard", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-03-08T19:00:00Z",
+        "starts_at": "2026-04-08T19:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=2",
         "tag": "Product",
@@ -29,14 +23,11 @@
         "group": "bloomington-normal-startup-circle-bloomington-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Erica Johns",
-                "avatar": "/next.svg"
-            }
+            { "name": "Erica Johns", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-03-15T17:30:00Z",
+        "starts_at": "2026-04-15T17:30:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=3",
         "tag": "Design",
@@ -45,14 +36,11 @@
         "group": "uiux-and-frontend-design-lab-normal-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Kate Morrison",
-                "avatar": "/next.svg"
-            }
+            { "name": "Kate Morrison", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-03-22T18:00:00Z",
+        "starts_at": "2026-04-22T18:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=4",
         "tag": "Company",
@@ -61,10 +49,7 @@
         "group": "bloomington-normal-startup-circle-bloomington-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Cindy Baker",
-                "avatar": "/next.svg"
-            }
+            { "name": "Cindy Baker", "avatar": "/next.svg" }
         ]
     },
     {
@@ -77,18 +62,12 @@
         "group": "devops-and-cloud-illinois-online",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Anderson Cooper",
-                "avatar": "/next.svg"
-            },
-            {
-                "name": "Trevor Henderson",
-                "avatar": "/next.svg"
-            }
+            { "name": "Anderson Cooper", "avatar": "/next.svg" },
+            { "name": "Trevor Henderson", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-12T18:30:00Z",
+        "starts_at": "2026-04-12T18:30:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=11",
         "tag": "Software Solutions",
@@ -97,14 +76,11 @@
         "group": "midwest-full-stack-collective-online",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Travis Howard",
-                "avatar": "/next.svg"
-            }
+            { "name": "Travis Howard", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-15T19:00:00Z",
+        "starts_at": "2026-04-18T19:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=101",
         "tag": "AI Research",
@@ -113,18 +89,12 @@
         "group": "data-and-ai-central-il-normal-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Lena Patel",
-                "avatar": "/next.svg"
-            },
-            {
-                "name": "Marco Ruiz",
-                "avatar": "/next.svg"
-            }
+            { "name": "Lena Patel", "avatar": "/next.svg" },
+            { "name": "Marco Ruiz", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-18T18:00:00Z",
+        "starts_at": "2026-04-20T18:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=102",
         "tag": "Growth",
@@ -133,14 +103,11 @@
         "group": "backend-engineering-guild-online",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Nina Flores",
-                "avatar": "/next.svg"
-            }
+            { "name": "Nina Flores", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-20T17:00:00Z",
+        "starts_at": "2026-04-25T17:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=103",
         "tag": "UX",
@@ -149,14 +116,11 @@
         "group": "uiux-and-frontend-design-lab-normal-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Oliver Grant",
-                "avatar": "/next.svg"
-            }
+            { "name": "Oliver Grant", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-22T18:00:00Z",
+        "starts_at": "2026-04-28T18:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=104",
         "tag": "Culture",
@@ -165,14 +129,11 @@
         "group": "women-in-tech-bloomington-normal-bloomington-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Priya Shah",
-                "avatar": "/next.svg"
-            }
+            { "name": "Priya Shah", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-25T18:00:00Z",
+        "starts_at": "2026-05-02T18:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=45",
         "tag": "Engineering",
@@ -181,18 +142,12 @@
         "group": "blono-devs-bloomington-il",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Agnes Walker",
-                "avatar": "/next.svg"
-            },
-            {
-                "name": "Trevor Henderson",
-                "avatar": "/next.svg"
-            }
+            { "name": "Agnes Walker", "avatar": "/next.svg" },
+            { "name": "Trevor Henderson", "avatar": "/next.svg" }
         ]
     },
     {
-        "starts_at": "2026-02-28T19:00:00Z",
+        "starts_at": "2026-05-08T19:00:00Z",
         "status": "scheduled",
         "img": "https://picsum.photos/800/450?random=6",
         "tag": "Product",
@@ -201,10 +156,7 @@
         "group": "central-illinois-react-normal-il-61761",
         "meeting_location": "Online",
         "authors": [
-            {
-                "name": "Travis Howard",
-                "avatar": "/next.svg"
-            }
+            { "name": "Travis Howard", "avatar": "/next.svg" }
         ]
     }
 ]

@@ -20,6 +20,7 @@ export default function HomeButton(): JSX.Element {
             onClick={handleClick}
             href="/"
             startIcon={<HomeIcon />}
+            size="small"
             variant="contained"
             sx={{
                 backgroundColor: 'rgb(255, 255, 255, 0.95)',

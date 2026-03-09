@@ -1,7 +1,6 @@
 import ListItem from "@mui/material/ListItem";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ListItemText from "@mui/material/ListItemText";
 import { JSX } from "react";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";

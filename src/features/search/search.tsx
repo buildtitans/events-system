@@ -21,7 +21,7 @@ export function Search(): JSX.Element {
   return (
     <Autocomplete
       sx={{
-        display: { xl: 'flex', xs: 'none'}
+        display: { md: 'flex', xs: 'none'}
       }}
       loading={status === "pending"}
       disabled={mountStatus !== "idle"}

@@ -25,12 +25,10 @@ export const useHydrateEventDrawer = () => {
     if (drawerActive !== "event drawer") return;
 
     const handleHydrationResults = (
-      roleInGroup: GroupMembersSchemaType["role"],
       currentUserStatus: EventAttendantsSchemaType["status"],
       numGoing: number,
       numInterested: number,
     ) => {
-      dispatch(getDrawerViewerRole(roleInGroup));
       dispatch(getUserAttendanceStatus(currentUserStatus));
       dispatch(getNumAttendants({ status: "ready", data: numGoing }));
       dispatch(getNumInterested({ status: "ready", data: numInterested }));
@@ -45,21 +43,12 @@ export const useHydrateEventDrawer = () => {
 
     const executeHydrateEventDrawer = async () => {
       try {
-        const roleInGroup = await trpcClient.groupMembers.getViewerRole.mutate(
-          event.data.group_id,
-        );
-
         const { currentUserStatus, numGoing, numInterested } =
           await trpcClient.eventAttendants.getViewerAttendance.mutate(
             event.data.id,
           );
 
-        handleHydrationResults(
-          roleInGroup,
-          currentUserStatus,
-          numGoing,
-          numInterested,
-        );
+        handleHydrationResults(currentUserStatus, numGoing, numInterested);
       } catch (err) {}
 
       const { name, slug } = getSlugAndName(event.data.group_id);

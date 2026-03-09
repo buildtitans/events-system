@@ -47,13 +47,17 @@ export default function NavBar({ userKind }: NavLinksProps) {
     };
 
     return (
-        <StyledToolbar variant="dense" disableGutters sx={{
+        <StyledToolbar 
+        variant="dense" 
+        disableGutters 
+        sx={{
             ml: 0,
+            padding: 0.8,
             mr: 'auto',
             minWidth: { xs: '400px', md: '600px' }
         }}>
             <HomeButton />
-            <Box sx={{ display: { xs: 'flex', xl: 'none' }, gap: 1 }}>
+            <Box sx={{ display: { xs: 'flex', lg: 'none' }, gap: 1 }}>
                 <ColorModeIconDropdown size="medium" />
                 <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
                     <MenuIcon />
