@@ -21,36 +21,22 @@ export default function HydrateUserAccountPage(): React.ReactNode {
     const handleAccountHydration = (
       email: string,
       myGroups: GroupsSchemaType,
-      attendance: AttendanceDictionaryType,
-      memberships: RBACType,
     ) => {
       dispatch(getMyGroups({ status: "ready", data: myGroups }));
       dispatch(storeUserEmail({ status: "ready", data: email }));
-      dispatch(
-        getParticipations({
-          status: "ready",
-          data: { rsvps: attendance, memberships: memberships },
-        }),
-      );
-
     };
 
     const executeHydrateAccountPage = async () => {
       dispatch(enqueueSidebar("user"));
       dispatch(storeUserEmail({ status: "pending" }));
-      dispatch(getParticipations({ status: "pending" }));
       dispatch(getMyGroups({ status: "pending" }));
-
 
       await wait(800);
 
       try {
         const email = await trpcClient.users.getUserEmail.mutate();
-        const memberships = await trpcClient.users.userMemberships.mutate();
-        const attendance = await trpcClient.users.rsvpsToEvents.mutate();
         const myGroups = await trpcClient.users.createdGroups.mutate();
-
-        handleAccountHydration(email, myGroups, attendance, memberships);
+        handleAccountHydration(email, myGroups);
       } catch (err) {
         console.error(err);
       }

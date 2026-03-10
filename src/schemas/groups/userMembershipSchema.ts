@@ -11,7 +11,18 @@ export const UserMembershipSchema = Type.Object({
   roleInGroup: GroupRoleSchema,
 });
 
+export const UserMembershipSchemaArray = Type.Array(UserMembershipSchema);
+
+export type UserMembershipSchemaArrayType = Static<
+  typeof UserMembershipSchemaArray
+>;
+
 export type UserMembershipSchemaType = Static<typeof UserMembershipSchema>;
+
+export const UserMembershipSchemaArrayValidator = createValidator(
+  UserMembershipSchemaArray,
+  "UserMembershipSchemaArray",
+);
 
 export const UserMembershipSchemaValidator = createValidator(
   UserMembershipSchema,

@@ -12,6 +12,7 @@ export const RsvpSchema = Type.Object({
   starts_at: Type.String({ format: "date-time" }),
   starts_at_ms: Type.Integer({ minimum: 0 }),
   scheduled_status: EventStatusSchema,
+  group_slug: Type.String(),
 });
 
 const RsvpSchemaArray = Type.Array(RsvpSchema);

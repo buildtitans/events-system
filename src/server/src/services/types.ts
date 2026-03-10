@@ -7,5 +7,5 @@ export type AttendantCountType = {
 
 export type GroupNameLookupMap = Record<
   GroupSchemaType["id"],
-  GroupSchemaType["name"]
+  { name: GroupSchemaType["name"]; slug: GroupSchemaType["slug"] }
 >;

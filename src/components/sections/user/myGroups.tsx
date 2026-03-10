@@ -10,6 +10,9 @@ import Stack from "@mui/material/Stack";
 
 export default function MyGroups(): JSX.Element {
   const myGroups = useSelector((s: RootState) => s.user.myGroups);
+  const participations = useSelector((s: RootState) => s.user.participations);
+
+  console.log(participations);
 
   return (
     <Stack

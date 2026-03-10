@@ -1,25 +1,41 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
-
-//TODO: once rendered, split RSVPS by 'past' | 'going' | 'interested'
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { getParticipations } from "../../store/slices/user/userSlice";
+import { wait } from "../../utils/rendering/wait";
 
 export const useHydrateMyRsvps = () => {
-  const [rsvpdEvents, setRsvpdEvents] = useState<EventsArraySchemaType>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const executeHydrateRsvps = async () => {
-      const result =
+      dispatch(getParticipations({ status: "pending" }));
+
+      await wait(1200);
+
+      const rsvps =
         await trpcClient.eventAttendants.getUserRsvpdEvents.mutate();
 
-      setRsvpdEvents(result);
+      const memberships = await trpcClient.users.userMemberships.mutate();
+
+      console.log({
+        RSVPS: rsvps,
+        Memberships: memberships,
+      });
+
+      dispatch(
+        getParticipations({
+          status: "ready",
+          data: {
+            rsvps: rsvps,
+            memberships: memberships,
+          },
+        }),
+      );
     };
 
     void executeHydrateRsvps();
   }, []);
-
-  return {
-    rsvpdEvents,
-  };
 };

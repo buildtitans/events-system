@@ -7,8 +7,10 @@ import { useEffect } from "react";
 import AccountDetails from "../sections/user/accountDetails";
 import Stack from "@mui/material/Stack";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
 
 export default function UserAccount(): JSX.Element {
+  useHydrateMyRsvps();
   const router = useRouter();
   const email = useSelector((s: RootState) => s.user.email);
   const userKind = useSelector((s: RootState) => s.auth.userKind);

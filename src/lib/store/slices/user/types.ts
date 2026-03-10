@@ -1,7 +1,4 @@
-import type { RBACType } from "@/src/server/src/db/clients/types/types";
-import type { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 

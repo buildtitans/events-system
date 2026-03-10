@@ -10,21 +10,22 @@ export const usersRouter = router({
   }),
 
   userMemberships: publicProcedure.mutation(async ({ ctx }) => {
-    return ctx.cache.roleLookupMap;
+    const user_id = ctx.user?.id;
+
+    if (!user_id) {
+      throw new TRPCResolverError(403, "Permission to access user data denied");
+    }
+
+    return await ctx.services.participationsClient.getMemberships(user_id);
   }),
+
   rsvpsToEvents: publicProcedure.mutation(async ({ ctx }) => {
     const user_id = ctx.user?.id;
     if (!user_id) {
       throw new TRPCResolverError(403, "Permission to access user data denied");
     }
 
-    const rsvps =
-      await ctx.services.participationsClient.getRsvpdEvents(user_id);
-
-    const groupNameHash =
-      ctx.services.participationsClient.getRsvpdEvents(user_id);
-
-    return ctx.cache.attendanceDictionary;
+    return await ctx.services.participationsClient.getRsvpdEvents(user_id);
   }),
 
   createdGroups: publicProcedure.mutation(async ({ ctx }) => {
