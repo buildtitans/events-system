@@ -41,13 +41,14 @@ export default function ConfirmModal({
     success: AuthenticationSchemaType["success"],
   ) {
     await wait(1000);
+    dispatch(logout());
     dispatch(
       enqueueSnackbar({
         kind: "logout",
         status: success ? "success" : "failed",
       }),
     );
-    dispatch(logout());
+    
     dispatch(showModal(null));
   }
   const handleSignout = async (): Promise<void> => {

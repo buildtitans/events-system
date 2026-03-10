@@ -77,7 +77,7 @@ const groupMembersRouter = router({
     .mutation(async ({ ctx, input }) => {
       const organizerId = await ctx.api.groupMembers.getOrganizer(input);
 
-      return await ctx.services.getEmailById(organizerId);
+      return await ctx.serviceclient.getEmailById(organizerId);
     }),
 });
 

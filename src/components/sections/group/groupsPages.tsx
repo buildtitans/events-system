@@ -12,7 +12,7 @@ import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groups/groupSch
 
 export type CategoryMap = Map<string, string>;
 
-export default function GroupsPagesContainer({ groupsPages }: { groupsPages: GroupsSchemaType[] }): JSX.Element | null {
+export default function GroupsPagesContainer({ groupsPages, silenceHeader }: { groupsPages: GroupsSchemaType[], silenceHeader?: boolean }): JSX.Element | null {
     const {
         currentPage,
         categoryMap,
@@ -35,9 +35,9 @@ export default function GroupsPagesContainer({ groupsPages }: { groupsPages: Gro
 
     return (
         <div>
-            <Typography variant="h2" gutterBottom>
+            {(!silenceHeader) && <Typography variant="h2" gutterBottom>
                 Groups
-            </Typography>
+            </Typography>}
             <AnimatePresence mode='wait'>
                 {
                     (groupsPages[currentPage]) &&

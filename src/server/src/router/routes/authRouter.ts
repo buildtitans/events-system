@@ -63,7 +63,7 @@ export const authRouter = router({
       return undefined;
     }
 
-    const userEmail = await ctx.services.getEmailById(session.user_id);
+    const userEmail = await ctx.serviceclient.getEmailById(session.user_id);
 
     ctx.user = { id: session.user_id, role: "user", email: userEmail };
 

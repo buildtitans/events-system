@@ -24,6 +24,7 @@ export default function HydrateUserAccountPage(): React.ReactNode {
       attendance: AttendanceDictionaryType,
       memberships: RBACType,
     ) => {
+      dispatch(getMyGroups({ status: "ready", data: myGroups }));
       dispatch(storeUserEmail({ status: "ready", data: email }));
       dispatch(
         getParticipations({
@@ -31,14 +32,15 @@ export default function HydrateUserAccountPage(): React.ReactNode {
           data: { rsvps: attendance, memberships: memberships },
         }),
       );
-      dispatch(getMyGroups({ status: "ready", data: myGroups }));
+
     };
 
     const executeHydrateAccountPage = async () => {
+      dispatch(enqueueSidebar("user"));
       dispatch(storeUserEmail({ status: "pending" }));
       dispatch(getParticipations({ status: "pending" }));
       dispatch(getMyGroups({ status: "pending" }));
-      dispatch(enqueueSidebar("user"));
+
 
       await wait(800);
 

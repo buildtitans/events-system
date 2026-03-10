@@ -3,6 +3,7 @@ import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { buildRequestContext } from "./buildRequestContext";
 import type { ContextCacheType, RBACMethods, ServicesType } from "./types";
+import { ServiceClient } from "../services/serviceClient";
 
 export type Context = {
   api: DBClient;
@@ -10,7 +11,7 @@ export type Context = {
   reply: FastifyReply;
   req: FastifyRequest;
   auth: RBACMethods;
-  services: ServicesType;
+  serviceclient: ServiceClient;
   cache: ContextCacheType;
 };
 
@@ -28,7 +29,7 @@ export async function createContext({
     reply: res,
     req: req,
     auth: bootstrap.rbac,
-    services: bootstrap.services,
+    serviceclient: new ServiceClient(api),
     cache: bootstrap.cache,
   };
 }

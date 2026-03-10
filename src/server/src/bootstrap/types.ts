@@ -1,4 +1,7 @@
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import {
+  EventsArraySchemaType,
+  EventSchemaType,
+} from "@/src/schemas/events/eventSchema";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
@@ -37,10 +40,12 @@ export type ServicesType = {
   getGroupsCreated: (
     user_id: DbUserSchemaType["id"],
   ) => Promise<GroupsSchemaType>;
+  getRSVPdEvents: (
+    user_id: DbUserSchemaType["id"],
+  ) => Promise<EventsArraySchemaType>;
 };
 
 export type RBACContextType = {
   cache: ContextCacheType;
   rbac: RBACMethods;
-  services: ServicesType;
 };

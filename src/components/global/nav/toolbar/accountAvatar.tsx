@@ -32,7 +32,6 @@ export default function CurrentUser({ email }: CurrentUserProps): JSX.Element {
       color="info"
       sx={{
         borderRadius: 999,
-        padding: 0.75,
         ":hover": {
           bgcolor: "rgba(255, 255, 255, 0.1)",
           color: "white",
@@ -62,7 +61,9 @@ export default function CurrentUser({ email }: CurrentUserProps): JSX.Element {
           {email[0]}
         </Avatar>
         <Box>
-          <Typography component={"p"} fontSize={"12px"} fontWeight={"light"}>
+          <Typography
+          component={"p"}
+          fontSize={"12px"} >
             {clippedEmail + "..."}
           </Typography>
         </Box>

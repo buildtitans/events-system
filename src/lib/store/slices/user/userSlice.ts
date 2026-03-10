@@ -17,7 +17,7 @@ const initialState: InitialState = {
   email: { status: "initial" },
   myGroups: { status: "initial" },
   participations: { status: "initial" },
-  view: "memberships",
+  view: "my groups",
 };
 
 const UserSlice = createSlice({

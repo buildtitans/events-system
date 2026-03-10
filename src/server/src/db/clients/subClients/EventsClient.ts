@@ -63,6 +63,13 @@ export class EventsClient {
     return formatRawEvents(raw);
   }
 
+  async getFlattenedEventsByIds(
+    ids: EventSchemaType["id"][],
+  ): Promise<EventsArraySchemaType> {
+    const raw = await this.getRawEventsByIds(ids);
+    return formatRawEvents(raw);
+  }
+
   async getEventsByIds(
     ids: EventSchemaType["id"][],
   ): Promise<PaginatedLayoutSchemaType> {

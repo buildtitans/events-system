@@ -10,6 +10,7 @@ import {
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
+import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 export const eventAttendantsRouter = router({
   getAttendants: publicProcedure
@@ -26,12 +27,13 @@ export const eventAttendantsRouter = router({
       const userRecord = attendance[`${input}`];
 
       const { numGoing, numInterested } =
-        await ctx.services.getNumberOfAttendantsForEvent(input);
+        await ctx.serviceclient.getNumberOfAttendantsForEvent(input);
 
       return {
         currentUserStatus: userRecord,
         numGoing: numGoing,
         numInterested: numInterested,
+        permissions: ctx.cache.roleLookupMap,
       };
     }),
   updateViewerAttendance: publicProcedure
@@ -62,6 +64,16 @@ export const eventAttendantsRouter = router({
   getPopularEventIds: publicProcedure.mutation(async ({ ctx }) => {
     const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
     return curatePopularEventsIds(records);
+  }),
+
+  getUserRsvpdEvents: publicProcedure.mutation(async ({ ctx }) => {
+    const user_id = ctx.user?.id;
+
+    if (!user_id) {
+      throw new TRPCResolverError(403, "Permission to access user data denied");
+    }
+
+    return await ctx.serviceclient.getRsvpdEvents(user_id);
   }),
 });
 

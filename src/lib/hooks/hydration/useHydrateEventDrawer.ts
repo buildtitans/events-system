@@ -11,8 +11,8 @@ import {
   getUserAttendanceStatus,
 } from "../../store/slices/events/EventDrawerSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 
 export const useHydrateEventDrawer = () => {
   const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
@@ -43,10 +43,17 @@ export const useHydrateEventDrawer = () => {
 
     const executeHydrateEventDrawer = async () => {
       try {
-        const { currentUserStatus, numGoing, numInterested } =
+        const { currentUserStatus, numGoing, numInterested, permissions } =
           await trpcClient.eventAttendants.getViewerAttendance.mutate(
             event.data.id,
           );
+
+        console.log({
+          "Role from hydration": permissions[event.data.group_id],
+        });
+
+        dispatch(getViewerPermissions(permissions));
+        dispatch(getDrawerViewerRole(permissions[event.data.group_id]));
 
         handleHydrationResults(currentUserStatus, numGoing, numInterested);
       } catch (err) {}

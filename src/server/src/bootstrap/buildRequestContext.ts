@@ -1,48 +1,15 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import {
-  GroupSchemaType,
-  GroupsSchemaType,
-} from "@/src/schemas/groups/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../db";
 import { FastifyRequest } from "fastify";
-import { mapRoleBasedAccessControls } from "../lib/utils/mapRoleBasedAccessControls";
-import { mapAttendanceDictionary } from "../lib/utils/mapAttendanceDictionary";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import type { RBACContextType, RBACAction } from "./types";
+import { buildCache } from "./buildCache";
 
 export async function buildRequestContext(
   api: DBClient,
   user: FastifyRequest["user"] | undefined,
 ): Promise<RBACContextType> {
-  const groups = await api.groups.getGroups();
-  const events = await api.events.getFlattenedEvents();
-  const memberships = user?.id
-    ? await api.groupMembers.getViewerMemberships(user.id)
-    : null;
-
-  const attendance = user?.id
-    ? await api.eventAttendants.getUserAttendanceRecords(user?.id)
-    : [];
-
-  const eventIds = events.map((ev) => ev.id);
-  const groupIds = groups.map((grp) => grp.id);
-  const roles = mapRoleBasedAccessControls(groupIds, memberships);
-  const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
-
-  async function getGroupsCreated(
-    user_id: DbUserSchemaType["id"],
-  ): Promise<GroupsSchemaType> {
-    return await api.groups.getGroupsByOrganizerId(user_id);
-  }
-
-  async function getEmailById(
-    user_id: DbUserSchemaType["id"],
-  ): Promise<DbUserSchemaType["email"]> {
-    const { email } = await api.auth.getEmailByUserId(user_id);
-
-    return email;
-  }
+  const { roles, attendanceDict } = await buildCache(api, user?.id);
 
   function getRoleForGroup(
     group_id: GroupSchemaType["id"],
@@ -81,25 +48,6 @@ export async function buildRequestContext(
     }
   }
 
-  async function getNumberOfAttendantsForEvent(
-    event_id: EventSchemaType["id"],
-  ): Promise<{ numGoing: number; numInterested: number }> {
-    const attendants = await api.eventAttendants.getAttendants(event_id);
-
-    const filteredGoing = attendants.filter(
-      (attendant) => attendant.status === "going",
-    );
-
-    const filteredInterested = attendants.filter(
-      (attendant) => attendant.status === "interested",
-    );
-
-    return {
-      numGoing: filteredGoing.length,
-      numInterested: filteredInterested.length,
-    };
-  }
-
   return {
     cache: {
       roleLookupMap: roles,
@@ -108,11 +56,6 @@ export async function buildRequestContext(
     rbac: {
       can,
       getRoleForGroup,
-    },
-    services: {
-      getNumberOfAttendantsForEvent,
-      getEmailById,
-      getGroupsCreated,
     },
   };
 }

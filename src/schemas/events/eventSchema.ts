@@ -10,7 +10,7 @@ const AuthorsSchema = Type.Array(AuthorSchema);
 
 type AuthorsSchemaType = Static<typeof AuthorsSchema>;
 
-const EventStatusSchema = Type.Union([
+export const EventStatusSchema = Type.Union([
   Type.Literal("scheduled"),
   Type.Literal("cancelled"),
 ]);

@@ -7,11 +7,11 @@ import Container from "@mui/material/Container";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { JSX } from "react";
 import Notifications from "../menus/notifications/notifications";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import { navActionsButtonSx } from "@/src/styles/sx/sx";
 import RenderCurrentUser from "@/src/components/pipelines/buttons/renderCurrentUser";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 type NavActionsProps = {
   userKind: UserKind;
@@ -95,7 +95,8 @@ export default function NavActions({
           color="info"
           variant="contained"
           size="small"
-        >
+          startIcon={<LogoutIcon />}
+>
           Sign out
         </Button>
       )}

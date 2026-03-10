@@ -7,16 +7,19 @@ export const usersRouter = router({
       throw new TRPCResolverError(403, "Permission to access user data denied");
     }
 
-    return ctx.services.getEmailById(ctx.user?.id);
+    return ctx.serviceclient.getEmailById(ctx.user?.id);
   }),
 
   userMemberships: publicProcedure.mutation(async ({ ctx }) => {
     return ctx.cache.roleLookupMap;
   }),
   rsvpsToEvents: publicProcedure.mutation(async ({ ctx }) => {
-    if (!ctx.user?.id) {
+    const user_id = ctx.user?.id;
+    if (!user_id) {
       throw new TRPCResolverError(403, "Permission to access user data denied");
     }
+
+    const groupNameHash = ctx.serviceclient.getRsvpdEvents(user_id);
 
     return ctx.cache.attendanceDictionary;
   }),
@@ -25,6 +28,6 @@ export const usersRouter = router({
     if (!ctx.user?.id) {
       throw new TRPCResolverError(403, "Permission denied to access user data");
     }
-    return await ctx.services.getGroupsCreated(ctx.user.id);
+    return await ctx.serviceclient.getGroupsCreated(ctx.user.id);
   }),
 });

@@ -14,8 +14,6 @@ export default function LeftAnchoredSidebar(): JSX.Element | null {
   const lgScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const drawerWidth = lgScreen ? 200 : 160;
 
-  console.log(lgScreen);
-
   return (
     <Drawer
       variant="persistent"
