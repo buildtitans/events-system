@@ -1,15 +1,8 @@
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
-import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 import {
-  CreateNotificationSchemaType,
-  CompiledCreateNotificationSchema,
-  ViewedNotificationsIdsSchemaType,
-  CompiledViewedNotificationsIdsSchema,
+  createNotificationInput,
+  SeenNotificationsInputValidator,
 } from "@/src/schemas/notifications/notificationsSchema";
-
-const createNotificationInput = typeboxInput<CreateNotificationSchemaType>(
-  CompiledCreateNotificationSchema,
-);
 
 export const notificationsRouter = router({
   getNotifications: publicProcedure.mutation(async ({ ctx }) => {
@@ -30,11 +23,7 @@ export const notificationsRouter = router({
     }),
 
   markOpenedNotifications: publicProcedure
-    .input(
-      typeboxInput<ViewedNotificationsIdsSchemaType>(
-        CompiledViewedNotificationsIdsSchema,
-      ),
-    )
+    .input(SeenNotificationsInputValidator)
     .mutation(async ({ ctx, input }) => {
       if (input.length === 0) return;
 

@@ -19,13 +19,12 @@ export class DBClient {
   public readonly eventAttendants: EventAttendantsClient;
   public readonly notifications: NotificationsClient;
   constructor(private db: Kysely<DB>) {
-    this.db = db;
     this.groupMembers = new GroupMembersClient(this.db);
     this.events = new EventsClient(this.db);
-    this.groups = new GroupsClient(db);
-    this.auth = new AuthClient(db);
-    this.categories = new CategoriesClient(db);
-    this.eventAttendants = new EventAttendantsClient(db);
-    this.notifications = new NotificationsClient(db);
+    this.groups = new GroupsClient(this.db);
+    this.auth = new AuthClient(this.db);
+    this.categories = new CategoriesClient(this.db);
+    this.eventAttendants = new EventAttendantsClient(this.db);
+    this.notifications = new NotificationsClient(this.db);
   }
 }

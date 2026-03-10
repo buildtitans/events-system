@@ -1,19 +1,20 @@
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
-  CompiledMemberToRemoveSchema,
   GroupIDForInsertSchemaType,
   GroupIDForInsertSchemaValidator,
-  MemberToRemoveSchemaType,
+  MemberToRemoveInputValidator,
 } from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
+export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
+  GroupIDForInsertSchemaValidator,
+);
+
 const groupMembersRouter = router({
   addNewMember: publicProcedure
-    .input(
-      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
-    )
+    .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       const token = ctx.req.cookies.session;
       if (!token) return null;
@@ -29,7 +30,7 @@ const groupMembersRouter = router({
     }),
 
   leaveGroup: publicProcedure
-    .input(typeboxInput<MemberToRemoveSchemaType>(CompiledMemberToRemoveSchema))
+    .input(MemberToRemoveInputValidator)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.auth.can("leave group", input.group_id) || !ctx.user?.id) {
         throw new TRPCResolverError(
@@ -45,16 +46,12 @@ const groupMembersRouter = router({
     }),
 
   getViewerRole: publicProcedure
-    .input(
-      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
-    )
+    .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return ctx.auth.getRoleForGroup(input);
     }),
   getGroupMembers: publicProcedure
-    .input(
-      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
-    )
+    .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.groupMembers.getGroupMembers(input);
     }),
@@ -62,22 +59,21 @@ const groupMembersRouter = router({
   viewerMemberships: publicProcedure.mutation(async ({ ctx }) => {
     const user_id = ctx.user?.id;
 
-    if (!user_id) return null;
+    if (!user_id) {
+      throw new TRPCResolverError(
+        403,
+        "Permission to access membership data denied",
+      );
+    }
 
-    const memberships =
-      await ctx.api.groupMembers.getViewerMemberships(user_id);
-
-    return memberships;
+    return await ctx.api.groupMembers.getViewerMemberships(user_id);
   }),
 
   getGroupOrganizerEmail: publicProcedure
-    .input(
-      typeboxInput<GroupIDForInsertSchemaType>(GroupIDForInsertSchemaValidator),
-    )
+    .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       const organizerId = await ctx.api.groupMembers.getOrganizer(input);
-
-      return await ctx.serviceclient.getEmailById(organizerId);
+      return await ctx.services.userClient.getEmailById(organizerId);
     }),
 });
 

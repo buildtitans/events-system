@@ -1,22 +1,16 @@
 import {
   GroupIdSchemaType,
   GroupIdSchemaValidator,
-  NewEventInputSchemaType,
-  NewEventInputSchemaValidator,
   UpdateEventArgsSchemaType,
   UpdateEventArgsSchemaValidator,
 } from "@/src/schemas/events/eventSchema";
-import {
-  EventSearchSchemaType,
-  CompiledEventSearchSchema,
-} from "@/src/schemas/events/eventsSearchSchema";
-import {
-  CompiledEventIdsSchema,
-  EventIdsSchemaType,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { SearchInputSchemaValidator } from "@/src/schemas/search/searchSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
+import { NewEventInputValidator } from "@/src/schemas/events/eventSchema";
+import { groupIdInputValidator } from "./groupMembersRouter";
+import { EventIdInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -26,7 +20,7 @@ export const eventsRouter = router({
   }),
 
   newEvent: publicProcedure
-    .input(typeboxInput<NewEventInputSchemaType>(NewEventInputSchemaValidator))
+    .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {
       const permitted = ctx.auth.can("create event", input.group_id);
 
@@ -41,7 +35,7 @@ export const eventsRouter = router({
     }),
 
   groupEvents: publicProcedure
-    .input(typeboxInput<GroupIdSchemaType>(GroupIdSchemaValidator))
+    .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       if (!input) return null;
       return await ctx.api.events.getGroupEvents(input);
@@ -70,7 +64,7 @@ export const eventsRouter = router({
     }),
 
   eventsById: publicProcedure
-    .input(typeboxInput<EventIdsSchemaType>(CompiledEventIdsSchema))
+    .input(EventIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.events.getEventsByIds(input);
     }),
@@ -80,7 +74,7 @@ export const eventsRouter = router({
   }),
 
   search: publicProcedure
-    .input(typeboxInput<EventSearchSchemaType>(CompiledEventSearchSchema))
+    .input(SearchInputSchemaValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.events.searchEventByTitle(input);
     }),

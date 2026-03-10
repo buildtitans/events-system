@@ -1,3 +1,4 @@
+import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 
@@ -95,6 +96,10 @@ export type {
 
 export const NewEventInputSchemaValidator =
   TypeCompiler.Compile(NewEventInputSchema);
+
+export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
+  NewEventInputSchemaValidator,
+);
 
 export const GroupIdSchemaValidator = TypeCompiler.Compile(GroupIdSchema);
 

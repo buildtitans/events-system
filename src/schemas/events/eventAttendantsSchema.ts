@@ -1,6 +1,7 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 
 const EventAttendantStatusSchema = Type.Union([
   Type.Literal("going"),
@@ -59,6 +60,11 @@ const UpdatedAttendanceResponseSchemaValidator = TypeCompiler.Compile(
   UpdatedAttendanceResponseSchema,
 );
 
+export const UpdatedAttendanceResponseValidator =
+  typeboxInput<UpdatedAttendanceResponseSchemaType>(
+    UpdatedAttendanceResponseSchemaValidator,
+  );
+
 const EventIdSchemaValidator = TypeCompiler.Compile(EventIdSchema);
 
 const EventAttendantsSchemaValidator = TypeCompiler.Compile(
@@ -71,6 +77,21 @@ const EventAttendantsStatusSchemaValidator = TypeCompiler.Compile(
 
 const AttendanceUpdateInputSchemaValidator = TypeCompiler.Compile(
   AttendanceUpdateInputSchema,
+);
+
+export const UpdateAttendanceInputValidator =
+  typeboxInput<AttendanceUpdateInputSchemaType>(
+    AttendanceUpdateInputSchemaValidator,
+  );
+
+const CompiledEventIdSchema = TypeCompiler.Compile(EventIdSchema);
+
+export const EventIdInputValidator = typeboxInput<EventIdsSchemaType>(
+  CompiledEventIdsSchema,
+);
+
+export const EventIDValidator = typeboxInput<EventIdSchemaType>(
+  CompiledEventIdSchema,
 );
 
 const ValidateRawAttendants = createValidator(

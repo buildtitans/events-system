@@ -7,9 +7,12 @@ import {
   NewGroupInputSchemaValidator,
 } from "@/src/schemas/groups/groupSchema";
 import {
-  CompiledEventSearchSchema,
-  EventSearchSchemaType,
-} from "@/src/schemas/events/eventsSearchSchema";
+  CompiledSearchSchema,
+  SearchSchemaType,
+} from "@/src/schemas/search/searchSchema";
+
+const searchInputValidator =
+  typeboxInput<SearchSchemaType>(CompiledSearchSchema);
 
 export const groupsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -51,7 +54,7 @@ export const groupsRouter = router({
     }),
 
   searchGroups: publicProcedure
-    .input(typeboxInput<EventSearchSchemaType>(CompiledEventSearchSchema)) //TODO: naming convention change on search input schema
+    .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.groups.searchGroups(input);
     }),

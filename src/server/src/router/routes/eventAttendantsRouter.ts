@@ -1,33 +1,30 @@
 import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
-
 import {
-  AttendanceUpdateInputSchemaType,
-  AttendanceUpdateInputSchemaValidator,
-  EventIdSchemaType,
-  EventIdSchemaValidator,
-  UpdatedAttendanceResponseSchemaType,
-  UpdatedAttendanceResponseSchemaValidator,
+  EventIDValidator,
+  UpdatedAttendanceResponseValidator,
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
+import { UpdateAttendanceInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventAttendantsRouter = router({
   getAttendants: publicProcedure
-    .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
+    .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.eventAttendants.getAttendants(input);
     }),
 
   getViewerAttendance: publicProcedure
-    .input(typeboxInput<EventIdSchemaType>(EventIdSchemaValidator))
+    .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       const attendance = ctx.cache.attendanceDictionary;
 
       const userRecord = attendance[`${input}`];
 
       const { numGoing, numInterested } =
-        await ctx.serviceclient.getNumberOfAttendantsForEvent(input);
+        await ctx.services.attendanceClient.getNumberOfAttendantsForEvent(
+          input,
+        );
 
       return {
         currentUserStatus: userRecord,
@@ -36,17 +33,10 @@ export const eventAttendantsRouter = router({
         permissions: ctx.cache.roleLookupMap,
       };
     }),
+
   updateViewerAttendance: publicProcedure
-    .input(
-      typeboxInput<AttendanceUpdateInputSchemaType>(
-        AttendanceUpdateInputSchemaValidator,
-      ),
-    )
-    .output(
-      typeboxInput<UpdatedAttendanceResponseSchemaType>(
-        UpdatedAttendanceResponseSchemaValidator,
-      ),
-    )
+    .input(UpdateAttendanceInputValidator)
+    .output(UpdatedAttendanceResponseValidator)
     .mutation(async ({ ctx, input }) => {
       const user_id = ctx.user?.id;
 
@@ -73,8 +63,6 @@ export const eventAttendantsRouter = router({
       throw new TRPCResolverError(403, "Permission to access user data denied");
     }
 
-    return await ctx.serviceclient.getRsvpdEvents(user_id);
+    return await ctx.services.participationsClient.getRsvpdEvents(user_id);
   }),
 });
-
-export type EventAttendantsRouter = typeof eventAttendantsRouter;

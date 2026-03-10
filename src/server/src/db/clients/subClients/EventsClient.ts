@@ -12,7 +12,7 @@ import { formatRawEvents } from "../../../layout/utils";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 import { compileEventsLayout } from "@/src/server/src/layout/compileEventsLayout";
-import { EventSearchSchemaType } from "@/src/schemas/events/eventsSearchSchema";
+import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);
 
@@ -32,7 +32,7 @@ export class EventsClient {
   }
 
   async searchEventByTitle(
-    query: EventSearchSchemaType,
+    query: SearchSchemaType,
   ): Promise<EventsArraySchemaType> {
     const raw = await this.db
       .selectFrom("events")

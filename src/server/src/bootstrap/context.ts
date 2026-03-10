@@ -11,7 +11,7 @@ export type Context = {
   reply: FastifyReply;
   req: FastifyRequest;
   auth: RBACMethods;
-  serviceclient: ServiceClient;
+  services: ServiceClient;
   cache: ContextCacheType;
 };
 
@@ -29,7 +29,7 @@ export async function createContext({
     reply: res,
     req: req,
     auth: bootstrap.rbac,
-    serviceclient: new ServiceClient(api),
+    services: new ServiceClient(api),
     cache: bootstrap.cache,
   };
 }
