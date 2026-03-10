@@ -15,6 +15,8 @@ import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroup
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { wait } from "@/src/lib/utils/rendering/wait";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -78,6 +80,9 @@ export default function HydrateGroupBySlug({
     const executeHydration = async () => {
       dispatch(groupOpened({ status: "pending" }));
       dispatch(getGroupEvents({ status: "pending" }));
+      dispatch(enqueueSidebar("group"));
+
+      await wait(800);
 
       const { events, group, role, numMembers, organizer } = await syncOpenedGroup(slug);
 

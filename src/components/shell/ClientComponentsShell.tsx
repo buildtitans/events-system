@@ -1,5 +1,5 @@
 "use client";
-import TopNav from '../ui/nav/global/TopNav';
+import TopNav from '@/src/components/global/TopNav';
 import TopLayerHost from '@/src/components/layers/topLayerHost';
 import AppBootstrapHydrator from "@/src/components/hydration/AppBootstrapHydrator";
 import Footer from "@/src/components/sections/footer/footer";

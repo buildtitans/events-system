@@ -11,6 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import GroupDescription from "./groupDescription";
 import Divider from "@mui/material/Divider";
 import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
+import { useTheme } from "@mui/material/styles";
 
 type ViewGroupSectionProps = {
   group: GroupSchemaType;
@@ -19,8 +20,12 @@ type ViewGroupSectionProps = {
 export default function ViewGroupSection({
   group,
 }: ViewGroupSectionProps): JSX.Element {
+  const theme = useTheme();
+  const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   useHydrateGroupHisory();
+
+  console.log(lgScreen)
 
   return (
     <Container
@@ -34,17 +39,28 @@ export default function ViewGroupSection({
       <Stack
       id="opened-group-stack"
       divider={<Divider />}
-        gap={4}
+      alignItems={lgScreen ? "start" : "center"}
+      justifyContent={"start"}
         sx={{
           width: "100%",
-          minWidth: "100%",
           minHeight: "70vh",
           height: "100%",
         }}
       >
-        <GroupHeadSecton groupName={group.name} />
+        <Stack
+        alignItems={"start"}
+        justifyContent={"start"}
+        gap={4}
+        sx={{
+          width: "auto",
+          height: "100%"
+        }}
+>
+<GroupHeadSecton groupName={group.name} />
         <GroupDescription group={group} />
         {RenderCurrentView(displayed, group)}
+        </Stack>
+        
       </Stack>
     </Container>
   );

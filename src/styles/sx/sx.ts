@@ -14,6 +14,21 @@ const overrides = {
   overflow: "auto",
 };
 
+const sidebarStyles = {
+  width: {
+    xs: "auto",
+    md: "140px",
+    lg: "180px",
+    xl: "200px",
+  },
+  backgroundColor: "#191919",
+  display: "flex",
+  flexDirection: { xs: "row", sm: "column" },
+  justifyContent: "center",
+  alignItems: "center",
+  border: "none",
+};
+
 const searchBarSx = {
   transition: "ease-in-out",
   transitionDuration: "200ms",
@@ -37,4 +52,10 @@ const navActionsButtonSx = {
 
 const PANEL_GRAY = "#212121";
 
-export { overrides, searchBarSx, PANEL_GRAY, navActionsButtonSx };
+export {
+  overrides,
+  searchBarSx,
+  PANEL_GRAY,
+  navActionsButtonSx,
+  sidebarStyles,
+};

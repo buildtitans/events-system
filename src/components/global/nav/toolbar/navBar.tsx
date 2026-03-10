@@ -14,7 +14,7 @@ import { useState } from 'react';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { UserKind } from '@/src/lib/store/slices/auth/AuthSlice';
 import { Search } from '@/src/features/search/search';
-import HomeButton from '../../buttons/homeButton';
+import HomeButton from '../../../ui/buttons/homeButton';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     display: 'flex',
@@ -57,7 +57,7 @@ export default function NavBar({ userKind }: NavLinksProps) {
             minWidth: { xs: '400px', md: '600px' }
         }}>
             <HomeButton />
-            <Box sx={{ display: { xs: 'flex', lg: 'none' }, gap: 1 }}>
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
                 <ColorModeIconDropdown size="medium" />
                 <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
                     <MenuIcon />

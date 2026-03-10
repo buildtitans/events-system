@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
@@ -10,6 +9,7 @@ import {
   enqueueDrawer,
   enqueueSnackbar,
 } from "../../store/slices/rendering/RenderingSlice";
+import { storeUserEmail } from "../../store/slices/user/userSlice";
 import {
   getAttendanceDictionary,
   getViewerPermissions,
@@ -21,6 +21,7 @@ type LoginResType = {
   success: boolean;
   permissions: RBACType;
   attendanceDictionary: AttendanceDictionaryType;
+  email: string;
 };
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
@@ -28,9 +29,10 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLoginResult = async (result: LoginResType): Promise<void> => {
-    const { success, permissions, attendanceDictionary } = result;
+    const { success, permissions, attendanceDictionary, email } = result;
 
     if (success) {
+      dispatch(storeUserEmail({ status: "ready", data: email }));
       dispatch(loginSuccess());
       dispatch(getViewerPermissions(permissions));
       dispatch(getAttendanceDictionary(attendanceDictionary));

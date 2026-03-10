@@ -6,7 +6,7 @@ import {
     NotificationSchemaType
 } from "@/src/schemas/notifications/notificationsSchema";
 import NotificationListItem from "./notificationListItem";
-import NoPendingNotifications from "../../../fallbacks/noPendingNotifications";
+import NoPendingNotifications from "../../../../ui/feedback/fallbacks/noPendingNotifications";
 
 export type NotificationsListProps = {
     anchorEl: null | HTMLElement,

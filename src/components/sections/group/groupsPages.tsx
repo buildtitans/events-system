@@ -9,9 +9,6 @@ import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
 import { useRouter } from "next/navigation";
 import { useCallback } from 'react';
 import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groups/groupSchema';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/src/lib/store';
-import { enqueueSidebar } from '@/src/lib/store/slices/rendering/RenderingSlice';
 
 export type CategoryMap = Map<string, string>;
 
@@ -21,7 +18,6 @@ export default function GroupsPagesContainer({ groupsPages }: { groupsPages: Gro
         categoryMap,
         columns
     } = useGroupPages(groupsPages);
-    const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
     const handleGroupClicked = useCallback((
@@ -32,7 +28,6 @@ export default function GroupsPagesContainer({ groupsPages }: { groupsPages: Gro
             
             const route = `/group/${slug}`
             router.push(route)
-            dispatch(enqueueSidebar("group"));
         }
     }, [router]);
 

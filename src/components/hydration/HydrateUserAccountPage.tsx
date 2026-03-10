@@ -12,6 +12,7 @@ import {
   storeUserEmail,
 } from "@/src/lib/store/slices/user/userSlice";
 import { wait } from "@/src/lib/utils/rendering/wait";
+import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 export default function HydrateUserAccountPage(): React.ReactNode {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,6 +38,7 @@ export default function HydrateUserAccountPage(): React.ReactNode {
       dispatch(storeUserEmail({ status: "pending" }));
       dispatch(getParticipations({ status: "pending" }));
       dispatch(getMyGroups({ status: "pending" }));
+      dispatch(enqueueSidebar("user"));
 
       await wait(800);
 

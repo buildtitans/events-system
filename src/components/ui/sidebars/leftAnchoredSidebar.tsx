@@ -1,14 +1,20 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import { sidebarStyles } from "@/src/lib/tokens/sxTokens";
+import { sidebarStyles } from "@/src/styles/sx/sx";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { RenderActiveSidebar } from "../../pipelines/drawers/forks/renderActiveSidebar";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 export default function LeftAnchoredSidebar(): JSX.Element | null {
+  const theme = useTheme();
   const sidebar = useSelector((s:RootState) => s.rendering.sidebar);
-  const drawerWidth = 200;
+  const lgScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const drawerWidth = lgScreen ? 200 : 160;
+
+  console.log(lgScreen);
 
   return (
     <Drawer

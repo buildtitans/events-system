@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess, logout } from "../../store/slices/auth/AuthSlice";
-import { syncPermissions } from "../../store/sync/syncPermissions";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
+import { storeUserEmail } from "../../store/slices/user/userSlice";
 
 const useRecoverSession = (): void => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,12 +14,10 @@ const useRecoverSession = (): void => {
     const executeRecoverSession = async () => {
       try {
         const result = await trpcClient.auth.recover.mutate();
-
         if (result) {
           dispatch(loginSuccess());
-
-          const permissions = await syncPermissions();
-          dispatch(getViewerPermissions(permissions));
+          dispatch(storeUserEmail({ status: "ready", data: result.userEmail }));
+          dispatch(getViewerPermissions(result.permissions));
         } else {
           dispatch(logout());
         }

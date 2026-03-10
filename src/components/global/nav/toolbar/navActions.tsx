@@ -11,6 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import { navActionsButtonSx } from "@/src/styles/sx/sx";
+import RenderCurrentUser from "@/src/components/pipelines/buttons/renderCurrentUser";
 
 type NavActionsProps = {
   userKind: UserKind;
@@ -38,17 +39,7 @@ export default function NavActions({
         },
       }}
     >
-      <Box 
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
-      >
-      {userKind === "authenticated" && <Notifications />}
-
-      </Box>
+     
 
       <Box 
       sx={{
@@ -108,6 +99,24 @@ export default function NavActions({
           Sign out
         </Button>
       )}
+      </Box>
+
+
+       <Box 
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 2
+      }}
+      >
+      {userKind === "authenticated" && <Notifications />}
+
+
+      {userKind === "authenticated" && <RenderCurrentUser key={"account-link"} />}
+
+
       </Box>
     </Container>
   );

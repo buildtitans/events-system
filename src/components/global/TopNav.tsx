@@ -7,13 +7,17 @@ import {
   enqueueDrawer,
   showModal,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import NavActions from "../global/navActions";
-import NavBar from "../global/navBar";
+import NavActions from "./nav/toolbar/navActions";
+import NavBar from "./nav/toolbar/navBar";
 import { PANEL_GRAY } from "@/src/styles/sx/sx";
 import Box from "@mui/material/Box";
 import LeftAnchoredSidebar from "@/src/components/ui/sidebars/leftAnchoredSidebar";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 export default function TopNav() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const userKind = useSelector((s: RootState) => s.auth.userKind);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -57,7 +61,7 @@ export default function TopNav() {
           />
         </Container>
       </AppBar>
-      <LeftAnchoredSidebar />
+      {!isMobile && <LeftAnchoredSidebar />}
     </Box>
   );
 }

@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import NotificationsList, { NotificationsListProps } from "./notificationsList";
-import NotificationBadge from "../../../badges/notificationBadge";
+import NotificationBadge from "../../../../ui/badges/notificationBadge";
 import { markSeen } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { syncSeenNotifications } from "@/src/lib/store/sync/syncNotifications";
 

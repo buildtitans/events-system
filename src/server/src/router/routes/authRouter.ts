@@ -20,12 +20,14 @@ export const authRouter = router({
       ctx.user = {
         id: user.id,
         role: "user",
+        email: user.email,
       };
 
       return {
         success: res.user.id ? true : false,
         permissions: ctx.cache.roleLookupMap,
         attendanceDictionary: ctx.cache.attendanceDictionary,
+        email: user.email,
       };
     }),
 
@@ -60,9 +62,18 @@ export const authRouter = router({
       ctx.reply.clearCookie("session");
       return undefined;
     }
-    ctx.user = { id: session.user_id, role: "user" };
 
-    return session;
+    const userEmail = await ctx.services.getEmailById(session.user_id);
+
+    ctx.user = { id: session.user_id, role: "user", email: userEmail };
+
+    const permissions = ctx.cache.roleLookupMap;
+
+    return {
+      session,
+      userEmail,
+      permissions,
+    };
   }),
 
   session: publicProcedure.mutation(async ({ ctx }) => {

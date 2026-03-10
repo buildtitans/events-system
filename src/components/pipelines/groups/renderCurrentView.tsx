@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { RenderEventsForGroup } from "./renderEventsForGroup";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
