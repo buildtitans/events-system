@@ -18,6 +18,9 @@ export const usersRouter = router({
       throw new TRPCResolverError(403, "Permission to access user data denied");
     }
 
+    const rsvps =
+      await ctx.services.participationsClient.getRsvpdEvents(user_id);
+
     const groupNameHash =
       ctx.services.participationsClient.getRsvpdEvents(user_id);
 

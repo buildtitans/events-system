@@ -165,6 +165,7 @@ export class EventsClient {
   private formatEvent(raw: Selectable<Events>): EventSchemaType {
     const parsed_authors =
       typeof raw.authors === "string" ? JSON.parse(raw.authors) : raw.authors;
+    const startsAtMs = raw.starts_at.getTime();
 
     return eventValidator({
       id: raw.id,
@@ -176,6 +177,7 @@ export class EventsClient {
       group_id: raw.group_id,
       authors: parsed_authors,
       starts_at: raw.starts_at.toISOString(),
+      starts_at_ms: startsAtMs,
       img: raw.img,
       meeting_location: raw.meeting_location,
       status: raw.status,

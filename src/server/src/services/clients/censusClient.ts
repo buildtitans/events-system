@@ -3,7 +3,7 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { AttendantCountType } from "../types";
 
-export class AttendanceClient {
+export class CensusClient {
   constructor(private readonly api: DBClient) {}
 
   async getNumberOfAttendantsForEvent(

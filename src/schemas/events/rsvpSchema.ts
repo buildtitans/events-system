@@ -9,7 +9,7 @@ export const RsvpSchema = Type.Object({
   event_id: Type.String({ format: "uuid" }),
   event_title: Type.String(),
   location: Type.String(),
-  starts_at: Type.String({ format: "date" }),
+  starts_at: Type.String({ format: "date-time" }),
   starts_at_ms: Type.Integer({ minimum: 0 }),
   scheduled_status: EventStatusSchema,
 });
