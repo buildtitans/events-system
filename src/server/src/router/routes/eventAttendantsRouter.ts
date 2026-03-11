@@ -17,17 +17,11 @@ export const eventAttendantsRouter = router({
   getViewerAttendance: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      const attendance = ctx.cache.attendanceDictionary;
-
-      const userRecord = attendance[`${input}`];
-
       const { numGoing, numInterested } =
-        await ctx.services.attendanceClient.getNumberOfAttendantsForEvent(
-          input,
-        );
+        await ctx.services.censusClient.getNumberOfAttendantsForEvent(input);
 
       return {
-        currentUserStatus: userRecord,
+        currentUserStatus: ctx.cache.attendanceDictionary[input],
         numGoing: numGoing,
         numInterested: numInterested,
         permissions: ctx.cache.roleLookupMap,

@@ -1,9 +1,10 @@
 import { DBClient } from "../db";
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { buildRequestContext } from "./buildRequestContext";
-import type { ContextCacheType, RBACMethods, ServicesType } from "./types";
+import { buildAuthContext } from "./buildRequestContext";
+import type { ContextCacheType, RBACMethods } from "./types";
 import { ServiceClient } from "../services/serviceClient";
+import { buildCache } from "./buildCache";
 
 export type Context = {
   api: DBClient;
@@ -21,15 +22,14 @@ export async function createContext({
 }: CreateFastifyContextOptions): Promise<Context> {
   const api = req.server.db;
   const user = req.user;
-  const bootstrap = await buildRequestContext(api, user);
 
   return {
-    api: api,
+    api: req.server.db,
     user: user,
     reply: res,
     req: req,
-    auth: bootstrap.rbac,
+    auth: await buildAuthContext(user),
     services: new ServiceClient(api),
-    cache: bootstrap.cache,
+    cache: await buildCache(api, user?.id),
   };
 }

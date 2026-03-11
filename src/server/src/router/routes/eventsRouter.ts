@@ -22,7 +22,11 @@ export const eventsRouter = router({
   newEvent: publicProcedure
     .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const permitted = ctx.auth.can("create event", input.group_id);
+      const permitted = ctx.auth.can(
+        "create event",
+        input.group_id,
+        ctx.cache.roleLookupMap,
+      );
 
       if (!permitted) {
         throw new TRPCResolverError(
@@ -52,7 +56,11 @@ export const eventsRouter = router({
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
     .mutation(({ ctx, input }) => {
-      const permitted = ctx.auth.can("update event", input.group_id);
+      const permitted = ctx.auth.can(
+        "update event",
+        input.group_id,
+        ctx.cache.roleLookupMap,
+      );
       if (!permitted) {
         throw new TRPCResolverError(
           403,

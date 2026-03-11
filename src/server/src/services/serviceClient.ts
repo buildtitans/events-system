@@ -8,12 +8,9 @@ export class ServiceClient {
   public readonly participationsClient: ParticipationsClient;
   public readonly censusClient: CensusClient;
   public readonly userClient: UserClient;
-  constructor(
-    private api: DBClient,
-    private rbacHash: RBACType,
-  ) {
+  constructor(private api: DBClient) {
     this.participationsClient = new ParticipationsClient(this.api);
     this.censusClient = new CensusClient(this.api);
-    this.userClient = new UserClient(this.api, this.rbacHash);
+    this.userClient = new UserClient(this.api);
   }
 }

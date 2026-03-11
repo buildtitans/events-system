@@ -1,24 +1,25 @@
 import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { DBClient } from "../db";
 import { FastifyRequest } from "fastify";
-import type { RBACContextType, RBACAction } from "./types";
-import { buildCache } from "./buildCache";
+import type { RBACAction, RBACMethods } from "./types";
+import { RBACType } from "../db/clients/types/types";
 
-export async function buildRequestContext(
-  api: DBClient,
+export async function buildAuthContext(
   user: FastifyRequest["user"] | undefined,
-): Promise<RBACContextType> {
-  const { roles, attendanceDict } = await buildCache(api, user?.id);
-
+): Promise<RBACMethods> {
   function getRoleForGroup(
     group_id: GroupSchemaType["id"],
+    roles: RBACType,
   ): GroupMembersSchemaType["role"] {
     const userRole = roles[group_id];
     return userRole;
   }
 
-  function can(action: RBACAction, group_id: GroupSchemaType["id"]): boolean {
+  function can(
+    action: RBACAction,
+    group_id: GroupSchemaType["id"],
+    roles: RBACType,
+  ): boolean {
     switch (action) {
       case "create event":
       case "cancel event":
@@ -49,13 +50,7 @@ export async function buildRequestContext(
   }
 
   return {
-    cache: {
-      roleLookupMap: roles,
-      attendanceDictionary: attendanceDict,
-    },
-    rbac: {
-      can,
-      getRoleForGroup,
-    },
+    can,
+    getRoleForGroup,
   };
 }

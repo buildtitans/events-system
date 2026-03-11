@@ -50,6 +50,16 @@ const navActionsButtonSx = {
   },
 };
 
+const createGroupButtonSx = {
+  borderRadius: 999,
+  textWrap: "nowrap",
+  ":hover": {
+    bgcolor: "rgba(255, 255, 255, 0.1)",
+    color: "white",
+    transition: "all 0.3s ease",
+  },
+};
+
 const PANEL_GRAY = "#212121";
 
 export {
@@ -58,4 +68,5 @@ export {
   PANEL_GRAY,
   navActionsButtonSx,
   sidebarStyles,
+  createGroupButtonSx,
 };

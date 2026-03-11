@@ -8,6 +8,7 @@ import AccountDetails from "../sections/user/accountDetails";
 import Stack from "@mui/material/Stack";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
+import RenderUserAccount from "../pipelines/user/renderUserAccount";
 
 export default function UserAccount(): JSX.Element {
   useHydrateMyRsvps();
@@ -28,17 +29,14 @@ export default function UserAccount(): JSX.Element {
 
     return (
          <Stack
+        alignItems={"center"}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
           minHeight: "100svh",
+          width: "100%",
           minWidth: "100%",
         }}
       >
-        {(email.status === "ready") && <AccountDetails 
-        email={email.data}
-        />}
+        <RenderUserAccount email={email} />
         
       </Stack>
     )

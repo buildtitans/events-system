@@ -32,7 +32,13 @@ const groupMembersRouter = router({
   leaveGroup: publicProcedure
     .input(MemberToRemoveInputValidator)
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.auth.can("leave group", input.group_id) || !ctx.user?.id) {
+      const permitted = ctx.auth.can(
+        "leave group",
+        input.group_id,
+        ctx.cache.roleLookupMap,
+      );
+
+      if (!permitted || !ctx.user?.id) {
         throw new TRPCResolverError(
           403,
           "Current user denied permission to delete this member",
@@ -48,7 +54,7 @@ const groupMembersRouter = router({
   getViewerRole: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return ctx.auth.getRoleForGroup(input);
+      return ctx.auth.getRoleForGroup(input, ctx.cache.roleLookupMap);
     }),
   getGroupMembers: publicProcedure
     .input(groupIdInputValidator)

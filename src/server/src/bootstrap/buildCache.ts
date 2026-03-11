@@ -10,7 +10,10 @@ import { RBACType } from "../db/clients/types/types";
 export async function buildCache(
   api: DBClient,
   user_id?: DbUserSchemaType["id"],
-): Promise<{ roles: RBACType; attendanceDict: AttendanceDictionaryType }> {
+): Promise<{
+  roleLookupMap: RBACType;
+  attendanceDictionary: AttendanceDictionaryType;
+}> {
   const groupIds = (await api.groups.getGroups()).map((group) => group.id);
   const eventIds = (await api.events.getFlattenedEvents()).map(
     (event) => event.id,
@@ -24,11 +27,11 @@ export async function buildCache(
     ? await api.eventAttendants.getUserAttendanceRecords(user_id)
     : [];
 
-  const roles = mapRoleBasedAccessControls(groupIds, memberships);
-  const attendanceDict = mapAttendanceDictionary(eventIds, attendance);
+  const roleLookupMap = mapRoleBasedAccessControls(groupIds, memberships);
+  const attendanceDictionary = mapAttendanceDictionary(eventIds, attendance);
 
   return {
-    roles,
-    attendanceDict,
+    roleLookupMap,
+    attendanceDictionary,
   };
 }

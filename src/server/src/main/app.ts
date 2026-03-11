@@ -52,6 +52,8 @@ function buildServer() {
   });
   registerSessionHook(app);
 
+  //TODO: implement + register server context (i.e. ServiceClient + Cache)
+
   app.register(fastifyTRPCPlugin, {
     prefix: "/trpc",
     trpcOptions: {

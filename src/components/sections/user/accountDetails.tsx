@@ -16,18 +16,12 @@ export default function AccountDetails({
     <Container
       disableGutters
       sx={{
-        width: "60%",
+        width: "100%",
         height: "100%",
         minHeight: "100svh",
       }}
     >
-      <Stack
-        direction={"column"}
-        gap={8}
-        divider={<Divider sx={{ opacity: 0.9 }} />}
-      >
         <MyGroups />
-      </Stack>
     </Container>
   );
 }

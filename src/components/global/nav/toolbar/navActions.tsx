@@ -50,19 +50,7 @@ export default function NavActions({
         gap: 2
       }}
       >
-{userKind === "authenticated" && (
-        <Button
-          suppressHydrationWarning={true}
-          onClick={() => dispatch(enqueueDrawer("new group"))}
-          variant="text"
-          color="info"
-          size="small"
-          startIcon={<AddIcon />}
-          sx={navActionsButtonSx}
-        >
-          Create Group
-        </Button>
-      )}
+
       {userKind === "anonymous" && (
         <Button
           suppressHydrationWarning={true}

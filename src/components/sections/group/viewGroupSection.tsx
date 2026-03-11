@@ -48,16 +48,15 @@ export default function ViewGroupSection({
         }}
       >
         <Stack
-        alignItems={"start"}
-        justifyContent={"start"}
         gap={4}
         sx={{
-          width: "auto",
+          width: "100%",
           height: "100%"
         }}
 >
 <GroupHeadSecton groupName={group.name} />
         <GroupDescription group={group} />
+        <Divider />
         {RenderCurrentView(displayed, group)}
         </Stack>
         

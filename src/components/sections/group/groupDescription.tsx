@@ -32,6 +32,7 @@ export default function GroupDescription({
       >
         <Box>
           <Typography
+          fontSize={"14px"}
             sx={{
               color: "rgba(255, 255, 255, 0.7)",
             }}
@@ -41,7 +42,7 @@ export default function GroupDescription({
         </Box>
 
         <Box>
-          <Typography>{group.description}</Typography>
+          <Typography fontSize={"14px"}>{group.description}</Typography>
         </Box>
       </Stack>
 
@@ -52,6 +53,7 @@ export default function GroupDescription({
       >
         <Box>
           <Typography
+          fontSize={"14px"}
             sx={{
               color: "rgba(255, 255, 255, 0.7)",
             }}
@@ -61,7 +63,7 @@ export default function GroupDescription({
         </Box>
 
         <Box>
-          <Typography>
+          <Typography fontSize={"14px"}>
             {group.location === "Online"
               ? "This group hosts events online"
               : group.location}
@@ -83,13 +85,14 @@ export default function GroupDescription({
       >
         <Box>
           <Typography
+          fontSize={"14px"}
             sx={{
               color: "rgba(255, 255, 255, 0.7)",
             }}
           >
             Number of Members
           </Typography>
-          <Typography>
+          <Typography fontSize={"14px"}>
             {memberCount}
           </Typography>
         </Box>
@@ -102,13 +105,14 @@ export default function GroupDescription({
       >
         <Box>
           <Typography
+          fontSize={"14px"}
             sx={{
               color: "rgba(255, 255, 255, 0.7)",
             }}
           >
             Organizer
           </Typography>
-          <Typography>
+          <Typography fontSize={"14px"}>
             {organizerEmail}
           </Typography>
         </Box>

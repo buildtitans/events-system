@@ -19,9 +19,14 @@ export type RBACAction =
   | "join group";
 
 export type RBACMethods = {
-  can: (action: RBACAction, group_id: GroupSchemaType["id"]) => boolean;
+  can: (
+    action: RBACAction,
+    group_id: GroupSchemaType["id"],
+    roles: RBACType,
+  ) => boolean;
   getRoleForGroup: (
     groupId: GroupSchemaType["id"],
+    roles: RBACType,
   ) => GroupMembersSchemaType["role"];
 };
 
@@ -43,9 +48,4 @@ export type ServicesType = {
   getRSVPdEvents: (
     user_id: DbUserSchemaType["id"],
   ) => Promise<EventsArraySchemaType>;
-};
-
-export type RBACContextType = {
-  cache: ContextCacheType;
-  rbac: RBACMethods;
 };
