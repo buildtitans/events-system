@@ -22,6 +22,7 @@ export async function createContext({
 }: CreateFastifyContextOptions): Promise<Context> {
   const api = req.server.db;
   const user = req.user;
+  const user_id = user?.id ?? null;
 
   return {
     api: req.server.db,
@@ -30,6 +31,6 @@ export async function createContext({
     req: req,
     auth: await buildAuthContext(user),
     services: new ServiceClient(api),
-    cache: await buildCache(api, user?.id),
+    cache: await buildCache(api, user_id),
   };
 }

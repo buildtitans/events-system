@@ -16,7 +16,11 @@ import { Crete_Round } from "next/font/google";
 export class AuthClient {
   constructor(private readonly db: Kysely<DB>) {}
 
-  async authenticate(token: string): Promise<PublicUserSchemaType | null> {
+  async authenticate(
+    token: string | undefined,
+  ): Promise<PublicUserSchemaType | null> {
+    if (!token) return null;
+
     const session = await this.getSession(token);
 
     if (!session) return null;

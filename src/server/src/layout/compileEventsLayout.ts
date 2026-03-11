@@ -3,18 +3,17 @@ import type { Selectable } from "kysely";
 import type { Events } from "@/src/server/src/db";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import {
-    formatRawEvents,
-    buildLayoutSlots
+  formatRawEvents,
+  buildLayoutSlots,
 } from "@/src/server/src/layout/utils";
 
 function compileEventsLayout(
-    rows: Selectable<Events>[]
+  rows: Selectable<Events>[],
 ): PaginatedLayoutSchemaType {
+  const raw = formatRawEvents(rows);
+  const layout = buildLayoutSlots(raw);
 
-    const raw = formatRawEvents(rows);
-    const layout = buildLayoutSlots(raw);
-
-    return layoutSlotValidator(layout);
-};
+  return layoutSlotValidator(layout);
+}
 
 export { compileEventsLayout };

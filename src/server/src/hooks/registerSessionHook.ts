@@ -1,23 +1,36 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
+import { ServiceClient } from "../services/serviceClient";
 
-export async function registerSessionHook(app: FastifyInstance) {
-    app.addHook("preHandler", async (req) => {
-        req.user = undefined;
+async function detectSession(
+  app: FastifyInstance,
+  req: FastifyRequest,
+): Promise<void> {
+  try {
+    const token = req.cookies.session;
 
-        try {
-            const token = req.cookies.session;
+    const user = await app.db.auth.authenticate(token);
 
-            if (!token) return;
+    if (user) {
+      req.user = {
+        id: user.id,
+        role: "user",
+        email: user.email,
+      };
+    } else {
+      app.decorateRequest("user", null);
+    }
+  } catch (err) {
+    app.log.error({ err }, "Session authentication failed");
+  }
+}
 
-            const validated_user = await app.db.auth.authenticate(token);
+export async function registerContextHook(app: FastifyInstance) {
+  app.decorateRequest("user", null);
+  app.decorateRequest("services", null);
 
-            if (!validated_user) return;
+  app.addHook("preHandler", async (req: FastifyRequest) => {
+    await detectSession(app, req);
 
-            req.user = { id: validated_user.id, role: "user" };
-
-        } catch (err) {
-
-            app.log.error({ err }, "Session authentication failed");
-        }
-    });
+    req.services = new ServiceClient(req.server.db);
+  });
 }

@@ -1,7 +1,7 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import fastifyCookie from "@fastify/cookie";
-import { registerSessionHook } from "../hooks/registerSessionHook";
+import { registerContextHook } from "../hooks/registerSessionHook";
 import { createContext } from "@/src/server/src/bootstrap/context";
 import {
   fastifyTRPCPlugin,
@@ -50,9 +50,7 @@ function buildServer() {
   app.register(fastifyCookie, {
     secret: cookie_secret,
   });
-  registerSessionHook(app);
-
-  //TODO: implement + register server context (i.e. ServiceClient + Cache)
+  registerContextHook(app);
 
   app.register(fastifyTRPCPlugin, {
     prefix: "/trpc",

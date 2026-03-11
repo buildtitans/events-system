@@ -41,7 +41,7 @@ export default function CurrentUser({ email }: CurrentUserProps): JSX.Element {
     >
       <Stack
         alignItems={"center"}
-        gap={2}
+        gap={1}
         direction={"row"}
         sx={{
           width: "100%",
@@ -62,8 +62,10 @@ export default function CurrentUser({ email }: CurrentUserProps): JSX.Element {
         </Avatar>
         <Box>
           <Typography
-          component={"p"}
-          fontSize={"12px"} >
+          variant="button"
+          fontSize={"12px"} 
+          sx={{ textTransform: "lowercase"}}
+          >
             {clippedEmail + "..."}
           </Typography>
         </Box>

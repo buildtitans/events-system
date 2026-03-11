@@ -9,7 +9,7 @@ import { RBACType } from "../db/clients/types/types";
 
 export async function buildCache(
   api: DBClient,
-  user_id?: DbUserSchemaType["id"],
+  user_id: DbUserSchemaType["id"] | null,
 ): Promise<{
   roleLookupMap: RBACType;
   attendanceDictionary: AttendanceDictionaryType;
