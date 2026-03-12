@@ -100,7 +100,7 @@ export default function NavActions({
         gap: 2
       }}
       >
-      {userKind === "authenticated" && <Notifications />}
+      {userKind === "authenticated" && <Notifications key={"notifications-badge"} />}
 
 
       {userKind === "authenticated" && <RenderCurrentUser key={"account-link"} />}

@@ -16,6 +16,11 @@ import {
 } from "@/src/schemas/groups/userMembershipSchema";
 import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
+type StatusLookupType = Record<
+  EventSchemaType["id"],
+  EventAttendantsSchemaType["status"]
+>;
+
 export class ParticipationsClient {
   constructor(private readonly api: DBClient) {}
 
@@ -36,27 +41,32 @@ export class ParticipationsClient {
   ): Promise<RsvpSchemaType[]> {
     const userRecords =
       await this.api.eventAttendants.getUserAttendanceRecords(user_id);
-    const ids = this.filterUserRsvps(userRecords);
-    const events = await this.api.events.getFlattenedEventsByIds(ids);
+    const filtered = this.filterUserRsvps(userRecords);
+    const events = await this.api.events.getFlattenedEventsByIds(
+      Object.keys(filtered),
+    );
     const hash = await this.getGroupNameLookupMap();
-    const rsvps = this.toRsvpShape(events, hash);
+    const rsvps = this.toRsvpShape(events, hash, filtered);
     return RsvpSchemaArrayValidator(rsvps);
   }
 
   private filterUserRsvps(
     records: EventAttendantsSchemaType[],
-  ): EventIdSchemaType[] {
-    const rsvps: string[] = [];
+  ): StatusLookupType {
+    const test: Record<
+      EventSchemaType["id"],
+      EventAttendantsSchemaType["status"]
+    > = {};
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       const status = records[i].status;
 
       if (status === "going" || status === "interested")
-        rsvps.push(record.event_id);
+        test[record.event_id] = record.status;
     }
 
-    return rsvps;
+    return test;
   }
 
   private async getGroupNameLookupMap(): Promise<GroupNameLookupMap> {
@@ -80,6 +90,7 @@ export class ParticipationsClient {
   private toRsvpShape(
     events: EventSchemaType[],
     groupNameHash: GroupNameLookupMap,
+    statusLookup: StatusLookupType,
   ): RsvpSchemaType[] {
     const results: RsvpSchemaType[] = [];
 
@@ -92,6 +103,7 @@ export class ParticipationsClient {
         starts_at_ms: event.starts_at_ms,
         scheduled_status: event.status,
         location: event.meeting_location,
+        attendance_status: statusLookup[event.id],
         event_title: event.title,
         group_slug: groupNameHash[event.group_id].slug,
       };

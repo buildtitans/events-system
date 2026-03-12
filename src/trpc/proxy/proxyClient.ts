@@ -1,5 +1,5 @@
 import { AuthProxyClient } from "./clients/authProxyClient";
-import { EventsProxyClient } from "./clients/events";
+import { EventsProxyClient } from "./clients/eventsProxyClient";
 import { ProxyHttpClient } from "./clients/proxyHTTPClient";
 
 export class ProxyClient {

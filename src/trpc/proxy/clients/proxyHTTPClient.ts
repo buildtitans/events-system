@@ -19,4 +19,23 @@ export class ProxyHttpClient {
 
     return res.json();
   }
+
+  async post<Input, Output>(path: string, input: Input): Promise<Output> {
+    const req = await fetch(`${this.baseUrl}${path}`, {
+      method: "POST",
+      headers: {
+        cookie: this.req.headers.get("cookie") ?? "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(input),
+    });
+
+    if (!req.ok) {
+      throw new Error(`Request failed: ${req.status}, ${req.statusText}`);
+    }
+
+    const res = await req.json();
+
+    return res as Output;
+  }
 }

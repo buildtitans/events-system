@@ -8,6 +8,7 @@ type EventParams = {
 
 type UpdateAttendanceBody = {
   newStatus: EventAttendantsSchemaType["status"];
+  eventId: string;
 };
 
 function getRequestUserId(req: FastifyRequest): string | undefined {
@@ -70,9 +71,8 @@ export async function eventAttendantsRoutes(app: FastifyInstance) {
     },
   );
 
-  // PATCH /events/:eventId/attendance
-  app.patch<{ Params: EventParams; Body: UpdateAttendanceBody }>(
-    "/events/:eventId/attendance",
+  app.post<{ Params: EventParams; Body: UpdateAttendanceBody }>(
+    "/users/me/attendance/events/:eventId/status",
     async (req, reply) => {
       try {
         const { eventId } = req.params;
@@ -85,11 +85,11 @@ export async function eventAttendantsRoutes(app: FastifyInstance) {
           });
         }
 
-        if (!eventId || !newStatus) {
-          return reply
-            .code(400)
-            .send({ error: "Event id and new status are required" });
-        }
+        //if (!eventId || !newStatus) {
+        //  return reply
+        //    .code(400)
+        //    .send({ error: "Event id and new status are required" });
+        //}
 
         const updated = await app.db.eventAttendants.updateAttendanceStatus(
           {
@@ -109,8 +109,6 @@ export async function eventAttendantsRoutes(app: FastifyInstance) {
     },
   );
 
-  // GET /events/:eventId/viewer-attendance
-  // Composed response similar to your old getViewerAttendance resolver
   app.get<{ Params: EventParams }>(
     "/events/:eventId/viewer-attendance",
     async (req, reply) => {

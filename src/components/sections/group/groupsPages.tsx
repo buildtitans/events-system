@@ -9,6 +9,7 @@ import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
 import { useRouter } from "next/navigation";
 import { useCallback } from 'react';
 import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groups/groupSchema';
+import UserHasCreatedNoGroups from '../../ui/feedback/fallbacks/UserHasCreatedNoGroups';
 
 export type CategoryMap = Map<string, string>;
 
@@ -32,6 +33,8 @@ export default function GroupsPagesContainer({ groupsPages, silenceHeader }: { g
     }, [router]);
 
     if (!groupsPages[currentPage]) return null;
+
+    
 
     return (
         <div>

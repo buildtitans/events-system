@@ -58,6 +58,7 @@ export default function MembershipListItem({
               </Box>
             }
           ></ListItemText>
+          
         </Box>
       </Stack>
     </ListItem>

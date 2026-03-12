@@ -17,7 +17,7 @@ async function detectSession(
         email: user.email,
       };
     } else {
-      app.decorateRequest("user", null);
+      req.user = null;
     }
   } catch (err) {
     app.log.error({ err }, "Session authentication failed");
@@ -25,9 +25,6 @@ async function detectSession(
 }
 
 export async function registerContextHook(app: FastifyInstance) {
-  app.decorateRequest("user", null);
-  app.decorateRequest("services", null);
-
   app.addHook("preHandler", async (req: FastifyRequest) => {
     await detectSession(app, req);
 
