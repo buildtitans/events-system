@@ -16,7 +16,7 @@ export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
     const rows = await ctx.api.events.getEvents();
 
-    return rows;
+    return ctx.services.formatLayout.compileLayout(rows);
   }),
 
   newEvent: publicProcedure

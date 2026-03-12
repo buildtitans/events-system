@@ -21,9 +21,9 @@ export class EventsClient {
     this.db = db;
   }
 
-  async getEvents() {
+  async getEvents(): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEvents();
-    return compileEventsLayout(raw);
+    return this.formatRawEvents(raw);
   }
 
   async getFlattenedEvents(): Promise<EventsArraySchemaType> {
