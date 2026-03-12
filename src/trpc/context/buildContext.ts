@@ -1,6 +1,7 @@
 import { ProxyClient } from "../proxy/proxyClient";
 import { serverBaseUrl } from "@/src/lib/utils/init/requireEnv";
 import { RoleAuthenticator } from "../proxy/auth/roleAuthenticator";
+import { SessionProxyHandler } from "../proxy/auth/setSessionCookie";
 
 export type trpcClientContext = {
   api: ProxyClient;
@@ -8,6 +9,7 @@ export type trpcClientContext = {
   res: Response;
   req: Request;
   auth: RoleAuthenticator;
+  session: SessionProxyHandler;
 };
 
 type CreateContextParams = {
@@ -22,8 +24,9 @@ export async function createContext({
   res,
 }: CreateContextParams): Promise<trpcClientContext> {
   const user_id = undefined;
-  const api = new ProxyClient(url, req);
+  const api = new ProxyClient(url, req, res);
   const auth = new RoleAuthenticator(user_id, api);
+  const session = new SessionProxyHandler(res);
 
   return {
     api,
@@ -31,5 +34,6 @@ export async function createContext({
     res,
     req,
     auth,
+    session,
   };
 }
