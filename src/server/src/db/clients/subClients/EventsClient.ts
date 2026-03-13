@@ -70,6 +70,19 @@ export class EventsClient {
     return this.formatRawEvents(raw);
   }
 
+  async getEvent(
+    event_id: EventSchemaType["id"],
+  ): Promise<EventSchemaType | null> {
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("id", "=", event_id)
+      .limit(1)
+      .executeTakeFirstOrThrow();
+
+    return this.formatEvent(raw);
+  }
+
   async getEventsByIds(
     ids: EventSchemaType["id"][],
   ): Promise<PaginatedLayoutSchemaType> {

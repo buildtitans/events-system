@@ -18,6 +18,8 @@ export default function RenderGroupsOrFallback({ pages }: RenderGroupsOrFallback
     }
 
     return (
-        <GroupsPagesContainer groupsPages={pages} />
+        <GroupsPagesContainer 
+        silenceHeader={true}
+        groupsPages={pages} />
     )
 }

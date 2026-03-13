@@ -10,7 +10,10 @@ import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 import { NewEventInputValidator } from "@/src/schemas/events/eventSchema";
 import { groupIdInputValidator } from "./groupMembersRouter";
-import { EventIdInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventIdInputValidator,
+  EventIDValidator,
+} from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -80,6 +83,12 @@ export const eventsRouter = router({
   getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
     return await ctx.api.events.getFlattenedEvents();
   }),
+
+  getEvent: publicProcedure
+    .input(EventIDValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.events.getEvent(input);
+    }),
 
   search: publicProcedure
     .input(SearchInputSchemaValidator)

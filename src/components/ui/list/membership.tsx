@@ -9,12 +9,15 @@ import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 type MembershipListItemProps = {
   membership: UserMembershipSchemaType;
-  nextEvent?: EventSchemaType["starts_at"]
+  handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void,
+  nextEvent?: EventSchemaType["starts_at"],
+
 };
 
 export default function MembershipListItem({
   membership,
-  nextEvent
+  nextEvent,
+  handleClick
 }: MembershipListItemProps): JSX.Element {
 
 
@@ -24,7 +27,6 @@ export default function MembershipListItem({
       sx={{
         bgcolor: "rgba(255, 255, 255, 0.1)",
         borderRadius: 2,
-        cursor: "pointer",
         ":hover": {
           bgcolor: "rgba(255, 255, 255, 0.15)",
         },
@@ -38,6 +40,7 @@ export default function MembershipListItem({
       >
         <MembershipListItemHeader 
         membership={membership} 
+        handleClick={handleClick}
         />
 
         <MembershipListItemBody 

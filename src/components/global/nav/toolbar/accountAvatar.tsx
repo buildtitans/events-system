@@ -27,7 +27,7 @@ export default function CurrentUser({ email }: CurrentUserProps): JSX.Element {
     <Button
       onClick={handleClick}
       type="button"
-      variant="contained"
+      variant="outlined"
       size="small"
       color="info"
       sx={{

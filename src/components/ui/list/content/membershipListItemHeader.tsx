@@ -7,14 +7,16 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-import EditIcon from '@mui/icons-material/Edit';
+import { TitleTypography } from "../../box/cards/group";
 
 type MembershipListItemHeaderProps = {
   membership: UserMembershipSchemaType;
+  handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void,
 };
 
 export default function MembershipListItemHeader({
   membership,
+  handleClick
 }: MembershipListItemHeaderProps): JSX.Element {
   return (
     <Box
@@ -33,11 +35,17 @@ export default function MembershipListItemHeader({
 
         <Box>
           <ListItemText
+            sx={{
+              cursor: "pointer"
+            }}
             primary={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              <Box 
+              component={"div"}
+              onClick={() => handleClick(membership.group_slug)}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <TitleTypography variant="body2" sx={{ fontWeight: 600 }}>
                   {membership.group_name}
-                </Typography>
+                </TitleTypography>
 
                 <Chip
                   size="small"

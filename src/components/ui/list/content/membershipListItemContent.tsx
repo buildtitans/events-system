@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import { JSX } from "react";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import Chip from "@mui/material/Chip";
 
 
 type MembershipListItemContentProps = {
@@ -27,11 +28,15 @@ export default function MembershipListItemBody({ membership, nextEvent }: Member
           </Box>
         }
       />
+      <Chip 
+      variant="outlined"
+      label={`Next Event: ${nextEvent}`}
+      />
 
-      <Typography
-      color="textDisabled"
+      {/* <Typography
+      color="textSecondary"
       variant="caption"
-      >Next Event: {nextEvent}</Typography>
+      >Next Event: {nextEvent}</Typography> */}
     </Box>
   );
 }
