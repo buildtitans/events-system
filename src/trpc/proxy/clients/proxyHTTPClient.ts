@@ -2,7 +2,6 @@ export class ProxyHttpClient {
   constructor(
     private readonly baseUrl: string,
     private readonly req: Request,
-    private res: Response,
   ) {}
 
   async get<T>(path: string): Promise<T> {

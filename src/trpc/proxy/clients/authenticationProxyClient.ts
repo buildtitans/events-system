@@ -8,7 +8,6 @@ export class AuthenticationProxyClient {
   constructor(
     private readonly http: ProxyHttpClient,
     private req: Request,
-    private res: Response,
   ) {}
 
   async login(

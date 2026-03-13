@@ -4,6 +4,7 @@ import type {
   ParticipationsType,
   MyGroupsType,
   UserAccountViewType,
+  NextGroupEventLookupMapType,
 } from "./types";
 
 type InitialState = {
@@ -11,6 +12,7 @@ type InitialState = {
   participations: ParticipationsType;
   myGroups: MyGroupsType;
   view: UserAccountViewType;
+  nextEventLookup: NextGroupEventLookupMapType;
 };
 
 const initialState: InitialState = {
@@ -18,6 +20,7 @@ const initialState: InitialState = {
   myGroups: { status: "initial" },
   participations: { status: "initial" },
   view: "my groups",
+  nextEventLookup: {},
 };
 
 const UserSlice = createSlice({
@@ -39,6 +42,12 @@ const UserSlice = createSlice({
     getMyGroups: (state: InitialState, action: PayloadAction<MyGroupsType>) => {
       state.myGroups = action.payload;
     },
+    getNextGroupEventLookup: (
+      state: InitialState,
+      action: PayloadAction<NextGroupEventLookupMapType>,
+    ) => {
+      state.nextEventLookup = action.payload;
+    },
     changeAccountTab: (
       state: InitialState,
       action: PayloadAction<UserAccountViewType>,
@@ -53,6 +62,7 @@ export const {
   getParticipations,
   getMyGroups,
   changeAccountTab,
+  getNextGroupEventLookup,
 } = UserSlice.actions;
 
 export type UserSliceType = ReturnType<typeof UserSlice.reducer>;

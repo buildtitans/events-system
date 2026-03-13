@@ -11,10 +11,9 @@ export class ProxyClient {
   constructor(
     private readonly baseUrl: string,
     private readonly req: Request,
-    private readonly res: Response,
   ) {
-    this.http = new ProxyHttpClient(this.baseUrl, this.req, this.res);
-    this.auth = new AuthenticationProxyClient(this.http, this.req, this.res);
+    this.http = new ProxyHttpClient(this.baseUrl, this.req);
+    this.auth = new AuthenticationProxyClient(this.http, this.req);
     this.events = new EventsProxyClient(this.http);
     this.rbac = new AuthProxyClient(this.http);
   }

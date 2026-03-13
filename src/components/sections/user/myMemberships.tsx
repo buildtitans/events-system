@@ -18,6 +18,8 @@ type MyMembershipsProps = {
 export default function MyMemberships({
   memberships,
 }: MyMembershipsProps): JSX.Element | null {
+  const nextEventLookup = useSelector((s: RootState) => s.user.nextEventLookup);
+
   return (
     <Container>
       <Stack
@@ -49,6 +51,7 @@ export default function MyMemberships({
             <MembershipListItem
               key={membership.group_id}
               membership={membership}
+              nextEvent={nextEventLookup[membership.group_id]}
             />
           ))}
         </List>

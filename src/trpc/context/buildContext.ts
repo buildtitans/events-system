@@ -24,7 +24,7 @@ export async function createContext({
   res,
 }: CreateContextParams): Promise<trpcClientContext> {
   const user_id = undefined;
-  const api = new ProxyClient(url, req, res);
+  const api = new ProxyClient(url, req);
   const auth = new RoleAuthenticator(user_id, api);
   const session = new SessionProxyHandler(res);
 
