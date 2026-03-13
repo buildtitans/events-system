@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { getParticipations } from "../../store/slices/user/userSlice";
+import {
+  getParticipations,
+  getNextGroupEventLookup,
+} from "../../store/slices/user/userSlice";
 import { wait } from "../../utils/rendering/wait";
 
 export const useHydrateMyRsvps = () => {
@@ -18,12 +21,15 @@ export const useHydrateMyRsvps = () => {
       const rsvps =
         await trpcClient.eventAttendants.getUserRsvpdEvents.mutate();
 
-      const memberships = await trpcClient.users.userMemberships.mutate();
+      const { memberships, nextGroupEventLookup } =
+        await trpcClient.users.userMemberships.mutate();
 
       console.log({
         RSVPS: rsvps,
         Memberships: memberships,
       });
+
+      dispatch(getNextGroupEventLookup(nextGroupEventLookup));
 
       dispatch(
         getParticipations({

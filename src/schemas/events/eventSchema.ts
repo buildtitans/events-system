@@ -1,3 +1,4 @@
+import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
@@ -60,6 +61,10 @@ const UpdateEventArgsSchema = Type.Object({
   organizer_id: Type.String({ format: "uuid" }),
   group_id: Type.String({ format: "uuid" }),
 });
+
+export const EventSearchSchema = Type.String();
+
+export type EventSearchSchemaType = Static<typeof EventSearchSchema>;
 
 type UpdateEventArgsSchemaType = Static<typeof UpdateEventArgsSchema>;
 

@@ -11,6 +11,7 @@ import {
 import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
 import { AuthorsSchema } from "@/src/schemas/events/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
+import { GroupIdSchema } from "@/src/schemas/events/eventSchema";
 import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
 
 function preview(value: unknown, max = 160) {
@@ -59,6 +60,11 @@ export function createValidator<T extends TSchema>(
   };
 }
 
+const ValidateEventSearchQuery = createValidator(
+  EventSearchSchema,
+  "EventSearchSchema",
+);
+
 const eventValidator = createValidator(EventSchema, "EventSchema");
 
 const eventsValidator = createValidator(EventsArraySchema, "EventsArraySchema");
@@ -79,10 +85,7 @@ const NewEventSchemaValidator = createValidator(
   "NewEventInputSchema",
 );
 
-export const ValidateEventSearchQuery = createValidator(
-  EventSearchSchema,
-  "EventSearchSchema",
-);
+const ValidateGroupId = createValidator(GroupIdSchema, "GroupIdSchema");
 
 export {
   AuthorsValidator,
@@ -92,4 +95,6 @@ export {
   GroupsSchemaValidator,
   NewEventSchemaValidator,
   eventValidator,
+  ValidateEventSearchQuery,
+  ValidateGroupId,
 };

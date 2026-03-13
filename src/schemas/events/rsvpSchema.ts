@@ -2,9 +2,11 @@ import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { EventStatusSchema } from "./eventSchema";
 import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { EventAttendantStatusSchema } from "./eventAttendantsSchema";
 
 export const RsvpSchema = Type.Object({
   group_name: Type.String(),
+  attendance_status: EventAttendantStatusSchema,
   group_id: Type.String({ format: "uuid" }),
   event_id: Type.String({ format: "uuid" }),
   event_title: Type.String(),

@@ -1,9 +1,7 @@
 "use client";
 import type { JSX } from "react";
 import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
-import MyGroups from "./myGroups";
-import Divider from "@mui/material/Divider";
+import RenderAccountView from "../../pipelines/user/renderAccountView";
 
 type AccountDetailsProps = {
   email: string;
@@ -21,7 +19,7 @@ export default function AccountDetails({
         minHeight: "100svh",
       }}
     >
-        <MyGroups />
+      <RenderAccountView />
     </Container>
   );
 }

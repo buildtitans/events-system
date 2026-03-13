@@ -2,10 +2,12 @@ import { DBClient } from "../../db";
 import type { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { EventIdSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpSchemaArrayValidator } from "@/src/schemas/events/rsvpSchema";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import type { GroupNameLookupMap } from "../types";
+import type {
+  EventsArraySchemaType,
+  EventSchemaType,
+} from "@/src/schemas/events/eventSchema";
+import type { GroupNameLookupMap, UpComingEventsLookup } from "../types";
 import type {
   GroupSchemaType,
   GroupsSchemaType,
@@ -15,6 +17,21 @@ import {
   UserMembershipSchemaType,
 } from "@/src/schemas/groups/userMembershipSchema";
 import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { UpcomingEventIds } from "@/src/lib/utils/dates/curateUpcomingEventIds";
+
+type StatusLookupType = Record<
+  EventSchemaType["id"],
+  EventAttendantsSchemaType["status"]
+>;
+
+type NameSlugDescriptionLookup = Record<
+  GroupSchemaType["id"],
+  {
+    name: GroupSchemaType["name"];
+    slug: GroupSchemaType["slug"];
+    group_description: GroupSchemaType["description"];
+  }
+>;
 
 export class ParticipationsClient {
   constructor(private readonly api: DBClient) {}
@@ -26,7 +43,13 @@ export class ParticipationsClient {
     const rawMemberships =
       await this.api.groupMembers.getViewerMemberships(user_id);
 
-    const parsed = await this.toUserMembershipShape(rawMemberships, rawGroups);
+    const nameSlugDescriptionLookup = this.buildGroupNameLookup(rawGroups);
+
+    const parsed = await this.toUserMembershipShape(
+      rawMemberships,
+      rawGroups,
+      nameSlugDescriptionLookup,
+    );
 
     return UserMembershipSchemaArrayValidator(parsed);
   }
@@ -36,27 +59,71 @@ export class ParticipationsClient {
   ): Promise<RsvpSchemaType[]> {
     const userRecords =
       await this.api.eventAttendants.getUserAttendanceRecords(user_id);
-    const ids = this.filterUserRsvps(userRecords);
-    const events = await this.api.events.getFlattenedEventsByIds(ids);
+    const filtered = this.filterUserRsvps(userRecords);
+    const events = await this.api.events.getFlattenedEventsByIds(
+      Object.keys(filtered),
+    );
     const hash = await this.getGroupNameLookupMap();
-    const rsvps = this.toRsvpShape(events, hash);
+    const rsvps = this.toRsvpShape(events, hash, filtered);
     return RsvpSchemaArrayValidator(rsvps);
+  }
+
+  async getNextEventLookupMap(
+    ids: GroupSchemaType["id"][],
+  ): Promise<UpComingEventsLookup> {
+    const hash: UpComingEventsLookup = {};
+
+    for (const groupId of ids) {
+      const events = await this.api.events.getGroupEventsByGroupId(groupId);
+
+      if (!Array.isArray(events) || events.length === 0) continue;
+
+      const soonest = this.getSoonestEvent(events);
+
+      if (!soonest) continue;
+
+      hash[groupId] = soonest.starts_at;
+    }
+
+    return hash;
+  }
+
+  private getSoonestEvent(
+    events: EventsArraySchemaType,
+  ): EventSchemaType | undefined {
+    if (!Array.isArray(events) || events.length === 0) return undefined;
+
+    let nearest = events[0];
+
+    for (const event of events) {
+      if (
+        new Date(event.starts_at).getTime() <
+        new Date(nearest.starts_at).getTime()
+      ) {
+        nearest = event;
+      }
+    }
+
+    return nearest;
   }
 
   private filterUserRsvps(
     records: EventAttendantsSchemaType[],
-  ): EventIdSchemaType[] {
-    const rsvps: string[] = [];
+  ): StatusLookupType {
+    const test: Record<
+      EventSchemaType["id"],
+      EventAttendantsSchemaType["status"]
+    > = {};
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       const status = records[i].status;
 
       if (status === "going" || status === "interested")
-        rsvps.push(record.event_id);
+        test[record.event_id] = record.status;
     }
 
-    return rsvps;
+    return test;
   }
 
   private async getGroupNameLookupMap(): Promise<GroupNameLookupMap> {
@@ -64,14 +131,17 @@ export class ParticipationsClient {
     return this.buildGroupNameLookup(groups);
   }
 
-  private buildGroupNameLookup(groups: GroupSchemaType[]): GroupNameLookupMap {
-    const lookup: Record<
-      GroupSchemaType["id"],
-      { name: GroupSchemaType["name"]; slug: GroupSchemaType["slug"] }
-    > = {};
+  private buildGroupNameLookup(
+    groups: GroupSchemaType[],
+  ): NameSlugDescriptionLookup {
+    const lookup: NameSlugDescriptionLookup = {};
 
     for (const group of groups) {
-      lookup[group.id] = { name: group.name, slug: group.slug };
+      lookup[group.id] = {
+        name: group.name,
+        slug: group.slug,
+        group_description: group.description,
+      };
     }
 
     return lookup;
@@ -80,6 +150,7 @@ export class ParticipationsClient {
   private toRsvpShape(
     events: EventSchemaType[],
     groupNameHash: GroupNameLookupMap,
+    statusLookup: StatusLookupType,
   ): RsvpSchemaType[] {
     const results: RsvpSchemaType[] = [];
 
@@ -92,6 +163,7 @@ export class ParticipationsClient {
         starts_at_ms: event.starts_at_ms,
         scheduled_status: event.status,
         location: event.meeting_location,
+        attendance_status: statusLookup[event.id],
         event_title: event.title,
         group_slug: groupNameHash[event.group_id].slug,
       };
@@ -105,6 +177,7 @@ export class ParticipationsClient {
   private async toUserMembershipShape(
     rawMemberships: GroupMembersArraySchemaType,
     rawGroups: GroupsSchemaType,
+    lookupMap: NameSlugDescriptionLookup,
   ): Promise<UserMembershipSchemaType[]> {
     const results: UserMembershipSchemaType[] = [];
 
@@ -118,6 +191,8 @@ export class ParticipationsClient {
         roleInGroup: membership.role,
         group_slug: group?.slug ?? "",
         member_count: await this.getGroupHeadCount(membership.group_id),
+        group_description:
+          lookupMap[membership.group_id].group_description ?? "",
       });
     }
 

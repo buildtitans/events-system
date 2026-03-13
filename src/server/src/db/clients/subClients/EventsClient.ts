@@ -21,9 +21,9 @@ export class EventsClient {
     this.db = db;
   }
 
-  async getEvents() {
+  async getEvents(): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEvents();
-    return compileEventsLayout(raw);
+    return this.formatRawEvents(raw);
   }
 
   async getFlattenedEvents(): Promise<EventsArraySchemaType> {
@@ -68,6 +68,19 @@ export class EventsClient {
   ): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEventsByIds(ids);
     return this.formatRawEvents(raw);
+  }
+
+  async getEvent(
+    event_id: EventSchemaType["id"],
+  ): Promise<EventSchemaType | null> {
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("id", "=", event_id)
+      .limit(1)
+      .executeTakeFirstOrThrow();
+
+    return this.formatEvent(raw);
   }
 
   async getEventsByIds(

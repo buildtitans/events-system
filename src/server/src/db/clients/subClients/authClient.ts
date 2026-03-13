@@ -11,7 +11,6 @@ import type {
 } from "../types/types";
 import crypto from "crypto";
 import argon2 from "argon2";
-import { Crete_Round } from "next/font/google";
 
 export class AuthClient {
   constructor(private readonly db: Kysely<DB>) {}

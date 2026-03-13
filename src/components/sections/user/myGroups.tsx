@@ -52,7 +52,7 @@ export default function MyGroups(): JSX.Element {
         </Box>
 
       </Box>
-        <RenderMyGroups myGroups={myGroups} />
+        <RenderMyGroups  myGroups={myGroups} />
     </Stack>
   );
 }
