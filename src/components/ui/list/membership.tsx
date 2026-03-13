@@ -6,11 +6,16 @@ import MembershipListItemHeader from "./content/membershipListItemHeader";
 import MembershipListItemBody from "./content/membershipListItemContent";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
+import NextWeekIcon from '@mui/icons-material/NextWeek';
+import Chip from "@mui/material/Chip";
+import HistoryIcon from '@mui/icons-material/History';
+import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 
 type MembershipListItemProps = {
   membership: UserMembershipSchemaType;
   handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void,
-  nextEvent?: EventSchemaType["starts_at"],
+  nextEvent: EventSchemaType["starts_at"],
 
 };
 
@@ -19,6 +24,8 @@ export default function MembershipListItem({
   nextEvent,
   handleClick
 }: MembershipListItemProps): JSX.Element {
+  const isCurrent = isFutureOrNow(new Date(nextEvent))
+
 
 
   return (
@@ -32,15 +39,22 @@ export default function MembershipListItem({
         },
       }}
     >
+    <Stack
+    direction={"row"}
+    justifyContent={"space-between"}
+    alignItems={"start"}
+    width={"100%"}
+    >
       <Stack
         gap={1}
         justifyContent={"space-between"}
         alignItems={"start"}
-        sx={{ width: "100%" }}
+        sx={{ width: "auto", height: "100%" }}
       >
         <MembershipListItemHeader 
         membership={membership} 
         handleClick={handleClick}
+        nextEvent={toMonthDayYearHour(String(nextEvent))}
         />
 
         <MembershipListItemBody 
@@ -49,6 +63,42 @@ export default function MembershipListItem({
         />
 
       </Stack>
+      <Stack
+      justifyContent={"start"}
+      alignItems={"end"}
+      sx={{
+        height: "100%"
+      }}
+      >
+        <Chip 
+        color="default"
+        variant="filled"
+        size="small"
+        sx={{
+          padding: 1
+        }}
+        icon={(isCurrent) ?
+        (<NextWeekIcon 
+          sx={{
+      fontSize: 16,
+    }}
+        color="inherit" 
+        />)
+        : (
+          <WorkHistoryIcon
+          sx={{
+      fontSize: 16,
+    }}
+        color="inherit"
+          />
+        ) 
+      } 
+        label={`${toMonthDayYearHour(String(nextEvent))}`}
+        />
+      </Stack>
+      </Stack> 
+      
+
     </ListItem>
   );
 }

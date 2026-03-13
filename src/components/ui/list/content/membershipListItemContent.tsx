@@ -28,15 +28,6 @@ export default function MembershipListItemBody({ membership, nextEvent }: Member
           </Box>
         }
       />
-      <Chip 
-      variant="outlined"
-      label={`Next Event: ${nextEvent}`}
-      />
-
-      {/* <Typography
-      color="textSecondary"
-      variant="caption"
-      >Next Event: {nextEvent}</Typography> */}
     </Box>
   );
 }

@@ -1,8 +1,7 @@
 import { JSX } from "react";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -12,6 +11,7 @@ import { TitleTypography } from "../../box/cards/group";
 type MembershipListItemHeaderProps = {
   membership: UserMembershipSchemaType;
   handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void,
+  nextEvent: EventSchemaType["starts_at"]
 };
 
 export default function MembershipListItemHeader({
@@ -29,10 +29,7 @@ export default function MembershipListItemHeader({
       }}
     >
       <Stack direction={"row"} gap={4} alignItems={"center"} >
-        <ListItemIcon sx={{ minWidth: 0 }}>
-          <GroupRoundedIcon fontSize="medium" />
-        </ListItemIcon>
-
+       
         <Box>
           <ListItemText
             sx={{
@@ -42,24 +39,27 @@ export default function MembershipListItemHeader({
               <Box 
               component={"div"}
               onClick={() => handleClick(membership.group_slug)}
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <TitleTypography variant="body2" sx={{ fontWeight: 600 }}>
+              sx={{ display: "flex", alignItems: "start", justifyContent:"start", gap: 2 }}>
+                
+                
+                <TitleTypography variant="body1" sx={{ fontWeight: 600 }}>
                   {membership.group_name}
                 </TitleTypography>
-
-                <Chip
+<Chip
                   size="small"
+                  variant="filled"
                   label={membership.roleInGroup}
                   sx={{ height: 20 }}
                   color={
                     membership.roleInGroup === "organizer" ? "primary" : "info"
                   }
                 />
+                
               </Box>
             }
             secondary={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography variant="caption" sx={{ fontWeight: 400 }}>
                     Members: {membership.member_count}
                   
                 </Typography>
