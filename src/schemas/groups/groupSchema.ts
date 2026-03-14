@@ -8,7 +8,7 @@ export const GroupSchema = Type.Object({
   description: Type.Union([Type.String(), Type.Null()]),
   location: Type.Union([Type.String(), Type.Null()]),
   category_id: Type.Union([Type.String(), Type.Null()]),
-  organizer_id: Type.Union([Type.String(), Type.Null()]),
+  organizer_id: Type.String({ format: "uuid" }),
   created_at: Type.String(),
   updated_at: Type.String(),
 });

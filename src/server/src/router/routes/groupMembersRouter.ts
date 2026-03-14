@@ -1,11 +1,11 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
   GroupIDForInsertSchemaType,
   GroupIDForInsertSchemaValidator,
   MemberToRemoveInputValidator,
 } from "@/src/schemas/groups/groupMembersSchema";
-import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
@@ -21,7 +21,7 @@ const groupMembersRouter = router({
       const sess = await ctx.api.auth.getSession(token);
       if (!sess?.user_id) return null;
 
-      const newMember: Pick<GroupMembersSchemaType, "group_id" | "user_id"> = {
+      const newMember: Pick<GroupMemberSchemaType, "group_id" | "user_id"> = {
         group_id: input,
         user_id: sess.user_id,
       };
@@ -32,18 +32,10 @@ const groupMembersRouter = router({
   leaveGroup: publicProcedure
     .input(MemberToRemoveInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const permitted = ctx.auth.can(
-        "leave group",
-        input.group_id,
-        ctx.cache.roleLookupMap,
-      );
+      const contextProvider = await ctx;
+      const result = await contextProvider.service.api.groups.
 
-      if (!permitted || !ctx.user?.id) {
-        throw new TRPCResolverError(
-          403,
-          "Current user denied permission to delete this member",
-        );
-      }
+      return (await ctx).service.api
 
       return await ctx.api.groupMembers.removeMember(
         ctx.user.id,
@@ -54,12 +46,12 @@ const groupMembersRouter = router({
   getViewerRole: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return ctx.auth.getRoleForGroup(input, ctx.cache.roleLookupMap);
+      return (await ctx).service.api.participations.getRoleInGroup(input);
     }),
   getGroupMembers: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.groupMembers.getGroupMembers(input);
+      return (await ctx).service.api.
     }),
 
   viewerMemberships: publicProcedure.mutation(async ({ ctx }) => {

@@ -61,14 +61,14 @@ export interface GroupMembers {
 }
 
 export interface Groups {
-  category_id: string | null;
+  category_id: string;
   created_at: Generated<Timestamp>;
   description: string | null;
   id: Generated<string>;
   location: string | null;
   name: string;
   organizer_email: string | null;
-  organizer_id: string | null;
+  organizer_id: string;
   slug: string;
   updated_at: Generated<Timestamp>;
 }

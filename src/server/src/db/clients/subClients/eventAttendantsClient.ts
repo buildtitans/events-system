@@ -20,6 +20,15 @@ type PrivateUserAttendanceUpdate = Pick<
 export class EventAttendantsClient {
   constructor(private readonly db: Kysely<DB>) {}
 
+  async getUserRsvpStatusToEvent(user_id: string, event_id: string) {
+    return await this.db
+      .selectFrom("event_attendants")
+      .select("status")
+      .where("user_id", "=", user_id)
+      .where("event_id", "=", event_id)
+      .executeTakeFirstOrThrow();
+  }
+
   async getAllAttendanceRecords() {
     const raw = await this.db
       .selectFrom("event_attendants")

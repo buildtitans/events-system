@@ -3,7 +3,7 @@ import type { JSX } from "react";
 import MembersOnlyAttendanceForm from "../../../sections/events/membersOnlyAttendanceForm";
 import OpenedEvent from "../../../ui/stack/OpenedEvent";
 import CheckOutGroupButton from "../../../ui/buttons/checkOutGroupButton";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import RescheduleEventForm from "../../../sections/forms/rescheduleEventForm";
 import {
@@ -11,10 +11,9 @@ import {
     NameOfGroup,
     NumberOfAttendantsType
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import { RBACType } from "@/src/server/src/db/clients/types/types";
 
 type RenderEventDrawerContentsProps = {
-    role: GroupMembersSchemaType["role"],
+    role: GroupMemberSchemaType["role"],
     event: EventSchemaType,
     numAttendants: NumberOfAttendantsType,
     numInterested: NumberOfAttendantsType,

@@ -2,10 +2,11 @@ import { Kysely } from "kysely";
 import { DB, GroupMembers } from "../../types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import type { DeleteResult, Selectable } from "kysely";
+import type { Selectable } from "kysely";
 import {
   GroupMembersArraySchemaType,
-  GroupMembersSchemaType,
+  GroupMemberSchemaType,
+  GroupRoleSchemaValidator,
   ValidateGroupMember,
   ValidateGroupMembersArray,
 } from "@/src/schemas/groups/groupMembersSchema";
@@ -13,14 +14,14 @@ import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
-type InsertableMember = Pick<GroupMembersSchemaType, "group_id" | "user_id">;
+type InsertableMember = Pick<GroupMemberSchemaType, "group_id" | "user_id">;
 
 export class GroupMembersClient {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getViewerMemberships(
     user_id: string,
-  ): Promise<GroupMembersSchemaType[]> {
+  ): Promise<GroupMemberSchemaType[]> {
     const raw = await this.db
       .selectFrom("group_members")
       .selectAll()
@@ -30,9 +31,22 @@ export class GroupMembersClient {
     return this.parseRawMembers(raw);
   }
 
+  async getMembershipRole(
+    user_id: GroupMemberSchemaType["user_id"],
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<GroupMemberSchemaType["role"]> {
+    const raw = await this.db
+      .selectFrom("group_members")
+      .select("role")
+      .where("group_id", "=", group_id)
+      .where("user_id", "=", user_id)
+      .executeTakeFirstOrThrow();
+    return GroupRoleSchemaValidator(raw.role);
+  }
+
   async getOrganizer(
-    group_id: GroupMembersSchemaType["user_id"],
-  ): Promise<GroupMembersSchemaType["user_id"]> {
+    group_id: GroupMemberSchemaType["user_id"],
+  ): Promise<GroupMemberSchemaType["user_id"]> {
     const raw = await this.db
       .selectFrom("group_members")
       .selectAll()
@@ -48,7 +62,7 @@ export class GroupMembersClient {
 
   async addOrganizer(
     organizer: InsertableMember,
-  ): Promise<GroupMembersSchemaType> {
+  ): Promise<GroupMemberSchemaType> {
     const inserted = await this.db
       .insertInto("group_members")
       .values({
@@ -66,8 +80,8 @@ export class GroupMembersClient {
   }
 
   async addNewMember(
-    newMember: Pick<GroupMembersSchemaType, "group_id" | "user_id">,
-  ): Promise<GroupMembersSchemaType | null> {
+    newMember: Pick<GroupMemberSchemaType, "group_id" | "user_id">,
+  ): Promise<GroupMemberSchemaType | null> {
     const inserted = await this.db
       .insertInto("group_members")
       .values({
@@ -82,8 +96,8 @@ export class GroupMembersClient {
   }
 
   async removeMember(
-    user_id: GroupMembersSchemaType["user_id"],
-    group_id: GroupMembersSchemaType["group_id"],
+    user_id: GroupMemberSchemaType["user_id"],
+    group_id: GroupMemberSchemaType["group_id"],
   ): Promise<boolean> {
     const result = await this.db
       .deleteFrom("group_members")
@@ -94,7 +108,7 @@ export class GroupMembersClient {
     return Number(result.numDeletedRows) > 0 ? true : false;
   }
 
-  async getGroupMembers(group_id: string): Promise<GroupMembersSchemaType[]> {
+  async getGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]> {
     const raw = await this.getRawMembers(group_id);
 
     const parsed = this.parseRawMembers(raw);
@@ -124,7 +138,7 @@ export class GroupMembersClient {
 
   private parseNewRawMember(
     raw: Selectable<GroupMembers>,
-  ): GroupMembersSchemaType {
+  ): GroupMemberSchemaType {
     const joined = dayjs(raw.joined_at).utc().format(ISO_FORMAT);
 
     return ValidateGroupMember({

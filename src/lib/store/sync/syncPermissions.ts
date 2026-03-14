@@ -1,19 +1,19 @@
-import { ViewerAccess } from "../slices/viewer/PermissionsSlice";
+import { RBACType } from "@/src/server/src/db/clients/types/types";
 import { mapGroupAccessPermissions } from "../../tokens/accessPermissions";
 import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 function handlePermissions(
   groups: GroupsSchemaType,
-  memberships: GroupMembersSchemaType[] | null,
+  memberships: GroupMemberSchemaType[] | null,
 ) {
   const permissions = mapGroupAccessPermissions(groups, memberships);
 
   return permissions;
 }
 
-export async function syncPermissions(): Promise<ViewerAccess> {
+export async function syncPermissions(): Promise<RBACType> {
   const groups = await trpcClient.groups.list.mutate();
   const memberships = await trpcClient.groupMembers.viewerMemberships.mutate();
   return handlePermissions(groups, memberships);

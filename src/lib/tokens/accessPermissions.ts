@@ -1,20 +1,20 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema"
-import type { ViewerAccess } from "../store/slices/viewer/PermissionsSlice";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { RBACType } from "@/src/server/src/db/clients/types/types";
 
 export const mapGroupAccessPermissions = (
-    groups: GroupsSchemaType,
-    memberships: GroupMembersSchemaType[] | null
-): ViewerAccess => {
-    const accessPermissions: ViewerAccess = {};
+  groups: GroupsSchemaType,
+  memberships: GroupMemberSchemaType[] | null,
+): RBACType => {
+  const accessPermissions: RBACType = {};
 
-    groups.forEach((group) => {
-        accessPermissions[`${group.id}`] = "anonymous";
-    });
+  groups.forEach((group) => {
+    accessPermissions[`${group.id}`] = "anonymous";
+  });
 
-    memberships?.forEach((membership) => {
-        accessPermissions[`${membership.group_id}`] = membership.role;
-    });
+  memberships?.forEach((membership) => {
+    accessPermissions[`${membership.group_id}`] = membership.role;
+  });
 
-    return accessPermissions;
+  return accessPermissions;
 };

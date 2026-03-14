@@ -55,12 +55,16 @@ export class AuthClient {
     const dbUser = await this.verifyCredentials(input_email, input_password);
     const session = await this.createSession(dbUser.id);
 
-    const publicUser: PublicUserSchemaType = {
+    const user: PublicUserSchemaType = {
       id: dbUser.id,
       email: dbUser.email,
     };
 
-    return { user: publicUser, session };
+    return {
+      ok: true,
+      user,
+      session,
+    };
   }
 
   async logOut(token: string): Promise<boolean> {

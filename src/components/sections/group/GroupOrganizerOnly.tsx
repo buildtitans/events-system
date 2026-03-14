@@ -5,10 +5,10 @@ import GroupActionsMenu from "../../global/nav/menus/groupActionsMenu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 
-export default function GroupOranizerOnly({ roleType }: { roleType: GroupMembersSchemaType["role"] }): JSX.Element | null {
+export default function GroupOranizerOnly({ roleType }: { roleType: GroupMemberSchemaType["role"] }): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
     const openEventDrawer = () => {
         dispatch(enqueueDrawer("create event drawer"));

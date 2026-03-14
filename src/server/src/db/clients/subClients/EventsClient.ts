@@ -85,9 +85,9 @@ export class EventsClient {
 
   async getEventsByIds(
     ids: EventSchemaType["id"][],
-  ): Promise<PaginatedLayoutSchemaType> {
+  ): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEventsByIds(ids);
-    return compileEventsLayout(raw);
+    return this.formatRawEvents(raw);
   }
 
   async updateEventStatus(
@@ -106,10 +106,10 @@ export class EventsClient {
 
   async createNewEvent(
     newEvent: NewEventInputSchemaType,
-  ): Promise<EventSchemaType | null> {
+  ): Promise<EventSchemaType> {
     const insertable = this.toInsertableEvent(newEvent);
     const inserted = await this.insertNewEvent(insertable);
-    const event = inserted ? this.formatEvent(inserted) : inserted;
+    const event = this.formatEvent(inserted);
     return event;
   }
 

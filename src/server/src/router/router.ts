@@ -1,4 +1,4 @@
-import { router } from "@/src/server/src/bootstrap/init";
+import { router } from "@/src/server/src/context/init";
 import { authRouter } from "./routes/authRouter";
 import { categoriesRouter } from "./routes/categoriesRouter";
 import { eventsRouter } from "./routes/eventsRouter";

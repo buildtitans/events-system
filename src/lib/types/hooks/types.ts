@@ -12,7 +12,7 @@ import type {
   EventsPages,
   EventDisplayFilter,
 } from "../../store/slices/events/types";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -127,7 +127,7 @@ type GetGroupEventsHook = {
 };
 
 type GetGroupMembersHook = {
-  members: GroupMembersSchemaType[];
+  members: GroupMemberSchemaType[];
 };
 
 type JoinGroupHook = {
@@ -148,7 +148,7 @@ type CancelEventHook = {
 
 type RemoveUserFromGroupHook = {
   removeUserFromGroup: (
-    group_id: GroupMembersSchemaType["user_id"],
+    group_id: GroupMemberSchemaType["user_id"],
   ) => Promise<void>;
 };
 

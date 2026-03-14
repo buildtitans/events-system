@@ -3,11 +3,11 @@ import { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RenderRoleBasedSidebarContents } from "../forks/renderRoleBasedSidebarContents";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type SidebarPipelineProps = {
   group_id: GroupSchemaType["id"];
-  role: GroupMembersSchemaType["role"];
+  role: GroupMemberSchemaType["role"];
 };
 
 export const SidebarActionsPipeline = ({

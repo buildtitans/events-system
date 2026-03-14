@@ -4,7 +4,7 @@ import type { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
   getCurrentRole,
@@ -18,7 +18,7 @@ const useJoinGroup = (): JoinGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
   const timerRef = useRef<number | null>(null);
 
-  async function handleResult(res: GroupMembersSchemaType | null) {
+  async function handleResult(res: GroupMemberSchemaType | null) {
     if (res) {
       const permissions = await syncPermissions();
       dispatch(getViewerPermissions(permissions));
@@ -34,7 +34,7 @@ const useJoinGroup = (): JoinGroupHook => {
 
   const joinGroup = async (
     group_id: GroupSchemaType["id"],
-  ): Promise<GroupMembersSchemaType | null> => {
+  ): Promise<GroupMemberSchemaType | null> => {
     const res = await trpcClient.groupMembers.addNewMember.mutate(group_id);
     return res;
   };

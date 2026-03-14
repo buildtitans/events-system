@@ -1,5 +1,5 @@
 "use client";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -15,7 +15,7 @@ export const useLeaveGroup = (): RemoveUserFromGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
 
   const removeUserFromGroup = async (
-    group_id: GroupMembersSchemaType["group_id"],
+    group_id: GroupMemberSchemaType["group_id"],
   ): Promise<void> => {
     if (snackbarStatus !== "idle") return;
     dispatch(enqueueSnackbar({ kind: "leaveGroup", status: "pending" }));

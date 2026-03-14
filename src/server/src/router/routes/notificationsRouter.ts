@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 import {
   createNotificationInput,
   SeenNotificationsInputValidator,

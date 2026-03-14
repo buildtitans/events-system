@@ -1,30 +1,41 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 import {
   EventIDValidator,
   UpdatedAttendanceResponseValidator,
 } from "@/src/schemas/events/eventAttendantsSchema";
-import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
-import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 import { UpdateAttendanceInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventAttendantsRouter = router({
   getAttendants: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.eventAttendants.getAttendants(input);
+      return await ctx.service.api.events.getEventAttendants(input);
     }),
 
   getViewerAttendance: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       const { numGoing, numInterested } =
-        await ctx.services.censusClient.getNumberOfAttendantsForEvent(input);
+        await ctx.service.api.participations.census.getNumberOfAttendantsForEvent(
+          input,
+        );
+
+      const rsvpStatus =
+        await ctx.service.api.participations.getUserRsvpToEvent(
+          ctx.req.user?.id,
+          input,
+        );
+
+      const permissions =
+        await ctx.service.api.userClient.getRoleBasedLayoutMap(
+          ctx.req.user?.id,
+        );
 
       return {
-        currentUserStatus: ctx.cache.attendanceDictionary[input],
+        currentUserStatus: rsvpStatus,
         numGoing: numGoing,
         numInterested: numInterested,
-        permissions: ctx.cache.roleLookupMap,
+        permissions: permissions,
       };
     }),
 
@@ -32,31 +43,20 @@ export const eventAttendantsRouter = router({
     .input(UpdateAttendanceInputValidator)
     .output(UpdatedAttendanceResponseValidator)
     .mutation(async ({ ctx, input }) => {
-      const user_id = ctx.user?.id;
-
-      if (!user_id) {
-        console.error("Authenticated session required to use this endpoint");
-        return null;
-      }
-
-      return await ctx.api.eventAttendants.updateAttendanceStatus(
-        { event_id: input.event_id, user_id: user_id },
+      return await ctx.service.api.participations.updateRsvpStatus(
+        ctx.req.user?.id,
+        input.event_id,
         input.newStatus,
       );
     }),
 
   getPopularEventIds: publicProcedure.mutation(async ({ ctx }) => {
-    const records = await ctx.api.eventAttendants.getAllAttendanceRecords();
-    return curatePopularEventsIds(records);
+    return ctx.service.api.participations.census.getPopularEventsIds();
   }),
 
   getUserRsvpdEvents: publicProcedure.mutation(async ({ ctx }) => {
-    const user_id = ctx.user?.id;
-
-    if (!user_id) {
-      throw new TRPCResolverError(403, "Permission to access user data denied");
-    }
-
-    return await ctx.services.participationsClient.getRsvpdEvents(user_id);
+    return await ctx.service.api.participations.getRsvpdEvents(
+      ctx.req.user?.id,
+    );
   }),
 });

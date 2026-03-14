@@ -14,11 +14,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("description", "text", (col) => col.defaultTo(null))
     .addColumn("location", "text", (col) => col.defaultTo(null))
     .addColumn("organizer_id", "uuid", (col) =>
-      col.references("users.id").onDelete("set null"),
+      col.notNull().references("users.id").onDelete("restrict"),
     )
     .addColumn("organizer_email", "text", (col) => col.defaultTo(null))
     .addColumn("category_id", "uuid", (col) =>
-      col.references("categories.id").onDelete("set null"),
+      col.notNull().references("categories.id").onDelete("set null"),
     )
     .addColumn("created_at", "timestamptz", (col) =>
       col.notNull().defaultTo(sql`now()`),

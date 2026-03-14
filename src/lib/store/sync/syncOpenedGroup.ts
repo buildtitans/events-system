@@ -1,4 +1,4 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { EventsPages } from "../slices/events/types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
@@ -6,9 +6,9 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 export type SyncOpenGroupPayload = {
   group: GroupSchemaType | null;
   events: EventsPages;
-  role: GroupMembersSchemaType["role"];
+  role: GroupMemberSchemaType["role"];
   numMembers: number;
-  organizer?: GroupMembersSchemaType;
+  organizer?: GroupMemberSchemaType;
 };
 
 export async function syncOpenedGroup(
@@ -34,7 +34,7 @@ export async function syncOpenedGroup(
 
     const organizer = members.find(
       (member) => member.role === "organizer",
-    ) as GroupMembersSchemaType;
+    ) as GroupMemberSchemaType;
 
     return {
       group,

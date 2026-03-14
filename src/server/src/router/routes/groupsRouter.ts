@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
   GroupSlugSchemaType,
@@ -10,6 +10,7 @@ import {
   CompiledSearchSchema,
   SearchSchemaType,
 } from "@/src/schemas/search/searchSchema";
+import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 const searchInputValidator =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);
@@ -24,19 +25,15 @@ export const groupsRouter = router({
   createNewGroup: publicProcedure
     .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const user_id = ctx.user?.id;
-      if (!user_id) return null;
-
-      const group = await ctx.api.groups.createGroup(input, user_id);
-
-      if (group && group.organizer_id) {
-        const { id, organizer_id } = group;
-
-        await ctx.api.groupMembers.addOrganizer({
-          user_id: organizer_id,
-          group_id: id,
-        });
+      if (!ctx.user?.id) {
+        throw new TRPCResolverError(
+          401,
+          "Authentication required to create new groups",
+        );
       }
+      const { group, organizer } =
+        await ctx.services.groupLifecycle.createNewGroup(ctx.user.id, input);
+
       return group;
     }),
 

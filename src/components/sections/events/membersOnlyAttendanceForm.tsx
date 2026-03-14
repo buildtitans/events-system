@@ -5,11 +5,11 @@ import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type MembersOnlyAttendanceFormProps = {
     scheduleStatus: EventSchemaType["status"],
-    role: GroupMembersSchemaType["role"]
+    role: GroupMemberSchemaType["role"]
 };
 
 export default function MembersOnlyAttendanceForm({ scheduleStatus }: MembersOnlyAttendanceFormProps): JSX.Element | null {

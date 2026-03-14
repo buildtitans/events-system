@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import { ServiceClient } from "../services/serviceClient";
+import { ServiceClient } from "../service/services";
 
 async function detectSession(
   app: FastifyInstance,
