@@ -23,7 +23,10 @@ export class MembershipHandler {
     });
   }
 
-  async leaveGroup(group_id: GroupSchemaType["id"], user_id: string) {
+  async leaveGroup(
+    group_id: GroupSchemaType["id"],
+    user_id: string | undefined | null,
+  ) {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireCanChangeMembership(userId, group_id);
@@ -35,9 +38,9 @@ export class MembershipHandler {
     user_id: string | undefined,
     group_id: GroupSchemaType["id"],
   ) {
-    const userId = this.policy.requireAuthenticated(user_id);
+    if (!user_id) return "anonymous";
 
-    return await this.db.groupMembers.getMembershipRole(userId, group_id);
+    return await this.db.groupMembers.getMembershipRole(user_id, group_id);
   }
 
   async getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number> {

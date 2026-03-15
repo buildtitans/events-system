@@ -9,11 +9,11 @@ const t = initTRPC.context<Context>().create({
 const router = t.router;
 const publicProcedure = t.procedure;
 
-const requireApi = t.middleware(({ ctx, next }) => {
-  if (!ctx.service.api) {
+const requireAuth = t.middleware(({ ctx, next }) => {
+  if (!ctx.req.user?.id) {
     throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "ctx.api missing from context",
+      code: "UNAUTHORIZED",
+      message: "Authentication required to access this resource",
     });
   }
   return next({
@@ -21,6 +21,6 @@ const requireApi = t.middleware(({ ctx, next }) => {
   });
 });
 
-const protectedProcedure = t.procedure.use(requireApi);
+const protectedProcedure = t.procedure.use(requireAuth);
 
 export { protectedProcedure, publicProcedure, router };

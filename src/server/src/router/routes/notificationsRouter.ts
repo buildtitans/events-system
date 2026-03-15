@@ -1,4 +1,8 @@
-import { router, publicProcedure } from "@/src/server/src/context/init";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+} from "@/src/server/src/context/init";
 import {
   createNotificationInput,
   SeenNotificationsInputValidator,
@@ -6,28 +10,26 @@ import {
 
 export const notificationsRouter = router({
   getNotifications: publicProcedure.mutation(async ({ ctx }) => {
-    const user_id = ctx.user?.id;
-    if (!user_id) return [];
-
-    return await ctx.api.notifications.getUnseenNotifications(user_id);
+    return await ctx.services.api.domains.notifications.getNewNotifications(
+      ctx.req.user?.id,
+    );
   }),
 
   createNotification: publicProcedure
     .input(createNotificationInput)
     .mutation(async ({ ctx, input }) => {
-      const memberIds: string[] = await ctx.api.groupMembers.getMemberIds(
-        input.group_id,
+      return await ctx.services.api.domains.notifications.createNotification(
+        input,
       );
-
-      return await ctx.api.notifications.addNewNotifications(input, memberIds);
     }),
 
   markOpenedNotifications: publicProcedure
     .input(SeenNotificationsInputValidator)
     .mutation(async ({ ctx, input }) => {
-      if (input.length === 0) return;
-
-      await ctx.api.notifications.markOpenedNotifications(input);
+      return await ctx.services.api.domains.notifications.markSeen(
+        ctx.req.user?.id,
+        input,
+      );
     }),
 });
 

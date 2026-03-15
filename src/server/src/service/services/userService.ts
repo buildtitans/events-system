@@ -29,6 +29,8 @@ export class UserService {
 
     const { email } = await this.api.auth.getEmailByUserId(userId);
 
+    console.log(email);
+
     return email;
   }
 
@@ -40,11 +42,6 @@ export class UserService {
     const memberships =
       await this.api.groupMembers.getViewerMemberships(userId);
 
-    const lookupMap = mapRoleBasedAccessControls(groups, memberships);
-
-    return {
-      memberships,
-      lookupMap,
-    };
+    return mapRoleBasedAccessControls(groups, memberships);
   }
 }

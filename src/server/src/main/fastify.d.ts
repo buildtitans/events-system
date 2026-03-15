@@ -15,6 +15,5 @@ declare module "fastify" {
 
   interface FastifyRequest {
     user: CachedUser;
-    services: ServiceClient | null;
   }
 }

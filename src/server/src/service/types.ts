@@ -31,3 +31,27 @@ export type GroupAction =
   | "manage group"
   | "manage events"
   | "change membership";
+
+//recover: publicProcedure.mutation(async ({ ctx }) => {
+//  const session = await ctx.service.api.session.recoverSession(
+//    ctx.req.cookies.session,
+//  );
+//
+//  if (!session) {
+//    ctx.session.removeCookieHeader();
+//  }
+//
+//  const email = await ctx.service.api.userClient.getEmailById(
+//    session?.user_id,
+//  );
+//
+//  const permissions = ctx.service.api.userClient.getRoleBasedLayoutMap(
+//    session?.user_id,
+//  );
+//
+//  return {
+//    session,
+//    email,
+//    permissions,
+//  };
+//}),

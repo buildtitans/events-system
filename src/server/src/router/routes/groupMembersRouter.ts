@@ -5,8 +5,6 @@ import {
   GroupIDForInsertSchemaValidator,
   MemberToRemoveInputValidator,
 } from "@/src/schemas/groups/groupMembersSchema";
-import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
 export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
   GroupIDForInsertSchemaValidator,
@@ -16,62 +14,45 @@ const groupMembersRouter = router({
   addNewMember: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const token = ctx.req.cookies.session;
-      if (!token) return null;
-      const sess = await ctx.api.auth.getSession(token);
-      if (!sess?.user_id) return null;
-
-      const newMember: Pick<GroupMemberSchemaType, "group_id" | "user_id"> = {
-        group_id: input,
-        user_id: sess.user_id,
-      };
-
-      return await ctx.api.groupMembers.addNewMember(newMember);
+      return await ctx.services.api.domains.groups.memberships.addMember(
+        ctx.req.user?.id,
+        input,
+      );
     }),
 
   leaveGroup: publicProcedure
     .input(MemberToRemoveInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const contextProvider = await ctx;
-      const result = await contextProvider.service.api.groups.
-
-      return (await ctx).service.api
-
-      return await ctx.api.groupMembers.removeMember(
-        ctx.user.id,
+      return await ctx.services.api.domains.groups.memberships.leaveGroup(
         input.group_id,
+        ctx.req.user?.id,
       );
     }),
 
   getViewerRole: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return (await ctx).service.api.participations.getRoleInGroup(input);
+      return await ctx.services.api.domains.groups.memberships.getRoleInGroup(
+        ctx.req.user?.id,
+        input,
+      );
     }),
   getGroupMembers: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return (await ctx).service.api.
+      return await ctx.services.api.domains.groups.getAllGroupMembers(input);
     }),
 
   viewerMemberships: publicProcedure.mutation(async ({ ctx }) => {
-    const user_id = ctx.user?.id;
-
-    if (!user_id) {
-      throw new TRPCResolverError(
-        403,
-        "Permission to access membership data denied",
-      );
-    }
-
-    return await ctx.api.groupMembers.getViewerMemberships(user_id);
+    return await ctx.services.api.domains.participations.getMemberships(
+      ctx.req.user?.id,
+    );
   }),
 
   getGroupOrganizerEmail: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const organizerId = await ctx.api.groupMembers.getOrganizer(input);
-      return await ctx.services.userClient.getEmailById(organizerId);
+      return await ctx.services.api.domains.groups.getOrganizerEmail(input);
     }),
 });
 

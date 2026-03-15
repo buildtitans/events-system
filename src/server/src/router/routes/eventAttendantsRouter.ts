@@ -9,25 +9,25 @@ export const eventAttendantsRouter = router({
   getAttendants: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.service.api.events.getEventAttendants(input);
+      return await ctx.services.api.domains.events.getEventAttendants(input);
     }),
 
   getViewerAttendance: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       const { numGoing, numInterested } =
-        await ctx.service.api.participations.census.getNumberOfAttendantsForEvent(
+        await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
           input,
         );
 
       const rsvpStatus =
-        await ctx.service.api.participations.getUserRsvpToEvent(
+        await ctx.services.api.domains.participations.getUserRsvpToEvent(
           ctx.req.user?.id,
           input,
         );
 
       const permissions =
-        await ctx.service.api.userClient.getRoleBasedLayoutMap(
+        await ctx.services.api.domains.users.getRoleBasedLayoutMap(
           ctx.req.user?.id,
         );
 
@@ -43,7 +43,7 @@ export const eventAttendantsRouter = router({
     .input(UpdateAttendanceInputValidator)
     .output(UpdatedAttendanceResponseValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.service.api.participations.updateRsvpStatus(
+      return await ctx.services.api.domains.participations.updateRsvpStatus(
         ctx.req.user?.id,
         input.event_id,
         input.newStatus,
@@ -51,11 +51,11 @@ export const eventAttendantsRouter = router({
     }),
 
   getPopularEventIds: publicProcedure.mutation(async ({ ctx }) => {
-    return ctx.service.api.participations.census.getPopularEventsIds();
+    return ctx.services.api.domains.participations.census.getPopularEventsIds();
   }),
 
   getUserRsvpdEvents: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.service.api.participations.getRsvpdEvents(
+    return await ctx.services.api.domains.participations.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),

@@ -26,7 +26,8 @@ export async function syncOpenedGroup(
       };
     }
 
-    const events = (await trpcClient.events.groupEvents.mutate(group.id)) ?? [];
+    const events =
+      (await trpcClient.events.groupEventsLayout.mutate(group.id)) ?? [];
 
     const members = await trpcClient.groupMembers.getGroupMembers.mutate(
       group.id,

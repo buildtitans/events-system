@@ -21,7 +21,7 @@ type NewUser = {
 };
 
 type LoginRespType = {
-  success: boolean;
+  ok: boolean;
   permissions: RBACType;
   attendanceDictionary: AttendanceDictionaryType;
 };
@@ -30,11 +30,11 @@ export const useSignUp = (email: string, password: string) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLoginResult = async (result: LoginRespType): Promise<void> => {
-    const { success } = result;
+    const { ok } = result;
 
     dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
 
-    if (success) {
+    if (ok) {
       dispatch(loginSuccess());
       const permissions = await syncPermissions();
       dispatch(getViewerPermissions(permissions));

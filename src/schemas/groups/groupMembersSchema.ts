@@ -61,7 +61,7 @@ export const GroupMemberSchemaValidator =
 
 export const ValidateGroupMember = createValidator(
   GroupMemberSchema,
-  "GroupMembersSchema",
+  "GroupMemberSchema",
 );
 
 export const GroupRoleSchemaValidator = createValidator(

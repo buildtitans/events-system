@@ -7,6 +7,8 @@ import type { UpComingEventsLookup } from "../types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import { AuthorizationService } from "../services/authorizationService";
+import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
+import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 
 export class EventsService {
   constructor(
@@ -18,6 +20,14 @@ export class EventsService {
     return await this.db.events.getEvents();
   }
 
+  async searchEvents(query: SearchSchemaType) {
+    return await this.db.events.searchEventByTitle(query);
+  }
+
+  async getEventById(event_id: string) {
+    return await this.db.events.getEvent(event_id);
+  }
+
   async selectEventsById(
     ids: EventSchemaType["id"][],
   ): Promise<EventsArraySchemaType> {
@@ -26,6 +36,16 @@ export class EventsService {
 
   async getEventAttendants(event_id: string) {
     return await this.db.eventAttendants.getAttendants(event_id);
+  }
+
+  async updateEventStatus(
+    user_id: string | null | undefined,
+    eventUpdate: UpdateEventArgsSchemaType,
+  ) {
+    const userId = this.policy.requireAuthenticated(user_id);
+    await this.policy.requireCanManageGroup(userId, eventUpdate.group_id);
+
+    return await this.db.events.updateEventStatus(eventUpdate);
   }
 
   async createEvent(

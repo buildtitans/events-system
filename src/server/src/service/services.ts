@@ -1,11 +1,11 @@
 import { LayoutFormatter } from "./services/layoutFormatter";
-import { ServiceApi } from "./serviceApi";
+import { ContextApi } from "./contextApi";
 
 export class Services {
-  public readonly api: ServiceApi;
+  public readonly api: ContextApi;
   public readonly layout: LayoutFormatter;
   constructor() {
-    this.api = new ServiceApi();
+    this.api = new ContextApi();
     this.layout = new LayoutFormatter();
   }
 }

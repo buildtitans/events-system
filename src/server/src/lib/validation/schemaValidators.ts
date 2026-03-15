@@ -13,6 +13,8 @@ import { AuthorsSchema } from "@/src/schemas/events/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 import { GroupIdSchema } from "@/src/schemas/events/eventSchema";
 import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
+import { typeboxInput } from "../../router/adaptors/typeBoxValidation";
+import { EventIdsSchema } from "@/src/schemas/events/eventAttendantsSchema";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -87,8 +89,11 @@ const NewEventSchemaValidator = createValidator(
 
 const ValidateGroupId = createValidator(GroupIdSchema, "GroupIdSchema");
 
+const CompiledGroupIdsSchema = TypeCompiler.Compile(EventIdsSchema);
+
 export {
   AuthorsValidator,
+  CompiledGroupIdsSchema,
   eventsValidator,
   layoutSlotValidator,
   GroupSchemaValidator,

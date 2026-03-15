@@ -1,5 +1,5 @@
 import { router, publicProcedure } from "@/src/server/src/context/init";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
+import { typeboxInput, typeboxInputV2 } from "../adaptors/typeBoxValidation";
 import {
   GroupSlugSchemaType,
   GroupSlugSchemaValidator,
@@ -11,41 +11,45 @@ import {
   SearchSchemaType,
 } from "@/src/schemas/search/searchSchema";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
+import { getNextGroupEventLookup } from "@/src/lib/store/slices/user/userSlice";
+import {
+  CompiledGroupIdsSchema,
+  ValidateGroupId,
+} from "../../lib/validation/schemaValidators";
+import {
+  GroupIdArraySchema,
+  GroupIdSchema,
+  GroupIdSchemaType,
+} from "@/src/schemas/events/eventSchema";
 
 const searchInputValidator =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);
 
 export const groupsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
-    const results = await ctx.api.groups.getGroups();
-
-    return results;
+    return await ctx.services.api.domains.groups.getAllGroups();
   }),
 
   createNewGroup: publicProcedure
     .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user?.id) {
-        throw new TRPCResolverError(
-          401,
-          "Authentication required to create new groups",
-        );
-      }
-      const { group, organizer } =
-        await ctx.services.groupLifecycle.createNewGroup(ctx.user.id, input);
-
-      return group;
+      return await ctx.services.api.domains.groups.groupLifecycle.createNewGroup(
+        ctx.req.user?.id,
+        input,
+      );
     }),
 
   groupBySlug: publicProcedure
     .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const group = await ctx.api.groups.getGroupBySlug(input);
+      const group =
+        await ctx.services.api.domains.groups.getGroupFromSlug(input);
 
-      const userRole = ctx.auth.getRoleForGroup(
-        group.id,
-        ctx.cache.roleLookupMap,
-      );
+      const userRole =
+        await ctx.services.api.domains.groups.memberships.getRoleInGroup(
+          ctx.req.user?.id,
+          group.id,
+        );
 
       return {
         group: group,
@@ -56,6 +60,12 @@ export const groupsRouter = router({
   searchGroups: publicProcedure
     .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.groups.searchGroups(input);
+      return await ctx.services.api.domains.groups.searchGroups(input);
+    }),
+
+  getNextGroupEventLookup: publicProcedure
+    .input(typeboxInputV2<GroupIdArraySchema>(GroupIdArraySchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.getNextEventLookupMap(input);
     }),
 });

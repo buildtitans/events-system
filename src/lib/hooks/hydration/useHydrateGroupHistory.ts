@@ -32,7 +32,7 @@ export const useHydrateGroupHisory = () => {
     const executeHydrateGroupHistory = async () => {
       dispatch(getGroupHistory({ status: "pending" }));
 
-      const res = await trpcClient.events.groupHistory.mutate(
+      const res = await trpcClient.events.getGroupEvents.mutate(
         openedGroup.data.id,
       );
 

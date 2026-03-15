@@ -45,10 +45,10 @@ export class EventsClient {
 
   async getGroupEvents(
     group_id: Selectable<Events>["group_id"],
-  ): Promise<PaginatedLayoutSchemaType> {
+  ): Promise<EventSchemaType[]> {
     const raw = await this.getRawEventsFromGroup(group_id);
     if (!Array.isArray(raw) || raw.length === 0) return [];
-    return compileEventsLayout(raw);
+    return this.formatRawEvents(raw);
   }
 
   async getGroupEventsByGroupId(

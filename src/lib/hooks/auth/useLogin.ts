@@ -18,10 +18,10 @@ import { RBACType } from "@/src/server/src/db/clients/types/types";
 import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 
 type LoginResType = {
-  success: boolean;
-  permissions: RBACType;
-  attendanceDictionary: AttendanceDictionaryType;
+  ok: boolean;
   email: string;
+  lookupMap: RBACType;
+  attendanceDictionary: AttendanceDictionaryType;
 };
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
@@ -29,12 +29,12 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLoginResult = async (result: LoginResType): Promise<void> => {
-    const { success, permissions, attendanceDictionary, email } = result;
+    const { ok, lookupMap, attendanceDictionary, email } = result;
 
-    if (success) {
+    if (ok) {
       dispatch(storeUserEmail({ status: "ready", data: email }));
       dispatch(loginSuccess());
-      dispatch(getViewerPermissions(permissions));
+      dispatch(getViewerPermissions(lookupMap));
       dispatch(getAttendanceDictionary(attendanceDictionary));
       dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
     } else {
@@ -44,14 +44,14 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     dispatch(enqueueDrawer(null));
   };
 
-  const login = async (
-    email: string,
-    password: string,
-  ): Promise<LoginResType> => {
+  const login = async (email: string, password: string) => {
     const result = await trpcClient.auth.login.mutate({
       email,
       password,
     });
+
+    console.log(result);
+
     return result;
   };
 

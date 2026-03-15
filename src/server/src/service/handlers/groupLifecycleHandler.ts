@@ -1,7 +1,10 @@
-import type { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
+import type {
+  GroupSchemaType,
+  NewGroupInputSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { DBClient } from "../../db";
-import type { NewOrganizerInput, GroupCreatedResult } from "../types";
+import type { NewOrganizerInput } from "../types";
 import { AuthorizationService } from "../services/authorizationService";
 
 export class GroupLifecycleHandler {
@@ -13,20 +16,17 @@ export class GroupLifecycleHandler {
   async createNewGroup(
     user_id: string | undefined,
     newGroupInput: NewGroupInputSchemaType,
-  ): Promise<GroupCreatedResult> {
+  ): Promise<GroupSchemaType> {
     const id = this.policy.requireAuthenticated(user_id);
 
     const group = await this.api.groups.createGroup(newGroupInput, id);
 
-    const organizer = await this.assignOrganizerToNewGroup({
+    await this.assignOrganizerToNewGroup({
       user_id: group.organizer_id,
       group_id: group.id,
     });
 
-    return {
-      group,
-      organizer,
-    };
+    return group;
   }
 
   private async assignOrganizerToNewGroup(

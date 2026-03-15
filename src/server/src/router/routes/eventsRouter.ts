@@ -1,13 +1,10 @@
 import {
-  GroupIdSchemaType,
-  GroupIdSchemaValidator,
   UpdateEventArgsSchemaType,
   UpdateEventArgsSchemaValidator,
 } from "@/src/schemas/events/eventSchema";
 import { SearchInputSchemaValidator } from "@/src/schemas/search/searchSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { router, publicProcedure } from "@/src/server/src/context/init";
-import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 import { NewEventInputValidator } from "@/src/schemas/events/eventSchema";
 import { groupIdInputValidator } from "./groupMembersRouter";
 import {
@@ -17,66 +14,66 @@ import {
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
-    const events = await ctx.service.api.events.getAllEvents();
+    const events = await ctx.services.api.domains.events.getAllEvents();
 
-    return ctx.service.layout.compileLayout(events);
+    return ctx.services.layout.compileLayout(events);
   }),
 
   newEvent: publicProcedure
     .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return ctx.service.api.events.createEvent(
+      return ctx.services.api.domains.events.createEvent(
         input,
         input.group_id,
         ctx.req.user?.id,
       );
     }),
 
-  groupEvents: publicProcedure
+  groupEventsLayout: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.service.api.events.getGroupEvents(input);
+      const events =
+        await ctx.services.api.domains.events.getGroupEvents(input);
+
+      return ctx.services.layout.compileLayout(events);
+    }),
+
+  getGroupEvents: publicProcedure
+    .input(groupIdInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.services.api.domains.events.getGroupEvents(input);
     }),
 
   updateEventStatus: publicProcedure
     .input(
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
-    .mutation(({ ctx, input }) => {
-      //   const permitted = ctx.auth.can(
-      //     "update event",
-      //     input.group_id,
-      //     ctx.cache.roleLookupMap,
-      //   );
-      //   if (!permitted) {
-      //     throw new TRPCResolverError(
-      //       403,
-      //       "Permission denied to RSVP for this event",
-      //     );
-      //   }
-      //
-      //   return ctx.api.events.updateEventStatus(input);
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.updateEventStatus(
+        ctx.req.user?.id,
+        input,
+      );
     }),
 
   eventsById: publicProcedure
     .input(EventIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.events.getEventsByIds(input);
+      return await ctx.services.api.domains.events.selectEventsById(input);
     }),
 
   getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.api.events.getFlattenedEvents();
+    return await ctx.services.api.domains.events.getAllEvents();
   }),
 
   getEvent: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.events.getEvent(input);
+      return await ctx.services.api.domains.events.getEventById(input);
     }),
 
   search: publicProcedure
     .input(SearchInputSchemaValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.events.searchEventByTitle(input);
+      return await ctx.services.api.domains.events.searchEvents(input);
     }),
 });

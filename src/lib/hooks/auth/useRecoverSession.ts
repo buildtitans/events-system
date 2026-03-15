@@ -16,7 +16,7 @@ const useRecoverSession = (): void => {
         const result = await trpcClient.auth.recover.mutate();
         if (result) {
           dispatch(loginSuccess());
-          dispatch(storeUserEmail({ status: "ready", data: result.userEmail }));
+          dispatch(storeUserEmail({ status: "ready", data: result.email }));
           dispatch(getViewerPermissions(result.permissions));
         } else {
           dispatch(logout());

@@ -7,19 +7,20 @@ export const authRouter = router({
   login: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      const result = await ctx.service.api.session.login(
+      const result = await ctx.services.api.domains.session.login(
         input.email,
         input.password,
       );
 
       ctx.session.setCookieHeader(result);
 
-      const lookupMap = await ctx.service.api.userClient.getRoleBasedLayoutMap(
-        result.user.id,
-      );
+      const lookupMap =
+        await ctx.services.api.domains.users.getRoleBasedLayoutMap(
+          result.user.id,
+        );
 
       const attendanceDictionary =
-        await ctx.service.api.participations.getAttendanceDictionary(
+        await ctx.services.api.domains.participations.getAttendanceDictionary(
           result.user.id,
         );
 
@@ -32,20 +33,22 @@ export const authRouter = router({
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.service.api.session.logout(ctx.req.cookies.session);
+    return await ctx.services.api.domains.session.logout(
+      ctx.req.cookies.session,
+    );
   }),
 
   signup: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.service.api.userClient.createNewUser(
+      return await ctx.services.api.domains.users.createNewUser(
         input.email,
         input.password,
       );
     }),
 
   recover: publicProcedure.mutation(async ({ ctx }) => {
-    const session = await ctx.service.api.session.recoverSession(
+    const session = await ctx.services.api.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
 
@@ -55,8 +58,8 @@ export const authRouter = router({
     }
 
     const [email, permissions] = await Promise.all([
-      ctx.service.api.userClient.getEmailById(session.user_id),
-      ctx.service.api.userClient.getRoleBasedLayoutMap(session.user_id),
+      ctx.services.api.domains.users.getEmailById(session.user_id),
+      ctx.services.api.domains.users.getRoleBasedLayoutMap(session.user_id),
     ]);
 
     return {
@@ -66,34 +69,9 @@ export const authRouter = router({
     };
   }),
 
-  //session check w/o header change
   checkSession: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.service.api.session.recoverSession(
+    return await ctx.services.api.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
   }),
 });
-
-//recover: publicProcedure.mutation(async ({ ctx }) => {
-//  const session = await ctx.service.api.session.recoverSession(
-//    ctx.req.cookies.session,
-//  );
-//
-//  if (!session) {
-//    ctx.session.removeCookieHeader();
-//  }
-//
-//  const email = await ctx.service.api.userClient.getEmailById(
-//    session?.user_id,
-//  );
-//
-//  const permissions = ctx.service.api.userClient.getRoleBasedLayoutMap(
-//    session?.user_id,
-//  );
-//
-//  return {
-//    session,
-//    email,
-//    permissions,
-//  };
-//}),
