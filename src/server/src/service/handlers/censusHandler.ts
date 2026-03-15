@@ -40,8 +40,8 @@ export class CensusHandler {
     );
 
     return {
-      numGoing: filteredGoing.length,
-      numInterested: filteredInterested.length,
+      numGoing: filteredGoing.length ?? 0,
+      numInterested: filteredInterested.length ?? 0,
     };
   }
 }

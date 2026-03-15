@@ -12,7 +12,7 @@ type EventStackSlotProps = {
   focusedCardIndex: EventCardProps["focusedCardIndex"];
   events: EventCardProps["event"][];
   groupNamesById: GroupNameByGroupID;
-  handleOpenEvent: (event: EventSchemaType) => () => void;
+  handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
 function EventStackSlot({

@@ -1,6 +1,9 @@
 import { DBClient } from "../../db";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
-import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  RsvpStatusSchemaValidator,
+  type EventAttendantsSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpSchemaArrayValidator } from "@/src/schemas/events/rsvpSchema";
 import {
   UserMembershipSchemaArrayValidator,
@@ -12,6 +15,7 @@ import { CensusHandler } from "../handlers/censusHandler";
 import { filterUserRsvps } from "@/src/server/src/lib/utils/filterRsvps";
 import { buildGroupNameLookup } from "@/src/server/src/lib/utils/buildGroupNameLookup";
 import { SchemaDtoHandler } from "../handlers/schemaDtoHandler";
+import { GroupRoleSchemaValidator } from "@/src/schemas/groups/groupMembersSchema";
 
 export class ParticipationsService {
   public readonly census: CensusHandler;
@@ -42,10 +46,12 @@ export class ParticipationsService {
     event_id: string,
   ) {
     const userId = this.policy.requireAuthenticated(user_id);
-    return await this.db.eventAttendants.getUserRsvpStatusToEvent(
+    const result = await this.db.eventAttendants.getUserRsvpStatusToEvent(
       userId,
       event_id,
     );
+
+    return RsvpStatusSchemaValidator(result);
   }
 
   async getAttendanceDictionary(user_id: string | undefined | null) {

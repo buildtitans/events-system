@@ -35,12 +35,11 @@ export class UserService {
   }
 
   async getRoleBasedLayoutMap(user_id: string | null | undefined) {
-    const userId = this.policy.requireAuthenticated(user_id);
-
     const groups = await this.api.groups.getGroups();
 
-    const memberships =
-      await this.api.groupMembers.getViewerMemberships(userId);
+    const memberships = await this.api.groupMembers.getViewerMemberships(
+      user_id ?? "",
+    );
 
     return mapRoleBasedAccessControls(groups, memberships);
   }

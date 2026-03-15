@@ -21,12 +21,14 @@ export class EventAttendantsClient {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getUserRsvpStatusToEvent(user_id: string, event_id: string) {
-    return await this.db
+    const result = await this.db
       .selectFrom("event_attendants")
       .select("status")
       .where("user_id", "=", user_id)
       .where("event_id", "=", event_id)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirst();
+
+    return result?.status ?? "not_going";
   }
 
   async getAllAttendanceRecords() {

@@ -45,11 +45,15 @@ export const groupsRouter = router({
       const group =
         await ctx.services.api.domains.groups.getGroupFromSlug(input);
 
+      console.log(group);
+
       const userRole =
         await ctx.services.api.domains.groups.memberships.getRoleInGroup(
           ctx.req.user?.id,
           group.id,
         );
+
+      console.log(userRole);
 
       return {
         group: group,

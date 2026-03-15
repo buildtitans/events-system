@@ -58,7 +58,9 @@ export const eventsRouter = router({
   eventsById: publicProcedure
     .input(EventIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.selectEventsById(input);
+      const events =
+        await ctx.services.api.domains.events.selectEventsById(input);
+      return ctx.services.layout.compileLayout(events);
     }),
 
   getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {

@@ -97,6 +97,11 @@ const ValidateRawAttendants = createValidator(
   "EventAttendantsSchema",
 );
 
+export const RsvpStatusSchemaValidator = createValidator(
+  EventAttendantStatusSchema,
+  "EventAttendantStatusSchema",
+);
+
 export type {
   EventAttendantsSchemaType,
   EventAttendantStatusSchemaType,

@@ -20,16 +20,25 @@ export const eventAttendantsRouter = router({
           input,
         );
 
+      console.log({
+        going: numGoing,
+        interested: numInterested,
+      });
+
       const rsvpStatus =
         await ctx.services.api.domains.participations.getUserRsvpToEvent(
           ctx.req.user?.id,
           input,
         );
 
+      console.log(rsvpStatus);
+
       const permissions =
         await ctx.services.api.domains.users.getRoleBasedLayoutMap(
           ctx.req.user?.id,
         );
+
+      console.log(permissions);
 
       return {
         currentUserStatus: rsvpStatus,

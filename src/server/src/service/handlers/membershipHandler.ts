@@ -40,7 +40,12 @@ export class MembershipHandler {
   ) {
     if (!user_id) return "anonymous";
 
-    return await this.db.groupMembers.getMembershipRole(user_id, group_id);
+    const role = await this.db.groupMembers.getMembershipRole(
+      user_id,
+      group_id,
+    );
+
+    return role ?? "anonymous";
   }
 
   async getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number> {

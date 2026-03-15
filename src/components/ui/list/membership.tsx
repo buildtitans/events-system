@@ -8,7 +8,7 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import NextWeekIcon from '@mui/icons-material/NextWeek';
 import Chip from "@mui/material/Chip";
-import HistoryIcon from '@mui/icons-material/History';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 
@@ -70,7 +70,7 @@ export default function MembershipListItem({
         height: "100%"
       }}
       >
-        <Chip 
+        {nextEvent ? <Chip 
         color="default"
         variant="filled"
         size="small"
@@ -94,7 +94,23 @@ export default function MembershipListItem({
         ) 
       } 
         label={`${toMonthDayYearHour(String(nextEvent))}`}
+        /> 
+      : (
+        <Chip 
+        color="default"
+        variant="filled"
+        size="small"
+        sx={{
+          padding: 1
+        }}
+        icon={<EventBusyIcon sx={{
+      fontSize: 16,
+    }}
+        color="inherit" />}
+        label={"No events held yet"}
         />
+      )
+      }
       </Stack>
       </Stack> 
       

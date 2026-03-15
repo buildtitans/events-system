@@ -18,7 +18,7 @@ type EventStackCardProps = {
   focusedCardIndex: EventCardProps["focusedCardIndex"];
   event: EventCardProps["event"];
   groupName: string;
-  handleOpenEvent: (event: EventSchemaType) => () => void;
+  handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
 function EventStackCard({
@@ -35,7 +35,7 @@ function EventStackCard({
   return (
     <StyledCard
       variant="outlined"
-      onClick={handleOpenEvent(event)}
+       onClick={() => handleOpenEvent(event.id)}
       onFocus={() => handleFocus(3)}
       onBlur={handleBlur}
       tabIndex={0}

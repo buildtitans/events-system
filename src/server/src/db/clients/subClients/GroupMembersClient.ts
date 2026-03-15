@@ -37,11 +37,17 @@ export class GroupMembersClient {
   ): Promise<GroupMemberSchemaType["role"]> {
     const raw = await this.db
       .selectFrom("group_members")
-      .select("role")
+      .selectAll()
       .where("group_id", "=", group_id)
       .where("user_id", "=", user_id)
-      .executeTakeFirstOrThrow();
-    return GroupRoleSchemaValidator(raw.role);
+      .executeTakeFirst();
+
+    if (raw) {
+      const parsed = this.parseRawMember(raw);
+      return parsed.role;
+    } else {
+      return "anonymous";
+    }
   }
 
   async getOrganizer(
@@ -55,7 +61,7 @@ export class GroupMembersClient {
       .limit(1)
       .executeTakeFirstOrThrow();
 
-    const organizer = this.parseNewRawMember(raw);
+    const organizer = this.parseRawMember(raw);
 
     console.log({
       "Group Orgainzer": organizer,
@@ -80,7 +86,7 @@ export class GroupMembersClient {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return this.parseNewRawMember(inserted);
+    return this.parseRawMember(inserted);
   }
 
   async addNewMember(
@@ -96,7 +102,7 @@ export class GroupMembersClient {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return this.parseNewRawMember(inserted) ?? null;
+    return this.parseRawMember(inserted) ?? null;
   }
 
   async removeMember(
@@ -140,9 +146,7 @@ export class GroupMembersClient {
       .execute();
   }
 
-  private parseNewRawMember(
-    raw: Selectable<GroupMembers>,
-  ): GroupMemberSchemaType {
+  private parseRawMember(raw: Selectable<GroupMembers>): GroupMemberSchemaType {
     const joined = dayjs(raw.joined_at).utc().format(ISO_FORMAT);
 
     return ValidateGroupMember({
@@ -151,10 +155,6 @@ export class GroupMembersClient {
       role: raw.role,
       user_id: raw.user_id,
     });
-  }
-
-  private parseMember(raw: Selectable<GroupMembers>): GroupMemberSchemaType {
-    return ValidateGroupMember(raw);
   }
 
   private parseRawMembers(

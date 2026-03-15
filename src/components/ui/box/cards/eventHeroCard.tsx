@@ -39,8 +39,7 @@ export type EventCardProps = {
   event: EventSchemaType;
   variant: CardDesignation;
   index: number;
-  groupName: string;
-  handleOpenEvent: (event: EventSchemaType) => () => void;
+  handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
 function EventHeroCard({
@@ -50,7 +49,6 @@ function EventHeroCard({
   event,
   variant,
   index,
-  groupName,
   handleOpenEvent,
 }: EventCardProps): JSX.Element {
   const scheduled_at = useMemo(() => {
@@ -60,6 +58,7 @@ function EventHeroCard({
   const date = new Date(event.starts_at);
   const isFutureDateOrNow = isFutureOrNow(date);
 
+
   return (
     <Grid
       size={{
@@ -68,7 +67,7 @@ function EventHeroCard({
       }}
     >
       <StyledCard
-        onClick={handleOpenEvent(event)}
+        onClick={() => handleOpenEvent(event.id)}
         variant="outlined"
         onFocus={() => handleFocus(index)}
         onBlur={handleBlur}
@@ -100,9 +99,9 @@ function EventHeroCard({
         </Box>
 
         <StyledCardContent>
-          <Typography gutterBottom variant="caption" component="div">
+          {/* <Typography gutterBottom variant="caption" color="info" component="div">
             {groupName}
-          </Typography>
+          </Typography> */}
           <Typography gutterBottom variant="h6" component="div">
             {event.title}
           </Typography>

@@ -41,6 +41,8 @@ export class GroupService {
   }
 
   async getGroupFromSlug(slug: string): Promise<GroupSchemaType> {
+    console.log({ slug: slug });
+
     return await this.db.groups.getGroupBySlug(slug);
   }
 }

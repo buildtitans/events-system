@@ -48,12 +48,12 @@ export const useHydrateEventDrawer = () => {
             event.data.id,
           );
 
-        console.log({
-          "Role from hydration": permissions[event.data.group_id],
-        });
+        const role = await trpcClient.groupMembers.getViewerRole.mutate(
+          event.data.group_id,
+        );
 
         dispatch(getViewerPermissions(permissions));
-        dispatch(getDrawerViewerRole(permissions[event.data.group_id]));
+        dispatch(getDrawerViewerRole(role));
 
         handleHydrationResults(currentUserStatus, numGoing, numInterested);
       } catch (err) {}
