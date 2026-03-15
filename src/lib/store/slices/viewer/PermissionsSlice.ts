@@ -1,4 +1,4 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import { RBACType } from "@/src/server/src/db/clients/types/types";
 import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
@@ -8,7 +8,7 @@ type InitialState = {
   accessPermissions: RBACType;
   viewerAttendance: AttendanceDictionaryType;
   notifications: NotificationSchemaArrayType;
-  viewerRole: GroupMembersSchemaType["role"];
+  viewerRole: GroupMemberSchemaType["role"];
 };
 
 const initialState: InitialState = {
@@ -36,7 +36,7 @@ const PermissionsSlice = createSlice({
     },
     getCurrentRole: (
       state: InitialState,
-      action: PayloadAction<GroupMembersSchemaType["role"]>,
+      action: PayloadAction<GroupMemberSchemaType["role"]>,
     ) => {
       state.viewerRole = action.payload;
     },

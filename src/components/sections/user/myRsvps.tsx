@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
 import RsvpListItem from "../../ui/list/rsvpListItem";
 import { useRouter } from "next/navigation";
+import NoRsvps from "../../ui/feedback/fallbacks/noRsvps";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 type MyRsvpsProps = {
   rsvps: RsvpSchemaType[];
@@ -44,7 +46,32 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
           </Typography>
         </Box>
 
-        <Box>
+       <RenderRsvpsOrFallback 
+       rsvps={rsvps}
+       handleNavigateToGroup={handleNavigateToGroup}
+       handleOpenEditStatus={handleOpenEditStatus}
+       />
+      </Stack>
+    </Container>
+  );
+}
+
+
+type RenderRsvpsOrFallbackProps = {
+  rsvps: RsvpSchemaType[];
+  handleOpenEditStatus: (event_id: EventSchemaType["id"]) => Promise<void>;
+  handleNavigateToGroup: (slug: RsvpSchemaType["group_slug"]) => void
+}
+
+function RenderRsvpsOrFallback({ rsvps, handleNavigateToGroup, handleOpenEditStatus  }:RenderRsvpsOrFallbackProps) {
+
+  if(rsvps.length === 0) {
+
+    return <NoRsvps />
+  }
+
+  return (
+    <Box>
           <List
             sx={{
               display: "flex",
@@ -62,7 +89,5 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
             ))}
           </List>
         </Box>
-      </Stack>
-    </Container>
-  );
+  )
 }

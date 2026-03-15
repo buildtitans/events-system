@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { strictEqual } from "assert";
 
 export type OpenedEvent =
@@ -10,8 +10,6 @@ export type OpenedEvent =
   | { status: "pending" }
   | { status: "ready"; data: EventSchemaType }
   | { status: "failed"; error: string };
-
-type UserAttendantInfo = EventAttendantsSchemaType;
 
 export type NumberOfAttendantsType =
   | { status: "initial" }
@@ -33,7 +31,7 @@ type InitialState = {
   viewerAttendanceStatus: EventAttendantsSchemaType["status"];
   numberAttending: NumberOfAttendantsType;
   numberInterested: NumberOfAttendantsType;
-  drawerViewerRole: GroupMembersSchemaType["role"];
+  drawerViewerRole: GroupMemberSchemaType["role"];
 };
 
 const initialState: InitialState = {
@@ -58,7 +56,7 @@ const EventDrawerSlice = createSlice({
     },
     getDrawerViewerRole: (
       state: InitialState,
-      action: PayloadAction<GroupMembersSchemaType["role"]>,
+      action: PayloadAction<GroupMemberSchemaType["role"]>,
     ) => {
       state.drawerViewerRole = action.payload;
     },

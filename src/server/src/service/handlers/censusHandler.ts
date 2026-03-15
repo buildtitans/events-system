@@ -3,8 +3,9 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { AttendantCountType } from "../types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
 
-export class CensusClient {
+export class CensusHandler {
   constructor(private readonly api: DBClient) {}
 
   async getNumberOfAttendantsForEvent(
@@ -21,6 +22,12 @@ export class CensusClient {
     return members.length;
   }
 
+  async getPopularEventsIds() {
+    const records = await this.api.eventAttendants.getAllAttendanceRecords();
+
+    return curatePopularEventsIds(records);
+  }
+
   private countEventAttendants(
     attendants: EventAttendantsSchemaType[],
   ): AttendantCountType {
@@ -33,8 +40,8 @@ export class CensusClient {
     );
 
     return {
-      numGoing: filteredGoing.length,
-      numInterested: filteredInterested.length,
+      numGoing: filteredGoing.length ?? 0,
+      numInterested: filteredInterested.length ?? 0,
     };
   }
 }

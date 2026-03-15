@@ -82,7 +82,7 @@ export class GroupsClient {
   async createGroup(
     newGroup: NewGroupInputSchemaType,
     organizer_id: string,
-  ): Promise<GroupSchemaType | null> {
+  ): Promise<GroupSchemaType> {
     const insertableGroup = this.parseNewGroup(newGroup, organizer_id);
     const inserted = await this.insertNewGroup(insertableGroup);
     return this.toGroupSchema(inserted);
@@ -97,7 +97,7 @@ export class GroupsClient {
       slug: slugify(newGroup.name),
       description: newGroup.description,
       location: newGroup.location,
-      category_id: newGroup.category_id,
+      category_id: newGroup.category_id ?? "",
       organizer_id: organizer_id,
     };
   }
@@ -112,14 +112,9 @@ export class GroupsClient {
       .executeTakeFirstOrThrow();
   }
 
-  private toGroupSchema(
-    group: Selectable<Groups> | null,
-  ): GroupSchemaType | null {
-    if (!group) return null;
+  private toGroupSchema(group: Selectable<Groups>): GroupSchemaType {
     const formatted = this.formatGroup(group);
-    const validGroup = GroupSchemaValidator(formatted);
-    if (validGroup) return validGroup;
-    return null;
+    return GroupSchemaValidator(formatted);
   }
 
   private formatGroup(group: Selectable<Groups>): GroupSchemaType {

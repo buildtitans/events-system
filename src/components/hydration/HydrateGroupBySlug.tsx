@@ -12,7 +12,7 @@ import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
@@ -58,7 +58,7 @@ export default function HydrateGroupBySlug({
     const handlePayload = async (
       group: GroupSchemaType | null,
       events: EventsPages,
-      role: GroupMembersSchemaType["role"],
+      role: GroupMemberSchemaType["role"],
       numMembers: number
     ): Promise<void> => {
       if (!group) {
@@ -88,7 +88,7 @@ export default function HydrateGroupBySlug({
 
       if(group) {
         const organizerEmail = await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id)
-        dispatch(getEmailOfGroupOrganizer(organizerEmail));
+        dispatch(getEmailOfGroupOrganizer(organizerEmail.email));
       }
 
 

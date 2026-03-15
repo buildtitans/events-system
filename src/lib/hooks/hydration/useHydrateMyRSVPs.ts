@@ -21,13 +21,12 @@ export const useHydrateMyRsvps = () => {
       const rsvps =
         await trpcClient.eventAttendants.getUserRsvpdEvents.mutate();
 
-      const { memberships, nextGroupEventLookup } =
-        await trpcClient.users.userMemberships.mutate();
+      const memberships = await trpcClient.users.userMemberships.mutate();
 
-      console.log({
-        RSVPS: rsvps,
-        Memberships: memberships,
-      });
+      const ids = memberships.map((m) => m.group_id);
+
+      const nextGroupEventLookup =
+        await trpcClient.groups.getNextGroupEventLookup.mutate(ids);
 
       dispatch(getNextGroupEventLookup(nextGroupEventLookup));
 

@@ -1,12 +1,14 @@
-import { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { RBACType } from "../../db/clients/types/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export function mapRoleBasedAccessControls(
-  ids: GroupSchemaType["id"][],
-  memberships: GroupMembersSchemaType[] | null | undefined,
+  groups: GroupSchemaType[],
+  memberships: GroupMemberSchemaType[] | null | undefined,
 ): RBACType {
   const accessPermissions: RBACType = {};
+
+  const ids = groups.map((group) => group.id);
 
   ids.forEach((id) => {
     accessPermissions[`${id}`] = "anonymous";

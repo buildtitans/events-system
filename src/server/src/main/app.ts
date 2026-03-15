@@ -2,7 +2,7 @@ import cors from "@fastify/cors";
 import Fastify from "fastify";
 import fastifyCookie from "@fastify/cookie";
 import { registerContextHook } from "../hooks/registerSessionHook";
-import { createContext } from "@/src/server/src/bootstrap/context";
+import { createContext } from "@/src/server/src/context/context";
 import {
   fastifyTRPCPlugin,
   FastifyTRPCPluginOptions,

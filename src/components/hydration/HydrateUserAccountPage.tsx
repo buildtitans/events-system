@@ -4,11 +4,8 @@ import type { AppDispatch } from "@/src/lib/store";
 import React, { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
-import { RBACType } from "@/src/server/src/db/clients/types/types";
 import {
   getMyGroups,
-  getParticipations,
   storeUserEmail,
 } from "@/src/lib/store/slices/user/userSlice";
 import { wait } from "@/src/lib/utils/rendering/wait";

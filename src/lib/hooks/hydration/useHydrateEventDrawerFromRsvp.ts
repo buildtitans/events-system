@@ -5,6 +5,7 @@ import type { AppDispatch } from "@/src/lib/store";
 import { fillEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { wait } from "../../utils/rendering/wait";
 
 export const useHydrateEventDrawerFromRsvp = () => {
   const dispatch = useDispatch<AppDispatch>();

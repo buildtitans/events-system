@@ -1,11 +1,10 @@
-import { JSX, useCallback } from "react";
+import type { JSX } from "react";
 import EventHeroCard, { type EventCardProps } from "@/src/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/src/lib/store";
-import { fillEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import {  useSelector } from "react-redux";
+import {  RootState } from "@/src/lib/store";
+import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
 
 type RenderEventsLayoutProps = {
     slots: LayoutSlotSchemaType[],
@@ -21,14 +20,7 @@ function RenderEventsLayout({
     focusedCardIndex }: RenderEventsLayoutProps
 ): JSX.Element[] {
     const groupNamesById = useSelector((s: RootState) => s.events.nameByGroupId);
-    const dispatch = useDispatch<AppDispatch>();
-
-    const handleOpenEvent = useCallback((event: EventCardProps["event"]) => {
-        return () => {
-            dispatch(fillEventDrawer({ status: 'ready', data: event }))
-            dispatch(enqueueDrawer("event drawer"));
-        }
-    }, [dispatch]);
+    const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
 
 
     return slots.map((slot, i: number) => {
@@ -37,7 +29,6 @@ function RenderEventsLayout({
             case "card":
                 return (
                     <EventHeroCard
-                        groupName={groupNamesById[slot.event.group_id]}
                         index={i}
                         key={slot.event.id}
                         event={slot.event}
@@ -45,7 +36,7 @@ function RenderEventsLayout({
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
-                        handleOpenEvent={handleOpenEvent}
+                        handleOpenEvent={handleOpenEditStatus}
                     />
                 )
 
@@ -58,7 +49,7 @@ function RenderEventsLayout({
                         handleBlur={handleBlur}
                         handleFocus={handleFocus}
                         focusedCardIndex={focusedCardIndex}
-                        handleOpenEvent={handleOpenEvent}
+                        handleOpenEvent={handleOpenEditStatus}
                     />
                 )
             }

@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
@@ -7,84 +7,71 @@ export const authRouter = router({
   login: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.api.auth.login(input.email, input.password);
-      const { session, user } = res;
-      ctx.reply.setCookie("session", session.id, {
-        httpOnly: true,
-        path: "/",
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        expires: new Date(session.expires_at),
-      });
+      const result = await ctx.services.api.domains.session.login(
+        input.email,
+        input.password,
+      );
 
-      ctx.user = {
-        id: user.id,
-        role: "user",
-        email: user.email,
-      };
+      ctx.session.setCookieHeader(result);
+
+      const lookupMap =
+        await ctx.services.api.domains.users.getRoleBasedLayoutMap(
+          result.user.id,
+        );
+
+      const attendanceDictionary =
+        await ctx.services.api.domains.participations.getAttendanceDictionary(
+          result.user.id,
+        );
 
       return {
-        success: res.user.id ? true : false,
-        permissions: ctx.cache.roleLookupMap,
-        attendanceDictionary: ctx.cache.attendanceDictionary,
-        email: user.email,
+        ok: result.ok,
+        email: result.user.email,
+        lookupMap,
+        attendanceDictionary,
       };
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {
-    const token = ctx.req.cookies.session;
-
-    if (!token) return null;
-
-    const res = await ctx.api.auth.logOut(token);
-
-    if (res) {
-      ctx.reply.clearCookie("session");
-    }
-
-    return res;
+    return await ctx.services.api.domains.session.logout(
+      ctx.req.cookies.session,
+    );
   }),
 
   signup: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.api.auth.signUp(input.email, input.password);
-      return res;
+      return await ctx.services.api.domains.users.createNewUser(
+        input.email,
+        input.password,
+      );
     }),
+
   recover: publicProcedure.mutation(async ({ ctx }) => {
-    const token = ctx.req.cookies.session;
-
-    if (!token) return null;
-
-    const session = await ctx.api.auth.getSession(token);
-
-    if (!session) {
-      ctx.reply.clearCookie("session");
-      return undefined;
-    }
-
-    const userEmail = await ctx.services.userClient.getEmailById(
-      session.user_id,
+    const session = await ctx.services.api.domains.session.recoverSession(
+      ctx.req.cookies.session,
     );
 
-    ctx.user = { id: session.user_id, role: "user", email: userEmail };
+    if (!session) {
+      ctx.session.removeCookieHeader();
+      return null;
+    }
 
-    const permissions = ctx.cache.roleLookupMap;
+    const [email, permissions] = await Promise.all([
+      ctx.services.api.domains.users.getEmailById(session.user_id),
+      ctx.services.api.domains.users.getRoleBasedLayoutMap(session.user_id),
+    ]);
 
     return {
       session,
-      userEmail,
+      email,
       permissions,
     };
   }),
 
-  session: publicProcedure.mutation(async ({ ctx }) => {
-    const token = ctx.req.cookies.session;
-
-    if (!token) return null;
-
-    const session = await ctx.api.auth.getSession(token);
-
-    return session;
+  checkSession: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.session.recoverSession(
+      ctx.req.cookies.session,
+    );
   }),
 });

@@ -1,5 +1,4 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import { ServiceClient } from "../services/serviceClient";
 
 async function detectSession(
   app: FastifyInstance,
@@ -25,9 +24,7 @@ async function detectSession(
 }
 
 export async function registerContextHook(app: FastifyInstance) {
-  app.addHook("preHandler", async (req: FastifyRequest) => {
+  app.addHook("onRequest", async (req: FastifyRequest) => {
     await detectSession(app, req);
-
-    req.services = new ServiceClient(req.server.db);
   });
 }

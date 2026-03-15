@@ -10,7 +10,7 @@ export const GroupRoleSchema = Type.Union([
   Type.Literal("anonymous"),
 ]);
 
-const GroupMembersSchema = Type.Object({
+const GroupMemberSchema = Type.Object({
   group_id: Type.String(),
   user_id: Type.String(),
   role: Type.Union([
@@ -27,22 +27,22 @@ const MemberToRemoveSchema = Type.Object({
 
 const GroupIDForInsertSchema = Type.String();
 
-const GroupMembersArraySchema = Type.Array(GroupMembersSchema);
+const GroupMembersArraySchema = Type.Array(GroupMemberSchema);
 
 type MemberToRemoveSchemaType = Static<typeof MemberToRemoveSchema>;
 
 type GroupMembersArraySchemaType = Static<typeof GroupMembersArraySchema>;
 
-type GroupMembersSchemaType = Static<typeof GroupMembersSchema>;
+type GroupMemberSchemaType = Static<typeof GroupMemberSchema>;
 
 type GroupIDForInsertSchemaType = Static<typeof GroupIDForInsertSchema>;
 
 type GroupRoleSchemaType = Static<typeof GroupRoleSchema>;
 
-export { GroupMembersSchema, GroupIDForInsertSchema };
+export { GroupMemberSchema, GroupIDForInsertSchema };
 
 export type {
-  GroupMembersSchemaType,
+  GroupMemberSchemaType,
   GroupIDForInsertSchemaType,
   GroupMembersArraySchemaType,
   MemberToRemoveSchemaType,
@@ -56,12 +56,17 @@ export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(
 export const CompiledMemberToRemoveSchema =
   TypeCompiler.Compile(MemberToRemoveSchema);
 
-export const GroupMembersSchemaValidator =
-  TypeCompiler.Compile(GroupMembersSchema);
+export const GroupMemberSchemaValidator =
+  TypeCompiler.Compile(GroupMemberSchema);
 
 export const ValidateGroupMember = createValidator(
-  GroupMembersSchema,
-  "GroupMembersSchema",
+  GroupMemberSchema,
+  "GroupMemberSchema",
+);
+
+export const GroupRoleSchemaValidator = createValidator(
+  GroupRoleSchema,
+  "GroupRoleSchema",
 );
 
 export const ValidateGroupMembersArray = createValidator(

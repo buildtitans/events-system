@@ -35,6 +35,10 @@ const EventSchema = Type.Object({
 
 const GroupIdSchema = Type.String();
 
+export const GroupIdArraySchema = Type.Array(GroupIdSchema);
+
+export type GroupIdArraySchema = Static<typeof GroupIdArraySchema>;
+
 const NewEventInputSchema = Type.Object({
   group_id: Type.String(),
   starts_at: Type.String(),

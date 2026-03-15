@@ -1,7 +1,7 @@
-import { router, publicProcedure } from "@/src/server/src/bootstrap/init";
+import { router, publicProcedure } from "@/src/server/src/context/init";
 
 export const categoriesRouter = router({
   getAllCategories: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.api.categories.getCategories();
+    return ctx.services.api.domains.groups.getGroupCategories();
   }),
 });

@@ -1,5 +1,4 @@
 import * as React from "react";
-import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -9,11 +8,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import AddIcon from "@mui/icons-material/Add";
-import type { GroupMembersSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { useLeaveGroup } from "@/src/lib/hooks/auth/useLeaveGroup";
 
 type MembersOnlyActionsMenuProps = {
-  group_id: GroupMembersSchemaType["group_id"];
+  group_id: GroupMemberSchemaType["group_id"];
 };
 
 export default function MembersOnlyActionMenu({

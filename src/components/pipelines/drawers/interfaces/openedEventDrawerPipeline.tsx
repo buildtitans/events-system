@@ -18,7 +18,6 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
 
   switch (openedEvent.status) {
     case "ready":
-    console.log(permissions[openedEvent.data.group_id])
     return (
         <RenderEventDrawerContents
           role={drawerViewerRole}
