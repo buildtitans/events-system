@@ -9,12 +9,16 @@ import { DBClient } from "../../db";
 import { AuthorizationService } from "../services/authorizationService";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
+import { EventHydrationHandler } from "../handlers/hydrationHandler";
 
 export class EventsService {
+  public readonly hydrate: EventHydrationHandler;
   constructor(
     private readonly db: DBClient,
     private readonly policy: AuthorizationService,
-  ) {}
+  ) {
+    this.hydrate = new EventHydrationHandler(this.db);
+  }
 
   async getAllEvents(): Promise<EventsArraySchemaType> {
     return await this.db.events.getEvents();

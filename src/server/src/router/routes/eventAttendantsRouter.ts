@@ -12,40 +12,21 @@ export const eventAttendantsRouter = router({
       return await ctx.services.api.domains.events.getEventAttendants(input);
     }),
 
+  getNumberAttendingEvent: publicProcedure
+    .input(EventIDValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
+        input,
+      );
+    }),
+
   getViewerAttendance: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      const { numGoing, numInterested } =
-        await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
-          input,
-        );
-
-      console.log({
-        going: numGoing,
-        interested: numInterested,
-      });
-
-      const rsvpStatus =
-        await ctx.services.api.domains.participations.getUserRsvpToEvent(
-          ctx.req.user?.id,
-          input,
-        );
-
-      console.log(rsvpStatus);
-
-      const permissions =
-        await ctx.services.api.domains.users.getRoleBasedLayoutMap(
-          ctx.req.user?.id,
-        );
-
-      console.log(permissions);
-
-      return {
-        currentUserStatus: rsvpStatus,
-        numGoing: numGoing,
-        numInterested: numInterested,
-        permissions: permissions,
-      };
+      return await ctx.services.api.domains.participations.getUserRsvpToEvent(
+        ctx.req.user?.id,
+        input,
+      );
     }),
 
   updateViewerAttendance: publicProcedure

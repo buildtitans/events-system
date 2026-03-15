@@ -37,6 +37,7 @@ const groupMembersRouter = router({
         input,
       );
     }),
+
   getGroupMembers: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {

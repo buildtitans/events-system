@@ -12,7 +12,7 @@ import {
 } from "../../store/slices/events/EventDrawerSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export const useHydrateEventDrawer = () => {
   const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
@@ -28,7 +28,9 @@ export const useHydrateEventDrawer = () => {
       currentUserStatus: EventAttendantsSchemaType["status"],
       numGoing: number,
       numInterested: number,
+      role: GroupMemberSchemaType["role"],
     ) => {
+      dispatch(getDrawerViewerRole(role));
       dispatch(getUserAttendanceStatus(currentUserStatus));
       dispatch(getNumAttendants({ status: "ready", data: numGoing }));
       dispatch(getNumInterested({ status: "ready", data: numInterested }));
@@ -43,20 +45,18 @@ export const useHydrateEventDrawer = () => {
 
     const executeHydrateEventDrawer = async () => {
       try {
-        const { currentUserStatus, numGoing, numInterested, permissions } =
-          await trpcClient.eventAttendants.getViewerAttendance.mutate(
-            event.data.id,
-          );
+        const { attendants, rsvpStatus, role } =
+          await trpcClient.events.eventForDrawer.mutate(event.data.id);
 
-        const role = await trpcClient.groupMembers.getViewerRole.mutate(
-          event.data.group_id,
+        handleHydrationResults(
+          rsvpStatus,
+          attendants.going,
+          attendants.interested,
+          role,
         );
-
-        dispatch(getViewerPermissions(permissions));
-        dispatch(getDrawerViewerRole(role));
-
-        handleHydrationResults(currentUserStatus, numGoing, numInterested);
-      } catch (err) {}
+      } catch (err) {
+        console.error("Failed to hydrate event drawer", err);
+      }
 
       const { name, slug } = getSlugAndName(event.data.group_id);
 

@@ -73,6 +73,15 @@ export const eventsRouter = router({
       return await ctx.services.api.domains.events.getEventById(input);
     }),
 
+  eventForDrawer: publicProcedure
+    .input(EventIDValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.hydrate.openedEvent(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
   search: publicProcedure
     .input(SearchInputSchemaValidator)
     .mutation(async ({ ctx, input }) => {
