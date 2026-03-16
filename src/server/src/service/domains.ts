@@ -2,10 +2,12 @@ import { DBClient } from "../db";
 import { ParticipationsService } from "./services/participationsService";
 import { UserService } from "./services/userService";
 import { GroupService } from "./services/groupService";
-import { AuthorizationService } from "./services/authorizationService";
+import { Authorization } from "./auth/authorization";
 import { SessionService } from "./services/SessionService";
 import { EventsService } from "@/src/server/src/service/services/EventsService";
 import { NotificatonService } from "@/src/server/src/service/services/notificationService";
+
+//TODO: consider splitting authorized services + public services
 
 export class Domains {
   public readonly participations: ParticipationsService;
@@ -17,7 +19,7 @@ export class Domains {
 
   constructor(
     private readonly db: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {
     this.session = new SessionService(this.db, this.policy);
     this.participations = new ParticipationsService(this.db, this.policy);

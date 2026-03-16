@@ -15,7 +15,9 @@ export async function syncOpenedGroup(
   slug: GroupSchemaType["slug"],
 ): Promise<SyncOpenGroupPayload> {
   try {
-    const { group, role } = await trpcClient.groups.groupBySlug.mutate(slug);
+    const group = await trpcClient.groups.groupBySlug.mutate(slug);
+
+    const role = await trpcClient.groupMembers.getViewerRole.mutate(group.id);
 
     if (!group) {
       return {

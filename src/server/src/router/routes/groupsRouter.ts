@@ -10,17 +10,7 @@ import {
   CompiledSearchSchema,
   SearchSchemaType,
 } from "@/src/schemas/search/searchSchema";
-import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
-import { getNextGroupEventLookup } from "@/src/lib/store/slices/user/userSlice";
-import {
-  CompiledGroupIdsSchema,
-  ValidateGroupId,
-} from "../../lib/validation/schemaValidators";
-import {
-  GroupIdArraySchema,
-  GroupIdSchema,
-  GroupIdSchemaType,
-} from "@/src/schemas/events/eventSchema";
+import { GroupIdArraySchema } from "@/src/schemas/events/eventSchema";
 
 const searchInputValidator =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);
@@ -42,23 +32,7 @@ export const groupsRouter = router({
   groupBySlug: publicProcedure
     .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
     .mutation(async ({ ctx, input }) => {
-      const group =
-        await ctx.services.api.domains.groups.getGroupFromSlug(input);
-
-      console.log(group);
-
-      const userRole =
-        await ctx.services.api.domains.groups.memberships.getRoleInGroup(
-          ctx.req.user?.id,
-          group.id,
-        );
-
-      console.log(userRole);
-
-      return {
-        group: group,
-        role: userRole,
-      };
+      return await ctx.services.api.domains.groups.getGroupFromSlug(input);
     }),
 
   searchGroups: publicProcedure

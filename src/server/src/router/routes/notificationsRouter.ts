@@ -9,7 +9,7 @@ import {
 } from "@/src/schemas/notifications/notificationsSchema";
 
 export const notificationsRouter = router({
-  getNotifications: publicProcedure.mutation(async ({ ctx }) => {
+  getNotifications: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.notifications.getNewNotifications(
       ctx.req.user?.id,
     );

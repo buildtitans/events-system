@@ -1,8 +1,8 @@
-import { RoleBasedAccessService } from "../handlers/roleBasedAccessHandler";
+import { RoleBasedAccessHandler } from "./roleBasedAccessHandler";
 import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
 
-export class AuthorizationService {
-  constructor(private readonly auth: RoleBasedAccessService) {}
+export class Authorization {
+  constructor(private readonly auth: RoleBasedAccessHandler) {}
 
   requireAuthenticated(userId: string | undefined | null): string {
     if (!userId) {

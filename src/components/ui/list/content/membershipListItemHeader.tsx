@@ -30,10 +30,9 @@ export default function MembershipListItemHeader({
     >
       <Stack direction={"row"} gap={4} alignItems={"center"} >
        
-        <Box>
           <ListItemText
             sx={{
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             primary={
               <Box 
@@ -58,15 +57,12 @@ export default function MembershipListItemHeader({
               </Box>
             }
             secondary={
-              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="caption" sx={{ fontWeight: 400 }}>
                     Members: {membership.member_count}
                   
                 </Typography>
-              </Box>
             }
           ></ListItemText>
-        </Box>
       </Stack>
 
        

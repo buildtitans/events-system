@@ -1,13 +1,13 @@
 import { DBClient } from "@/src/server/src/db/clients/dbClient";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { AuthorizationService } from "./authorizationService";
+import { Authorization } from "../auth/authorization";
 import { mapRoleBasedAccessControls } from "../../lib/utils/mapRoleBasedAccessControls";
 
 export class UserService {
   constructor(
     private readonly api: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {}
 
   async createNewUser(email: string, password: string) {

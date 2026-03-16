@@ -1,5 +1,5 @@
 import { DBClient } from "../../db";
-import { AuthorizationService } from "./authorizationService";
+import { Authorization } from "../auth/authorization";
 
 type NewNotification = {
   group_id: string;
@@ -11,7 +11,7 @@ type NewNotification = {
 export class NotificatonService {
   constructor(
     private readonly db: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {}
 
   async getNewNotifications(user_id: string | null | undefined) {

@@ -1,10 +1,10 @@
 import { DBClient } from "../../db";
-import { AuthorizationService } from "./authorizationService";
+import { Authorization } from "../auth/authorization";
 
 export class SessionService {
   constructor(
     private readonly db: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {}
 
   async login(email: string, password: string) {

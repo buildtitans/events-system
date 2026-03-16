@@ -40,6 +40,7 @@ export default function HistoryTimeline({ history }: HistoryTimelineProps) {
           </Typography>
         
         <List
+        component={"ul"}
         sx={{
           width: '100%'
         }}

@@ -47,8 +47,8 @@ export default function MembershipListItem({
     >
       <Stack
         gap={1}
-        justifyContent={"space-between"}
         alignItems={"start"}
+        justifyContent={"start"}
         sx={{ width: "auto", height: "100%" }}
       >
         <MembershipListItemHeader 
@@ -67,7 +67,7 @@ export default function MembershipListItem({
       justifyContent={"start"}
       alignItems={"end"}
       sx={{
-        height: "100%"
+        height: "100%",
       }}
       >
         {nextEvent ? <Chip 

@@ -1,7 +1,7 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { AuthorizationService } from "../services/authorizationService";
+import { AuthorizationService } from "../auth/authorization";
 
 export class MembershipHandler {
   constructor(

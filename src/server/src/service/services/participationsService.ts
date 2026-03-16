@@ -9,20 +9,19 @@ import {
   UserMembershipSchemaArrayValidator,
   UserMembershipSchemaType,
 } from "@/src/schemas/groups/userMembershipSchema";
-import { AuthorizationService } from "./authorizationService";
+import { Authorization } from "../auth/authorization";
 import { mapAttendanceDictionary } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 import { CensusHandler } from "../handlers/censusHandler";
 import { filterUserRsvps } from "@/src/server/src/lib/utils/filterRsvps";
 import { buildGroupNameLookup } from "@/src/server/src/lib/utils/buildGroupNameLookup";
 import { SchemaDtoHandler } from "../handlers/schemaDtoHandler";
-import { GroupRoleSchemaValidator } from "@/src/schemas/groups/groupMembersSchema";
 
 export class ParticipationsService {
   public readonly census: CensusHandler;
   private readonly parse: SchemaDtoHandler;
   constructor(
     private readonly db: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {
     this.census = new CensusHandler(this.db);
     this.parse = new SchemaDtoHandler(this.db);

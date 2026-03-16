@@ -33,9 +33,13 @@ export const authRouter = router({
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.session.logout(
+    const res = await ctx.services.api.domains.session.logout(
       ctx.req.cookies.session,
     );
+
+    ctx.session.removeCookieHeader();
+
+    return res;
   }),
 
   signup: publicProcedure

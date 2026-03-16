@@ -1,4 +1,8 @@
-import { router, publicProcedure } from "@/src/server/src/context/init";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+} from "@/src/server/src/context/init";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
   GroupIDForInsertSchemaType,
@@ -44,7 +48,7 @@ const groupMembersRouter = router({
       return await ctx.services.api.domains.groups.getAllGroupMembers(input);
     }),
 
-  viewerMemberships: publicProcedure.mutation(async ({ ctx }) => {
+  viewerMemberships: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.getMemberships(
       ctx.req.user?.id,
     );

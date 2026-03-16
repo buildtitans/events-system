@@ -2,7 +2,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import { GroupLifecycleHandler } from "../handlers/groupLifecycleHandler";
 import { MembershipHandler } from "../handlers/membershipHandler";
-import { AuthorizationService } from "./authorizationService";
+import { Authorization } from "../auth/authorization";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
@@ -12,7 +12,7 @@ export class GroupService {
 
   constructor(
     private readonly db: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {
     this.groupLifecycle = new GroupLifecycleHandler(this.db, this.policy);
     this.memberships = new MembershipHandler(this.db, this.policy);
@@ -41,8 +41,6 @@ export class GroupService {
   }
 
   async getGroupFromSlug(slug: string): Promise<GroupSchemaType> {
-    console.log({ slug: slug });
-
     return await this.db.groups.getGroupBySlug(slug);
   }
 }

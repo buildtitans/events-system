@@ -1,4 +1,8 @@
-import { router, publicProcedure } from "@/src/server/src/context/init";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+} from "@/src/server/src/context/init";
 import {
   EventIDValidator,
   UpdatedAttendanceResponseValidator,
@@ -20,7 +24,7 @@ export const eventAttendantsRouter = router({
       );
     }),
 
-  getViewerAttendance: publicProcedure
+  getViewerAttendance: protectedProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.getUserRsvpToEvent(
@@ -29,7 +33,7 @@ export const eventAttendantsRouter = router({
       );
     }),
 
-  updateViewerAttendance: publicProcedure
+  updateViewerAttendance: protectedProcedure
     .input(UpdateAttendanceInputValidator)
     .output(UpdatedAttendanceResponseValidator)
     .mutation(async ({ ctx, input }) => {
@@ -44,7 +48,7 @@ export const eventAttendantsRouter = router({
     return ctx.services.api.domains.participations.census.getPopularEventsIds();
   }),
 
-  getUserRsvpdEvents: publicProcedure.mutation(async ({ ctx }) => {
+  getUserRsvpdEvents: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.getRsvpdEvents(
       ctx.req.user?.id,
     );

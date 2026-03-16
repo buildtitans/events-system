@@ -4,13 +4,18 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import { SearchInputSchemaValidator } from "@/src/schemas/search/searchSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
-import { router, publicProcedure } from "@/src/server/src/context/init";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+} from "@/src/server/src/context/init";
 import { NewEventInputValidator } from "@/src/schemas/events/eventSchema";
 import { groupIdInputValidator } from "./groupMembersRouter";
 import {
   EventIdInputValidator,
   EventIDValidator,
 } from "@/src/schemas/events/eventAttendantsSchema";
+import { getGroupHistory } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -19,7 +24,7 @@ export const eventsRouter = router({
     return ctx.services.layout.compileLayout(events);
   }),
 
-  newEvent: publicProcedure
+  newEvent: protectedProcedure
     .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {
       return ctx.services.api.domains.events.createEvent(
@@ -41,7 +46,15 @@ export const eventsRouter = router({
   getGroupEvents: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return ctx.services.api.domains.events.getGroupEvents(input);
+      const events =
+        await ctx.services.api.domains.events.getGroupEvents(input);
+      return ctx.services.layout.compileLayout(events);
+    }),
+
+  getGroupHistory: publicProcedure
+    .input(groupIdInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.getGroupEvents(input);
     }),
 
   updateEventStatus: publicProcedure
