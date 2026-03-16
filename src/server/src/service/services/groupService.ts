@@ -5,6 +5,8 @@ import { MembershipHandler } from "../handlers/membershipHandler";
 import { Authorization } from "../auth/authorization";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import { buildGroupNameLookup } from "../../lib/utils/buildGroupNameLookup";
+import type { NameSlugDescriptionLookup } from "../../lib/utils/buildGroupNameLookup";
 
 export class GroupService {
   public readonly groupLifecycle: GroupLifecycleHandler;
@@ -20,6 +22,11 @@ export class GroupService {
 
   async getGroupCategories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
+  }
+
+  async getGroupNameDictionary(): Promise<NameSlugDescriptionLookup> {
+    const groups = await this.db.groups.getGroups();
+    return buildGroupNameLookup(groups);
   }
 
   async getAllGroups(): Promise<GroupSchemaType[]> {

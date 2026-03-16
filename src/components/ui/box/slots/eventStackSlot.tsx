@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { EventStackCard } from "../cards/eventStackCard";
 import { EventCardProps } from "../cards/eventHeroCard";
-import { GroupNameByGroupID } from "@/src/lib/store/slices/events/EventsSlice";
+import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 type EventStackSlotProps = {
@@ -11,7 +11,7 @@ type EventStackSlotProps = {
   handleFocus: EventCardProps["handleFocus"];
   focusedCardIndex: EventCardProps["focusedCardIndex"];
   events: EventCardProps["event"][];
-  groupNamesById: GroupNameByGroupID;
+  groupNameLookup: NameSlugDescriptionLookup ;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
@@ -20,7 +20,7 @@ function EventStackSlot({
   handleFocus,
   focusedCardIndex,
   events,
-  groupNamesById,
+  groupNameLookup,
   handleOpenEvent,
 }: EventStackSlotProps): React.ReactNode {
   return (
@@ -37,7 +37,7 @@ function EventStackSlot({
         {events.map((event) => (
           <EventStackCard
             key={event.id}
-            groupName={groupNamesById[event.group_id]}
+            groupName={groupNameLookup[event.group_id].name}
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}

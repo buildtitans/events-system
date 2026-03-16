@@ -11,6 +11,7 @@ const createDomainStateFallback = (): DomainStateType => ({
   events: [],
   groups: [],
   categories: [],
+  groupNameDictionary: {},
 });
 
 async function syncDomains(): Promise<SyncDomainsResult> {
@@ -24,6 +25,7 @@ async function runSync(): Promise<SyncResults> {
     events: trpcClient.events.list.mutate(),
     groups: trpcClient.groups.list.mutate(),
     categories: trpcClient.categories.getAllCategories.mutate(),
+    groupNameDictionary: trpcClient.groups.nameLookup.mutate(),
   } satisfies DomainPromises;
   const keys = Object.keys(map) as Domains[];
   const promises = await Promise.allSettled(Object.values(map));
@@ -54,6 +56,10 @@ function handleResults(results: SyncResults): SyncDomainsResult {
         results.categories.status === "fulfilled"
           ? results.categories.value
           : [],
+      groupNameDictionary:
+        results.groupNameDictionary.status === "fulfilled"
+          ? results.groupNameDictionary.value
+          : {},
     } as DomainStateType,
   };
 }

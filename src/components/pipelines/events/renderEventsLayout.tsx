@@ -19,7 +19,7 @@ function RenderEventsLayout({
     handleFocus,
     focusedCardIndex }: RenderEventsLayoutProps
 ): JSX.Element[] {
-    const groupNamesById = useSelector((s: RootState) => s.events.nameByGroupId);
+    const groupNameLookup = useSelector((s: RootState) => s.groups.groupNameLookup);
     const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
 
 
@@ -30,6 +30,7 @@ function RenderEventsLayout({
                 return (
                     <EventHeroCard
                         index={i}
+                        groupName={groupNameLookup[slot.event.group_id].name}
                         key={slot.event.id}
                         event={slot.event}
                         variant={slot.variant}
@@ -43,7 +44,7 @@ function RenderEventsLayout({
             default: {
                 return (
                     <EventStackSlot
-                        groupNamesById={groupNamesById}
+                    groupNameLookup={groupNameLookup}    
                         key={slot.events.map(e => e.id).join("+")}
                         events={slot.events}
                         handleBlur={handleBlur}

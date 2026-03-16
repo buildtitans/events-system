@@ -39,6 +39,7 @@ export type EventCardProps = {
   event: EventSchemaType;
   variant: CardDesignation;
   index: number;
+  groupName: string;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
@@ -49,6 +50,7 @@ function EventHeroCard({
   event,
   variant,
   index,
+  groupName,
   handleOpenEvent,
 }: EventCardProps): JSX.Element {
   const scheduled_at = useMemo(() => {
@@ -99,9 +101,9 @@ function EventHeroCard({
         </Box>
 
         <StyledCardContent>
-          {/* <Typography gutterBottom variant="caption" color="info" component="div">
+          { <Typography gutterBottom variant="caption" color="info" component="div">
             {groupName}
-          </Typography> */}
+          </Typography> }
           <Typography gutterBottom variant="h6" component="div">
             {event.title}
           </Typography>

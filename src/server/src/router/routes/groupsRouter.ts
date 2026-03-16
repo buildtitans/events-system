@@ -20,6 +20,10 @@ export const groupsRouter = router({
     return await ctx.services.api.domains.groups.getAllGroups();
   }),
 
+  nameLookup: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.groups.getGroupNameDictionary();
+  }),
+
   createNewGroup: publicProcedure
     .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {

@@ -1,7 +1,7 @@
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 
-export class SessionService {
+export class Athentication {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

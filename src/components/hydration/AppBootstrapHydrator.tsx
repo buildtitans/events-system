@@ -9,6 +9,7 @@ import { populateEvents } from "@/src/lib/store/slices/events/EventsSlice";
 import { getAllCategories } from "@/src/lib/store/slices/categories/CategorySlice";
 import { createCategoryLookup } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
 import { getCatLookup } from "@/src/lib/store/slices/categories/CategorySlice";
+import { getNameLookup } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
 import { wait } from "@/src/lib/utils/rendering/wait";
@@ -22,6 +23,8 @@ export default function AppBootstrapHydrator({
   useHydrateNotifications();
   const dispatch = useDispatch<AppDispatch>();
 
+  console.log(domains);
+
   useEffect(() => {
     if (!domains) return;
 
@@ -29,11 +32,14 @@ export default function AppBootstrapHydrator({
       events: DomainStateType["events"],
       groups: DomainStateType["groups"],
       categories: DomainStateType["categories"],
+      groupNameDictionary: DomainStateType["groupNameDictionary"]
     ) => {
       if (groups.length === 0 || events.length === 0) {
         dispatch(signalDomainStatus("failed"));
         return;
-      }
+      } 
+
+      dispatch(getNameLookup(groupNameDictionary));
 
       dispatch(getAllGroups(groups));
 
@@ -54,7 +60,7 @@ export default function AppBootstrapHydrator({
 
       await wait(1200);
 
-      dispatchDomains(domains.events, domains.groups, domains.categories);
+      dispatchDomains(domains.events, domains.groups, domains.categories, domains.groupNameDictionary);
     };
 
     void hydrateDomains();

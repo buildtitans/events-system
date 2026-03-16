@@ -1,32 +1,48 @@
-import type { EventsPages } from "@/src/lib/store/slices/events/EventsSlice";
-import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { EventsPages } from "../../store/slices/events/types";
+import type {
+  GroupsSchemaType,
+  GroupSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
+export type NameSlugDescriptionLookup = Record<
+  GroupSchemaType["id"],
+  {
+    name: GroupSchemaType["name"];
+    slug: GroupSchemaType["slug"];
+    group_description: GroupSchemaType["description"];
+  }
+>;
+
 type DomainStateType = {
-    events: EventsPages,
-    groups: GroupsSchemaType,
-    categories: CategoriesSchemaType
+  events: EventsPages;
+  groups: GroupsSchemaType;
+  categories: CategoriesSchemaType;
+  groupNameDictionary: NameSlugDescriptionLookup;
 };
 
 type SyncDomainsResult = {
-    status: "fulfilled" | "rejected",
-    data: DomainStateType
-}
+  status: "fulfilled" | "rejected";
+  data: DomainStateType;
+};
 
 type Domains = keyof DomainStateType;
 
-type DomainPromise<K extends keyof DomainStateType> = Promise<DomainStateType[K]>;
+type DomainPromise<K extends keyof DomainStateType> = Promise<
+  DomainStateType[K]
+>;
 
 type DomainPromises = { [K in keyof DomainStateType]: DomainPromise<K> };
 
-type SyncResults = { [K in keyof DomainStateType]: PromiseSettledResult<DomainStateType[K]> };
-
+type SyncResults = {
+  [K in keyof DomainStateType]: PromiseSettledResult<DomainStateType[K]>;
+};
 
 export type {
-    Domains,
-    DomainPromise,
-    DomainPromises,
-    SyncResults,
-    SyncDomainsResult,
-    DomainStateType
+  Domains,
+  DomainPromise,
+  DomainPromises,
+  SyncResults,
+  SyncDomainsResult,
+  DomainStateType,
 };

@@ -10,6 +10,11 @@ import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 
 export const EventsPipeline = (events: EventsDomainType): JSX.Element => {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
+    const groupNameLookup = useSelector((s: RootState) => s.groups.groupNameLookup);
+
+    console.log({
+        "Dictionary": groupNameLookup
+    })
 
     switch (events.status) {
         case "pending":

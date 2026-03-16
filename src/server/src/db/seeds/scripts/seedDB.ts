@@ -13,13 +13,13 @@ async function seedDB() {
 
   const usersByEmail = await seedUsers();
   console.log("Users OK");
-  const groupsBySlug = await seedGroups(categoriesBySlug, usersByEmail);
+  const groupBySlug = await seedGroups(categoriesBySlug, usersByEmail);
   console.log("Groups OK");
 
-  await seedEvents(groupsBySlug);
+  await seedEvents(groupBySlug);
   console.log("Events OK");
 
-  const membersByGroupId = await seedGroupMembers(groupsBySlug);
+  const membersByGroupId = await seedGroupMembers(groupBySlug);
   console.log("Group Members OK");
 
   await seedEventAttendants(membersByGroupId);
