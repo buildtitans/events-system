@@ -7,11 +7,10 @@ import Container from "@mui/material/Container";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { JSX } from "react";
 import Notifications from "../menus/notifications/notifications";
-import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import { navActionsButtonSx } from "@/src/styles/sx/sx";
-import RenderCurrentUser from "@/src/components/pipelines/buttons/renderCurrentUser";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
+import DashboardButton from "./dashboardButton";
 
 type NavActionsProps = {
   userKind: UserKind;
@@ -35,77 +34,71 @@ export default function NavActions({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-
         },
       }}
     >
-     
-
-      <Box 
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 2
-      }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+        }}
       >
-
-      {userKind === "anonymous" && (
-        <Button
-          suppressHydrationWarning={true}
-          onClick={() => dispatch(enqueueDrawer("sign in drawer"))}
-          color="info"
-          variant="contained"
-          size="small"
-          sx={navActionsButtonSx}
-        >
-          Sign in
-        </Button>
-      )}{" "}
-      {userKind === "anonymous" && (
-        <Button
-          suppressHydrationWarning={true}
-          onClick={openSignupDrawer}
-          sx={navActionsButtonSx}
-          color="info"
-          variant="contained"
-          size="small"
-        >
-          Sign up
-        </Button>
-      )}
-      {userKind === "authenticated" && (
-        <Button
-          suppressHydrationWarning={true}
-          sx={navActionsButtonSx}
-          onClick={showSignoutModal}
-          color="info"
-          variant="contained"
-          size="small"
-          startIcon={<LogoutIcon />}
->
-          Sign out
-        </Button>
-      )}
+        {userKind === "anonymous" && (
+          <Button
+            suppressHydrationWarning={true}
+            onClick={() => dispatch(enqueueDrawer("sign in drawer"))}
+            color="info"
+            variant="contained"
+            size="small"
+            sx={navActionsButtonSx}
+          >
+            Sign in
+          </Button>
+        )}{" "}
+        {userKind === "anonymous" && (
+          <Button
+            suppressHydrationWarning={true}
+            onClick={openSignupDrawer}
+            sx={navActionsButtonSx}
+            color="info"
+            variant="contained"
+            size="small"
+          >
+            Sign up
+          </Button>
+        )}
+        {userKind === "authenticated" && (
+          <Button
+            suppressHydrationWarning={true}
+            sx={navActionsButtonSx}
+            onClick={showSignoutModal}
+            color="info"
+            variant="contained"
+            size="small"
+            startIcon={<LogoutIcon />}
+          >
+            Sign out
+          </Button>
+        )}
       </Box>
 
-
-       <Box 
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 2
-      }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+        }}
       >
-      {userKind === "authenticated" && <Notifications key={"notifications-badge"} />}
+        {userKind === "authenticated" && (
+          <Notifications key={"notifications-badge"} />
+        )}
 
-
-      {userKind === "authenticated" && <RenderCurrentUser />}
-
-
+        {userKind === "authenticated" && <DashboardButton />}
       </Box>
     </Container>
   );
