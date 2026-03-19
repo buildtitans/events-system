@@ -23,7 +23,6 @@ export default function AppBootstrapHydrator({
   useHydrateNotifications();
   const dispatch = useDispatch<AppDispatch>();
 
-  console.log(domains);
 
   useEffect(() => {
     if (!domains) return;

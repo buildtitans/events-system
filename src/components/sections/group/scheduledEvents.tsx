@@ -7,11 +7,18 @@ export default function ScheduledEvents({ layout }: { layout: LayoutSlotSchemaTy
     const handleBlur = () => { }
     const handleFocus = () => { }
 
+    console.log(layout)
+
 
     return (
         <Box
         >
-            {RenderEventsLayout(layout, handleBlur, handleFocus, focusedCardIndex)}
+            <RenderEventsLayout 
+            slots={layout}
+            handleBlur={handleBlur}
+            handleFocus={handleFocus}
+            focusedCardIndex={focusedCardIndex}
+            />
         </Box>
     )
 }

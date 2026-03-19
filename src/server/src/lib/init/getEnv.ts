@@ -14,8 +14,6 @@ const ENV_MAP = {
   dbPassword: "PGPASSWORD",
   fastifyUrl: "NEXT_PUBLIC_FASTIFY_SERVER_URL",
   port: "FASTIFY_SERVER_PORT",
-  events_endpoint: "GET_EVENTS_ENDPOINT",
-  groups_endpoint: "GET_GROUPS_ENDPOINT",
   pghost: "PGHOST",
   dbPort: "PGPORT",
   postgresDb: "PGDATABASE",
@@ -23,6 +21,7 @@ const ENV_MAP = {
   cookies_secret: "COOKIES_SECRET",
   client_url: "CLIENT_URL",
   dev_host: "DEV_FASTIFY_HOST",
+  dev_fastify_port: "DEV_FASTIFY_PORT",
 } as const;
 
 type EnvKey = keyof typeof ENV_MAP;

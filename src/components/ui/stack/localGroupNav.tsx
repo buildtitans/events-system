@@ -16,12 +16,15 @@ type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 export default function LocalGroupNav({
   children,
 }: LocalGroupNavProps): JSX.Element {
+  const groupHistoryStatus = useSelector((s: RootState) => s.openGroup.history.status);
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = (option: CurrentDisplay) => {
-
-      dispatch(displaySection(option));
+      if(groupHistoryStatus === "ready") {
+dispatch(displaySection(option));
+      }
+      
   };
 
 
@@ -50,19 +53,22 @@ export default function LocalGroupNav({
         <MenuList variant="menu">
           {options.map((option) => {
               const label = capitalizeFirstLetter(option);
+              const enabled = option === "overview" || groupHistoryStatus === "ready";
 
               return (
-                  <MenuItem
-                  onClick={() => handleClick(option)}
-                  key={option}
-                  value={option}
-            sx={{
-              borderRadius: 2,
-              backgroundColor: (displayed === option) ? 'rgba(255, 255, 255, 0.2)' : 'transparent'
-            }}
-          >
-            {label}
-          </MenuItem>      
+                 <MenuItem
+  onClick={() => handleClick(option)}
+  key={option}
+  value={option}
+  sx={{
+    borderRadius: 2,
+    color: (enabled) ? "white" : "rgba(255, 255, 255, 0.4)",
+    backgroundColor:
+      displayed === option ? "rgba(255, 255, 255, 0.2)" : "transparent",
+  }}
+>
+  {label}
+</MenuItem>      
               )
           })}
           {children}
