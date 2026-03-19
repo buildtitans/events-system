@@ -6,16 +6,31 @@ function requireEnv(value: string | undefined, label: string): string {
   return value;
 }
 
-export const env = {
+function isProdOrDev(nodeEnv: typeof process.env.NODE_ENV) {
+  if (nodeEnv === "production") {
+    return requireEnv(
+      process.env.NEXT_PUBLIC_PROD_API_URL,
+      "NEXT_PUBLIC_PROD_API_URL",
+    );
+  } else {
+    return requireEnv(process.env.NEXT_PUBLIC_API_URL, "NEXT_PUBLIC_API_URL");
+  }
+}
+
+export const trpcClientUrl = {
+  FASTIFY_SERVER_URL: isProdOrDev(process.env.NODE_ENV),
+};
+
+export const devServerBaseUrl = {
   FASTIFY_SERVER_URL: requireEnv(
-    process.env.NEXT_PUBLIC_FASTIFY_SERVER_URL,
-    "NEXT_PUBLIC_FASTIFY_SERVER_URL",
+    process.env.NEXT_PUBLIC_API_URL,
+    "NEXT_PUBLIC_API_URL",
   ),
 };
 
-export const serverBaseUrl = {
+export const prodServerBaseUrl = {
   FASTIFY_SERVER_URL: requireEnv(
-    process.env.NEXT_PUBLIC_BACKEND_URL,
-    "NEXT_PUBLIC_BACKEND_URL",
+    process.env.NEXT_PUBLIC_PROD_API_URL,
+    "NEXT_PUBLIC_PROD_API_URL",
   ),
 };

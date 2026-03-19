@@ -1,19 +1,22 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@/src/server/src/router/router";
 import superjson from "superjson";
-import { env } from "../lib/utils/init/requireEnv";
+import {
+  devServerBaseUrl,
+  prodServerBaseUrl,
+} from "../lib/utils/init/requireEnv";
 
 export const trpcClient = createTRPCProxyClient<AppRouter>({
-    links: [
-        httpBatchLink({
-            url: env.FASTIFY_SERVER_URL,
-            transformer: superjson,
-            fetch(url, options) {
-                return fetch(url, {
-                    ...options,
-                    credentials: "include"
-                });
-            },
-        }),
-    ],
+  links: [
+    httpBatchLink({
+      url: devServerBaseUrl.FASTIFY_SERVER_URL,
+      transformer: superjson,
+      fetch(url, options) {
+        return fetch(url, {
+          ...options,
+          credentials: "include",
+        });
+      },
+    }),
+  ],
 });

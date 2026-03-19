@@ -6,12 +6,13 @@ import { getEnv } from "@/src/server/src/lib/init/getEnv";
 
 const server = buildServer();
 
-const devPort = getEnv("dev_host");
+const devHost = getEnv("dev_host");
+const devPort = Number(getEnv("dev_fastify_port"));
 
 server.listen(
   {
-    port: 3001,
-    host: devPort,
+    port: devPort,
+    host: devHost,
   },
   (err) => {
     if (err) {

@@ -86,6 +86,7 @@ export default function HydrateGroupBySlug({
 
       const { events, group, role, numMembers } = await syncOpenedGroup(slug);
 
+
       if(group) {
         const organizerEmail = await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id)
         dispatch(getEmailOfGroupOrganizer(organizerEmail.email));
