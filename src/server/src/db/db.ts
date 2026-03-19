@@ -5,19 +5,21 @@ import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import type { DB } from "@/src/server/src/db/types/db";
 
+const pgPort = Number(process.env.PGPORT);
+
 const dialect = new PostgresDialect({
-    pool: new Pool({
-        database: process.env.PGDATABASE,
-        host: process.env.PGHOST,
-        user: process.env.PGUSER,
-        password: process.env.PGPASSWORD,
-        port: 5433,
-        max: 10
-    })
+  pool: new Pool({
+    database: process.env.PGDATABASE,
+    host: process.env.PGHOST,
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    port: pgPort,
+    max: 10,
+  }),
 });
 
 const db = new Kysely<DB>({
-    dialect,
-})
+  dialect,
+});
 
 export { db };

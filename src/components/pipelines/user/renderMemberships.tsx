@@ -3,6 +3,7 @@ import SimpleBackdrop from "@/src/components/ui/feedback/pending/backdrop";
 import MyMemberships from "@/src/components/sections/user/myMemberships";
 import { ParticipationsType } from "@/src/lib/store/slices/user/types";
 import { JSX } from "react";
+import NoMemberships from "../../ui/feedback/fallbacks/noMemberships";
 
 export default function RenderMemberships({
   participations,
@@ -15,7 +16,12 @@ export default function RenderMemberships({
     }
 
     case "ready": {
+        if(participations.data.memberships.length > 0) {
       return <MyMemberships memberships={participations.data.memberships} />;
+
+        } else {
+          return <NoMemberships />
+        }
     }
 
     default: {

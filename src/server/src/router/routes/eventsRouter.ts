@@ -57,7 +57,7 @@ export const eventsRouter = router({
       return await ctx.services.api.domains.events.getGroupEvents(input);
     }),
 
-  updateEventStatus: publicProcedure
+  updateEventStatus: protectedProcedure
     .input(
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
