@@ -104,7 +104,7 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "end",
-        gap: 2
+        gap: 1
      }}
      >
         <Box
