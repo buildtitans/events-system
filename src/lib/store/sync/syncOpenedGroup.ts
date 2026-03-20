@@ -8,7 +8,7 @@ export type SyncOpenGroupPayload = {
   events: EventsPages;
   role: GroupMemberSchemaType["role"];
   numMembers: number;
-  organizer?: GroupMemberSchemaType;
+  organizerEmail: string;
 };
 
 export async function syncOpenedGroup(
@@ -25,6 +25,7 @@ export async function syncOpenedGroup(
         events: [],
         role: "anonymous",
         numMembers: 0,
+        organizerEmail: "",
       };
     }
 
@@ -35,16 +36,15 @@ export async function syncOpenedGroup(
       group.id,
     );
 
-    const organizer = members.find(
-      (member) => member.role === "organizer",
-    ) as GroupMemberSchemaType;
+    const { email } =
+      await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id);
 
     return {
       group,
       events,
       role,
       numMembers: members.length,
-      organizer,
+      organizerEmail: email,
     };
   } catch (err) {
     console.error(err);
@@ -53,6 +53,7 @@ export async function syncOpenedGroup(
       events: [],
       role: "anonymous",
       numMembers: 0,
+      organizerEmail: "",
     };
   }
 }

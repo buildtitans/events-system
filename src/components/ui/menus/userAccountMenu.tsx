@@ -2,7 +2,6 @@
 import type { JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
 import type { UserAccountViewType } from "@/src/lib/store/slices/user/types";
 import { changeAccountTab } from "@/src/lib/store/slices/user/userSlice";
 import Paper from "@mui/material/Paper";
@@ -13,20 +12,12 @@ import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import AccountDetailsHeader from "../../sections/user/userAccountMenuHeader";
-import { ValueErrorIterator } from "@sinclair/typebox/errors";
 
 type ViewOptionsType = { label: string, value: UserAccountViewType}
 
 type AccountPresentationOptions = Array<ViewOptionsType>;
 
 const opts = [{ label: "My Groups", value: "my groups"}, {label: "Memberships", value: "memberships"}, { label: "RSVPs", value: "rsvps"}] satisfies AccountPresentationOptions
-
-const options: UserAccountViewType[] = [
-  "my groups",
-  "memberships",
-  "rsvps",
-  "settings",
-];
 
 export default function UserAccountMenu({ email }: { email: string}): JSX.Element {
   const displayed = useSelector((s: RootState) => s.user.view);

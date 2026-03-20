@@ -139,7 +139,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
         dispatch(enqueueSidebar("group"));
       }
     },
-    [router],
+    [router, dispatch],
   );
 
   return {

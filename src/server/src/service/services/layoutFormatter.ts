@@ -1,5 +1,3 @@
-import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
-import { AuthorsValidator } from "@/src/lib/utils/validation/validateSchema";
 import { layoutSlotValidator } from "@/src/lib/utils/validation/validateSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {

@@ -22,7 +22,6 @@ function CardFooter({
   groupName,
   isFutureDateOrNow,
 }: CardFooterProps): JSX.Element | null {
-  const date = new Date();
 
   return (
     <Box

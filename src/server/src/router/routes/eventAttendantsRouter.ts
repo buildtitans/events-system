@@ -3,10 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/src/context/init";
-import {
-  EventIDValidator,
-  UpdatedAttendanceResponseValidator,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventIDValidator } from "@/src/schemas/events/eventAttendantsSchema";
 import { UpdateAttendanceInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
 
 export const eventAttendantsRouter = router({
@@ -35,7 +32,6 @@ export const eventAttendantsRouter = router({
 
   updateViewerAttendance: protectedProcedure
     .input(UpdateAttendanceInputValidator)
-    .output(UpdatedAttendanceResponseValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.updateRsvpStatus(
         ctx.req.user?.id,

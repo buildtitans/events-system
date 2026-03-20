@@ -14,10 +14,7 @@ import { AppDispatch } from "../../store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import {
-  getDrawerViewerRole,
-  getUserAttendanceStatus,
-} from "../../store/slices/events/EventDrawerSlice";
+import { getUserAttendanceStatus } from "../../store/slices/events/EventDrawerSlice";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 

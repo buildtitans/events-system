@@ -7,13 +7,11 @@ import React, { JSX } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
-import { EventsPages } from "@/src/lib/store/slices/events/types";
 
 export const RenderEventsForGroup = (): JSX.Element => {
   const events = useSelector((s: RootState) => s.openGroup.events);
   const page = useSelector((s: RootState) => s.openGroup.currPage);
 
-    console.log(events)
 
   switch (events.status) {
     case "pending": {

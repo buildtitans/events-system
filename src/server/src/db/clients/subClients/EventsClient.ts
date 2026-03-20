@@ -9,9 +9,7 @@ import {
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { AuthorsValidator } from "@/src/lib/utils/validation/validateSchema";
-import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
-import { compileEventsLayout } from "@/src/server/src/layout/compileEventsLayout";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);

@@ -1,4 +1,3 @@
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";

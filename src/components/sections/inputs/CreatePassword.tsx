@@ -11,7 +11,6 @@ type PasswordInputProps = {
 }
 
 function CreatePassword({
-    handleClickOpen,
     handlePassword,
     passwordError,
     passwordErrorMessage

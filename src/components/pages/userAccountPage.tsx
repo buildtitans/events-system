@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { useRouter } from "next/navigation"
 import { useEffect } from "react";
-import AccountDetails from "../sections/user/accountDetails";
 import Stack from "@mui/material/Stack";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
@@ -25,7 +24,7 @@ export default function UserAccount(): JSX.Element {
       dispatch(enqueueSidebar(null));
     }
 
-  }, [userKind])
+  }, [userKind, router, dispatch])
 
     return (
          <Stack

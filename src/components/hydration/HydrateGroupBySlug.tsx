@@ -14,7 +14,6 @@ import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { wait } from "@/src/lib/utils/rendering/wait";
 
@@ -55,12 +54,13 @@ export default function HydrateGroupBySlug({
       );
     };
 
-    const handlePayload = async (
+    const handlePayload = (
       group: GroupSchemaType | null,
       events: EventsPages,
       role: GroupMemberSchemaType["role"],
-      numMembers: number
-    ): Promise<void> => {
+      numMembers: number,
+      organizerEmail: string,
+    ): void => {
       if (!group) {
         dispatch(
           groupOpened({
@@ -70,7 +70,7 @@ export default function HydrateGroupBySlug({
         );
         return;
       }
-
+      dispatch(getEmailOfGroupOrganizer(organizerEmail));
       dispatch(getNumMembers(numMembers));
       handleSyncGroupOpened(group);
       handleSyncEventsOfGroup(events);
@@ -84,16 +84,10 @@ export default function HydrateGroupBySlug({
 
       await wait(800);
 
-      const { events, group, role, numMembers } = await syncOpenedGroup(slug);
+      const { events, group, role, numMembers, organizerEmail } =
+        await syncOpenedGroup(slug);
 
-
-      if(group) {
-        const organizerEmail = await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id)
-        dispatch(getEmailOfGroupOrganizer(organizerEmail.email));
-      }
-
-
-      await handlePayload(group, events, role, numMembers);
+      handlePayload(group, events, role, numMembers, organizerEmail);
     };
     void executeHydration();
   }, [slug, userKind, dispatch]);

@@ -57,7 +57,7 @@ export default function ViewGroupSection({
 <GroupHeadSecton groupName={group.name} />
         <GroupDescription group={group} />
         <Divider />
-        {RenderCurrentView(displayed, group)}
+        {RenderCurrentView(displayed)}
         </Stack>
         
       </Stack>

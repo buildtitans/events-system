@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, type JSX } from "react";
+import { type JSX } from "react";
 import type { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";

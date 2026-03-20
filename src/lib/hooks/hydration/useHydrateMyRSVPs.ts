@@ -42,5 +42,5 @@ export const useHydrateMyRsvps = () => {
     };
 
     void executeHydrateRsvps();
-  }, []);
+  }, [dispatch]);
 };

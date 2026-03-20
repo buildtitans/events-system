@@ -8,7 +8,6 @@ type AccountDetailsProps = {
 };
 
 export default function AccountDetails({
-  email,
 }: AccountDetailsProps): JSX.Element {
   return (
     <Container

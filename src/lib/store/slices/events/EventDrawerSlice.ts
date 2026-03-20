@@ -3,7 +3,6 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { strictEqual } from "assert";
 
 export type OpenedEvent =
   | { status: "idle" }

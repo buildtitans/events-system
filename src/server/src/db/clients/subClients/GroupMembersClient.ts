@@ -6,11 +6,9 @@ import type { Selectable } from "kysely";
 import {
   GroupMembersArraySchemaType,
   GroupMemberSchemaType,
-  GroupRoleSchemaValidator,
   ValidateGroupMember,
   ValidateGroupMembersArray,
 } from "@/src/schemas/groups/groupMembersSchema";
-import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 

@@ -42,7 +42,7 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
             fontWeight={"light"}
             fontSize={"30px"}
           >
-            RSVP'd Events
+            {"RSVP'd Events"}
           </Typography>
         </Box>
 

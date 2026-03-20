@@ -1,6 +1,5 @@
 import "fastify";
 import { DBClient } from "@/src/server/src/db";
-import { ServiceClient } from "../service/services";
 
 type CachedUser = {
   id: string;

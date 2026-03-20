@@ -15,7 +15,6 @@ import {
   EventIdInputValidator,
   EventIDValidator,
 } from "@/src/schemas/events/eventAttendantsSchema";
-import { getGroupHistory } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {

@@ -114,11 +114,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
         }
       }
     },
-    [
-      inputErrors.needPasswordConfirmation,
-      credentials.password,
-      credentials.confirmPassword,
-    ],
+    [inputErrors.needPasswordConfirmation],
   );
 
   const handleEmailInput = useCallback(
@@ -132,7 +128,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
       await wait(300);
       validateEmail(credentials.email);
     },
-    [credentials.email],
+    [credentials.email, validateEmail],
   );
 
   const handlePasswordInput = useCallback(
@@ -150,7 +146,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
 
       validatePassword(credentials.password);
     },
-    [credentials.password],
+    [credentials.password, validatePassword],
   );
 
   const handleConfirmingPassword = useCallback(
@@ -168,7 +164,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
 
       confirmPassword(credentials.password, credentials.confirmPassword);
     },
-    [credentials.password, credentials.confirmPassword],
+    [credentials.password, credentials.confirmPassword, confirmPassword],
   );
 
   return {

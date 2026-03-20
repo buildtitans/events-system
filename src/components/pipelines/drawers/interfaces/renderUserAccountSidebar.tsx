@@ -2,11 +2,11 @@
 import type { JSX } from "react";
 import type { RootState } from "@/src/lib/store";
 import { shallowEqual, useSelector } from "react-redux";
-import SidebarSkeleton from "../../ui/skeletons/sidebarSkeleton";
-import UserAccountSidebarMenu from "../../ui/menus/userAccountSidebarMenu";
+import SidebarSkeleton from "@/src/components/ui/skeletons/sidebarSkeleton";
+import UserAccountSidebarMenu from "@/src/components/ui/menus/userAccountSidebarMenu";
 
 
-export function RenderUserAccountSidebar() {
+export function RenderUserAccountSidebar(): JSX.Element {
     const { email, myGroups, participations } = useSelector((s:RootState) => s.user, shallowEqual);
      
 

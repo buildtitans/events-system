@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import { JSX } from "react";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import Chip from "@mui/material/Chip";
 
 
 type MembershipListItemContentProps = {
@@ -12,7 +11,7 @@ type MembershipListItemContentProps = {
     nextEvent?: EventSchemaType["starts_at"]
 };
 
-export default function MembershipListItemBody({ membership, nextEvent }: MembershipListItemContentProps): JSX.Element {
+export default function MembershipListItemBody({ membership }: MembershipListItemContentProps): JSX.Element {
   return (
     <Box>
       <ListItemText

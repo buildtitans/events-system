@@ -41,7 +41,7 @@ export default function HydrateUserAccountPage(): React.ReactNode {
 
 
     void executeHydrateAccountPage();
-  }, []);
+  }, [dispatch]);
 
   return null;
 }

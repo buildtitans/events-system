@@ -4,7 +4,6 @@ import {
   enqueueDrawer,
   enqueueAlert,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import type { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { useDispatch } from "react-redux";
 import { syncPermissions } from "../../store/sync/syncPermissions";
 import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
@@ -22,7 +21,8 @@ type NewUser = {
 
 type LoginRespType = {
   ok: boolean;
-  permissions: RBACType;
+  email: string;
+  lookupMap: RBACType;
   attendanceDictionary: AttendanceDictionaryType;
 };
 

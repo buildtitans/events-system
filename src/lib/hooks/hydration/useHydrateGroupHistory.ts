@@ -51,5 +51,5 @@ export const useHydrateGroupHisory = () => {
     };
 
     void executeHydrateGroupHistory();
-  }, [openedGroup, groupHistoryStatus]);
+  }, [openedGroup, groupHistoryStatus, dispatch]);
 };
