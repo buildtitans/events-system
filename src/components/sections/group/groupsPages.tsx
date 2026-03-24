@@ -1,56 +1,67 @@
-"use client"
-import type { JSX } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import GroupsPaginaton from '../../ui/box/pagination/groupsPagination';
-import { GroupsPage } from './groupsPage';
-import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
+"use client";
+import type { JSX } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Fade from "@mui/material/Fade";
+import GroupsPaginaton from "../../ui/box/pagination/groupsPagination";
+import { GroupsPage } from "./groupsPage";
+import { useGroupPages } from "@/src/lib/hooks/rendering/useGroupPages";
 import { useRouter } from "next/navigation";
-import { useCallback } from 'react';
-import { GroupSchemaType, GroupsSchemaType } from '@/src/schemas/groups/groupSchema';
+import { useCallback } from "react";
+import {
+  GroupSchemaType,
+  GroupsSchemaType,
+} from "@/src/schemas/groups/groupSchema";
+import { assertIsDefined } from "@/src/lib/utils/helpers/assertIsDefined";
 
 export type CategoryMap = Map<string, string>;
 
-export default function GroupsPagesContainer({ groupsPages, silenceHeader }: { groupsPages: GroupsSchemaType[], silenceHeader?: boolean }): JSX.Element | null {
-    const {
-        currentPage,
-        categoryMap,
-        columns
-    } = useGroupPages(groupsPages);
-    const router = useRouter();
+export default function GroupsPagesContainer({
+  groupsPages,
+  silenceHeader,
+}: {
+  groupsPages: GroupsSchemaType[];
+  silenceHeader?: boolean;
+}): JSX.Element | null {
+  const { currentPage, categoryMap, columns } = useGroupPages(groupsPages);
+  const router = useRouter();
 
-    const handleGroupClicked = useCallback((
-        slug: GroupSchemaType["slug"]
-    ) => {
+  const handleGroupClicked = useCallback(
+    (slug: GroupSchemaType["slug"]) => {
+      return () => {
+        const route = `/group/${slug}`;
+        router.push(route);
+      };
+    },
+    [router],
+  );
 
-        return () => {
-            
-            const route = `/group/${slug}`
-            router.push(route)
-        }
-    }, [router]);
+  if (!groupsPages[currentPage]) return null;
 
-    if (!groupsPages[currentPage]) return null;
-
-    
-
-    return (
-        <div>
-            {(!silenceHeader) && <Typography variant="h2" gutterBottom>
-                Groups
-            </Typography>}
-                {
-                    (groupsPages[currentPage]) &&
-                    <GroupsPage
-                        handleGroupClicked={handleGroupClicked}
-                        key={groupsPages[currentPage][0].id}
-                        page={groupsPages[currentPage]}
-                        categoryMap={categoryMap}
-                        columns={columns} />
-                }
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4 }}>
-                <GroupsPaginaton numButtons={groupsPages.length} />
-            </Box>
-        </div>
-    );
+  return (
+    <Fade 
+    in={assertIsDefined(groupsPages[currentPage])}
+    timeout={400}
+    >
+      <Box>
+        {!silenceHeader && (
+          <Typography variant="h2" gutterBottom>
+            Groups
+          </Typography>
+        )}
+        {groupsPages[currentPage] && (
+          <GroupsPage
+            handleGroupClicked={handleGroupClicked}
+            key={groupsPages[currentPage][0].id}
+            page={groupsPages[currentPage]}
+            categoryMap={categoryMap}
+            columns={columns}
+          />
+        )}
+        <Box sx={{ display: "flex", flexDirection: "row", pt: 4 }}>
+          <GroupsPaginaton numButtons={groupsPages.length} />
+        </Box>
+      </Box>
+    </Fade>
+  );
 }

@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { TitleTypography } from "../box/cards/group";
+import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 
 const stackProps = {
     marginX: 3,
@@ -47,7 +48,7 @@ export default function OpenedEvent({
 }: OpenedEventProps): JSX.Element {
     const thumbnail = event.img;
     const startTime = toMonthDayYearHour(event.starts_at);
-
+    const isCurrent = isFutureOrNow(new Date(event.starts_at))
 
     return (
         <FadeInOutBox>
@@ -77,7 +78,13 @@ export default function OpenedEvent({
                     startTime={startTime}
                 />
 
-                {(numAttendants) && (event.status === "scheduled") && <EventAttendants numAttendants={numAttendants} numInterested={numInterested} />}
+                {(numAttendants) && (event.status === "scheduled") && 
+                <EventAttendants 
+                numAttendants={numAttendants} 
+                numInterested={numInterested} 
+                isCurrent={isCurrent}
+                />
+                }
 
             </Stack>
 
@@ -135,7 +142,7 @@ function GroupName({
 };
 
 
-function EventAttendants({ numAttendants, numInterested }: { numAttendants: NumberOfAttendantsType, numInterested?: NumberOfAttendantsType }) {
+function EventAttendants({ numAttendants, numInterested, isCurrent }: { numAttendants: NumberOfAttendantsType, isCurrent: boolean, numInterested?: NumberOfAttendantsType }) {
 
     return (
         <Box
@@ -151,7 +158,8 @@ function EventAttendants({ numAttendants, numInterested }: { numAttendants: Numb
                 alignItems: "start"
             }}
         >
-
+            {(isCurrent) && 
+            <>
             {numAttendants.status === "ready" &&
                 <Typography variant="caption" fontSize={"16px"}>
                     {(numAttendants.data > 1) && `${numAttendants.data} people are going`}
@@ -166,6 +174,18 @@ function EventAttendants({ numAttendants, numInterested }: { numAttendants: Numb
                     {(numInterested.data > 1) && `${numInterested.data} people have expressed interest`}
                     {(numInterested.data === 1) && `${numInterested.data} person is interested`}
                 </Typography>
+            }
+            </>
+            }
+
+            {(!isCurrent && (numAttendants.status === "ready")) && 
+            <>
+            <Typography variant="caption" fontSize={"16px"}>
+                {(numAttendants.data > 1) && `${numAttendants.data} people went`}
+                {(numAttendants.data === 1) && `${numAttendants.data} person went`}
+                {(numAttendants.data < 1) && "This event had no attendants"}
+            </Typography>
+            </>
             }
 
 

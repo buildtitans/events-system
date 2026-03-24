@@ -23,12 +23,7 @@ export function GroupsPage({ page, categoryMap, columns, handleGroupClicked }: G
     };
 
     return (
-        <MotionGrid
-            variants={fadeInOut}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-
+        <Grid
             container spacing={2} columns={columns} sx={{ minHeight: 800 }}>
             {page.map((group, index) => (
                 <Group
@@ -43,6 +38,6 @@ export function GroupsPage({ page, categoryMap, columns, handleGroupClicked }: G
                 />
 
             ))}
-        </MotionGrid>
+        </Grid>
     )
 }

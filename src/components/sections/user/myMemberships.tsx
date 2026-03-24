@@ -46,7 +46,6 @@ export default function MyMemberships({
             Memberships
           </Typography>
         </Box>
-
         <List
           sx={{
             display: "flex",

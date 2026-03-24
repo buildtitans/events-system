@@ -11,6 +11,7 @@ import {
     NameOfGroup,
     NumberOfAttendantsType
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
+import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 
 type RenderEventDrawerContentsProps = {
     role: GroupMemberSchemaType["role"],
@@ -49,6 +50,8 @@ export default function RenderEventDrawerContents({
                 </>
             )
         case "organizer":
+            const isCurrent = isFutureOrNow(new Date(event.starts_at))
+            
             return (
                 <>
                     <OpenedEvent
@@ -63,9 +66,9 @@ export default function RenderEventDrawerContents({
                         scheduleStatus={event.status}
                     />
 
-                    <RescheduleEventForm
+                   {(isCurrent) && <RescheduleEventForm
                         event={event}
-                    />
+                    />}
                 </>
             )
         default: {

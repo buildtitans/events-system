@@ -1,7 +1,6 @@
 "use client";
 import type { JSX } from "react";
 import type { MyGroupsType } from "@/src/lib/store/slices/user/types";
-import { chunkGroupsIntoPages } from "@/src/lib/utils/helpers/chunk/chunkGroupsIntoPages";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import RenderGroupsOrFallback from "./renderGroupsOrFallback";
@@ -17,7 +16,7 @@ export default function RenderMyGroups({
     case "ready": {
       return (
         <RenderGroupsOrFallback 
-        pages={chunkGroupsIntoPages(myGroups.data)} 
+        pages={myGroups.data} 
         />
       )
     }

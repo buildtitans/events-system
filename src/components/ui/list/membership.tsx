@@ -63,7 +63,23 @@ export default function MembershipListItem({
         />
 
       </Stack>
-      <Stack
+      
+      </Stack> 
+      <NextGroupEvent isCurrent={isCurrent} nextEvent={nextEvent} />
+
+    </ListItem>
+  );
+}
+
+type NextGroupEventProps = {
+  nextEvent: string,
+  isCurrent: boolean
+};
+
+function NextGroupEvent({ nextEvent, isCurrent }: NextGroupEventProps): JSX.Element {
+
+  return (
+<Stack
       justifyContent={"start"}
       alignItems={"end"}
       sx={{
@@ -112,10 +128,5 @@ export default function MembershipListItem({
       )
       }
       </Stack>
-      </Stack> 
-      
-
-    </ListItem>
-  );
+  )
 }
-
