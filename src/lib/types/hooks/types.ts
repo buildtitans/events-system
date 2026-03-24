@@ -16,7 +16,6 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
-import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
 import type { SyntheticEvent, ChangeEvent } from "react";
@@ -29,6 +28,8 @@ import type {
   SuggestionOptions,
   SuggestionType,
 } from "../../hooks/search/types";
+import type { RBACType } from "@/src/server/src/db/clients/types/types";
+import type { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
 
 export type ValidateSignupCredsHook = {
@@ -104,7 +105,6 @@ type ValidateCredentialsHook = {
   handlePassword: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
-  credentials: LoginCredentials;
 };
 
 type GetGroupRoleAndIdHook = {
@@ -113,8 +113,23 @@ type GetGroupRoleAndIdHook = {
   groupName: GroupSchemaType["name"];
 };
 
+type LoginResType =
+  | {
+      status: "ok";
+      email: string;
+      lookupMap: RBACType;
+      attendanceDictionary: AttendanceDictionaryType;
+    }
+  | {
+      status: "failed";
+      email: undefined;
+      lookupMap: undefined;
+      attendanceDictionary: undefined;
+    };
+
 type UseLoginHook = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  status: LoginResType["status"] | "initial";
 };
 
 type UsePopulateEventsListHook = {

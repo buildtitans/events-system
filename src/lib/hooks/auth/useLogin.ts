@@ -16,43 +16,48 @@ import {
 } from "../../store/slices/viewer/PermissionsSlice";
 import { RBACType } from "@/src/server/src/db/clients/types/types";
 import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
+import { wait } from "../../utils/rendering/wait";
+import { useState } from "react";
 
-type LoginResType = {
-  ok: boolean;
-  email: string;
-  lookupMap: RBACType;
-  attendanceDictionary: AttendanceDictionaryType;
-};
+type LoginResType =
+  | {
+      status: "ok";
+      email: string;
+      lookupMap: RBACType;
+      attendanceDictionary: AttendanceDictionaryType;
+    }
+  | {
+      status: "failed";
+      email: undefined;
+      lookupMap: undefined;
+      attendanceDictionary: undefined;
+    };
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const [status, setStatus] = useState<UseLoginHook["status"]>("initial");
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLoginResult = async (result: LoginResType): Promise<void> => {
-    const { ok, lookupMap, attendanceDictionary, email } = result;
+    if (result.status === "ok") {
+      const { lookupMap, attendanceDictionary, email } = result;
 
-    if (ok) {
       dispatch(storeUserEmail({ status: "ready", data: email }));
       dispatch(loginSuccess());
       dispatch(getViewerPermissions(lookupMap));
       dispatch(getAttendanceDictionary(attendanceDictionary));
       dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
+      dispatch(enqueueDrawer(null));
     } else {
-      dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
+      dispatch(enqueueSnackbar({ kind: "login", status: "failed" }));
     }
-
-    dispatch(enqueueDrawer(null));
   };
 
   const login = async (email: string, password: string) => {
-    const result = await trpcClient.auth.login.mutate({
+    return await trpcClient.auth.login.mutate({
       email,
       password,
     });
-
-    console.log(result);
-
-    return result;
   };
 
   const handleSubmit = async (
@@ -66,6 +71,8 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
 
     const result = await login(email, password);
+    await wait(1000);
+    setStatus(result.status);
     await handleLoginResult(result);
 
     console.log({ "User Kind": userKind });
@@ -73,6 +80,7 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
 
   return {
     handleSubmit,
+    status: status,
   };
 };
 

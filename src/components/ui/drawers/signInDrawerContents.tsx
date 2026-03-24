@@ -3,20 +3,27 @@ import SignInCard from "../../sections/forms/SignInCard";
 import type { JSX } from "react";
 import { useValidateCredentials } from "@/src/lib/hooks/validation/useValidateCredentialsInput";
 import { useLogin } from "@/src/lib/hooks/auth/useLogin";
+import { useState } from "react";
+import type { LoginCredentials } from "@/src/lib/types/tokens/types";
+
 
 export default function SignInDrawerContents(): JSX.Element | null {
-    const {
+    const [credentials, setCredentials] = useState<LoginCredentials>({
+    email: null,
+    password: null,
+  });
+  const { handleSubmit, status } = useLogin(credentials);  
+  const {
         isSubmittable,
         emailErrorMessage,
         emailError,
         passwordError,
         passwordErrorMessage,
-        credentials,
         handleEmail,
         handlePassword,
-    } = useValidateCredentials();
+    } = useValidateCredentials(credentials, setCredentials, status);
 
-    const { handleSubmit } = useLogin(credentials);
+    
 
     return (
 

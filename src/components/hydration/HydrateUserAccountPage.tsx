@@ -17,7 +17,7 @@ export default function HydrateUserAccountPage(): React.ReactNode {
   useEffect(() => {
     const handleAccountHydration = (
       email: string,
-      myGroups: GroupsSchemaType,
+      myGroups: GroupsSchemaType[],
     ) => {
       dispatch(getMyGroups({ status: "ready", data: myGroups }));
       dispatch(storeUserEmail({ status: "ready", data: email }));

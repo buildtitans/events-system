@@ -26,7 +26,7 @@ type ParticipationsType =
 type MyGroupsType =
   | { status: "initial" }
   | { status: "pending" }
-  | { status: "ready"; data: GroupSchemaType[] }
+  | { status: "ready"; data: GroupSchemaType[][] }
   | { status: "failed"; error: string };
 
 type NextGroupEventLookupMapType = Record<

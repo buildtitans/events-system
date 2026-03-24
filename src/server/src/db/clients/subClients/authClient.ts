@@ -52,19 +52,19 @@ export class AuthClient {
     input_email: string,
     input_password: string,
   ): Promise<AuthClientLoginResponse> {
-    const dbUser = await this.verifyCredentials(input_email, input_password);
-    const session = await this.createSession(dbUser.id);
-
-    const user: PublicUserSchemaType = {
-      id: dbUser.id,
-      email: dbUser.email,
-    };
-
-    return {
-      ok: true,
-      user,
-      session,
-    };
+    try {
+      const user = await this.verifyCredentials(input_email, input_password);
+      const session = await this.createSession(user.id);
+      return {
+        status: "ok",
+        user,
+        session,
+      };
+    } catch {
+      return {
+        status: "failed",
+      };
+    }
   }
 
   async logOut(token: string): Promise<boolean> {

@@ -39,6 +39,12 @@ function AuthenticatonSnackbar({
             initial="initial"
             animate="animate"
             exit="exit"
+            ContentProps={{
+             sx: {
+                color: (status === 'failed') ? 'red' : 'black'
+             }
+            }}
+            
             message={createSnackbarMessages(statusKind, status)}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         />

@@ -1,14 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { emailFormat } from "../../utils/regex/regex";
 import type {
   ValidationState,
   LoginCredentials,
 } from "../../types/tokens/types";
 
-import type { ValidateCredentialsHook } from "../../types/hooks/types";
+import type {
+  UseLoginHook,
+  ValidateCredentialsHook,
+} from "../../types/hooks/types";
 
-export const useValidateCredentials = (): ValidateCredentialsHook => {
+export const useValidateCredentials = (
+  credentials: LoginCredentials,
+  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>,
+  status: UseLoginHook["status"],
+): ValidateCredentialsHook => {
   const [emailError, setEmailError] = useState<ValidationState>({
     hasError: false,
     message: "",
@@ -16,10 +23,6 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
   const [passwordError, setPasswordError] = useState<ValidationState>({
     hasError: false,
     message: "",
-  });
-  const [credentials, setCredentials] = useState<LoginCredentials>({
-    email: null,
-    password: null,
   });
 
   function validateInputs(email: string, password: string): void {
@@ -52,16 +55,27 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
   const handleEmail = setField("email");
   const handlePassword = setField("password");
 
+  const setInvalidCredentialsError = (): void => {
+    setPasswordError({
+      hasError: true,
+      message: "Invalid credentials",
+    });
+    return;
+  };
+
   useEffect(() => {
     const email = credentials.email;
     const password = credentials.password;
-    if (!email || !password) return;
-    const executeValidateInputs = () => {
-      validateInputs(email, password);
-    };
 
-    void executeValidateInputs();
-  }, [credentials.email, credentials.password]);
+    if (!email || !password) return;
+
+    if (status === "failed") {
+      setInvalidCredentialsError();
+      return;
+    }
+
+    validateInputs(email, password);
+  }, [credentials.email, credentials.password, status]);
 
   return {
     isSubmittable: !!credentials.email && !!credentials.password,
@@ -69,7 +83,6 @@ export const useValidateCredentials = (): ValidateCredentialsHook => {
     emailError: emailError.hasError,
     passwordError: passwordError.hasError,
     passwordErrorMessage: passwordError.message,
-    credentials,
     handleEmail,
     handlePassword,
   };

@@ -18,7 +18,6 @@ function Password({
     passwordError,
     passwordErrorMessage
 }: PasswordInputProps): JSX.Element {
-
     return (
         <FormControl>
             <FormLabel htmlFor="password">Password</FormLabel>

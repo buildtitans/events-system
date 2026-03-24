@@ -12,23 +12,32 @@ export const authRouter = router({
         input.password,
       );
 
-      ctx.session.setCookieHeader(result);
+      if (result.status === "ok") {
+        ctx.session.setCookieHeader(result);
 
-      const lookupMap =
-        await ctx.services.api.domains.users.getRoleBasedLayoutMap(
-          result.user.id,
-        );
+        const lookupMap =
+          await ctx.services.api.domains.users.getRoleBasedLayoutMap(
+            result.user.id,
+          );
 
-      const attendanceDictionary =
-        await ctx.services.api.domains.participations.getAttendanceDictionary(
-          result.user.id,
-        );
+        const attendanceDictionary =
+          await ctx.services.api.domains.participations.getAttendanceDictionary(
+            result.user.id,
+          );
+
+        return {
+          status: result.status,
+          email: result.user.email,
+          lookupMap,
+          attendanceDictionary,
+        };
+      }
 
       return {
-        ok: result.ok,
-        email: result.user.email,
-        lookupMap,
-        attendanceDictionary,
+        status: result.status,
+        email: undefined,
+        lookupMap: undefined,
+        attendanceDictionary: undefined,
       };
     }),
 

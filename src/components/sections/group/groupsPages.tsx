@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import GroupsPaginaton from '../../ui/box/pagination/groupsPagination';
 import { GroupsPage } from './groupsPage';
-import { AnimatePresence } from 'framer-motion';
 import { useGroupPages } from '@/src/lib/hooks/rendering/useGroupPages';
 import { useRouter } from "next/navigation";
 import { useCallback } from 'react';
@@ -40,7 +39,6 @@ export default function GroupsPagesContainer({ groupsPages, silenceHeader }: { g
             {(!silenceHeader) && <Typography variant="h2" gutterBottom>
                 Groups
             </Typography>}
-            <AnimatePresence mode='wait'>
                 {
                     (groupsPages[currentPage]) &&
                     <GroupsPage
@@ -50,7 +48,6 @@ export default function GroupsPagesContainer({ groupsPages, silenceHeader }: { g
                         categoryMap={categoryMap}
                         columns={columns} />
                 }
-            </AnimatePresence>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4 }}>
                 <GroupsPaginaton numButtons={groupsPages.length} />
             </Box>

@@ -3,6 +3,7 @@ import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { Authorization } from "../auth/authorization";
 import { mapRoleBasedAccessControls } from "../../lib/utils/mapRoleBasedAccessControls";
+import { chunkUserGroupsIntoPages } from "../../lib/utils/chunkUserGroupsToPages";
 
 export class UserService {
   constructor(
@@ -16,10 +17,12 @@ export class UserService {
 
   async getGroupsCreated(
     user_id: string | null | undefined,
-  ): Promise<GroupSchemaType[]> {
+  ): Promise<GroupSchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    return await this.api.groups.getGroupsByOrganizerId(userId);
+    const createdGroups = await this.api.groups.getGroupsByOrganizerId(userId);
+
+    return chunkUserGroupsIntoPages(createdGroups);
   }
 
   async getEmailById(

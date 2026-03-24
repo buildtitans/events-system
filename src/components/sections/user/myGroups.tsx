@@ -17,6 +17,8 @@ export default function MyGroups(): JSX.Element {
   const myGroups = useSelector((s: RootState) => s.user.myGroups);
   const dispatch = useDispatch<AppDispatch>();
 
+  console.log(myGroups)
+
 
   return (
     <Stack
