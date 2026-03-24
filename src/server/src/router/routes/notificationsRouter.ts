@@ -1,8 +1,4 @@
-import {
-  router,
-  publicProcedure,
-  protectedProcedure,
-} from "@/src/server/src/context/init";
+import { router, protectedProcedure } from "@/src/server/src/context/init";
 import {
   createNotificationInput,
   SeenNotificationsInputValidator,

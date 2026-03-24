@@ -15,8 +15,6 @@ export function RenderActiveSidebar({
 }: RenderActiveSidebarProps): JSX.Element | null {
     const email = useSelector((s: RootState) => s.user.email);
 
-    console.log(sidebar)
-
     switch(sidebar) {
         case "group": {
             return (

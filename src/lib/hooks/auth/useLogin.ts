@@ -1,8 +1,8 @@
 "use client";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
-import type { AppDispatch, RootState } from "@/src/lib/store";
+import type { AppDispatch } from "@/src/lib/store";
 import type { LoginCredentials } from "../../types/tokens/types";
 import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import {
@@ -34,7 +34,6 @@ type LoginResType =
     };
 
 const useLogin = (credentials: LoginCredentials): UseLoginHook => {
-  const userKind = useSelector((s: RootState) => s.auth.userKind);
   const [status, setStatus] = useState<UseLoginHook["status"]>("initial");
   const dispatch = useDispatch<AppDispatch>();
 
@@ -74,8 +73,6 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     await wait(1000);
     setStatus(result.status);
     await handleLoginResult(result);
-
-    console.log({ "User Kind": userKind });
   };
 
   return {

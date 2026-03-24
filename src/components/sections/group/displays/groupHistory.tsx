@@ -17,8 +17,6 @@ type HistoryTimelineProps = {
 export default function HistoryTimeline({ history }: HistoryTimelineProps) {
   const attendance = useSelector((s: RootState) => s.groupMembers.viewerAttendance);
 
-  console.log(attendance);
-
   return (
     <Container
       sx={{

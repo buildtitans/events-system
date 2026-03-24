@@ -25,8 +25,6 @@ export default function ViewGroupSection({
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   useHydrateGroupHisory();
 
-  console.log(lgScreen)
-
   return (
     <Container
     disableGutters

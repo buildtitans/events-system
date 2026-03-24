@@ -19,7 +19,6 @@ type TimelineItemProps = {
 
 export default function TimelineItem({
   historyLog,
-  rsvpStatus
 }: TimelineItemProps): JSX.Element {
   
   const date = new Date(historyLog.starts_at);

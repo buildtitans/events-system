@@ -11,7 +11,6 @@ type RenderGroupsOrFallbackProps = {
 export default function RenderGroupsOrFallback({ pages }: RenderGroupsOrFallbackProps) {
     const hasPages = ((Array.isArray(pages)) && (pages.length >0))
 
-    console.log(hasPages, pages)
 
     if(!hasPages) {
         return (

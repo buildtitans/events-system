@@ -34,6 +34,14 @@ export const useValidateCredentials = (
       message: invalidEmailFormat ? "Please provide a valid email" : "",
     });
 
+    if (status === "failed") {
+      setPasswordError({
+        hasError: true,
+        message: "Invalid password or email",
+      });
+      return;
+    }
+
     setPasswordError({
       hasError: invalidPassword,
       message: invalidPassword
@@ -55,24 +63,11 @@ export const useValidateCredentials = (
   const handleEmail = setField("email");
   const handlePassword = setField("password");
 
-  const setInvalidCredentialsError = (): void => {
-    setPasswordError({
-      hasError: true,
-      message: "Invalid credentials",
-    });
-    return;
-  };
-
   useEffect(() => {
     const email = credentials.email;
     const password = credentials.password;
 
     if (!email || !password) return;
-
-    if (status === "failed") {
-      setInvalidCredentialsError();
-      return;
-    }
 
     validateInputs(email, password);
   }, [credentials.email, credentials.password, status]);
