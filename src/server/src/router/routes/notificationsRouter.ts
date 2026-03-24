@@ -15,7 +15,7 @@ export const notificationsRouter = router({
     );
   }),
 
-  createNotification: publicProcedure
+  createNotification: protectedProcedure
     .input(createNotificationInput)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.createNotification(
@@ -23,7 +23,7 @@ export const notificationsRouter = router({
       );
     }),
 
-  markOpenedNotifications: publicProcedure
+  markOpenedNotifications: protectedProcedure
     .input(SeenNotificationsInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.markSeen(

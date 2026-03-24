@@ -27,7 +27,7 @@ export default function Notifications() {
     e: React.MouseEvent<HTMLElement>,
   ): Promise<void> => {
     setAnchorEl(e.currentTarget);
-    if (notifications.status === "ready") {
+    if (notifications.status === "ready" && (notifs > 0)) {
       await syncSeenNotifications(notifications.data.new);
     }
   };

@@ -32,7 +32,6 @@ export class NotificatonService {
 
   async markSeen(user_id: string | null | undefined, ids: string[]) {
     this.policy.requireAuthenticated(user_id);
-
     return this.db.notifications.markOpenedNotifications(ids);
   }
 }
