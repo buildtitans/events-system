@@ -10,26 +10,20 @@ import {
   enqueueSnackbar,
 } from "../../store/slices/rendering/RenderingSlice";
 import { storeUserEmail } from "../../store/slices/user/userSlice";
-import {
-  getAttendanceDictionary,
-  getViewerPermissions,
-} from "../../store/slices/viewer/PermissionsSlice";
-import { RBACType } from "@/src/server/src/db/clients/types/types";
+import { getAttendanceDictionary } from "../../store/slices/viewer/PermissionsSlice";
 import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 import { wait } from "../../utils/rendering/wait";
 import { useState } from "react";
 
-type LoginResType =
+export type LoginResType =
   | {
       status: "ok";
       email: string;
-      lookupMap: RBACType;
       attendanceDictionary: AttendanceDictionaryType;
     }
   | {
       status: "failed";
       email: undefined;
-      lookupMap: undefined;
       attendanceDictionary: undefined;
     };
 
@@ -39,11 +33,10 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
 
   const handleLoginResult = async (result: LoginResType): Promise<void> => {
     if (result.status === "ok") {
-      const { lookupMap, attendanceDictionary, email } = result;
+      const { attendanceDictionary, email } = result;
 
       dispatch(storeUserEmail({ status: "ready", data: email }));
       dispatch(loginSuccess());
-      dispatch(getViewerPermissions(lookupMap));
       dispatch(getAttendanceDictionary(attendanceDictionary));
       dispatch(enqueueSnackbar({ kind: "login", status: "success" }));
       dispatch(enqueueDrawer(null));

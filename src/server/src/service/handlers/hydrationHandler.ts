@@ -9,13 +9,11 @@ export class EventHydrationHandler {
   constructor(private readonly db: DBClient) {}
 
   async openedEvent(user_id: string | undefined | null, event_id: string) {
-    const permissions = await this.getRoleBySlugLookupMap(user_id);
     const rsvpStatus = await this.getEventRsvp(user_id, event_id);
     const attendants = await this.getAttendingAndInterested(event_id);
     const role = await this.getUserRoleInGroup(user_id, event_id);
 
     return {
-      permissions,
       rsvpStatus,
       attendants,
       role,
@@ -34,22 +32,6 @@ export class EventHydrationHandler {
         event.group_id,
       );
     } else return "anonymous";
-  }
-
-  async getRoleBySlugLookupMap(user_id: string | undefined | null) {
-    const groups = await this.db.groups.getGroups();
-
-    if (user_id) {
-      const memberships = await this.getUserMemberships(user_id);
-
-      return buildRoleBySlugLookup(groups, memberships);
-    }
-
-    return buildRoleBySlugLookup(groups, undefined);
-  }
-
-  private async getUserMemberships(user_id: string) {
-    return await this.db.groupMembers.getViewerMemberships(user_id);
   }
 
   private async getEventRsvp(

@@ -6,12 +6,8 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import {
-  getCurrentRole,
-  getViewerPermissions,
-} from "../../store/slices/viewer/PermissionsSlice";
+import { getCurrentRole } from "../../store/slices/viewer/PermissionsSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
-import { syncPermissions } from "@/src/lib/store/sync/syncPermissions";
 
 const useJoinGroup = (): JoinGroupHook => {
   const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
@@ -20,8 +16,6 @@ const useJoinGroup = (): JoinGroupHook => {
 
   async function handleResult(res: GroupMemberSchemaType | null) {
     if (res) {
-      const permissions = await syncPermissions();
-      dispatch(getViewerPermissions(permissions));
       dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "success" }));
       dispatch(getCurrentRole("member"));
     }

@@ -2,7 +2,6 @@ import { DBClient } from "@/src/server/src/db/clients/dbClient";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { Authorization } from "../auth/authorization";
-import { mapRoleBasedAccessControls } from "../../lib/utils/mapRoleBasedAccessControls";
 import { chunkUserGroupsIntoPages } from "../../lib/utils/chunkUserGroupsToPages";
 
 export class UserService {
@@ -29,21 +28,7 @@ export class UserService {
     user_id: string | null | undefined,
   ): Promise<DbUserSchemaType["email"]> {
     const userId = this.policy.requireAuthenticated(user_id);
-
     const { email } = await this.api.auth.getEmailByUserId(userId);
-
-    console.log(email);
-
     return email;
-  }
-
-  async getRoleBasedLayoutMap(user_id: string | null | undefined) {
-    const groups = await this.api.groups.getGroups();
-
-    const memberships = await this.api.groupMembers.getViewerMemberships(
-      user_id ?? "",
-    );
-
-    return mapRoleBasedAccessControls(groups, memberships);
   }
 }

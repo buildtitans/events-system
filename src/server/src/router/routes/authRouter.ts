@@ -15,11 +15,6 @@ export const authRouter = router({
       if (result.status === "ok") {
         ctx.session.setCookieHeader(result.session, result.user);
 
-        const lookupMap =
-          await ctx.services.api.domains.users.getRoleBasedLayoutMap(
-            result.user.id,
-          );
-
         const attendanceDictionary =
           await ctx.services.api.domains.participations.getAttendanceDictionary(
             result.user.id,
@@ -28,7 +23,6 @@ export const authRouter = router({
         return {
           status: result.status,
           email: result.user.email,
-          lookupMap,
           attendanceDictionary,
         };
       }
@@ -36,7 +30,6 @@ export const authRouter = router({
       return {
         status: result.status,
         email: undefined,
-        lookupMap: undefined,
         attendanceDictionary: undefined,
       };
     }),
@@ -70,15 +63,13 @@ export const authRouter = router({
       return null;
     }
 
-    const [email, permissions] = await Promise.all([
-      ctx.services.api.domains.users.getEmailById(session.user_id),
-      ctx.services.api.domains.users.getRoleBasedLayoutMap(session.user_id),
-    ]);
+    const email = await ctx.services.api.domains.users.getEmailById(
+      session.user_id,
+    );
 
     return {
       session,
       email,
-      permissions,
     };
   }),
 

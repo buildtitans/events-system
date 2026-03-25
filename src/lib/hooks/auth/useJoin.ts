@@ -5,39 +5,27 @@ import {
   enqueueAlert,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
-import { syncPermissions } from "../../store/sync/syncPermissions";
-import { getViewerPermissions } from "../../store/slices/viewer/PermissionsSlice";
 import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess } from "../../store/slices/auth/AuthSlice";
 import { wait } from "../../utils/rendering/wait";
-import type { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
-import type { RBACType } from "@/src/server/src/db/clients/types/types";
+import { LoginResType } from "./useLogin";
 
 type NewUser = {
   id: string;
   email: string;
 };
 
-type LoginRespType = {
-  ok: boolean;
-  email: string;
-  lookupMap: RBACType;
-  attendanceDictionary: AttendanceDictionaryType;
-};
-
 export const useSignUp = (email: string, password: string) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleLoginResult = async (result: LoginRespType): Promise<void> => {
-    const { ok } = result;
+  const handleLoginResult = async (result: LoginResType): Promise<void> => {
+    const { status } = result;
 
     dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
 
-    if (ok) {
+    if (status === "ok") {
       dispatch(loginSuccess());
-      const permissions = await syncPermissions();
-      dispatch(getViewerPermissions(permissions));
       dispatch(enqueueDrawer(null));
       dispatch(enqueueAlert({ kind: "success", action: "signup" }));
     }
