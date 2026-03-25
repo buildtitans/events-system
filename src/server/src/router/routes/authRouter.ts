@@ -13,7 +13,7 @@ export const authRouter = router({
       );
 
       if (result.status === "ok") {
-        ctx.session.setCookieHeader(result);
+        ctx.session.setCookieHeader(result.session, result.user);
 
         const lookupMap =
           await ctx.services.api.domains.users.getRoleBasedLayoutMap(

@@ -1,14 +1,23 @@
+import { validateLoginInput } from "@/src/schemas/auth/loginCredentialsSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 
-export class Athentication {
+export class Authentication {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {}
 
-  async login(email: string, password: string) {
-    return await this.db.auth.login(email, password);
+  async login(emailInput: string, passwordInput: string) {
+    const email = emailInput.trim().toLowerCase();
+    const password = passwordInput;
+
+    const validated = validateLoginInput({
+      email,
+      password,
+    });
+
+    return await this.db.auth.login(validated.email, validated.password);
   }
 
   async logout(token: string | undefined) {

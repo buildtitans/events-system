@@ -1,4 +1,4 @@
-import "./formats";
+import "@/src/schemas/format";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
