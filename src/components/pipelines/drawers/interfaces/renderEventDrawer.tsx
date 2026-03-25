@@ -78,6 +78,8 @@ export default function RenderEventDrawerContents({
                     <OpenedEvent
                         event={event}
                         name={name}
+                        numAttendants={numAttendants}
+                        numInterested={numInterested}
                         slug={slug}
                     />
 
