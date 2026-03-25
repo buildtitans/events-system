@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
 import { wait } from "../../utils/rendering/wait";
 import { RemoveUserFromGroupHook } from "../../types/hooks/types";
-import { getCurrentRole } from "../../store/slices/viewer/PermissionsSlice";
+import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
 
 export const useLeaveGroup = (): RemoveUserFromGroupHook => {
   const snackbarStatus = useSelector(

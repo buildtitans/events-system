@@ -13,7 +13,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventsPages } from "@/src/lib/store/slices/events/types";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { getCurrentRole } from "@/src/lib/store/slices/viewer/PermissionsSlice";
+import { getCurrentRole } from "@/src/lib/store/slices/viewer/ViewerSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { wait } from "@/src/lib/utils/rendering/wait";
 

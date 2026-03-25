@@ -12,7 +12,7 @@ const initialState: InitialState = {
   viewerRole: "anonymous",
 };
 
-const PermissionsSlice = createSlice({
+const ViewerSlice = createSlice({
   name: "group/members",
   initialState: initialState,
   reducers: {
@@ -32,12 +32,12 @@ const PermissionsSlice = createSlice({
   },
 });
 
-export type GroupMembersSliceType = ReturnType<typeof PermissionsSlice.reducer>;
+export type GroupMembersSliceType = ReturnType<typeof ViewerSlice.reducer>;
 
 export const {
   clearPermissionsSlice,
   getAttendanceDictionary,
   getCurrentRole,
-} = PermissionsSlice.actions;
+} = ViewerSlice.actions;
 
-export default PermissionsSlice.reducer;
+export default ViewerSlice.reducer;

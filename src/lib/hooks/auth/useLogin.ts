@@ -10,7 +10,7 @@ import {
   enqueueSnackbar,
 } from "../../store/slices/rendering/RenderingSlice";
 import { storeUserEmail } from "../../store/slices/user/userSlice";
-import { getAttendanceDictionary } from "../../store/slices/viewer/PermissionsSlice";
+import { getAttendanceDictionary } from "../../store/slices/viewer/ViewerSlice";
 import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
 import { wait } from "../../utils/rendering/wait";
 import { useState } from "react";

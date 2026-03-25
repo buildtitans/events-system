@@ -6,7 +6,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { getCurrentRole } from "../../store/slices/viewer/PermissionsSlice";
+import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
 
 const useJoinGroup = (): JoinGroupHook => {

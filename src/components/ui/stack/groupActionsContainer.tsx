@@ -15,7 +15,7 @@ type GroupActonsContainerProps = {
 export default function GroupActonsContainer({
     group_id,
 }: GroupActonsContainerProps): JSX.Element | null {
-    const role = useSelector((s: RootState) => s.groupMembers.viewerRole);
+    const role = useSelector((s: RootState) => s.viewer.viewerRole);
 
     return (
             <Toolbar 
