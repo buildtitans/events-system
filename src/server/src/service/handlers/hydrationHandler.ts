@@ -1,5 +1,4 @@
 import { DBClient } from "../../db";
-import { buildRoleBySlugLookup } from "../../lib/utils/buildRoleBySlugLookup";
 import {
   EventAttendantStatusSchemaType,
   RsvpStatusSchemaValidator,
