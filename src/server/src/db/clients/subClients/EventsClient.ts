@@ -60,6 +60,21 @@ export class EventsClient {
     return this.formatRawEvents(raw);
   }
 
+  async getEventsByGroupIds(
+    groupIds: GroupSchemaType["id"][],
+  ): Promise<EventsArraySchemaType> {
+    if (groupIds.length === 0) return [];
+
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("group_id", "in", groupIds)
+      .where("status", "=", "scheduled")
+      .execute();
+
+    return this.formatRawEvents(raw);
+  }
+
   async getFlattenedEventsByIds(
     ids: EventSchemaType["id"][],
   ): Promise<EventsArraySchemaType> {

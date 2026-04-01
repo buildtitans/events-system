@@ -74,39 +74,31 @@ export class EventsService {
   async getNextEventLookupMap(
     ids: GroupSchemaType["id"][],
   ): Promise<UpComingEventsLookup> {
+    const events = await this.db.events.getEventsByGroupIds(ids);
+
+    return this.mapSoonestEvents(events);
+  }
+
+  private mapSoonestEvents(events: EventSchemaType[]): UpComingEventsLookup {
     const hash: UpComingEventsLookup = {};
 
-    for (const groupId of ids) {
-      const events = await this.db.events.getGroupEventsByGroupId(groupId);
+    const soonestByGroup: Record<string, EventSchemaType> = {};
 
-      if (!Array.isArray(events) || events.length === 0) continue;
+    for (const event of events) {
+      const current = soonestByGroup[event.group_id];
 
-      const soonest = this.getSoonestEvent(events);
-
-      if (!soonest) continue;
-
-      hash[groupId] = soonest.starts_at;
+      if (
+        !current ||
+        new Date(event.starts_at).getTime() <
+          new Date(current.starts_at).getTime()
+      ) {
+        soonestByGroup[event.group_id] = event;
+      }
+    }
+    for (const [groupId, event] of Object.entries(soonestByGroup)) {
+      hash[groupId] = event.starts_at;
     }
 
     return hash;
-  }
-
-  private getSoonestEvent(
-    events: EventsArraySchemaType,
-  ): EventSchemaType | undefined {
-    if (!Array.isArray(events) || events.length === 0) return undefined;
-
-    let nearest = events[0];
-
-    for (const event of events) {
-      if (
-        new Date(event.starts_at).getTime() <
-        new Date(nearest.starts_at).getTime()
-      ) {
-        nearest = event;
-      }
-    }
-
-    return nearest;
   }
 }
