@@ -12,6 +12,11 @@ export type GroupNameLookupMap = Record<
   { name: GroupSchemaType["name"]; slug: GroupSchemaType["slug"] }
 >;
 
+export type EventsByGroupId = Record<
+  EventSchemaType["group_id"],
+  EventSchemaType[]
+>;
+
 export type UpComingEventsLookup = Record<
   GroupSchemaType["id"],
   EventSchemaType["starts_at"]

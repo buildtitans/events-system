@@ -1,9 +1,11 @@
 import {
   EventsArraySchemaType,
+  EventsByGroupIdSchemaType,
+  EventsByGroupIdSchemaValidator,
   EventSchemaType,
   NewEventInputSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import type { UpComingEventsLookup } from "../types";
+import type { EventsByGroupId, UpComingEventsLookup } from "../types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
@@ -76,29 +78,80 @@ export class EventsService {
   ): Promise<UpComingEventsLookup> {
     const events = await this.db.events.getEventsByGroupIds(ids);
 
-    return this.mapSoonestEvents(events);
+    const eventsByGroup = this.hashEventsByGroup(events);
+
+    return this.mapSoonestEvents(eventsByGroup);
   }
 
-  private mapSoonestEvents(events: EventSchemaType[]): UpComingEventsLookup {
-    const hash: UpComingEventsLookup = {};
+  private mapSoonestEvents(
+    eventsByGroup: EventsByGroupId,
+  ): UpComingEventsLookup {
+    const nextEventLookup: UpComingEventsLookup = {};
 
-    const soonestByGroup: Record<string, EventSchemaType> = {};
+    const values = Object.values(eventsByGroup);
+
+    for (const arr of values) {
+      const soonest = this.getNextOrMostRecentGroupEvent(arr);
+      nextEventLookup[soonest.group_id] = soonest.starts_at;
+    }
+
+    return nextEventLookup;
+  }
+
+  private hashEventsByGroup(
+    events: EventsArraySchemaType,
+  ): EventsByGroupIdSchemaType {
+    const results: EventsByGroupIdSchemaType = {};
 
     for (const event of events) {
-      const current = soonestByGroup[event.group_id];
+      const groupId = event.group_id;
 
-      if (
-        !current ||
-        new Date(event.starts_at).getTime() <
-          new Date(current.starts_at).getTime()
-      ) {
-        soonestByGroup[event.group_id] = event;
+      if (!results[groupId]) {
+        results[groupId] = [];
+      }
+
+      results[groupId].push(event);
+    }
+
+    return EventsByGroupIdSchemaValidator(results);
+  }
+
+  private getNextOrMostRecentGroupEvent(
+    groupEvents: EventsArraySchemaType,
+  ): EventSchemaType {
+    const now = Date.now();
+
+    let nearestFuture: EventSchemaType | null = null;
+    let nearestPast: EventSchemaType | null = null;
+
+    for (const event of groupEvents) {
+      const startsAt = new Date(event.starts_at).getTime();
+
+      if (startsAt >= now) {
+        if (
+          !nearestFuture ||
+          startsAt < new Date(nearestFuture.starts_at).getTime()
+        ) {
+          nearestFuture = event;
+        }
+      } else {
+        if (
+          !nearestPast ||
+          startsAt > new Date(nearestPast.starts_at).getTime()
+        ) {
+          nearestPast = event;
+        }
       }
     }
-    for (const [groupId, event] of Object.entries(soonestByGroup)) {
-      hash[groupId] = event.starts_at;
+
+    if (nearestFuture) {
+      return nearestFuture;
     }
 
-    return hash;
+    if (nearestPast) {
+      return nearestPast;
+    }
+
+    throw new Error("Expected at least one event in groupEvents");
   }
 }

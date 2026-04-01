@@ -1,3 +1,4 @@
+import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
@@ -47,6 +48,8 @@ const EventsReponseSchema = Type.Object({
   }),
 });
 
+const EventsByGroupIdSchema = Type.Record(Type.String(), EventsArraySchema);
+
 const UpdateEventArgsSchema = Type.Object({
   event_id: Type.String({ format: "uuid" }),
   status: EventStatusSchema,
@@ -55,6 +58,8 @@ const UpdateEventArgsSchema = Type.Object({
 });
 
 export const EventSearchSchema = Type.String();
+
+export type EventsByGroupIdSchemaType = Static<typeof EventsByGroupIdSchema>;
 
 export type EventSearchSchemaType = Static<typeof EventSearchSchema>;
 
@@ -93,6 +98,11 @@ export const NewEventInputSchemaValidator =
 
 export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
   NewEventInputSchemaValidator,
+);
+
+export const EventsByGroupIdSchemaValidator = createValidator(
+  EventsByGroupIdSchema,
+  "EventsByGroupIdSchema",
 );
 
 export const GroupIdSchemaValidator = TypeCompiler.Compile(GroupIdSchema);
