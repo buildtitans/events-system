@@ -6,15 +6,11 @@ import type { Selectable } from "kysely";
 import {
   GroupMembersArraySchemaType,
   GroupMemberSchemaType,
-  MemberCountSchema,
   MemberCountSchemaType,
   MemberCountSchemaValidator,
   ValidateGroupMember,
   ValidateGroupMembersArray,
 } from "@/src/schemas/groups/groupMembersSchema";
-import { Static, TSchema } from "@sinclair/typebox";
-import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { formatErrors } from "@/src/lib/utils/validation/validateSchema";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
@@ -161,29 +157,7 @@ export class GroupMembersClient {
       counts[row.group_id] = Number(row.member_count);
     }
 
-    return this.validateOrThrow(counts, MemberCountSchema, "MemberCountSchema");
-  }
-
-  private validateOrThrow<T extends TSchema>(
-    data: unknown,
-    schema: T,
-    schemaName = "Schema",
-  ) {
-    const compiled = TypeCompiler.Compile(schema);
-
-    if (!compiled.Check(data)) {
-      const errs = [...compiled.Errors(data)];
-
-      console.error(
-        `\n ${schemaName} validation failed (${errs.length} errors)\n${formatErrors(errs)}\n`,
-      );
-
-      throw new Error(
-        `${schemaName} validation failed (${errs.length} errors). See console for details.`,
-      );
-    }
-
-    return data as Static<T>;
+    return MemberCountSchemaValidator(counts);
   }
 
   private async getRawMembers(
