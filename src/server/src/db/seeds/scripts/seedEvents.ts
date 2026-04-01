@@ -17,7 +17,6 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
       description: event.description,
       tag: event.tag,
       img: event.img ?? null,
-      authors: JSON.stringify(event.authors),
       group_id: groupID,
       starts_at: event.starts_at,
       meeting_location: event.meeting_location,
@@ -32,7 +31,6 @@ export async function seedEvents(groupsBySlug: Record<string, string>) {
           description: row.description,
           tag: row.tag,
           img: row.img,
-          authors: row.authors,
         }),
       )
 

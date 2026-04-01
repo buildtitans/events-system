@@ -7,11 +7,7 @@
     "title": "Modern Dev Tools That Actually Improve Team Workflow",
     "description": "Join fellow engineers for a discussion on modern development tooling, workflow improvements, and the practical ways new tools are changing how teams build software.",
     "group": "blono-devs-bloomington-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Remy Sharp", "avatar": "/next.svg" },
-      { "name": "Travis Howard", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-08T19:00:00Z",
@@ -21,10 +17,7 @@
     "title": "What Makes a Feature Worth Building?",
     "description": "Come explore how thoughtful product decisions, feature prioritization, and user feedback shape successful releases and stronger product outcomes.",
     "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Erica Johns", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-15T17:30:00Z",
@@ -34,10 +27,7 @@
     "title": "Design Trends Worth Paying Attention To in 2026",
     "description": "A conversation for designers and frontend folks about emerging design trends, interface patterns, and how to build experiences that stay relevant over time.",
     "group": "uiux-and-frontend-design-lab-normal-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Kate Morrison", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-22T18:00:00Z",
@@ -47,10 +37,7 @@
     "title": "Startup Milestones, Setbacks, and Lessons Learned",
     "description": "Hear the story behind key milestones, lessons learned, and the decisions that helped shape a growing company from its early stages to where it is today.",
     "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Cindy Baker", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-02-10T20:00:00Z",
@@ -60,11 +47,7 @@
     "title": "Sustainable AI: Building Smarter, Greener Systems",
     "description": "Join us for a discussion on the environmental impact of AI systems, sustainable infrastructure choices, and how teams can balance performance with responsible engineering practices.",
     "group": "devops-and-cloud-illinois-online",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Anderson Cooper", "avatar": "/next.svg" },
-      { "name": "Trevor Henderson", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-12T18:30:00Z",
@@ -74,10 +57,7 @@
     "title": "Small Software Changes That Save Teams Big Time",
     "description": "A practical session on workflow optimization, software improvements, and the kinds of product decisions that help teams work faster and more effectively.",
     "group": "midwest-full-stack-collective-online",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Travis Howard", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-18T19:00:00Z",
@@ -87,11 +67,7 @@
     "title": "Behind the Stack: How Modern ML Platforms Are Built",
     "description": "Take a closer look at the infrastructure, research ideas, and engineering tradeoffs behind modern machine learning platforms in this deep-dive session for AI enthusiasts and builders.",
     "group": "data-and-ai-central-il-normal-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Lena Patel", "avatar": "/next.svg" },
-      { "name": "Marco Ruiz", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-20T18:00:00Z",
@@ -101,10 +77,7 @@
     "title": "Using Data to Improve Retention and Customer Success",
     "description": "Join this session on experimentation, analytics, and growth strategy to see how data-informed decisions can improve customer experience and long-term retention.",
     "group": "backend-engineering-guild-online",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Nina Flores", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-25T17:00:00Z",
@@ -114,10 +87,7 @@
     "title": "Turning User Research Into Better Interface Decisions",
     "description": "A UX-focused event on turning user interviews, feedback, and behavioral insights into more intuitive interfaces and stronger product experiences.",
     "group": "uiux-and-frontend-design-lab-normal-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Oliver Grant", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-28T18:00:00Z",
@@ -127,10 +97,7 @@
     "title": "Building Team Culture That Supports Great Work",
     "description": "Join us for a conversation on team culture, collaboration, and the workplace habits that help creative and technical teams do their best work together.",
     "group": "women-in-tech-bloomington-normal-bloomington-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Priya Shah", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-05-02T18:00:00Z",
@@ -140,11 +107,7 @@
     "title": "Engineering for Sustainability in Real-World Systems",
     "description": "Explore how engineers are approaching sustainability through smarter systems, better design decisions, and practical innovations that reduce environmental impact.",
     "group": "blono-devs-bloomington-il",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Agnes Walker", "avatar": "/next.svg" },
-      { "name": "Trevor Henderson", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   },
   {
     "starts_at": "2026-05-08T19:00:00Z",
@@ -154,9 +117,6 @@
     "title": "Recent Product Updates and the Thinking Behind Them",
     "description": "Join other product-minded builders for a walkthrough of recent updates, feature improvements, and the thinking behind changes designed to improve day-to-day workflows.",
     "group": "central-illinois-react-normal-il-61761",
-    "meeting_location": "Online",
-    "authors": [
-      { "name": "Travis Howard", "avatar": "/next.svg" }
-    ]
+    "meeting_location": "Online"
   }
 ]

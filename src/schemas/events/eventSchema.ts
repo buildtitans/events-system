@@ -2,15 +2,6 @@ import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 
-const AuthorSchema = Type.Object({
-  name: Type.String(),
-  avatar: Type.String(),
-});
-
-const AuthorsSchema = Type.Array(AuthorSchema);
-
-type AuthorsSchemaType = Static<typeof AuthorsSchema>;
-
 export const EventStatusSchema = Type.Union([
   Type.Literal("scheduled"),
   Type.Literal("cancelled"),
@@ -27,7 +18,6 @@ const EventSchema = Type.Object({
   title: Type.String(),
   description: Type.String(),
   meeting_location: Type.String(),
-  authors: AuthorsSchema,
   created_at: Type.String({ format: "date-time" }),
   updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
 });
@@ -45,7 +35,6 @@ const NewEventInputSchema = Type.Object({
   tag: Type.Union([Type.String(), Type.Null()]),
   title: Type.String(),
   description: Type.String(),
-  authors: AuthorsSchema,
   meeting_location: Type.String(),
 });
 
@@ -85,8 +74,6 @@ export {
   EventSchema,
   EventsArraySchema,
   EventsReponseSchema,
-  AuthorSchema,
-  AuthorsSchema,
   NewEventInputSchema,
   GroupIdSchema,
   UpdateEventArgsSchema,
@@ -96,7 +83,6 @@ export type {
   EventSchemaType,
   EventsArraySchemaType,
   EventsReponseSchemaType,
-  AuthorsSchemaType,
   NewEventInputSchemaType,
   GroupIdSchemaType,
   UpdateEventArgsSchemaType,

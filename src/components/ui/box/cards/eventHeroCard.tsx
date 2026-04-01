@@ -112,7 +112,6 @@ function EventHeroCard({
           </StyledTypography>
         </StyledCardContent>
         <CardFooter
-          authors={event.authors}
           isFutureDateOrNow={isFutureDateOrNow}
           scheduled_at={scheduled_at}
           location={event.meeting_location}
