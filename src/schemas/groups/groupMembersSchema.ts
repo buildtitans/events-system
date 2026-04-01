@@ -21,6 +21,8 @@ const GroupMemberSchema = Type.Object({
   joined_at: Type.String(),
 });
 
+export const MemberCountSchema = Type.Record(Type.String(), Type.Number());
+
 const MemberToRemoveSchema = Type.Object({
   group_id: Type.String({ format: "uuid" }),
 });
@@ -28,6 +30,8 @@ const MemberToRemoveSchema = Type.Object({
 const GroupIDForInsertSchema = Type.String();
 
 const GroupMembersArraySchema = Type.Array(GroupMemberSchema);
+
+type MemberCountSchemaType = Static<typeof MemberCountSchema>;
 
 type MemberToRemoveSchemaType = Static<typeof MemberToRemoveSchema>;
 
@@ -47,6 +51,7 @@ export type {
   GroupMembersArraySchemaType,
   MemberToRemoveSchemaType,
   GroupRoleSchemaType,
+  MemberCountSchemaType,
 };
 
 export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(
@@ -62,6 +67,11 @@ export const GroupMemberSchemaValidator =
 export const ValidateGroupMember = createValidator(
   GroupMemberSchema,
   "GroupMemberSchema",
+);
+
+export const MemberCountSchemaValidator = createValidator(
+  MemberCountSchema,
+  "MemberCountSchema",
 );
 
 export const GroupRoleSchemaValidator = createValidator(

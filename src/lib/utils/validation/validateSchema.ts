@@ -22,7 +22,7 @@ function preview(value: unknown, max = 160) {
   }
 }
 
-function formatErrors(errors: ValueError[]) {
+export function formatErrors(errors: ValueError[]) {
   return errors
     .map((e, i) => {
       const path = e.path || "(root)";

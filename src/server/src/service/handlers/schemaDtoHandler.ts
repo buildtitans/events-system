@@ -39,25 +39,24 @@ export class SchemaDtoHandler {
     rawGroups: GroupsSchemaType,
     lookupMap: NameSlugDescriptionLookup,
   ): Promise<UserMembershipSchemaType[]> {
-    const results: UserMembershipSchemaType[] = [];
+    const groupIds = rawMemberships.map((m) => m.group_id);
+    const memberCounts =
+      await this.db.groupMembers.getMemberCountsByGroupIds(groupIds);
 
-    for (const membership of rawMemberships) {
+    const results = rawMemberships.map((membership) => {
       const group = rawGroups.find((grp) => grp.id === membership.group_id);
-      const members = await this.db.groupMembers.getGroupMembers(
-        membership.group_id,
-      );
 
-      results.push({
+      return {
         group_id: membership.group_id,
         group_name: group?.name ?? "",
         location: group?.location ?? "",
         roleInGroup: membership.role,
         group_slug: group?.slug ?? "",
-        member_count: members.length,
+        member_count: memberCounts[membership.group_id] ?? 0,
         group_description:
-          lookupMap[membership.group_id].group_description ?? "",
-      });
-    }
+          lookupMap[membership.group_id]?.group_description ?? "",
+      };
+    });
     return UserMembershipSchemaArrayValidator(results);
   }
 }

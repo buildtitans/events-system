@@ -5,12 +5,12 @@ import type {
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { DBClient } from "../../db";
 import type { NewOrganizerInput } from "../types";
-import { AuthorizationService } from "../auth/authorization";
+import { Authorization } from "../auth/authorization";
 
 export class GroupLifecycleHandler {
   constructor(
     private readonly api: DBClient,
-    private readonly policy: AuthorizationService,
+    private readonly policy: Authorization,
   ) {}
 
   async createNewGroup(
