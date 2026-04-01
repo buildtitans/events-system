@@ -9,7 +9,6 @@ import {
   NewEventInputSchema,
 } from "@/src/schemas/events/eventSchema";
 import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
-import { AuthorsSchema } from "@/src/schemas/events/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
 
@@ -68,8 +67,6 @@ const layoutSlotValidator = createValidator(
   "PaginatedLayoutSchema",
 );
 
-const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);
-
 const GroupSchemaValidator = createValidator(GroupSchema, "GroupsSchema");
 
 const GroupsSchemaValidator = createValidator(GroupsSchema, "GroupsSchema");
@@ -85,7 +82,6 @@ export const ValidateEventSearchQuery = createValidator(
 );
 
 export {
-  AuthorsValidator,
   eventsValidator,
   layoutSlotValidator,
   GroupSchemaValidator,

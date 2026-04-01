@@ -27,7 +27,6 @@ export type NewEventType = {
   group_id: EventSchemaType["group_id"] | null;
   img: EventSchemaType["img"];
   meeting_location: EventSchemaType["meeting_location"] | null;
-  authors: EventSchemaType["authors"] | null;
   tag: EventSchemaType["tag"];
 };
 
@@ -50,7 +49,6 @@ export const useCreateEvent = (
     group_id: group_id,
     img: `https://picsum.photos/800/450?random=${picDate}`,
     meeting_location: null,
-    authors: [{ name: "Jon Doe", avatar: "meh" }],
     tag: null,
   });
   const isSubmittable = useMemo(() => {

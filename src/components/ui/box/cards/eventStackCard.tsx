@@ -73,7 +73,6 @@ function EventStackCard({
       </StyledCardContent>
       <CardFooter
         isFutureDateOrNow={isFutureDateOrNow}
-        authors={event.authors}
         location={event.meeting_location}
       />
     </StyledCard>

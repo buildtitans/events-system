@@ -10,7 +10,6 @@ import HistoryIcon from "@mui/icons-material/History";
 
 type CardFooterProps = {
   location?: EventSchemaType["meeting_location"] | GroupSchemaType["location"];
-  authors?: { name: string; avatar: string }[];
   scheduled_at?: EventSchemaType["starts_at"];
   groupName?: GroupSchemaType["name"];
   isFutureDateOrNow: boolean | undefined;

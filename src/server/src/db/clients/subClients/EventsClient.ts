@@ -8,7 +8,6 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { AuthorsValidator } from "@/src/lib/utils/validation/validateSchema";
 import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
@@ -147,14 +146,12 @@ export class EventsClient {
     const start_time = dayjs(newEvent.starts_at)
       .utc()
       .format("YYYY-MM-DDTHH:mm:ss.sssZ");
-    const stringified_authors = JSON.stringify(newEvent.authors);
 
     return {
       title: newEvent.title,
       description: newEvent.description,
       img: "https://picsum.photos/800/450?random=2",
       group_id: newEvent.group_id,
-      authors: stringified_authors,
       starts_at: start_time,
       created_at: new Date(),
       tag: "placeholder tag",
@@ -175,12 +172,6 @@ export class EventsClient {
 
   private formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
     return rows.map((row) => {
-      if (!AuthorsValidator.Check(row.authors)) {
-        throw new Error("Invalid authors JSON");
-      }
-
-      const parsed_authors =
-        typeof row.authors === "string" ? JSON.parse(row.authors) : row.authors;
       const startsAtMs = row.starts_at.getTime();
 
       return eventValidator({
@@ -193,7 +184,6 @@ export class EventsClient {
         starts_at: row.starts_at.toISOString(),
         meeting_location: row.meeting_location,
         group_id: row.group_id,
-        authors: parsed_authors,
         created_at: row.created_at.toISOString(),
         updated_at: row.updated_at ? row.updated_at.toISOString() : null,
         status: row.status,
@@ -202,8 +192,6 @@ export class EventsClient {
   }
 
   private formatEvent(raw: Selectable<Events>): EventSchemaType {
-    const parsed_authors =
-      typeof raw.authors === "string" ? JSON.parse(raw.authors) : raw.authors;
     const startsAtMs = raw.starts_at.getTime();
 
     return eventValidator({
@@ -214,7 +202,6 @@ export class EventsClient {
       updated_at: raw.updated_at.toISOString(),
       created_at: raw.created_at.toISOString(),
       group_id: raw.group_id,
-      authors: parsed_authors,
       starts_at: raw.starts_at.toISOString(),
       starts_at_ms: startsAtMs,
       img: raw.img,
