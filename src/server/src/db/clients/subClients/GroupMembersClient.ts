@@ -61,13 +61,7 @@ export class GroupMembersClient {
       .limit(1)
       .executeTakeFirstOrThrow();
 
-    const organizer = this.parseRawMember(raw);
-
-    console.log({
-      "Group Orgainzer": organizer,
-    });
-
-    return organizer;
+    return this.parseRawMember(raw);
   }
 
   async addOrganizer(

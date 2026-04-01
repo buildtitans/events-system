@@ -15,7 +15,7 @@ import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 type MembershipListItemProps = {
   membership: UserMembershipSchemaType;
   handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void,
-  nextEvent: EventSchemaType["starts_at"],
+  nextEvent?: EventSchemaType["starts_at"],
 
 };
 
@@ -24,7 +24,7 @@ export default function MembershipListItem({
   nextEvent,
   handleClick
 }: MembershipListItemProps): JSX.Element {
-  const isCurrent = isFutureOrNow(new Date(nextEvent))
+  const isCurrent = nextEvent ? isFutureOrNow(new Date(nextEvent)) : undefined
 
 
 
@@ -72,8 +72,8 @@ export default function MembershipListItem({
 }
 
 type NextGroupEventProps = {
-  nextEvent: string,
-  isCurrent: boolean
+  nextEvent?: string,
+  isCurrent?: boolean
 };
 
 function NextGroupEvent({ nextEvent, isCurrent }: NextGroupEventProps): JSX.Element {
@@ -109,7 +109,7 @@ function NextGroupEvent({ nextEvent, isCurrent }: NextGroupEventProps): JSX.Elem
           />
         ) 
       } 
-        label={`${toMonthDayYearHour(String(nextEvent))}`}
+        label={nextEvent ? `${toMonthDayYearHour(String(nextEvent))}` : 'Nothing Scheduled'}
         /> 
       : (
         <Chip 

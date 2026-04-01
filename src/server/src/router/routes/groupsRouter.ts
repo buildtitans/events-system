@@ -1,4 +1,8 @@
-import { router, publicProcedure } from "@/src/server/src/context/init";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+} from "@/src/server/src/context/init";
 import { typeboxInput, typeboxInputV2 } from "../adaptors/typeBoxValidation";
 import {
   GroupSlugSchemaType,
@@ -24,7 +28,7 @@ export const groupsRouter = router({
     return await ctx.services.api.domains.groups.getGroupNameDictionary();
   }),
 
-  createNewGroup: publicProcedure
+  createNewGroup: protectedProcedure
     .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.groupLifecycle.createNewGroup(
