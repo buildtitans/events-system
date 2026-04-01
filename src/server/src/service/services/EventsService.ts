@@ -1,10 +1,10 @@
 import {
   EventsArraySchemaType,
   EventsByGroupIdSchemaType,
-  EventsByGroupIdSchemaValidator,
   EventSchemaType,
   NewEventInputSchemaType,
 } from "@/src/schemas/events/eventSchema";
+import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
 import type { EventsByGroupId, UpComingEventsLookup } from "../types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
@@ -12,17 +12,14 @@ import { Authorization } from "../auth/authorization";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "../handlers/hydrationHandler";
-//import { LayoutFormatter } from "./layoutFormatter";
 
 export class EventsService {
   public readonly hydrate: EventHydrationHandler;
-  //  private readonly layout: LayoutFormatter;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
-    //  this.layout = new LayoutFormatter();
   }
 
   async getAllEvents(): Promise<EventsArraySchemaType> {

@@ -1,15 +1,15 @@
-import "./formats";
+import "@/src/schemas/format";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { TSchema } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
 import type { ValueError } from "@sinclair/typebox/compiler";
 import {
   EventsArraySchema,
+  EventsByGroupIdSchema,
   EventSchema,
   NewEventInputSchema,
 } from "@/src/schemas/events/eventSchema";
 import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
-import { AuthorsSchema } from "@/src/schemas/events/eventSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 import { GroupIdSchema } from "@/src/schemas/events/eventSchema";
 import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
@@ -75,8 +75,10 @@ const layoutSlotValidator = createValidator(
   "PaginatedLayoutSchema",
 );
 
-const AuthorsValidator = TypeCompiler.Compile(AuthorsSchema);
-
+export const EventsByGroupIdSchemaValidator = createValidator(
+  EventsByGroupIdSchema,
+  "EventsByGroupIdSchema",
+);
 const GroupSchemaValidator = createValidator(GroupSchema, "GroupsSchema");
 
 const GroupsSchemaValidator = createValidator(GroupsSchema, "GroupsSchema");
@@ -91,7 +93,6 @@ const ValidateGroupId = createValidator(GroupIdSchema, "GroupIdSchema");
 const CompiledGroupIdsSchema = TypeCompiler.Compile(EventIdsSchema);
 
 export {
-  AuthorsValidator,
   CompiledGroupIdsSchema,
   eventsValidator,
   layoutSlotValidator,

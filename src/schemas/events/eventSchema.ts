@@ -48,7 +48,10 @@ const EventsReponseSchema = Type.Object({
   }),
 });
 
-const EventsByGroupIdSchema = Type.Record(Type.String(), EventsArraySchema);
+export const EventsByGroupIdSchema = Type.Record(
+  Type.String(),
+  EventsArraySchema,
+);
 
 const UpdateEventArgsSchema = Type.Object({
   event_id: Type.String({ format: "uuid" }),
@@ -98,11 +101,6 @@ export const NewEventInputSchemaValidator =
 
 export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
   NewEventInputSchemaValidator,
-);
-
-export const EventsByGroupIdSchemaValidator = createValidator(
-  EventsByGroupIdSchema,
-  "EventsByGroupIdSchema",
 );
 
 export const GroupIdSchemaValidator = TypeCompiler.Compile(GroupIdSchema);

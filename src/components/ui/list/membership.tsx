@@ -63,9 +63,9 @@ export default function MembershipListItem({
         />
 
       </Stack>
+      <NextGroupEvent isCurrent={isCurrent} nextEvent={nextEvent} />
       
       </Stack> 
-      <NextGroupEvent isCurrent={isCurrent} nextEvent={nextEvent} />
 
     </ListItem>
   );
