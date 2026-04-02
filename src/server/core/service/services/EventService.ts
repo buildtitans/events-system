@@ -13,7 +13,7 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "../handlers/hydrationHandler";
 
-export class EventsService {
+export class EventService {
   public readonly hydrate: EventHydrationHandler;
   constructor(
     private readonly db: DBClient,

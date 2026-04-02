@@ -14,7 +14,7 @@ export class GroupLifecycleHandler {
   ) {}
 
   async createNewGroup(
-    user_id: string | undefined,
+    user_id: string | undefined | null,
     newGroupInput: NewGroupInputSchemaType,
   ): Promise<GroupSchemaType> {
     const id = this.policy.requireAuthenticated(user_id);

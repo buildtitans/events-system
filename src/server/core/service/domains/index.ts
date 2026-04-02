@@ -4,7 +4,7 @@ import { UserService } from "@/src/server/core/service/services/userService";
 import { GroupService } from "@/src/server/core/service/services/groupService";
 import { Authorization } from "@/src/server/core/service/auth/authorization";
 import { Authentication } from "@/src/server/core/service/services/SessionService";
-import { EventsService } from "@/src/server/core/service/services/EventsService";
+import { EventService } from "@/src/server/core/service/services/EventService";
 import { NotificatonService } from "@/src/server/core/service/services/notificationService";
 
 export class Domains {
@@ -12,7 +12,7 @@ export class Domains {
   public readonly users: UserService;
   public readonly session: Authentication;
   public readonly groups: GroupService;
-  public readonly events: EventsService;
+  public readonly events: EventService;
   public readonly notifications: NotificatonService;
 
   constructor(
@@ -23,7 +23,7 @@ export class Domains {
     this.participations = new ParticipationsService(this.db, this.policy);
     this.users = new UserService(this.db, this.policy);
     this.groups = new GroupService(this.db, this.policy);
-    this.events = new EventsService(this.db, this.policy);
+    this.events = new EventService(this.db, this.policy);
     this.notifications = new NotificatonService(this.db, this.policy);
   }
 }

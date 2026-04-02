@@ -1,4 +1,4 @@
-import { EventsService } from "@/src/server/core/service/services/EventsService";
+import { EventService } from "@/src/server/core/service/services/EventService";
 import type {
   EventSchemaType,
   UpdateEventArgsSchemaType,
@@ -36,13 +36,13 @@ describe("EventsService.getNextEventLookupMap", () => {
 
   const policy = {} as Authorization;
 
-  let service: EventsService;
+  let service: EventService;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
-    service = new EventsService(db, policy);
+    service = new EventService(db, policy);
   });
 
   afterEach(() => {
@@ -149,7 +149,7 @@ describe("EventsService.updateEventStatus", () => {
     requireCanManageGroup: jest.fn(),
   } as unknown as Authorization;
 
-  let service: EventsService;
+  let service: EventService;
 
   const eventUpdate = {
     organizer_id: "organizer-1",
@@ -160,7 +160,7 @@ describe("EventsService.updateEventStatus", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new EventsService(db, policy);
+    service = new EventService(db, policy);
   });
 
   it("throws a 401 status error when the user is not authenticated", async () => {
