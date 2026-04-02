@@ -1,7 +1,7 @@
-import { db, DBClient } from "../db";
-import { RoleBasedAccessHandler } from "./auth/roleBasedAccessHandler";
-import { Authorization } from "./auth/authorization";
-import { Domains } from "./domains";
+import { db, DBClient } from "@/src/server/src/db";
+import { RoleBasedAccessHandler } from "@/src/server/src/service/auth/roleBasedAccessHandler";
+import { Authorization } from "@/src/server/src/service/auth/authorization";
+import { Domains } from "@/src/server/src/service/domains/index";
 
 export class ContextApi {
   private readonly db: DBClient;

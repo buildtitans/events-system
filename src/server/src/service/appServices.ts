@@ -1,7 +1,7 @@
 import { LayoutFormatter } from "./services/layoutFormatter";
-import { ContextApi } from "./contextApi";
+import { ContextApi } from "@/src/server/src/service/api/contextApi";
 
-export class Services {
+export class AppServices {
   public readonly api: ContextApi;
   public readonly layout: LayoutFormatter;
   constructor() {

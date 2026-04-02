@@ -1,9 +1,9 @@
-import { DBClient } from "../db";
-import { ParticipationsService } from "./services/participationsService";
-import { UserService } from "./services/userService";
-import { GroupService } from "./services/groupService";
-import { Authorization } from "./auth/authorization";
-import { Authentication } from "./services/SessionService";
+import { DBClient } from "@/src/server/src/db";
+import { ParticipationsService } from "@/src/server/src/service/services/participationsService";
+import { UserService } from "@/src/server/src/service/services/userService";
+import { GroupService } from "@/src/server/src/service/services/groupService";
+import { Authorization } from "@/src/server/src/service/auth/authorization";
+import { Authentication } from "@/src/server/src/service/services/SessionService";
 import { EventsService } from "@/src/server/src/service/services/EventsService";
 import { NotificatonService } from "@/src/server/src/service/services/notificationService";
 

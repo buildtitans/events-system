@@ -20,6 +20,11 @@ export class EventsClient {
 
   async getEvents(): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEvents();
+
+    console.log({
+      EventSchema: this.formatRawEvents(raw),
+    });
+
     return this.formatRawEvents(raw);
   }
 

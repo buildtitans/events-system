@@ -1,9 +1,9 @@
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
-import { Services } from "../service/services";
+import { AppServices } from "../service/appServices";
 import { SessionHandler } from "../service/handlers/SessionHandler";
 
-export function createContextInner(): { services: Services } {
-  return { services: new Services() };
+export function createContextInner(): { services: AppServices } {
+  return { services: new AppServices() };
 }
 
 export function createContext({ req, res }: CreateFastifyContextOptions) {
