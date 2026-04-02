@@ -4,7 +4,7 @@ import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import {
   typeboxInput,
   typeboxInputV2,
-} from "@/src/server/src/router/adaptors/typeBoxValidation";
+} from "@/src/server/core/router/adaptors/typeBoxValidation";
 
 const EventAttendantStatusSchema = Type.Union([
   Type.Literal("going"),

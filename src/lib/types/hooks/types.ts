@@ -28,8 +28,8 @@ import type {
   SuggestionOptions,
   SuggestionType,
 } from "../../hooks/search/types";
-import type { RBACType } from "@/src/server/src/db/clients/types/types";
-import type { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
+import type { RBACType } from "@/src/server/core/db/clients/types/types";
+import type { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
 
 export type ValidateSignupCredsHook = {

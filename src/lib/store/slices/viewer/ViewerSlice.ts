@@ -1,5 +1,5 @@
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { AttendanceDictionaryType } from "@/src/server/src/lib/utils/mapAttendanceDictionary";
+import { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type InitialState = {

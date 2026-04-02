@@ -17,7 +17,7 @@ import {
   curateUpcomingEventIds,
   UpcomingEventIds,
 } from "../../utils/dates/curateUpcomingEventIds";
-import { PopularEventsIds } from "@/src/server/src/lib/utils/curatePopularEventsIds";
+import { PopularEventsIds } from "@/src/server/core/lib/utils/curatePopularEventsIds";
 
 export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
   const hydrateStatus = useSelector(
