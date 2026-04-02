@@ -2,7 +2,7 @@ import { Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { Static } from "@sinclair/typebox";
 import { createValidator } from "@/src/lib/utils/validation/validateSchema";
-import { typeboxInput } from "@/src/server/src/router/adaptors/typeBoxValidation";
+import { typeboxInput } from "@/src/server/core/router/adaptors/typeBoxValidation";
 
 export const GroupRoleSchema = Type.Union([
   Type.Literal("member"),
