@@ -83,7 +83,9 @@ export class ParticipationsService {
     return UserMembershipSchemaArrayValidator(parsed);
   }
 
-  async getRsvpdEvents(user_id: string | undefined): Promise<RsvpSchemaType[]> {
+  async getRsvpdEvents(
+    user_id: string | null | undefined,
+  ): Promise<RsvpSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
     const groups = await this.db.groups.getGroups();
     const userRecords =

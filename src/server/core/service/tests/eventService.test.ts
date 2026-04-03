@@ -3,10 +3,11 @@ import type {
   EventSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import type { DBClient } from "../../db";
-import { Authorization } from "../auth/authorization";
+import { dbMock, policyMock } from "./modules/mocks";
 
-function makeEvent(overrides: Partial<EventSchemaType> = {}): EventSchemaType {
+export function makeEvent(
+  overrides: Partial<EventSchemaType> = {},
+): EventSchemaType {
   return {
     id: "306fbc60-5ac6-4a95-8df9-89a110588000",
     img: "https://picsum.photos/800/450?random=3",
@@ -26,23 +27,14 @@ function makeEvent(overrides: Partial<EventSchemaType> = {}): EventSchemaType {
 }
 
 describe("EventsService.getNextEventLookupMap", () => {
-  const getEventsByGroupIds = jest.fn();
-
-  const db = {
-    events: {
-      getEventsByGroupIds,
-    },
-  } as unknown as DBClient;
-
-  const policy = {} as Authorization;
-
+  const getEventsByGroupIds = dbMock.events.getEventsByGroupIds as jest.Mock;
   let service: EventService;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
-    service = new EventService(db, policy);
+    service = new EventService(dbMock, policyMock);
   });
 
   afterEach(() => {
@@ -136,18 +128,7 @@ describe("EventsService.getNextEventLookupMap", () => {
 });
 
 describe("EventsService.updateEventStatus", () => {
-  const updateEventStatusInDb = jest.fn();
-
-  const db = {
-    events: {
-      updateEventStatus: updateEventStatusInDb,
-    },
-  } as unknown as DBClient;
-
-  const policy = {
-    requireAuthenticated: jest.fn(),
-    requireCanManageGroup: jest.fn(),
-  } as unknown as Authorization;
+  const updateEventStatusInDb = dbMock.events.updateEventStatus as jest.Mock;
 
   let service: EventService;
 
@@ -160,11 +141,11 @@ describe("EventsService.updateEventStatus", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new EventService(db, policy);
+    service = new EventService(dbMock, policyMock);
   });
 
   it("throws a 401 status error when the user is not authenticated", async () => {
-    (policy.requireAuthenticated as jest.Mock).mockImplementation(() => {
+    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
       throw new Error("401");
     });
 
@@ -172,13 +153,13 @@ describe("EventsService.updateEventStatus", () => {
       "401",
     );
 
-    expect(policy.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
     expect(updateEventStatusInDb).not.toHaveBeenCalled();
   });
 
   it("throws a 403 status error when the user is not authorized to manage the group", async () => {
-    (policy.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
-    (policy.requireCanManageGroup as jest.Mock).mockImplementation(() => {
+    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(() => {
       throw new Error("403");
     });
 
@@ -186,21 +167,23 @@ describe("EventsService.updateEventStatus", () => {
       service.updateEventStatus("user-1", eventUpdate),
     ).rejects.toThrow("403");
 
-    expect(policy.requireCanManageGroup).toHaveBeenCalled();
+    expect(policyMock.requireCanManageGroup).toHaveBeenCalled();
     expect(updateEventStatusInDb).not.toHaveBeenCalled();
   });
 
   it("updates the event status", async () => {
-    (policy.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
-    (policy.requireCanManageGroup as jest.Mock).mockImplementation(() => {});
+    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(
+      () => {},
+    );
     updateEventStatusInDb.mockResolvedValue({ status: eventUpdate.status });
 
     await expect(
       service.updateEventStatus("user-1", eventUpdate),
     ).resolves.toEqual({ status: eventUpdate.status });
 
-    expect(policy.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(policy.requireCanManageGroup).toHaveBeenCalledWith(
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
+    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
       "user-1",
       "group-1",
     );
