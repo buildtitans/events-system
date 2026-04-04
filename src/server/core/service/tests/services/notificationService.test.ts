@@ -1,4 +1,4 @@
-import { NotificatonService } from "@/src/server/core/service/services/notificationService";
+import { NotificationService } from "@/src/server/core/service/services/notificationService";
 import type { NewNotification } from "@/src/server/core/service/services/notificationService";
 import {
   dbMock,
@@ -25,11 +25,11 @@ describe("NotificationService.createNotification", () => {
 
   const notificationResponse = makeNotification(newNotification);
 
-  let service: NotificatonService;
+  let service: NotificationService;
 
   beforeEach(() => {
     (jest.clearAllMocks(),
-      (service = new NotificatonService(dbMock, policyMock)));
+      (service = new NotificationService(dbMock, policyMock)));
   });
 
   it("creates a new notification for members of the group", async () => {
@@ -55,7 +55,7 @@ describe("NotificationService.createNotification", () => {
 describe("NotificationService.getNewNotifications", () => {
   const getUnseenNotificationsInDb = dbMock.notifications
     .getUnseenNotifications as jest.Mock;
-  let service: NotificatonService;
+  let service: NotificationService;
 
   const notifications = [
     makeNotificationNewOrSeen({ id: "1", status: "new" }),
@@ -64,7 +64,7 @@ describe("NotificationService.getNewNotifications", () => {
 
   beforeEach(() => {
     (jest.clearAllMocks(),
-      (service = new NotificatonService(dbMock, policyMock)));
+      (service = new NotificationService(dbMock, policyMock)));
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
@@ -93,11 +93,11 @@ describe("NotificationService.getNewNotifications", () => {
 describe("NotificationService.markSeen", () => {
   const markOpenedNotificationsInDb = dbMock.notifications
     .markOpenedNotifications as jest.Mock;
-  let service: NotificatonService;
+  let service: NotificationService;
 
   beforeEach(() => {
     (jest.clearAllMocks(),
-      (service = new NotificatonService(dbMock, policyMock)));
+      (service = new NotificationService(dbMock, policyMock)));
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {

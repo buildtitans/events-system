@@ -74,3 +74,80 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
     });
   });
 });
+
+describe("GroupService.getGroupNameDictionary", () => {
+  const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
+
+  let service: GroupService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new GroupService(dbMock, policyMock);
+  });
+
+  it("returns a name, slug, and description lookup keyed by group id", async () => {
+    const groups = [
+      makeGroup({
+        id: "group-1",
+        name: "Board Game Nights",
+        slug: "board-game-nights",
+        description: "Games every Friday night",
+      }),
+      makeGroup({
+        id: "group-2",
+        name: "Frontend Study Group",
+        slug: "frontend-study-group",
+        description: "Weekly frontend practice sessions",
+      }),
+    ];
+
+    getGroupsInDb.mockResolvedValue(groups);
+
+    await expect(service.getGroupNameDictionary()).resolves.toEqual({
+      "group-1": {
+        name: "Board Game Nights",
+        slug: "board-game-nights",
+        group_description: "Games every Friday night",
+      },
+      "group-2": {
+        name: "Frontend Study Group",
+        slug: "frontend-study-group",
+        group_description: "Weekly frontend practice sessions",
+      },
+    });
+
+    expect(getGroupsInDb).toHaveBeenCalled();
+  });
+});
+
+describe("GroupService.getOrganizerEmail", () => {
+  const getOrganizerInDb = dbMock.groupMembers.getOrganizer as jest.Mock;
+  const getEmailByUserIdInDb = dbMock.auth.getEmailByUserId as jest.Mock;
+
+  let service: GroupService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new GroupService(dbMock, policyMock);
+  });
+
+  it("returns the organizer email for the group", async () => {
+    getOrganizerInDb.mockResolvedValue({
+      user_id: "organizer-1",
+      group_id: "group-1",
+      role: "organizer",
+      joined_at: "2026-04-01T19:57:58.721Z",
+    });
+
+    getEmailByUserIdInDb.mockResolvedValue({
+      email: "organizer@example.com",
+    });
+
+    await expect(service.getOrganizerEmail("group-1")).resolves.toEqual({
+      email: "organizer@example.com",
+    });
+
+    expect(getOrganizerInDb).toHaveBeenCalledWith("group-1");
+    expect(getEmailByUserIdInDb).toHaveBeenCalledWith("organizer-1");
+  });
+});

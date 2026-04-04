@@ -8,7 +8,7 @@ export type NewNotification = Pick<
   "group_id" | "priority" | "message" | "subject"
 >;
 
-export class NotificatonService {
+export class NotificationService {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

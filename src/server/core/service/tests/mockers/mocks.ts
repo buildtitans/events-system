@@ -81,8 +81,10 @@ export const dtoMemberships: UserMembershipSchemaType[] = [
 
 export const policyMock = {
   requireAuthenticated: jest.fn(),
+  requireToken: jest.fn(),
   requireCanManageGroup: jest.fn(),
   requireCanCreateEvent: jest.fn(),
+  requireCanChangeMembership: jest.fn(),
 } as unknown as Authorization;
 
 export const authenticateAs = (userId = USER_ID) => {

@@ -2,7 +2,7 @@ import { validateLoginInput } from "@/src/schemas/auth/loginCredentialsSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 
-export class Authentication {
+export class SessionService {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
