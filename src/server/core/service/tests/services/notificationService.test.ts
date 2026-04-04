@@ -1,36 +1,17 @@
 import { NotificatonService } from "@/src/server/core/service/services/notificationService";
-import { Authorization } from "@/src/server/core/service/auth/authorization";
-import { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
-import { DBClient } from "../../db";
 import type { NewNotification } from "@/src/server/core/service/services/notificationService";
-import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import { dbMock, policyMock } from "./modules/mocks";
-
-function makeNotification(
-  overrides: Partial<NotificationSchemaType> = {},
-): NotificationCreationProcedure {
-  return {
-    ok: true,
-    items: [
-      {
-        created_at: "2026-04-01T19:57:58.721Z",
-        updated_at: "2026-04-01T19:57:58.721Z",
-        group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-        id: "new-notification-1-id",
-        subject: "new-notification-1 subject",
-        message: "new-notification-1-message",
-        priority: "high",
-        status: "new",
-        user_id: "user-1",
-        ...overrides,
-      },
-    ],
-  };
-}
+import {
+  dbMock,
+  policyMock,
+  makeNotificationNewOrSeen,
+  makeNotification,
+  authenticateAs,
+  unauthenticated,
+} from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("NotificationService.createNotification", () => {
-  const addNewNotificationsInDb =
-    dbMock.notifications.addNewNotifications as jest.Mock;
+  const addNewNotificationsInDb = dbMock.notifications
+    .addNewNotifications as jest.Mock;
   const getMemberIdsInDb = dbMock.groupMembers.getMemberIds as jest.Mock;
 
   const memberIds = ["00000000-83c9-46de-90ac-fe4047a00000"];
@@ -71,26 +52,9 @@ describe("NotificationService.createNotification", () => {
   });
 });
 
-function makeNotificationNewOrSeen(
-  overrides: Partial<NotificationSchemaType> = {},
-): NotificationSchemaType {
-  return {
-    created_at: "2026-04-01T19:57:58.721Z",
-    updated_at: "2026-04-01T19:57:58.721Z",
-    group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-    id: "new-notification-1-id",
-    subject: "new-notification-1 subject",
-    message: "new-notification-1-message",
-    priority: "high",
-    status: "new",
-    user_id: "user-1",
-    ...overrides,
-  };
-}
-
 describe("NotificationService.getNewNotifications", () => {
-  const getUnseenNotificationsInDb =
-    dbMock.notifications.getUnseenNotifications as jest.Mock;
+  const getUnseenNotificationsInDb = dbMock.notifications
+    .getUnseenNotifications as jest.Mock;
   let service: NotificatonService;
 
   const notifications = [
@@ -104,9 +68,7 @@ describe("NotificationService.getNewNotifications", () => {
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
-      throw new Error("401");
-    });
+    unauthenticated();
 
     await expect(service.getNewNotifications(null)).rejects.toThrow("401");
 
@@ -115,7 +77,7 @@ describe("NotificationService.getNewNotifications", () => {
   });
 
   it("returns unseen notifications for the authenticated user", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    authenticateAs();
 
     getUnseenNotificationsInDb.mockResolvedValue(notifications);
 
@@ -129,8 +91,8 @@ describe("NotificationService.getNewNotifications", () => {
 });
 
 describe("NotificationService.markSeen", () => {
-  const markOpenedNotificationsInDb =
-    dbMock.notifications.markOpenedNotifications as jest.Mock;
+  const markOpenedNotificationsInDb = dbMock.notifications
+    .markOpenedNotifications as jest.Mock;
   let service: NotificatonService;
 
   beforeEach(() => {
@@ -139,9 +101,7 @@ describe("NotificationService.markSeen", () => {
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
-      throw new Error("401");
-    });
+    unauthenticated();
 
     await expect(service.markSeen(null, ["1", "2"])).rejects.toThrow("401");
 
@@ -150,7 +110,7 @@ describe("NotificationService.markSeen", () => {
   });
 
   it("marks notifications as seen for an authenticated user", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    authenticateAs();
     markOpenedNotificationsInDb.mockResolvedValue(undefined);
 
     await expect(

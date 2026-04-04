@@ -1,26 +1,12 @@
-import type {
-  GroupSchemaType,
-  NewGroupInputSchemaType,
-} from "@/src/schemas/groups/groupSchema";
-import { GroupService } from "../services/groupService";
-import { policyMock, dbMock } from "./modules/mocks";
-
-export function makeGroup(
-  overrides: Partial<GroupSchemaType> = {},
-): GroupSchemaType {
-  return {
-    name: "new group",
-    id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-    description: "new group description",
-    location: "Bloomington, IL, 61701",
-    slug: "new-group-slug-name",
-    created_at: "2026-04-01T19:57:58.721Z",
-    updated_at: "2026-04-01T19:57:58.721Z",
-    organizer_id: "user-1",
-    category_id: "category-id",
-    ...overrides,
-  };
-}
+import type { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupService } from "@/src/server/core/service/services/groupService";
+import {
+  policyMock,
+  dbMock,
+  makeGroup,
+  authenticateAs,
+  unauthenticated,
+} from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("GroupService.groupLifecycle.createNewGroup", () => {
   const createNewGroupInDb = dbMock.groups.createGroup as jest.Mock;
@@ -43,9 +29,7 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
   });
 
   it("throws a 401 status when the user is not authenticated", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
-      throw new Error("401");
-    });
+    unauthenticated();
 
     await expect(
       service.groupLifecycle.createNewGroup(null, newGroup),
@@ -57,9 +41,7 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
   });
 
   it("creates a new group", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
-      return "user-1";
-    });
+    authenticateAs();
 
     createNewGroupInDb.mockResolvedValue({
       name: "new-group-1",

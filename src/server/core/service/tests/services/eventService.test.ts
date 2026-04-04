@@ -1,30 +1,15 @@
 import { EventService } from "@/src/server/core/service/services/EventService";
 import type {
-  EventSchemaType,
+  NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import { dbMock, policyMock } from "./modules/mocks";
-
-export function makeEvent(
-  overrides: Partial<EventSchemaType> = {},
-): EventSchemaType {
-  return {
-    id: "306fbc60-5ac6-4a95-8df9-89a110588000",
-    img: "https://picsum.photos/800/450?random=3",
-    tag: "Design",
-    title: "Design Trends Worth Paying Attention To in 2026",
-    description:
-      "A conversation for designers and frontend folks about emerging design trends, interface patterns, and how to build experiences that stay relevant over time.",
-    starts_at_ms: new Date("2026-04-15T17:30:00.000Z").getTime(),
-    starts_at: "2026-04-15T17:30:00.000Z",
-    meeting_location: "Online",
-    group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-    created_at: "2026-04-01T19:57:58.721Z",
-    updated_at: "2026-04-01T19:57:58.721Z",
-    status: "scheduled",
-    ...overrides,
-  };
-}
+import {
+  dbMock,
+  policyMock,
+  makeEvent,
+  authenticateAs,
+  unauthenticated,
+} from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventsService.getNextEventLookupMap", () => {
   const getEventsByGroupIds = dbMock.events.getEventsByGroupIds as jest.Mock;
@@ -145,9 +130,7 @@ describe("EventsService.updateEventStatus", () => {
   });
 
   it("throws a 401 status error when the user is not authenticated", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockImplementation(() => {
-      throw new Error("401");
-    });
+    unauthenticated();
 
     await expect(service.updateEventStatus(null, eventUpdate)).rejects.toThrow(
       "401",
@@ -158,7 +141,7 @@ describe("EventsService.updateEventStatus", () => {
   });
 
   it("throws a 403 status error when the user is not authorized to manage the group", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    authenticateAs();
     (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(() => {
       throw new Error("403");
     });
@@ -172,7 +155,7 @@ describe("EventsService.updateEventStatus", () => {
   });
 
   it("updates the event status", async () => {
-    (policyMock.requireAuthenticated as jest.Mock).mockReturnValue("user-1");
+    authenticateAs();
     (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(
       () => {},
     );
@@ -188,5 +171,81 @@ describe("EventsService.updateEventStatus", () => {
       "group-1",
     );
     expect(updateEventStatusInDb).toHaveBeenCalledWith(eventUpdate);
+  });
+});
+
+describe("EventService.createEvent", () => {
+  const createNewEventInDb = dbMock.events.createNewEvent as jest.Mock;
+
+  let service: EventService;
+
+  const groupId = "group-1";
+
+  const createEventInput: NewEventInputSchemaType = {
+    group_id: groupId,
+    starts_at: "2026-04-15T17:30:00.000Z",
+    img: "https://picsum.photos/800/450?random=3",
+    tag: "Design",
+    title: "Design Trends Worth Paying Attention To in 2026",
+    description:
+      "A conversation for designers and frontend folks about emerging design trends, interface patterns, and how to build experiences that stay relevant over time.",
+    meeting_location: "Online",
+  };
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    service = new EventService(dbMock, policyMock);
+  });
+
+  it("throws a 401 error when the user is not authenticated", async () => {
+    unauthenticated();
+
+    await expect(
+      service.createEvent(createEventInput, groupId, undefined),
+    ).rejects.toThrow("401");
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
+    expect(policyMock.requireCanCreateEvent).not.toHaveBeenCalled();
+    expect(createNewEventInDb).not.toHaveBeenCalled();
+  });
+
+  it("throws a 403 error when the user is not allowed to create an event for the group", async () => {
+    authenticateAs();
+    (policyMock.requireCanCreateEvent as jest.Mock).mockImplementation(() => {
+      throw new Error("403");
+    });
+
+    await expect(
+      service.createEvent(createEventInput, groupId, "user-1"),
+    ).rejects.toThrow("403");
+
+    expect(policyMock.requireCanCreateEvent).toHaveBeenCalledWith(
+      "user-1",
+      groupId,
+    );
+    expect(createNewEventInDb).not.toHaveBeenCalled();
+  });
+
+  it("creates an event when the user is authenticated and authorized", async () => {
+    authenticateAs();
+    (policyMock.requireCanCreateEvent as jest.Mock).mockResolvedValue(
+      undefined,
+    );
+
+    const createdEvent = makeEvent({
+      group_id: groupId,
+      title: createEventInput.title,
+    });
+    createNewEventInDb.mockResolvedValue(createdEvent);
+
+    await expect(
+      service.createEvent(createEventInput, groupId, "user-1"),
+    ).resolves.toEqual(createdEvent);
+
+    expect(policyMock.requireCanCreateEvent).toHaveBeenCalledWith(
+      "user-1",
+      groupId,
+    );
+    expect(createNewEventInDb).toHaveBeenCalledWith(createEventInput);
   });
 });
