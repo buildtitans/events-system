@@ -1,33 +1,31 @@
 import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import { dbMock } from "../mockers/mocks";
 
 describe("RoleBasedAccessHandler.can", () => {
-  const dbMock = {
-    groupMembers: {
-      getMembershipRole: jest.fn(),
-    },
-  };
+  const getMembershipRoleInDb = dbMock.groupMembers
+    .getMembershipRole as jest.Mock;
 
   let handler: RoleBasedAccessHandler;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new RoleBasedAccessHandler(dbMock as any);
+    handler = new RoleBasedAccessHandler(dbMock);
   });
 
   it("returns false when there is no user id", async () => {
-    await expect(handler.can(undefined, "group-1", "manage group")).resolves.toBe(
-      false,
-    );
+    await expect(
+      handler.can(undefined, "group-1", "manage group"),
+    ).resolves.toBe(false);
 
     expect(dbMock.groupMembers.getMembershipRole).not.toHaveBeenCalled();
   });
 
   it("allows organizers to manage groups", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+    getMembershipRoleInDb.mockResolvedValue("organizer");
 
-    await expect(handler.can("user-1", "group-1", "manage group")).resolves.toBe(
-      true,
-    );
+    await expect(
+      handler.can("user-1", "group-1", "manage group"),
+    ).resolves.toBe(true);
 
     expect(dbMock.groupMembers.getMembershipRole).toHaveBeenCalledWith(
       "user-1",
@@ -36,7 +34,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("allows organizers to manage events", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+    getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
       handler.can("user-1", "group-1", "manage events"),
@@ -44,15 +42,15 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("does not allow members to manage groups", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("member");
+    getMembershipRoleInDb.mockResolvedValue("member");
 
-    await expect(handler.can("user-1", "group-1", "manage group")).resolves.toBe(
-      false,
-    );
+    await expect(
+      handler.can("user-1", "group-1", "manage group"),
+    ).resolves.toBe(false);
   });
 
   it("does not allow members to manage events", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("member");
+    getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
       handler.can("user-1", "group-1", "manage events"),
@@ -60,7 +58,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("allows members to change membership", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("member");
+    getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
       handler.can("user-1", "group-1", "change membership"),
@@ -68,7 +66,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("allows anonymous role records to change membership", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("anonymous");
+    getMembershipRoleInDb.mockResolvedValue("anonymous");
 
     await expect(
       handler.can("user-1", "group-1", "change membership"),
@@ -76,7 +74,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("does not allow organizers to change membership", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+    getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
       handler.can("user-1", "group-1", "change membership"),
@@ -84,7 +82,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("allows members to read notifications for the group", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("member");
+    getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
       handler.can("user-1", "group-1", "read or receive notifications"),
@@ -92,7 +90,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("allows organizers to read notifications for the group", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+    getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
       handler.can("user-1", "group-1", "read or receive notifications"),
@@ -100,7 +98,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("does not allow anonymous role records to read notifications for the group", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("anonymous");
+    getMembershipRoleInDb.mockResolvedValue("anonymous");
 
     await expect(
       handler.can("user-1", "group-1", "read or receive notifications"),
@@ -108,7 +106,7 @@ describe("RoleBasedAccessHandler.can", () => {
   });
 
   it("returns false for an unsupported action", async () => {
-    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+    getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
       handler.can("user-1", "group-1", "unsupported action" as any),

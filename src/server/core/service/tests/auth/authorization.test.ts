@@ -1,16 +1,13 @@
 import { Authorization } from "@/src/server/core/service/auth/authorization";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
+import { authMock } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("Authorization", () => {
-  const authMock = {
-    can: jest.fn(),
-  };
-
   let policy: Authorization;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    policy = new Authorization(authMock as any);
+    policy = new Authorization(authMock);
   });
 
   describe("requireAuthenticated", () => {
@@ -41,7 +38,7 @@ describe("Authorization", () => {
 
   describe("requireCanCreateEvent", () => {
     it("resolves when the user is permitted to create an event", async () => {
-      authMock.can.mockResolvedValue(true);
+      (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
         policy.requireCanCreateEvent("user-1", "group-1"),
@@ -55,7 +52,7 @@ describe("Authorization", () => {
     });
 
     it("throws a 403 error when the user is not permitted to create an event", async () => {
-      authMock.can.mockResolvedValue(false);
+      (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
         policy.requireCanCreateEvent("user-1", "group-1"),
@@ -65,7 +62,7 @@ describe("Authorization", () => {
 
   describe("requireCanManageGroup", () => {
     it("resolves when the user is permitted to manage the group", async () => {
-      authMock.can.mockResolvedValue(true);
+      (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
         policy.requireCanManageGroup("user-1", "group-1"),
@@ -79,7 +76,7 @@ describe("Authorization", () => {
     });
 
     it("throws a 403 error when the user is not permitted to manage the group", async () => {
-      authMock.can.mockResolvedValue(false);
+      (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
         policy.requireCanManageGroup("user-1", "group-1"),
@@ -89,7 +86,7 @@ describe("Authorization", () => {
 
   describe("requireCanChangeMembership", () => {
     it("resolves when the user is permitted to change membership", async () => {
-      authMock.can.mockResolvedValue(true);
+      (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
         policy.requireCanChangeMembership("user-1", "group-1"),
@@ -103,7 +100,7 @@ describe("Authorization", () => {
     });
 
     it("throws a 403 error when the user is not permitted to change membership", async () => {
-      authMock.can.mockResolvedValue(false);
+      (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
         policy.requireCanChangeMembership("user-1", "group-1"),
@@ -113,7 +110,7 @@ describe("Authorization", () => {
 
   describe("requireIsGroupMember", () => {
     it("resolves when the user is permitted to read notifications for the group", async () => {
-      authMock.can.mockResolvedValue(true);
+      (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
         policy.requireIsGroupMember("user-1", "group-1"),
@@ -127,11 +124,13 @@ describe("Authorization", () => {
     });
 
     it("throws a 403 error when the user is not permitted to read notifications for the group", async () => {
-      authMock.can.mockResolvedValue(false);
+      (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
         policy.requireIsGroupMember("user-1", "group-1"),
-      ).rejects.toThrow("Permission to read notifications for this group denied");
+      ).rejects.toThrow(
+        "Permission to read notifications for this group denied",
+      );
     });
   });
 });

@@ -1,5 +1,5 @@
 "use client";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction } from "react";
 import { emailFormat } from "../../utils/regex/regex";
 import type {
   ValidationState,
@@ -16,39 +16,38 @@ export const useValidateCredentials = (
   setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>,
   status: UseLoginHook["status"],
 ): ValidateCredentialsHook => {
-  const [emailError, setEmailError] = useState<ValidationState>({
-    hasError: false,
-    message: "",
-  });
-  const [passwordError, setPasswordError] = useState<ValidationState>({
-    hasError: false,
-    message: "",
-  });
+  const getValidationState = (
+    email: string,
+    password: string,
+  ): {
+    emailError: ValidationState;
+    passwordError: ValidationState;
+  } => {
+    const hasEmailInput = email.length > 0;
+    const hasPasswordInput = password.length > 0;
+    const invalidEmailFormat = hasEmailInput && !emailFormat.test(email);
+    const invalidPassword = hasPasswordInput && password.length < 6;
 
-  function validateInputs(email: string, password: string): void {
-    const invalidEmailFormat = !emailFormat.test(email);
-    const invalidPassword = !password || password.length < 6;
-
-    setEmailError({
+    const emailError: ValidationState = {
       hasError: invalidEmailFormat,
       message: invalidEmailFormat ? "Please provide a valid email" : "",
-    });
+    };
 
-    if (status === "failed") {
-      setPasswordError({
-        hasError: true,
-        message: "Invalid password or email",
-      });
-      return;
-    }
+    const passwordError: ValidationState =
+      status === "failed" && hasEmailInput && hasPasswordInput
+        ? {
+            hasError: true,
+            message: "Invalid password or email",
+          }
+        : {
+            hasError: invalidPassword,
+            message: invalidPassword
+              ? "Password needs to be at least 6 characters"
+              : "",
+          };
 
-    setPasswordError({
-      hasError: invalidPassword,
-      message: invalidPassword
-        ? "Password needs to be at least 6 characters"
-        : "",
-    });
-  }
+    return { emailError, passwordError };
+  };
 
   const setField =
     (field: keyof LoginCredentials) =>
@@ -63,14 +62,10 @@ export const useValidateCredentials = (
   const handleEmail = setField("email");
   const handlePassword = setField("password");
 
-  useEffect(() => {
-    const email = credentials.email;
-    const password = credentials.password;
-
-    if (!email || !password) return;
-
-    validateInputs(email, password);
-  }, [credentials.email, credentials.password, status]);
+  const { emailError, passwordError } = getValidationState(
+    credentials.email,
+    credentials.password,
+  );
 
   return {
     isSubmittable: !!credentials.email && !!credentials.password,

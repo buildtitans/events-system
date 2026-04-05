@@ -2,7 +2,6 @@ import type { NotificationSchemaType } from "@/src/schemas/notifications/notific
 import type { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export type NewNotification = Pick<
   NotificationSchemaType,

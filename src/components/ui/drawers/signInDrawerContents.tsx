@@ -9,8 +9,8 @@ import type { LoginCredentials } from "@/src/lib/types/tokens/types";
 
 export default function SignInDrawerContents(): JSX.Element | null {
     const [credentials, setCredentials] = useState<LoginCredentials>({
-    email: null,
-    password: null,
+    email: "",
+    password: "",
   });
   const { handleSubmit, status } = useLogin(credentials);  
   const {

@@ -1,6 +1,6 @@
 "use client";
 import UpdateViewerAttendanceForm from "../forms/openedEventForm";
-import { useMemo, type JSX } from "react";
+import { type JSX } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
@@ -16,13 +16,9 @@ type MembersOnlyAttendanceFormProps = {
 export default function MembersOnlyAttendanceForm({ scheduleStatus }: MembersOnlyAttendanceFormProps): JSX.Element | null {
     const event = useSelector((s: RootState) => s.eventDrawer.event);
     const attendanceStatus = useSelector((s: RootState)=> s.eventDrawer.viewerAttendanceStatus);
-    const isCurrent = useMemo(() => {
-        if(event.status === "ready") {
-            return isFutureOrNow(new Date(event.data.starts_at))
-        } else {
-            return false
-        }
-    }, [event.status])
+    const isCurrent =
+  event.status === "ready" &&
+  isFutureOrNow(new Date(event.data.starts_at));
 
     return (
         <AnimatePresence mode="wait">

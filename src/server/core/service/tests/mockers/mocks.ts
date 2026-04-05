@@ -8,9 +8,9 @@ import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsS
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
 import {
   USER_ID,
-  EVENT_ID,
   GROUP_ID_1,
   GROUP_ID_2,
   GROUP_ID_3,
@@ -87,6 +87,10 @@ export const policyMock = {
   requireCanChangeMembership: jest.fn(),
   requireIsGroupMember: jest.fn(),
 } as unknown as Authorization;
+
+export const authMock = {
+  can: jest.fn(),
+} as unknown as RoleBasedAccessHandler;
 
 export const authenticateAs = (userId = USER_ID) => {
   (policyMock.requireAuthenticated as jest.Mock).mockReturnValue(userId);

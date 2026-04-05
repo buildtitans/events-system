@@ -27,8 +27,8 @@ type SnackbarMessages = {
 type UserInGroupRoleType = "anonymous" | "member" | "organizer";
 
 type LoginCredentials = {
-  email: string | null;
-  password: string | null;
+  email: string;
+  password: string;
 };
 
 type ValidationState = {
