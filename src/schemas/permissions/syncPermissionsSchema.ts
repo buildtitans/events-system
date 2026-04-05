@@ -1,13 +1,13 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { GroupMembersSchema } from "../groups/groupMembersSchema";
+import { GroupMemberSchema } from "../groups/groupMembersSchema";
 import { GroupsSchema } from "../groups/groupSchema";
 import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
 import { CategoriesSchema } from "../groups/categoriesSchema";
 
 export const SyncTrpcInputSchema = Type.Null();
 
-export const ViewerMembershipsSchema = Type.Array(GroupMembersSchema);
+export const ViewerMembershipsSchema = Type.Array(GroupMemberSchema);
 
 export const GroupsAndMembershipsSchema = Type.Object({
   events: PaginatedLayoutSchema,
@@ -25,4 +25,4 @@ export const SyncTrpcInputSchemaValidator =
   TypeCompiler.Compile(SyncTrpcInputSchema);
 
 export const GroupsAndMembershipsSchemaValidator =
-  TypeCompiler.Compile(GroupMembersSchema);
+  TypeCompiler.Compile(GroupMemberSchema);

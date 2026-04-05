@@ -1,10 +1,13 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { CategoryMap } from "@/src/components/ui/stack/groupsPages";
+import type { CategoryMap } from "@/src/components/sections/group/groupsPages";
 
-function getCategoryName(category_id: GroupSchemaType["category_id"], map: CategoryMap): string | null {
-    if (!category_id) return null;
-    const name = map.get(category_id) ?? null;
-    return name
-};
+function getCategoryName(
+  category_id: GroupSchemaType["category_id"],
+  map: CategoryMap,
+): string | null {
+  if (!category_id) return null;
+  const name = map.get(category_id) ?? null;
+  return name;
+}
 
 export { getCategoryName };

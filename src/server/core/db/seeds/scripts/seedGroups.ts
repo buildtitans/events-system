@@ -1,7 +1,7 @@
 import { db } from "@/src/server/core/db";
 import type { Insertable } from "kysely";
 import type { Groups } from "../../types/db";
-import rawGroups from "@/src/server/src/db/seeds/data/placeholder-groups.json";
+import rawGroups from "@/src/server/core/db/seeds/data/placeholder-groups.json";
 import slugify from "slugify";
 
 export async function seedGroups(

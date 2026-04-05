@@ -7,7 +7,7 @@ import { RootState } from '@/src/lib/store';
 import { RenderEventsLayout } from '@/src/components/pipelines/events/renderEventsLayout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInOut } from '@/src/styles/motion/variants';
-import { EventsPages } from '@/src/lib/store/slices/events/EventsSlice';
+import { EventsPages } from '@/src/lib/store/slices/events/types';
 const MotionGrid = motion(Grid);
 
 
@@ -48,13 +48,13 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
                     contain: "layout paint style",
                 }}
             >
-                {
-                    RenderEventsLayout(
-                        page,
-                        handleBlur,
-                        handleFocus,
-                        focusedCardIndex)
-                }
+                <RenderEventsLayout 
+                slots={page}
+                handleBlur={handleBlur}
+                handleFocus={handleFocus}
+                focusedCardIndex={focusedCardIndex}
+                />
+                
             </MotionGrid>}
         </AnimatePresence>
     );
