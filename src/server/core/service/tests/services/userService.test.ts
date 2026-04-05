@@ -53,7 +53,8 @@ describe("UserService.getGroupsCreated", () => {
   ];
 
   beforeEach(() => {
-    (jest.resetAllMocks(), (service = new UserService(dbMock, policyMock)));
+    jest.resetAllMocks();
+    service = new UserService(dbMock, policyMock);
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
@@ -87,7 +88,8 @@ describe("UserService.getEmailById", () => {
   const user_id = "user-1";
 
   beforeEach(() => {
-    (jest.resetAllMocks(), (service = new UserService(dbMock, policyMock)));
+    jest.resetAllMocks();
+    service = new UserService(dbMock, policyMock);
   });
 
   it("Returns the email of an authenticated user", async () => {

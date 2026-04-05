@@ -29,8 +29,8 @@ describe("NotificationService.createNotification", () => {
   let service: NotificationService;
 
   beforeEach(() => {
-    (jest.clearAllMocks(),
-      (service = new NotificationService(dbMock, policyMock)));
+    jest.clearAllMocks();
+    service = new NotificationService(dbMock, policyMock);
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {
@@ -103,8 +103,8 @@ describe("NotificationService.getNewNotifications", () => {
   ];
 
   beforeEach(() => {
-    (jest.clearAllMocks(),
-      (service = new NotificationService(dbMock, policyMock)));
+    jest.clearAllMocks();
+    service = new NotificationService(dbMock, policyMock);
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
@@ -152,8 +152,8 @@ describe("NotificationService.markSeen", () => {
   ];
 
   beforeEach(() => {
-    (jest.clearAllMocks(),
-      (service = new NotificationService(dbMock, policyMock)));
+    jest.clearAllMocks();
+    service = new NotificationService(dbMock, policyMock);
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {
@@ -174,9 +174,9 @@ describe("NotificationService.markSeen", () => {
       throw new Error("403");
     });
 
-    await expect(
-      service.markSeen("user-1", seenNotifications),
-    ).rejects.toThrow("403");
+    await expect(service.markSeen("user-1", seenNotifications)).rejects.toThrow(
+      "403",
+    );
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
     expect(requireIsGroupMember).toHaveBeenCalledWith("user-1", "group-1");
@@ -186,7 +186,9 @@ describe("NotificationService.markSeen", () => {
   it("marks notifications as seen for an authenticated group member", async () => {
     authenticateAs();
     requireIsGroupMember.mockResolvedValue(undefined);
-    markOpenedNotificationsInDb.mockResolvedValue({ numUpdatedRows: BigInt(2) });
+    markOpenedNotificationsInDb.mockResolvedValue({
+      numUpdatedRows: BigInt(2),
+    });
 
     await expect(
       service.markSeen("user-1", seenNotifications),

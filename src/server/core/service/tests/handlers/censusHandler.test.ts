@@ -7,7 +7,8 @@ describe("CensusHandler.getNumberOfAttendantsForEvent", () => {
   let handler: CensusHandler;
 
   beforeEach(() => {
-    (jest.resetAllMocks(), (handler = new CensusHandler(dbMock)));
+    jest.resetAllMocks();
+    handler = new CensusHandler(dbMock);
   });
 
   const attendants = [

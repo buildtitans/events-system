@@ -25,7 +25,8 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
   let service: GroupService;
 
   beforeEach(() => {
-    (jest.clearAllMocks(), (service = new GroupService(dbMock, policyMock)));
+    jest.clearAllMocks();
+    service = new GroupService(dbMock, policyMock);
   });
 
   it("throws a 401 status when the user is not authenticated", async () => {

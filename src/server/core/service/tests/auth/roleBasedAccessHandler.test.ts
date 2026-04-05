@@ -109,7 +109,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "unsupported action" as any),
+      handler.can("user-1", "group-1", "change membership"),
     ).resolves.toBe(false);
   });
 });
