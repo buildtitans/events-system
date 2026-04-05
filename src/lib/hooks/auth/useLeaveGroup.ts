@@ -4,7 +4,6 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
-import { wait } from "../../utils/rendering/wait";
 import { RemoveUserFromGroupHook } from "../../types/hooks/types";
 import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
 
@@ -19,7 +18,6 @@ export const useLeaveGroup = (): RemoveUserFromGroupHook => {
   ): Promise<void> => {
     if (snackbarStatus !== "idle") return;
     dispatch(enqueueSnackbar({ kind: "leaveGroup", status: "pending" }));
-    await wait(800);
 
     try {
       const result = await trpcClient.groupMembers.leaveGroup.mutate({

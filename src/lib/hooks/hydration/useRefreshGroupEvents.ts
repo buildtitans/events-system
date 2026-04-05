@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { getGroupEvents } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
-import { wait } from "@/src/lib/utils/rendering/wait";
 import { syncEventsForGroup } from "@/src/lib/store/sync/syncEvents";
 
 export const useRefreshGroupEvents = () => {
@@ -15,11 +14,7 @@ export const useRefreshGroupEvents = () => {
     if (group.status !== "ready" || groupEvents.status !== "refreshing") return;
 
     const executeGroupEventsRefresh = async () => {
-      await wait(300);
-
       const refreshed = await syncEventsForGroup(group.data.id);
-
-      await wait(1200);
 
       if (refreshed !== null) {
         dispatch(

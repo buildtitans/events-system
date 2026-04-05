@@ -7,7 +7,6 @@ import {
   getParticipations,
   getNextGroupEventLookup,
 } from "../../store/slices/user/userSlice";
-import { wait } from "../../utils/rendering/wait";
 
 export const useHydrateMyRsvps = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,8 +14,6 @@ export const useHydrateMyRsvps = () => {
   useEffect(() => {
     const executeHydrateRsvps = async () => {
       dispatch(getParticipations({ status: "pending" }));
-
-      await wait(1200);
 
       const rsvps =
         await trpcClient.eventAttendants.getUserRsvpdEvents.mutate();

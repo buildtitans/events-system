@@ -12,7 +12,6 @@ import { getCatLookup } from "@/src/lib/store/slices/categories/CategorySlice";
 import { getNameLookup } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
-import { wait } from "@/src/lib/utils/rendering/wait";
 
 export default function AppBootstrapHydrator({
   domains,
@@ -56,8 +55,6 @@ export default function AppBootstrapHydrator({
     const hydrateDomains = async () => {
       dispatch(signalDomainStatus("pending"));
       dispatch(populateEvents({ status: "pending" }));
-
-      await wait(1200);
 
       dispatchDomains(domains.events, domains.groups, domains.categories, domains.groupNameDictionary);
     };

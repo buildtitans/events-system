@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess } from "../../store/slices/auth/AuthSlice";
-import { wait } from "../../utils/rendering/wait";
 import { LoginResType } from "./useLogin";
 
 type NewUser = {
@@ -38,7 +37,6 @@ export const useSignUp = (email: string, password: string) => {
       email: email,
       password: password,
     });
-    await wait(1000);
     await handleLoginResult(loginReques);
   };
 
@@ -48,7 +46,6 @@ export const useSignUp = (email: string, password: string) => {
     password: string,
   ) => {
     if (res && res.email) {
-      await wait(1500);
       await followUpLogin(email, password);
     } else {
       dispatch(enqueueSnackbar({ kind: "signup", status: "failed" }));

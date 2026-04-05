@@ -14,7 +14,6 @@ import {
 import { CancelEventHook } from "../../types/hooks/types";
 import { createScheduleNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { wait } from "../../utils/rendering/wait";
 
 export const useCancelEvent = (
   event: EventSchemaType,
@@ -73,13 +72,9 @@ export const useCancelEvent = (
         throw new Error(`Error attempting to cancel event`);
       }
 
-      await wait(1200);
-
       handleUpdateResult(result.updateStatus);
 
       if (result.updateStatus === "success") setIsUpdated(true);
-
-      await wait(1200);
 
       dispatch(
         enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }),

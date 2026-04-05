@@ -1,6 +1,6 @@
-import { validateLoginInput } from "@/src/schemas/auth/loginCredentialsSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
+import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 
 export class SessionService {
   constructor(
@@ -9,15 +9,12 @@ export class SessionService {
   ) {}
 
   async login(emailInput: string, passwordInput: string) {
-    const email = emailInput.trim().toLowerCase();
-    const password = passwordInput;
+    const { email, password } = validateLoginCredentials(
+      emailInput,
+      passwordInput,
+    );
 
-    const validated = validateLoginInput({
-      email,
-      password,
-    });
-
-    return await this.db.auth.login(validated.email, validated.password);
+    return await this.db.auth.login(email, password);
   }
 
   async logout(token: string | undefined) {

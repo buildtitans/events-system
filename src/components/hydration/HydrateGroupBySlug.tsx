@@ -15,7 +15,6 @@ import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroup
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/ViewerSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { wait } from "@/src/lib/utils/rendering/wait";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -81,8 +80,6 @@ export default function HydrateGroupBySlug({
       dispatch(groupOpened({ status: "pending" }));
       dispatch(getGroupEvents({ status: "pending" }));
       dispatch(enqueueSidebar("group"));
-
-      await wait(800);
 
       const { events, group, role, numMembers, organizerEmail } =
         await syncOpenedGroup(slug);

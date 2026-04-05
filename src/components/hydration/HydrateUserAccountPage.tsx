@@ -8,7 +8,6 @@ import {
   getMyGroups,
   storeUserEmail,
 } from "@/src/lib/store/slices/user/userSlice";
-import { wait } from "@/src/lib/utils/rendering/wait";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 export default function HydrateUserAccountPage(): React.ReactNode {
@@ -27,8 +26,6 @@ export default function HydrateUserAccountPage(): React.ReactNode {
       dispatch(enqueueSidebar("user"));
       dispatch(storeUserEmail({ status: "pending" }));
       dispatch(getMyGroups({ status: "pending" }));
-
-      await wait(800);
 
       try {
         const email = await trpcClient.users.getUserEmail.mutate();

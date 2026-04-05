@@ -12,7 +12,6 @@ import {
 import { storeUserEmail } from "../../store/slices/user/userSlice";
 import { getAttendanceDictionary } from "../../store/slices/viewer/ViewerSlice";
 import { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
-import { wait } from "../../utils/rendering/wait";
 import { useState } from "react";
 
 export type LoginResType =
@@ -63,7 +62,6 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
     dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
 
     const result = await login(email, password);
-    await wait(1000);
     setStatus(result.status);
     await handleLoginResult(result);
   };

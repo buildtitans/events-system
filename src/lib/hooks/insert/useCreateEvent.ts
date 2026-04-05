@@ -17,7 +17,6 @@ import { Dayjs } from "dayjs";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
-import { wait } from "../../utils/rendering/wait";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 
 export type NewEventType = {
@@ -101,7 +100,6 @@ export const useCreateEvent = (
   };
 
   const handleScheduleResult = async (result: EventSchemaType | null) => {
-    await wait(400);
     if (result) dispatch(getGroupEvents({ status: "refreshing" }));
 
     dispatch(enqueueSnackbar({ kind: null, status: "idle" }));

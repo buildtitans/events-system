@@ -3,6 +3,7 @@ import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { Authorization } from "../auth/authorization";
 import { chunkUserGroupsIntoPages } from "../../lib/utils/chunkUserGroupsToPages";
+import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 
 export class UserService {
   constructor(
@@ -10,7 +11,12 @@ export class UserService {
     private readonly policy: Authorization,
   ) {}
 
-  async createNewUser(email: string, password: string) {
+  async createNewUser(emailInput: string, passwordInput: string) {
+    const { email, password } = validateLoginCredentials(
+      emailInput,
+      passwordInput,
+    );
+
     return await this.api.auth.signUp(email, password);
   }
 

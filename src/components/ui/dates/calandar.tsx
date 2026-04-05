@@ -5,6 +5,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import Box from "@mui/material/Box";
 import DayScheduled from "./dayScheduled";
 import { JSX } from "react";
+import type { DayScheduledProps } from "./dayScheduled";
 import type { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 import { useHydrateCalendar } from "@/src/lib/hooks/hydration/useHydrateCalandar";
 
@@ -37,7 +38,7 @@ export default function Calandar({ history }: CalandarProps): JSX.Element {
           slotProps={{
             day: {
               scheduledDateKeys,
-            } as any,
+            }  as Partial<DayScheduledProps>,
           }}
         />
       </LocalizationProvider>

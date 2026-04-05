@@ -7,6 +7,30 @@ import {
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
+describe("UserService.createNewUser", () => {
+  const signUpInDb = dbMock.auth.signUp as jest.Mock;
+
+  let service: UserService;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    service = new UserService(dbMock, policyMock);
+  });
+
+  it("trims and lowercases the email before signing up", async () => {
+    signUpInDb.mockResolvedValue({ user: { id: "user-1" } });
+
+    await expect(
+      service.createNewUser("  Alice@Example.COM  ", "password-123"),
+    ).resolves.toEqual({ user: { id: "user-1" } });
+
+    expect(signUpInDb).toHaveBeenCalledWith(
+      "alice@example.com",
+      "password-123",
+    );
+  });
+});
+
 describe("UserService.getGroupsCreated", () => {
   const getGroupsByOrganizerIdinDb = dbMock.groups
     .getGroupsByOrganizerId as jest.Mock;

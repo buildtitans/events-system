@@ -7,7 +7,6 @@ import {
   selectDisplayFilter,
 } from "@/src/lib/store/slices/events/EventsSlice";
 import { EventsPages } from "../../store/slices/events/types";
-import { wait } from "@/src/lib/utils/rendering/wait";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import type {
   ChangeActiveCategoryHook,
@@ -95,8 +94,6 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
 
     const executeFilterEvents = async (filter: FilterType) => {
       dispatch(populateEvents({ status: "pending" }));
-
-      await wait(1200);
 
       switch (filter) {
         case "All Events":

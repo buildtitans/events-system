@@ -15,7 +15,6 @@ import {
   showModal,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
-import { wait } from "@/src/lib/utils/rendering/wait";
 
 const style = {
   position: "absolute",
@@ -40,7 +39,6 @@ export default function ConfirmModal({
   async function handleLogoutResponse(
     success: AuthenticationSchemaType["success"],
   ) {
-    await wait(1000);
     dispatch(logout());
     dispatch(
       enqueueSnackbar({

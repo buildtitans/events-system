@@ -6,8 +6,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HistoryIcon from '@mui/icons-material/History';
 import dayjs from "dayjs";
 
+
+export type DayScheduledProps = PickersDayProps & {
+  scheduledDateKeys?: Set<string>;
+};
+
+
 export default function DayScheduled(
-  props: PickersDayProps & { scheduledDateKeys?: Set<string> },
+  props: DayScheduledProps,
 ): JSX.Element {
   const { scheduledDateKeys, day, outsideCurrentMonth, ...rest } = props;
 
