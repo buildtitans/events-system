@@ -83,6 +83,30 @@ describe("RoleBasedAccessHandler.can", () => {
     ).resolves.toBe(false);
   });
 
+  it("allows members to read notifications for the group", async () => {
+    dbMock.groupMembers.getMembershipRole.mockResolvedValue("member");
+
+    await expect(
+      handler.can("user-1", "group-1", "read or receive notifications"),
+    ).resolves.toBe(true);
+  });
+
+  it("allows organizers to read notifications for the group", async () => {
+    dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
+
+    await expect(
+      handler.can("user-1", "group-1", "read or receive notifications"),
+    ).resolves.toBe(true);
+  });
+
+  it("does not allow anonymous role records to read notifications for the group", async () => {
+    dbMock.groupMembers.getMembershipRole.mockResolvedValue("anonymous");
+
+    await expect(
+      handler.can("user-1", "group-1", "read or receive notifications"),
+    ).resolves.toBe(false);
+  });
+
   it("returns false for an unsupported action", async () => {
     dbMock.groupMembers.getMembershipRole.mockResolvedValue("organizer");
 

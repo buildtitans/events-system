@@ -11,7 +11,7 @@ import { StatusLookupType } from "@/src/server/core/lib/utils/filterRsvps";
 import { type NameSlugDescriptionLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import { DBClient } from "../../db";
 
-export class SchemaDtoHandler {
+export class ParticipationDtoHandler {
   constructor(private readonly db: DBClient) {}
 
   public toRsvpShape(

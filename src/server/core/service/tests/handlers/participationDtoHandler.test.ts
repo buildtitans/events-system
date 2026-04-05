@@ -1,4 +1,4 @@
-import { SchemaDtoHandler } from "@/src/server/core/service/handlers/schemaDtoHandler";
+import { ParticipationDtoHandler } from "@/src/server/core/service/handlers/participationDtoHandler";
 import {
   dbMock,
   makeEvent,
@@ -6,12 +6,12 @@ import {
   makeMembership,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
-describe("SchemaDtoHandler.toRsvpShape", () => {
-  let handler: SchemaDtoHandler;
+describe("ParticipationDtoHandler.toRsvpShape", () => {
+  let handler: ParticipationDtoHandler;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new SchemaDtoHandler(dbMock);
+    handler = new ParticipationDtoHandler(dbMock);
   });
 
   it("maps events, group lookup data, and attendance statuses into RSVP shapes", () => {
@@ -80,15 +80,15 @@ describe("SchemaDtoHandler.toRsvpShape", () => {
   });
 });
 
-describe("SchemaDtoHandler.toUserMembershipShape", () => {
+describe("ParticipationDtoHandler.toUserMembershipShape", () => {
   const getMemberCountsByGroupIdsInDb = dbMock.groupMembers
     .getMemberCountsByGroupIds as jest.Mock;
 
-  let handler: SchemaDtoHandler;
+  let handler: ParticipationDtoHandler;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new SchemaDtoHandler(dbMock);
+    handler = new ParticipationDtoHandler(dbMock);
   });
 
   it("maps memberships with group details and member counts", async () => {
@@ -195,6 +195,8 @@ describe("SchemaDtoHandler.toUserMembershipShape", () => {
       },
     ]);
 
-    expect(getMemberCountsByGroupIdsInDb).toHaveBeenCalledWith([missingGroupId]);
+    expect(getMemberCountsByGroupIdsInDb).toHaveBeenCalledWith([
+      missingGroupId,
+    ]);
   });
 });

@@ -110,4 +110,28 @@ describe("Authorization", () => {
       ).rejects.toThrow("Permission to manage this group denied");
     });
   });
+
+  describe("requireIsGroupMember", () => {
+    it("resolves when the user is permitted to read notifications for the group", async () => {
+      authMock.can.mockResolvedValue(true);
+
+      await expect(
+        policy.requireIsGroupMember("user-1", "group-1"),
+      ).resolves.toBeUndefined();
+
+      expect(authMock.can).toHaveBeenCalledWith(
+        "user-1",
+        "group-1",
+        "read or receive notifications",
+      );
+    });
+
+    it("throws a 403 error when the user is not permitted to read notifications for the group", async () => {
+      authMock.can.mockResolvedValue(false);
+
+      await expect(
+        policy.requireIsGroupMember("user-1", "group-1"),
+      ).rejects.toThrow("Permission to read notifications for this group denied");
+    });
+  });
 });

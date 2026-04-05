@@ -51,6 +51,14 @@ export class RoleBasedAccessHandler {
         }
       }
 
+      case "read or receive notifications": {
+        if (role === "member" || role === "organizer") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
       default: {
         return false;
       }

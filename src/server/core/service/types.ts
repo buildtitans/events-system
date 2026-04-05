@@ -35,4 +35,5 @@ export type GroupCreatedResult = {
 export type GroupAction =
   | "manage group"
   | "manage events"
-  | "change membership";
+  | "change membership"
+  | "read or receive notifications";

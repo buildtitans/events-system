@@ -39,6 +39,21 @@ export class Authorization {
     }
   }
 
+  async requireIsGroupMember(userId: string, groupId: string) {
+    const permitted = await this.auth.can(
+      userId,
+      groupId,
+      "read or receive notifications",
+    );
+
+    if (!permitted) {
+      throw new TRPCResolverError(
+        403,
+        "Permission to read notifications for this group denied",
+      );
+    }
+  }
+
   async requireCanChangeMembership(userId: string, groupId: string) {
     const permitted = await this.auth.can(userId, groupId, "change membership");
 

@@ -14,17 +14,17 @@ import { mapAttendanceDictionary } from "@/src/server/core/lib/utils/mapAttendan
 import { CensusHandler } from "../handlers/censusHandler";
 import { filterUserRsvps } from "@/src/server/core/lib/utils/filterRsvps";
 import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
-import { SchemaDtoHandler } from "../handlers/schemaDtoHandler";
+import { ParticipationDtoHandler } from "../handlers/participationDtoHandler";
 
 export class ParticipationsService {
   public readonly census: CensusHandler;
-  private readonly parse: SchemaDtoHandler;
+  private readonly parse: ParticipationDtoHandler;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.census = new CensusHandler(this.db);
-    this.parse = new SchemaDtoHandler(this.db);
+    this.parse = new ParticipationDtoHandler(this.db);
   }
 
   async updateRsvpStatus(

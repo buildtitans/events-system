@@ -1,6 +1,6 @@
 import { Kysely } from "kysely";
 import { DB, Notifications } from "@/src/server/core/db/types/db";
-import type { Insertable, Selectable } from "kysely";
+import type { Insertable, Selectable, UpdateResult } from "kysely";
 import {
   CreateNotificationSchemaType,
   NotificationSchemaArrayType,
@@ -12,19 +12,19 @@ import { NotificationCreationProcedure } from "@/src/server/core/db/clients/type
 export class NotificationsClient {
   constructor(private readonly db: Kysely<DB>) {}
 
-  async markOpenedNotifications(
-    ids: NotificationSchemaType["id"][],
-  ): Promise<void> {
-    const marked = await this.db
+  async markOpenedNotifications({
+    ids,
+    userId,
+  }: {
+    ids: NotificationSchemaType["id"][];
+    userId: NotificationSchemaType["user_id"];
+  }): Promise<UpdateResult> {
+    return await this.db
       .updateTable("notifications")
       .set({ status: "seen" })
       .where("id", "in", ids)
+      .where("user_id", "=", userId)
       .executeTakeFirstOrThrow();
-
-    console.log({
-      "Status Update Success": marked ? "Success" : "Failed",
-      Data: marked,
-    });
   }
 
   async getUnseenNotifications(

@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "@/src/server/core/context/init";
 import {
   createNotificationInput,
-  SeenNotificationsInputValidator,
+  NotificationArrayInputValidator,
 } from "@/src/schemas/notifications/notificationsSchema";
 
 export const notificationsRouter = router({
@@ -16,11 +16,12 @@ export const notificationsRouter = router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.createNotification(
         input,
+        ctx.req.user?.id,
       );
     }),
 
   markOpenedNotifications: protectedProcedure
-    .input(SeenNotificationsInputValidator)
+    .input(NotificationArrayInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.markSeen(
         ctx.req.user?.id,

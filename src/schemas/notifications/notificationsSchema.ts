@@ -63,6 +63,9 @@ export const SeenNotificationsInputValidator =
     CompiledViewedNotificationsIdsSchema,
   );
 
+export const NotificationArrayInputValidator =
+  typeboxInput<NotificationSchemaArrayType>(CompiledNotificationSchemaArray);
+
 export const NotificationSchemaValidator = createValidator(
   NotificationSchema,
   "NotificationsSchema",

@@ -7,6 +7,8 @@ import type { DB } from "@/src/server/core/db/types/db";
 
 const pgPort = Number(process.env.PGPORT);
 
+const pgMax = Number(process.env.PGMAX);
+
 const dialect = new PostgresDialect({
   pool: new Pool({
     database: process.env.PGDATABASE,
@@ -14,7 +16,7 @@ const dialect = new PostgresDialect({
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
     port: pgPort,
-    max: 10,
+    max: pgMax,
   }),
 });
 
