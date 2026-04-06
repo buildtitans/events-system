@@ -11,8 +11,6 @@ export default function RenderGroupHistory(): JSX.Element {
     useHydrateGroupHisory();
   const history = useSelector((s: RootState) => s.openGroup.history);
 
-  console.log(history)
-
   switch(history.status) {
 
     case "initial":
