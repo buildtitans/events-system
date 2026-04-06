@@ -50,10 +50,16 @@ export const eventsRouter = router({
       return ctx.services.layout.compileLayout(events);
     }),
 
-  getGroupHistory: publicProcedure
+  getFlattenedGroupEvents: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.getGroupEvents(input);
+    }),
+
+  getGroupHistory: publicProcedure
+    .input(groupIdInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.getPastEvents(input);
     }),
 
   updateEventStatus: protectedProcedure

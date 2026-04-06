@@ -11,6 +11,80 @@ import {
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
+describe("EventsService.getPastEvents", () => {
+  const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
+  let service: EventService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
+    service = new EventService(dbMock, policyMock);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("returns only events scheduled before now", async () => {
+    const pastEvent = makeEvent({
+      id: "past-1",
+      group_id: "group-1",
+      starts_at: "2026-04-01T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
+    });
+    const futureEvent = makeEvent({
+      id: "future-1",
+      group_id: "group-1",
+      starts_at: "2026-04-08T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
+    });
+
+    getGroupEvents.mockResolvedValue([pastEvent, futureEvent]);
+
+    const result = await service.getPastEvents("group-1");
+
+    expect(result).toEqual([pastEvent]);
+    expect(getGroupEvents).toHaveBeenCalledWith("group-1");
+  });
+
+  it("returns an empty array when a group has no past events", async () => {
+    getGroupEvents.mockResolvedValue([
+      makeEvent({
+        id: "future-1",
+        group_id: "group-1",
+        starts_at: "2026-04-08T12:00:00.000Z",
+        starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
+      }),
+    ]);
+
+    const result = await service.getPastEvents("group-1");
+
+    expect(result).toEqual([]);
+  });
+
+  it("returns all events when every event in the group is in the past", async () => {
+    const olderPastEvent = makeEvent({
+      id: "past-1",
+      group_id: "group-1",
+      starts_at: "2026-03-20T12:00:00.000Z",
+      starts_at_ms: new Date("2026-03-20T12:00:00.000Z").getTime(),
+    });
+    const recentPastEvent = makeEvent({
+      id: "past-2",
+      group_id: "group-1",
+      starts_at: "2026-04-05T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-05T12:00:00.000Z").getTime(),
+    });
+
+    getGroupEvents.mockResolvedValue([olderPastEvent, recentPastEvent]);
+
+    const result = await service.getPastEvents("group-1");
+
+    expect(result).toEqual([olderPastEvent, recentPastEvent]);
+  });
+});
+
 describe("EventsService.getNextEventLookupMap", () => {
   const getEventsByGroupIds = dbMock.events.getEventsByGroupIds as jest.Mock;
   let service: EventService;

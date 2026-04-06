@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
 import Spinner, { RelativeSpinner } from "@/src/components/ui/feedback/pending/spinner";
-import NoScheduledEvents from "@/src/components/ui/feedback/info/suggestScheduleEvent";
 import HistoryTimeline from "../../sections/group/displays/groupHistory";
+import NoGroupHistory from "../../ui/feedback/fallbacks/noGroupHIstory";
 
 export default function RenderGroupHistory(): JSX.Element {
     useHydrateGroupHisory();
   const history = useSelector((s: RootState) => s.openGroup.history);
+
+  console.log(history)
 
   switch(history.status) {
 
@@ -21,11 +23,11 @@ export default function RenderGroupHistory(): JSX.Element {
       return <HistoryTimeline history={history.data} />
     } 
     case "failed": {
-      return <NoScheduledEvents />
+      return <NoGroupHistory />
     }
 
     default: {
-      <NoScheduledEvents />
+      <NoGroupHistory />
     }
   }
 

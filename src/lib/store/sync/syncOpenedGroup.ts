@@ -2,6 +2,7 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { EventsPages } from "../slices/events/types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 export type SyncOpenGroupPayload = {
   group: GroupSchemaType | null;
@@ -9,6 +10,7 @@ export type SyncOpenGroupPayload = {
   role: GroupMemberSchemaType["role"];
   numMembers: number;
   organizerEmail: string;
+  allGroupEvents: EventSchemaType[];
 };
 
 export async function syncOpenedGroup(
@@ -26,6 +28,7 @@ export async function syncOpenedGroup(
         role: "anonymous",
         numMembers: 0,
         organizerEmail: "",
+        allGroupEvents: [],
       };
     }
 
@@ -36,6 +39,9 @@ export async function syncOpenedGroup(
       group.id,
     );
 
+    const allGroupEvents =
+      await trpcClient.events.getFlattenedGroupEvents.mutate(group.id);
+
     const { email } =
       await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id);
 
@@ -45,6 +51,7 @@ export async function syncOpenedGroup(
       role,
       numMembers: members.length,
       organizerEmail: email,
+      allGroupEvents,
     };
   } catch (err) {
     console.error(err);
@@ -54,6 +61,7 @@ export async function syncOpenedGroup(
       role: "anonymous",
       numMembers: 0,
       organizerEmail: "",
+      allGroupEvents: [],
     };
   }
 }

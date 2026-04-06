@@ -38,6 +38,7 @@ type InitialState = {
   history: GroupHistoryType;
   numMembers: number;
   organizerEmail: string;
+  flattenedEvents: GroupHistoryType;
 };
 
 const initialState: InitialState = {
@@ -49,6 +50,7 @@ const initialState: InitialState = {
   activeSection: "overview",
   numMembers: 0,
   organizerEmail: "N/A",
+  flattenedEvents: { status: "initial" },
 };
 
 const OpenedGroupSlice = createSlice({
@@ -95,6 +97,12 @@ const OpenedGroupSlice = createSlice({
     getNumMembers: (state: InitialState, action: PayloadAction<number>) => {
       state.numMembers = action.payload;
     },
+    getFlattenedGroupEvents: (
+      state: InitialState,
+      action: PayloadAction<GroupHistoryType>,
+    ) => {
+      state.flattenedEvents = action.payload;
+    },
 
     clearOpenedGroupSlice: () => initialState,
   },
@@ -109,6 +117,7 @@ export const {
   clearOpenedGroupSlice,
   getNumMembers,
   getEmailOfGroupOrganizer,
+  getFlattenedGroupEvents,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

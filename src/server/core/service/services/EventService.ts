@@ -12,6 +12,7 @@ import { Authorization } from "../auth/authorization";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "../handlers/hydrationHandler";
+import { isPastEvent } from "../../lib/utils/isPastEvent";
 
 export class EventService {
   public readonly hydrate: EventHydrationHandler;
@@ -70,6 +71,12 @@ export class EventService {
     return await this.db.events.getGroupEvents(group_id);
   }
 
+  async getPastEvents(group_id: string) {
+    const groupEvents = await this.db.events.getGroupEvents(group_id);
+
+    return this.filterCurrentAndFutureEvents(groupEvents);
+  }
+
   async getNextEventLookupMap(
     ids: GroupSchemaType["id"][],
   ): Promise<UpComingEventsLookup> {
@@ -78,6 +85,21 @@ export class EventService {
     const eventsByGroup = this.hashEventsByGroup(events);
 
     return this.mapSoonestEvents(eventsByGroup);
+  }
+
+  private filterCurrentAndFutureEvents(
+    events: EventSchemaType[],
+  ): EventSchemaType[] {
+    const history: EventSchemaType[] = [];
+
+    for (const event of events) {
+      const scheduledDate = new Date(event.starts_at_ms);
+      if (isPastEvent(scheduledDate)) {
+        history.push(event);
+      }
+    }
+
+    return history;
   }
 
   private mapSoonestEvents(

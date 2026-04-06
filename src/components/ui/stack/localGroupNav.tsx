@@ -16,7 +16,7 @@ type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
 export default function LocalGroupNav({
   children,
 }: LocalGroupNavProps): JSX.Element {
-  const groupHistoryStatus = useSelector((s: RootState) => s.openGroup.history.status);
+  const groupHistoryStatus = useSelector((s: RootState) => s.openGroup.events.status);
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   const dispatch = useDispatch<AppDispatch>();
 

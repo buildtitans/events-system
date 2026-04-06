@@ -7,12 +7,12 @@ import { RootState } from "@/src/lib/store";
 import { RenderGroupCalandar } from "@/src/components/pipelines/groups/renderGroupCalandar";
 
 export default function GroupCalandar(): JSX.Element {
-  const history = useSelector((s: RootState) => s.openGroup.history);
+  const groupEvents = useSelector((s: RootState) => s.openGroup.flattenedEvents)
 
   return (
     <Stack gap={6}>
       <CalandarHeader />
-      <RenderGroupCalandar history={history} />
+      <RenderGroupCalandar flattenedGroupEvents={groupEvents} />
     </Stack>
   );
 }

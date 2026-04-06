@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import {
   getEmailOfGroupOrganizer,
+  getFlattenedGroupEvents,
   getGroupEvents,
+  getGroupHistory,
   getNumMembers,
   groupOpened,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
@@ -15,6 +17,7 @@ import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroup
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/ViewerSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -59,6 +62,7 @@ export default function HydrateGroupBySlug({
       role: GroupMemberSchemaType["role"],
       numMembers: number,
       organizerEmail: string,
+      allGroupEvents: EventSchemaType[]
     ): void => {
       if (!group) {
         dispatch(
@@ -74,17 +78,20 @@ export default function HydrateGroupBySlug({
       handleSyncGroupOpened(group);
       handleSyncEventsOfGroup(events);
       dispatch(getCurrentRole(role));
+      dispatch(getFlattenedGroupEvents({ status: "ready", data: allGroupEvents}));
     };
 
     const executeHydration = async () => {
       dispatch(groupOpened({ status: "pending" }));
+      dispatch(getGroupHistory({ status: "initial"}))
       dispatch(getGroupEvents({ status: "pending" }));
+      dispatch(getFlattenedGroupEvents({ status: "pending" }))
       dispatch(enqueueSidebar("group"));
 
-      const { events, group, role, numMembers, organizerEmail } =
+      const { events, group, role, numMembers, organizerEmail, allGroupEvents } =
         await syncOpenedGroup(slug);
 
-      handlePayload(group, events, role, numMembers, organizerEmail);
+      handlePayload(group, events, role, numMembers, organizerEmail, allGroupEvents);
     };
     void executeHydration();
   }, [slug, userKind, dispatch]);

@@ -6,17 +6,17 @@ import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 
 type RenderGroupCalandarProps = {
-    history: GroupHistoryType
+    flattenedGroupEvents: GroupHistoryType
 }
 
-export const RenderGroupCalandar = ({history}: RenderGroupCalandarProps): JSX.Element => {
+export const RenderGroupCalandar = ({flattenedGroupEvents}: RenderGroupCalandarProps): JSX.Element => {
 
 
-    switch(history.status) {
+    switch(flattenedGroupEvents.status) {
 
         case "ready": {
             return (
-                <Calandar history={history.data} />
+                <Calandar history={flattenedGroupEvents.data} />
             )
         }
 
