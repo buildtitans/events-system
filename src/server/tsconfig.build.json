@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "..",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "allowJs": false,
+    "incremental": false,
+    "sourceMap": true,
+    "declaration": false
+  },
+  "include": [
+    "./index.ts",
+    "./core/**/*.ts",
+    "./core/**/*.d.ts"
+  ],
+  "exclude": [
+    "./core/**/*.test.ts",
+    "./core/**/*.spec.ts",
+    "./core/service/tests/**",
+    "./core/db/seeds/**",
+    "./core/db/migrations/**"
+  ]
+}
