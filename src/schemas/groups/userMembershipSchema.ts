@@ -1,5 +1,5 @@
 import { Type, Static } from "@sinclair/typebox";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { createValidator } from "@/src/shared/utils/validation/validateSchema";
 import { GroupRoleSchema } from "./groupMembersSchema";
 
 export const UserMembershipSchema = Type.Object({

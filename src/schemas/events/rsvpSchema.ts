@@ -1,7 +1,7 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { EventStatusSchema } from "./eventSchema";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { createValidator } from "@/src/shared/utils/validation/validateSchema";
 import { EventAttendantStatusSchema } from "./eventAttendantsSchema";
 
 export const RsvpSchema = Type.Object({

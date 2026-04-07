@@ -5,7 +5,7 @@
   "scripts": {
     "dev:fastify": "tsx index.ts",
     "build:fastify": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "start:fastify": "node dist/index.js",
+    "start:fastify": "node dist/server/index.js",
     "lint": "eslint",
     "db:codegen": "kysely-codegen --dialect postgres --out-file src/db/types/db.d.ts",
     "db:migrate": "tsx src/db/migrations/migrate.ts",

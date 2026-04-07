@@ -1,4 +1,4 @@
-import { layoutSlotValidator } from "@/src/lib/utils/validation/validateSchema";
+import { layoutSlotValidator } from "@/src/shared/utils/validation/validateSchema";
 import type { Selectable } from "kysely";
 import type { Events } from "@/src/server/core/db";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";

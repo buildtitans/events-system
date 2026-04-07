@@ -1,7 +1,7 @@
 import type { Selectable } from "kysely";
 import type { Events } from "@/src/server/core/db";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { eventValidator } from "@/src/lib/utils/validation/validateSchema";
+import { eventValidator } from "@/src/shared/utils/validation/validateSchema";
 
 function formatRawEvents(rows: Selectable<Events>[]): EventSchemaType[] {
   return rows.map((row) => {

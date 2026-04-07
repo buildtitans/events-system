@@ -1,4 +1,4 @@
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { createValidator } from "@/src/shared/utils/validation/validateSchema";
 import { Static, Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 

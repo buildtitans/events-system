@@ -1,6 +1,6 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
+import { createValidator } from "@/src/shared/utils/validation/validateSchema";
 import {
   typeboxInput,
   typeboxInputV2,

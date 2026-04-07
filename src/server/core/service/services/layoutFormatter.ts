@@ -1,4 +1,4 @@
-import { layoutSlotValidator } from "@/src/lib/utils/validation/validateSchema";
+import { layoutSlotValidator } from "@/src/shared/utils/validation/validateSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
   LayoutSlotSchemaType,

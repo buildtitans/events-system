@@ -4,6 +4,10 @@
     "noEmit": false,
     "outDir": "./dist",
     "rootDir": "..",
+    "baseUrl": "../..",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "ES2022",
