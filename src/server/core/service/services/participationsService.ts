@@ -1,14 +1,12 @@
 import { DBClient } from "../../db";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { type EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import {
+  RsvpSchemaArrayValidator,
   RsvpStatusSchemaValidator,
-  type EventAttendantsSchemaType,
-} from "@/src/schemas/events/eventAttendantsSchema";
-import { RsvpSchemaArrayValidator } from "@/src/schemas/events/rsvpSchema";
-import {
   UserMembershipSchemaArrayValidator,
-  UserMembershipSchemaType,
-} from "@/src/schemas/groups/userMembershipSchema";
+} from "../../lib/validation/schemaValidators";
+import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { Authorization } from "../auth/authorization";
 import { mapAttendanceDictionary } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import { CensusHandler } from "../handlers/censusHandler";

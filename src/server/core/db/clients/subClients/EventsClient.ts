@@ -8,7 +8,7 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { eventValidator } from "@/src/shared/utils/validation/validateSchema";
+import { eventValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);

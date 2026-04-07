@@ -4,10 +4,8 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import {
   GroupSchemaType,
-  NewGroupInputSchema,
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { validateNewGroupInput } from "../../utils/parsing/validateNewGroupInput";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "../../store/slices/groups/GroupsSlice";
 import {
@@ -15,7 +13,6 @@ import {
   enqueueDrawer,
   enqueueSnackbar,
 } from "../../store/slices/rendering/RenderingSlice";
-import { parseInputSchema } from "../../utils/validation/parseInputSchema";
 
 export type CreateNewGroupHook = {
   newGroup: NewGroupInputType;
@@ -34,25 +31,56 @@ export type CreateNewGroupHook = {
 };
 
 export type NewGroupInputType = {
-  name: GroupSchemaType["name"] | null;
-  description: GroupSchemaType["description"] | null;
-  location: GroupSchemaType["location"] | null;
-  category_id: GroupSchemaType["category_id"] | null;
+  name: GroupSchemaType["name"];
+  description: GroupSchemaType["description"];
+  location: GroupSchemaType["location"];
+  category_id: GroupSchemaType["category_id"];
 };
+
+function hasNonEmptyText(value: string | null): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function normalizeOptionalText(value: string | null): string | null {
+  if (!hasNonEmptyText(value)) {
+    return null;
+  }
+
+  return value.trim();
+}
+
+function isNewGroupSubmittable(newGroup: NewGroupInputType): boolean {
+  return (
+    hasNonEmptyText(newGroup.name) && hasNonEmptyText(newGroup.category_id)
+  );
+}
+
+function normalizeNewGroupInput(
+  newGroup: NewGroupInputType,
+): NewGroupInputSchemaType {
+  return {
+    name: newGroup.name.trim(),
+    description: normalizeOptionalText(newGroup.description),
+    location: normalizeOptionalText(newGroup.location),
+    category_id: hasNonEmptyText(newGroup.category_id)
+      ? newGroup.category_id.trim()
+      : null,
+  };
+}
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
   const timerRef = useRef<number | null>(null);
 
   const [newGroup, setNewGroup] = useState<NewGroupInputType>({
-    name: null,
-    description: null,
-    location: null,
-    category_id: null,
+    name: "",
+    description: "",
+    location: "",
+    category_id: "",
   });
 
   const isSubmittable = useMemo((): boolean => {
-    return validateNewGroupInput(newGroup);
+    return isNewGroupSubmittable(newGroup);
   }, [newGroup]);
 
   const handleGroupName = (
@@ -117,10 +145,14 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
   const submitNewGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
+    if (!isSubmittable) {
+      return;
+    }
 
-    const insertData = parseInputSchema(newGroup, NewGroupInputSchema);
-    const createdGroup = await createGroup(insertData);
+    const payload = normalizeNewGroupInput(newGroup);
+
+    dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
+    const createdGroup = await createGroup(payload);
 
     handleNewGroupResult(createdGroup);
   };

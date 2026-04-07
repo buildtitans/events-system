@@ -2,7 +2,7 @@ import { router, protectedProcedure } from "@/src/server/core/context/init";
 import {
   createNotificationInput,
   NotificationArrayInputValidator,
-} from "@/src/schemas/notifications/notificationsSchema";
+} from "../inputValidators/inputValidation";
 
 export const notificationsRouter = router({
   getNotifications: protectedProcedure.mutation(async ({ ctx }) => {

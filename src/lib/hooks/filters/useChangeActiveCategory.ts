@@ -16,7 +16,9 @@ import {
   curateUpcomingEventIds,
   UpcomingEventIds,
 } from "../../utils/dates/curateUpcomingEventIds";
-import { PopularEventsIds } from "@/src/server/core/lib/utils/curatePopularEventsIds";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+
+type PopularEventsIds = EventSchemaType["id"][];
 
 export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
   const hydrateStatus = useSelector(

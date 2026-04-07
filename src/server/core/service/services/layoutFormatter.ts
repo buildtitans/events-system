@@ -1,11 +1,13 @@
-import { layoutSlotValidator } from "@/src/shared/utils/validation/validateSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { layoutSlotValidator } from "@/src/server/core/lib/validation/schemaValidators";
+import {
+  EventsArraySchemaType,
+  EventSchemaType,
+} from "@/src/schemas/events/eventSchema";
 import {
   LayoutSlotSchemaType,
   PaginatedLayoutSchemaType,
 } from "@/src/schemas/events/layoutSlotSchema";
-import { designateLayoutSlot } from "../../layout/utils";
-import { chunkEventsIntoPages } from "../../layout/utils/chunkIntoPages";
+import { CardDesignation, CardType, LayoutSlot } from "../../lib/types";
 
 export class LayoutFormatter {
   constructor() {}
@@ -18,7 +20,7 @@ export class LayoutFormatter {
   private buildLayoutSlots(
     events: EventSchemaType[],
   ): PaginatedLayoutSchemaType {
-    const paginatedEvents = chunkEventsIntoPages(events);
+    const paginatedEvents = this.chunkEventsIntoPages(events);
 
     const paginatedLayoutSlots = [];
 
@@ -28,7 +30,7 @@ export class LayoutFormatter {
       let i = 0;
 
       while (i < page.length) {
-        const slot = designateLayoutSlot(i, page.length);
+        const slot = this.designateLayoutSlot(i, page.length);
 
         if (slot.kind === "card") {
           slots.push({
@@ -54,5 +56,58 @@ export class LayoutFormatter {
       paginatedLayoutSlots.push(slots);
     }
     return paginatedLayoutSlots;
+  }
+
+  private chunkEventsIntoPages(
+    events: EventsArraySchemaType,
+    maxPageLength: number = 6,
+  ): EventsArraySchemaType[] {
+    const pages: EventsArraySchemaType[] = [];
+
+    for (let i = 0; i < events.length; i += maxPageLength) {
+      pages.push(events.slice(i, i + maxPageLength));
+    }
+    return pages;
+  }
+
+  private designateLayoutSlot(index: number, pageLength: number): LayoutSlot {
+    if (index === 3 && pageLength - index >= 2) {
+      return { kind: "stack", count: 2 };
+    }
+
+    if (index === 2 || index === 5) {
+      const cardSize = this.getCardSizing("thumbnail");
+      return {
+        kind: "card",
+        variant: {
+          type: "thumbnail",
+          size: cardSize,
+        },
+      };
+    }
+
+    return {
+      kind: "card",
+      variant: {
+        type: "hero",
+        size: this.getCardSizing("hero"),
+      },
+    };
+  }
+
+  private getCardSizing(type: CardType): CardDesignation["size"] {
+    switch (type) {
+      case "hero":
+        return {
+          md: 6,
+          xs: 12,
+        };
+
+      default:
+        return {
+          md: 4,
+          xs: 12,
+        };
+    }
   }
 }

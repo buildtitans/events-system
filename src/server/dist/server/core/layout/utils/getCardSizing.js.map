@@ -1,1 +1,0 @@
-{"version":3,"file":"getCardSizing.js","sourceRoot":"","sources":["../../../../../core/layout/utils/getCardSizing.ts"],"names":[],"mappings":";;AAkBS,sCAAa;AAhBtB,SAAS,aAAa,CAAC,IAAc;IACnC,QAAQ,IAAI,EAAE,CAAC;QACb,KAAK,MAAM;YACT,OAAO;gBACL,EAAE,EAAE,CAAC;gBACL,EAAE,EAAE,EAAE;aACP,CAAC;QAEJ;YACE,OAAO;gBACL,EAAE,EAAE,CAAC;gBACL,EAAE,EAAE,EAAE;aACP,CAAC;IACN,CAAC;AACH,CAAC"}

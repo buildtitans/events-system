@@ -24,9 +24,9 @@ export const GroupSlugSchema = Type.String();
 
 export type GroupSlugSchemaType = Static<typeof GroupSlugSchema>;
 
-export const GroupSlugSchemaValidator = TypeCompiler.Compile(GroupSlugSchema);
+export const CompiledGroupSlugSchema = TypeCompiler.Compile(GroupSlugSchema);
 
-export const NewGroupInputSchemaValidator =
+export const CompiledNewGroupInputSchema =
   TypeCompiler.Compile(NewGroupInputSchema);
 
 export type NewGroupInputSchemaType = Static<typeof NewGroupInputSchema>;

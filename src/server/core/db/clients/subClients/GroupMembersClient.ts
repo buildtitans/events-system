@@ -7,10 +7,13 @@ import {
   GroupMembersArraySchemaType,
   GroupMemberSchemaType,
   MemberCountSchemaType,
+} from "@/src/schemas/groups/groupMembersSchema";
+import {
   MemberCountSchemaValidator,
   ValidateGroupMember,
   ValidateGroupMembersArray,
-} from "@/src/schemas/groups/groupMembersSchema";
+} from "@/src/server/core/lib/validation/schemaValidators";
+
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
