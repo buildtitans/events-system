@@ -4,10 +4,6 @@ import type { Events } from "@/src/server/core/db/types/db";
 import rawEvents from "@/src/server/core/db/seeds/data/placeholder-events.json";
 
 export async function seedEvents(groupsBySlug: Record<string, string>) {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Seeding disabled in production");
-  }
-
   for (const event of rawEvents) {
     const groupID = groupsBySlug[event.group];
     console.log(groupID);

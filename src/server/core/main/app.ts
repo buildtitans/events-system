@@ -13,7 +13,7 @@ import type { TRPCError } from "@trpc/server";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 
 function buildServer() {
-  const client_url = getEnv("client_url");
+  const cookie_secret = getEnv("cookies_secret");
 
   const app = Fastify({
     logger: {
@@ -39,12 +39,13 @@ function buildServer() {
       maxParamLength: 1000,
     },
   });
-  app.register(cors, {
-    origin: client_url,
-    credentials: true,
-  });
 
-  const cookie_secret = getEnv("cookies_secret");
+  if (process.env.NODE_ENV !== "production") {
+    app.register(cors, {
+      origin: getEnv("client_url"),
+      credentials: true,
+    });
+  }
 
   app.decorate("db", new DBClient(db));
   app.register(fastifyCookie, {

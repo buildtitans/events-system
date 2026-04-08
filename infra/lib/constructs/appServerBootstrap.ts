@@ -68,6 +68,9 @@ export class AppServerBootstrap {
           `PGDATABASE=${this.dbName}`,
           `PGUSER=${this.dbUser}`,
           "PGMAX=10",
+          "PROD_FASTIFY_HOST=127.0.0.1",
+          "PROD_FASTIFY_PORT=3001",
+          "NODE_ENV=production",
         ].join("\n") + "\n",
         {
           mode: "000600",
@@ -102,7 +105,7 @@ export class AppServerBootstrap {
           "    listen 80;",
           "    server_name _;",
           "",
-          "    location /trpc {",
+          "    location /api/trpc {",
           "        proxy_pass http://127.0.0.1:3001;",
           "        proxy_http_version 1.1;",
           "        proxy_set_header Host $host;",

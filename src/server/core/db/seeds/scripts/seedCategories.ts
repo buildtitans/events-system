@@ -4,10 +4,6 @@ import type { Categories } from "../../types/db";
 import rawCategories from "../data/categories-placeholder.json";
 
 export async function seedCategories(): Promise<Record<string, string>> {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Seeding disabled in production");
-  }
-
   const categoryBySlug: Record<string, string> = {};
 
   for (const category of rawCategories) {
