@@ -5,6 +5,7 @@ import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { AppServerBootstrap } from "../constructs/appServerBootstrap";
+import { AppSecrets } from "../constructs/appSecrets";
 import { DbBootstrap } from "../constructs/dbBootstrap";
 
 config({ path: path.resolve(process.cwd(), ".env") });
@@ -17,6 +18,10 @@ export class InfraStack extends Stack {
     const instanceRole = this.createInstanceRole();
     const webSecurityGroup = this.createWebSecurityGroup(vpc);
 
+    const appSecrets = new AppSecrets(this, "AppSecrets", {
+      instanceRole,
+    });
+
     const db = new DbBootstrap(this, "DbBootstrap", {
       vpc,
       webSecurityGroup,
@@ -28,6 +33,7 @@ export class InfraStack extends Stack {
       instanceRole,
       webSecurityGroup,
       db,
+      appSecrets,
     );
 
     Tags.of(instance).add("Name", "events-system-webserver");
@@ -80,6 +86,7 @@ export class InfraStack extends Stack {
     role: iam.Role,
     securityGroup: ec2.SecurityGroup,
     db: DbBootstrap,
+    appSecrets: AppSecrets,
   ): ec2.Instance {
     const boostrap = new AppServerBootstrap({
       dbHost: db.database.instanceEndpoint.hostname,
@@ -87,6 +94,7 @@ export class InfraStack extends Stack {
       dbPort: db.database.instanceEndpoint.port.toString(),
       dbUser: db.databaseUser,
       dbSecretArn: db.secret.secretArn,
+      cookieSecretArn: appSecrets.cookieSecret.secretArn,
     });
 
     return new ec2.Instance(this, "ES-Webserver", {

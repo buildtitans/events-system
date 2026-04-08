@@ -5,14 +5,13 @@ import { buildServer } from "@/src/server/core/main/app";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 
 const server = buildServer();
-
-const devHost = getEnv("dev_host");
-const devPort = Number(getEnv("dev_fastify_port"));
+const prodPort = Number(getEnv("prodFastifyPort"));
+const prodHost = getEnv("prodFastifyHost");
 
 server.listen(
   {
-    port: devPort,
-    host: devHost,
+    port: prodPort,
+    host: prodHost,
   },
   (err) => {
     if (err) {

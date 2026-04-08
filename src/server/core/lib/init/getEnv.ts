@@ -22,6 +22,8 @@ const ENV_MAP = {
   client_url: "CLIENT_URL",
   dev_host: "DEV_FASTIFY_HOST",
   dev_fastify_port: "DEV_FASTIFY_PORT",
+  prodFastifyHost: "PROD_FASTIFY_HOST",
+  prodFastifyPort: "3001",
 } as const;
 
 type EnvKey = keyof typeof ENV_MAP;

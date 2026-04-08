@@ -24,10 +24,8 @@
     "./core/**/*.d.ts"
   ],
   "exclude": [
-    "./core/**/*.test.ts",
-    "./core/**/*.spec.ts",
-    "./core/service/tests/**",
-    "./core/db/seeds/**",
-    "./core/db/migrations/**"
-  ]
+  "./core/**/*.test.ts",
+  "./core/**/*.spec.ts",
+  "./core/service/tests/**"
+ ]
 }

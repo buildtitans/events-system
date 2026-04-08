@@ -53,7 +53,7 @@ function buildServer() {
   registerContextHook(app);
 
   app.register(fastifyTRPCPlugin, {
-    prefix: "/trpc",
+    prefix: "/api/trpc",
     trpcOptions: {
       router: appRouter,
       createContext,

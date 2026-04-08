@@ -7,9 +7,11 @@
     "build:fastify": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "start:fastify": "node dist/server/index.js",
     "lint": "eslint",
-    "db:codegen": "kysely-codegen --dialect postgres --out-file src/db/types/db.d.ts",
-    "db:migrate": "tsx src/db/migrations/migrate.ts",
-    "db:seed": "tsx src/db/seeds/scripts/seedDB.ts"
+    "db:codegen": "kysely-codegen --dialect postgres --out-file core/db/types/db.d.ts",
+    "db:migrate": "tsx core/db/migrations/migrate.ts",
+    "db:migrate:prod": "node dist/server/core/db/migrations/migrate.js",
+    "db:seed": "tsx core/db/seeds/scripts/seedDB.ts",
+    "db:seed:prod": "node dist/server/core/db/seeds/scripts/seedDB.js"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
