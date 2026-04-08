@@ -4,12 +4,10 @@ import { Stack, StackProps, CfnOutput, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
-import { requireEnv } from "../config/requireEnv";
 import { AppServerBootstrap } from "../constructs/appServerBootstrap";
+import { DbBootstrap } from "../constructs/dbBootstrap";
 
 config({ path: path.resolve(process.cwd(), ".env") });
-
-const dbSgId = requireEnv("DB_SG_ID");
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -19,12 +17,17 @@ export class InfraStack extends Stack {
     const instanceRole = this.createInstanceRole();
     const webSecurityGroup = this.createWebSecurityGroup(vpc);
 
-    this.allowDatabaseAccess(webSecurityGroup);
+    const db = new DbBootstrap(this, "DbBootstrap", {
+      vpc,
+      webSecurityGroup,
+      instanceRole,
+    });
 
     const instance = this.createWebInstance(
       vpc,
       instanceRole,
       webSecurityGroup,
+      db,
     );
 
     Tags.of(instance).add("Name", "events-system-webserver");
@@ -72,26 +75,19 @@ export class InfraStack extends Stack {
     return securityGroup;
   }
 
-  private allowDatabaseAccess(webSecurityGroup: ec2.SecurityGroup): void {
-    const rdsSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(
-      this,
-      "EventsDbSecurityGroup",
-      dbSgId,
-    );
-
-    rdsSecurityGroup.addIngressRule(
-      webSecurityGroup,
-      ec2.Port.tcp(5432),
-      "Allow Postgres from EC2 app server",
-    );
-  }
-
   private createWebInstance(
     vpc: ec2.IVpc,
     role: iam.Role,
     securityGroup: ec2.SecurityGroup,
+    db: DbBootstrap,
   ): ec2.Instance {
-    const boostrap = new AppServerBootstrap();
+    const boostrap = new AppServerBootstrap({
+      dbHost: db.database.instanceEndpoint.hostname,
+      dbName: db.databaseName,
+      dbPort: db.database.instanceEndpoint.port.toString(),
+      dbUser: db.databaseUser,
+      dbSecretArn: db.secret.secretArn,
+    });
 
     return new ec2.Instance(this, "ES-Webserver", {
       vpc,

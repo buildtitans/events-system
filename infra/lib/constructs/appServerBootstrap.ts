@@ -1,22 +1,26 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { AppServerServices } from "./appServerServices";
-import { requireEnv } from "../config/requireEnv";
 
-const dbHost = requireEnv("PGHOST");
-const dbPort = requireEnv("PGPORT");
-const dbName = requireEnv("PGDATABASE");
-const dbUser = requireEnv("PGUSER");
+type AppServerBootstrapDeps = {
+  dbHost: string;
+  dbPort: string;
+  dbName: string;
+  dbUser: string;
+  dbSecretArn: string;
+};
 
 export class AppServerBootstrap {
   private readonly dbHost: string;
   private readonly dbPort: string;
   private readonly dbName: string;
   private readonly dbUser: string;
-  constructor() {
-    this.dbHost = dbHost;
-    this.dbPort = dbPort;
-    this.dbName = dbName;
-    this.dbUser = dbUser;
+  private readonly dbSecretArn: string;
+  constructor(deps: AppServerBootstrapDeps) {
+    this.dbHost = deps.dbHost;
+    this.dbPort = deps.dbPort;
+    this.dbName = deps.dbName;
+    this.dbUser = deps.dbUser;
+    this.dbSecretArn = deps.dbSecretArn;
   }
 
   public buildInit(): ec2.CloudFormationInit {
@@ -25,7 +29,7 @@ export class AppServerBootstrap {
       envFilePath: "/etc/events-system/server.env",
       nextCommand: "/usr/bin/pnpm --dir /var/www/events-system start",
       fastifyCommand:
-        "/usr/bin/pnpm --dir /var/www/events-system/src/server serve:fastify",
+        "/usr/bin/pnpm --dir /var/www/events-system/src/server start:fastify",
     });
 
     return ec2.CloudFormationInit.fromElements(
@@ -38,8 +42,8 @@ export class AppServerBootstrap {
           key: "01-install-node-repo",
         },
       ),
-      ec2.InitCommand.shellCommand("dnf install -y nodejs", {
-        key: "02-install-nodejs",
+      ec2.InitCommand.shellCommand("dnf install -y nodejs jq awscli", {
+        key: "02-install-runtime-tools",
       }),
       ec2.InitCommand.shellCommand("npm install -g pnpm", {
         key: "03-install-pnpm",
@@ -62,6 +66,16 @@ export class AppServerBootstrap {
           mode: "000600",
           owner: "root",
           group: "root",
+        },
+      ),
+      ec2.InitCommand.shellCommand(
+        [
+          `DB_SECRET=$(aws secretsmanager get-secret-value --secret-id ${this.dbSecretArn} --query SecretString --output text)`,
+          `DB_PASSWORD=$(echo "$DB_SECRET" | jq -r .password)`,
+          `echo "PGPASSWORD=$DB_PASSWORD" >> /etc/events-system/server.env`,
+        ].join(" && "),
+        {
+          key: "06-write-db-password",
         },
       ),
       ...services.buildInitElements(),
