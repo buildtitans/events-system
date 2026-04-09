@@ -16,17 +16,17 @@ const sidebarStyles = {
 const activeCategorySx = {
   display: "flex",
   flexDirection: {
-    xs: "column-reverse",
+    xs: "column",
     md: "row",
   },
   width: "100%",
   justifyContent: "space-between",
   alignItems: {
-    xs: "start",
+    xs: "center",
     md: "center",
   },
   gap: 2,
-  overflow: "auto",
+  overflowX: "hidden",
 };
 
 const DAY_MONTH_YEAR_HOUR_FORMAT = "MMMM D, YYYY h:mm A";

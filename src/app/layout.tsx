@@ -4,7 +4,6 @@ import Providers from "./providers";
 import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { syncDomains } from "../lib/store/sync/syncDomains";
 import "./globals.css";
 
 const geistSans = Geist({

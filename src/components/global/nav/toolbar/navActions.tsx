@@ -12,7 +12,7 @@ import { navActionsButtonSx } from "@/src/styles/sx/sx";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardButton from "./dashboardButton";
 
-type NavActionsProps = {
+export type NavActionsProps = {
   userKind: UserKind;
   openSignupDrawer: () => void;
   showSignoutModal: () => void;

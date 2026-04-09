@@ -8,12 +8,14 @@ import { FILTERS } from "@/src/lib/tokens/categoryTokens";
 
 export type EventCategoriesProps = {
     handleFilter: (filter: EventDisplayFilter) => void,
-    pendingFilter: boolean
+    pendingFilter: boolean,
+    isMobile: boolean
 }
 
 export function EventCategories({
     handleFilter,
-    pendingFilter
+    pendingFilter,
+    isMobile
 }: EventCategoriesProps) {
     const active = useSelector((s: RootState) => s.events.displayed);
 
@@ -22,7 +24,7 @@ export function EventCategories({
             sx={{
                 display: 'inline-flex',
                 flexDirection: 'row',
-                gap: 3,
+                gap: 2,
                 overflow: 'auto',
             }}
         >
@@ -33,6 +35,7 @@ export function EventCategories({
                     filter={filter}
                     handleFilter={handleFilter}
                     pendingFilter={pendingFilter}
+                    isMobile={isMobile}
                 />
             ))}
 
