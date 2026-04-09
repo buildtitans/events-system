@@ -3,8 +3,10 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
-import { EventIDValidator } from "@/src/schemas/events/eventAttendantsSchema";
-import { UpdateAttendanceInputValidator } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventIDValidator,
+  UpdateAttendanceInputValidator,
+} from "../inputValidators/inputValidation";
 
 export const eventAttendantsRouter = router({
   getAttendants: publicProcedure

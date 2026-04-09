@@ -13,38 +13,44 @@ import type { TRPCError } from "@trpc/server";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 
 function buildServer() {
-  const client_url = getEnv("client_url");
+  const cookie_secret = getEnv("cookies_secret");
+  const serializers = {
+    res(reply: { statusCode: number }) {
+      return {
+        statusCode: reply.statusCode,
+      };
+    },
+    req(request: { method: string; url: string }) {
+      return {
+        method: request.method,
+        url: request.url,
+      };
+    },
+  };
+  const logger =
+    process.env.NODE_ENV === "production"
+      ? { serializers }
+      : {
+          transport: {
+            target: "pino-pretty",
+          },
+          serializers,
+        };
 
   const app = Fastify({
-    logger: {
-      transport: {
-        target: "pino-pretty",
-      },
-      serializers: {
-        res(reply) {
-          return {
-            statusCode: reply.statusCode,
-          };
-        },
-        req(request) {
-          return {
-            method: request.method,
-            url: request.url,
-          };
-        },
-      },
-    },
-
+    trustProxy: true,
+    logger,
     routerOptions: {
       maxParamLength: 1000,
     },
   });
-  app.register(cors, {
-    origin: client_url,
-    credentials: true,
-  });
 
-  const cookie_secret = getEnv("cookies_secret");
+  if (process.env.NODE_ENV !== "production") {
+    app.register(cors, {
+      origin: getEnv("dev_client_url"),
+      credentials: true,
+    });
+  }
 
   app.decorate("db", new DBClient(db));
   app.register(fastifyCookie, {
@@ -53,7 +59,7 @@ function buildServer() {
   registerContextHook(app);
 
   app.register(fastifyTRPCPlugin, {
-    prefix: "/trpc",
+    prefix: "/api/trpc",
     trpcOptions: {
       router: appRouter,
       createContext,

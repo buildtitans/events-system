@@ -1,8 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { Static } from "@sinclair/typebox";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
-import { typeboxInput } from "@/src/server/core/router/adaptors/typeBoxValidation";
 
 export const GroupRoleSchema = Type.Union([
   Type.Literal("member"),
@@ -29,7 +27,7 @@ const MemberToRemoveSchema = Type.Object({
 
 const GroupIDForInsertSchema = Type.String();
 
-const GroupMembersArraySchema = Type.Array(GroupMemberSchema);
+export const GroupMembersArraySchema = Type.Array(GroupMemberSchema);
 
 type MemberCountSchemaType = Static<typeof MemberCountSchema>;
 
@@ -63,26 +61,3 @@ export const CompiledMemberToRemoveSchema =
 
 export const GroupMemberSchemaValidator =
   TypeCompiler.Compile(GroupMemberSchema);
-
-export const ValidateGroupMember = createValidator(
-  GroupMemberSchema,
-  "GroupMemberSchema",
-);
-
-export const MemberCountSchemaValidator = createValidator(
-  MemberCountSchema,
-  "MemberCountSchema",
-);
-
-export const GroupRoleSchemaValidator = createValidator(
-  GroupRoleSchema,
-  "GroupRoleSchema",
-);
-
-export const ValidateGroupMembersArray = createValidator(
-  GroupMembersArraySchema,
-  "GroupMembersArraySchema",
-);
-
-export const MemberToRemoveInputValidator =
-  typeboxInput<MemberToRemoveSchemaType>(CompiledMemberToRemoveSchema);

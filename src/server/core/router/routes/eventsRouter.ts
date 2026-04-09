@@ -2,19 +2,21 @@ import {
   UpdateEventArgsSchemaType,
   UpdateEventArgsSchemaValidator,
 } from "@/src/schemas/events/eventSchema";
-import { SearchInputSchemaValidator } from "@/src/schemas/search/searchSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
   router,
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
-import { NewEventInputValidator } from "@/src/schemas/events/eventSchema";
-import { groupIdInputValidator } from "./groupMembersRouter";
+import {
+  NewEventInputValidator,
+  groupIdInputValidator,
+} from "../inputValidators/inputValidation";
 import {
   EventIdInputValidator,
   EventIDValidator,
-} from "@/src/schemas/events/eventAttendantsSchema";
+  searchInputValidator,
+} from "../inputValidators/inputValidation";
 
 export const eventsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -101,7 +103,7 @@ export const eventsRouter = router({
     }),
 
   search: publicProcedure
-    .input(SearchInputSchemaValidator)
+    .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.searchEvents(input);
     }),

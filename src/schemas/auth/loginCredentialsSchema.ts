@@ -1,4 +1,3 @@
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { Static, Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 
@@ -26,8 +25,3 @@ export const CompiledLoginCredentials = TypeCompiler.Compile(
 
 export const AuthenticationSchemaValidator =
   TypeCompiler.Compile(AuthenticationSchema);
-
-export const validateLoginInput = createValidator(
-  LoginCredentialsSchema,
-  "LoginCredentialsSchema",
-);

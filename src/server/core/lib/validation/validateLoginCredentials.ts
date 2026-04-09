@@ -1,4 +1,4 @@
-import { validateLoginInput } from "@/src/schemas/auth/loginCredentialsSchema";
+import { validateLoginInput } from "./schemaValidators";
 
 export function validateLoginCredentials(
   emailInput: string,

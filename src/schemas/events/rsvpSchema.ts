@@ -1,7 +1,6 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { EventStatusSchema } from "./eventSchema";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { EventAttendantStatusSchema } from "./eventAttendantsSchema";
 
 export const RsvpSchema = Type.Object({
@@ -17,15 +16,8 @@ export const RsvpSchema = Type.Object({
   group_slug: Type.String(),
 });
 
-const RsvpSchemaArray = Type.Array(RsvpSchema);
+export const RsvpSchemaArray = Type.Array(RsvpSchema);
 
 export type RsvpSchemaType = Static<typeof RsvpSchema>;
 
 export const CompiledRsvpSchema = TypeCompiler.Compile(RsvpSchema);
-
-export const RsvpSchemaArrayValidator = createValidator(
-  RsvpSchemaArray,
-  "RsvpSchemaArray",
-);
-
-export const RsvpSchemaValidator = createValidator(RsvpSchema, "RsvpSchema");

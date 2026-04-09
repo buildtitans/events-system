@@ -4,9 +4,9 @@ import type { Insertable, Selectable, UpdateResult } from "kysely";
 import {
   CreateNotificationSchemaType,
   NotificationSchemaArrayType,
-  NotificationSchemaArrayValidator,
   NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
+import { NotificationSchemaArrayValidator } from "../../../lib/validation/schemaValidators";
 import { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
 
 export class NotificationsClient {

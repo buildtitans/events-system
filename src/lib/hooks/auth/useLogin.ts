@@ -11,8 +11,13 @@ import {
 } from "../../store/slices/rendering/RenderingSlice";
 import { storeUserEmail } from "../../store/slices/user/userSlice";
 import { getAttendanceDictionary } from "../../store/slices/viewer/ViewerSlice";
-import { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
+import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { useState } from "react";
+
+type AttendanceDictionaryType = Record<
+  EventAttendantsSchemaType["event_id"],
+  EventAttendantsSchemaType["status"]
+>;
 
 export type LoginResType =
   | {

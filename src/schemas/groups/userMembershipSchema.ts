@@ -1,5 +1,4 @@
 import { Type, Static } from "@sinclair/typebox";
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { GroupRoleSchema } from "./groupMembersSchema";
 
 export const UserMembershipSchema = Type.Object({
@@ -19,13 +18,3 @@ export type UserMembershipSchemaArrayType = Static<
 >;
 
 export type UserMembershipSchemaType = Static<typeof UserMembershipSchema>;
-
-export const UserMembershipSchemaArrayValidator = createValidator(
-  UserMembershipSchemaArray,
-  "UserMembershipSchemaArray",
-);
-
-export const UserMembershipSchemaValidator = createValidator(
-  UserMembershipSchema,
-  "UserMembershipSchema",
-);

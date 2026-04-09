@@ -8,8 +8,8 @@ import {
 import {
   GroupSchemaValidator,
   GroupsSchemaValidator,
-} from "@/src/lib/utils/validation/validateSchema";
-import { slugify } from "@/src/lib/utils/parsing/slugify";
+} from "@/src/server/core/lib/validation/schemaValidators";
+import { slugify } from "@/src/server/core/lib/utils/slugify";
 
 export class GroupsClient {
   constructor(private readonly db: Kysely<DB>) {}

@@ -1,8 +1,6 @@
 import { DBClient } from "../../db";
-import {
-  EventAttendantStatusSchemaType,
-  RsvpStatusSchemaValidator,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import { RsvpStatusSchemaValidator } from "../../lib/validation/schemaValidators";
 
 export class EventHydrationHandler {
   constructor(private readonly db: DBClient) {}

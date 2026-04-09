@@ -14,7 +14,10 @@ import type {
 } from "../../store/slices/events/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchemaType,
+  EventAttendantStatusSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
@@ -28,9 +31,12 @@ import type {
   SuggestionOptions,
   SuggestionType,
 } from "../../hooks/search/types";
-import type { RBACType } from "@/src/server/core/db/clients/types/types";
-import type { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
+
+type RBACType = Record<
+  GroupMemberSchemaType["group_id"],
+  GroupMemberSchemaType["role"]
+>;
 
 export type ValidateSignupCredsHook = {
   handleEmailInput: (
@@ -49,6 +55,11 @@ export type ValidateSignupCredsHook = {
 };
 
 export type FilterType = EventDisplayFilter | "initial";
+
+export type AttendanceDictionaryType = Record<
+  EventAttendantsSchemaType["event_id"],
+  EventAttendantsSchemaType["status"]
+>;
 
 type DebouncedSearchHook = {
   input: string;

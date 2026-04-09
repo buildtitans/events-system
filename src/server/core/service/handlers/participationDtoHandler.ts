@@ -2,10 +2,8 @@ import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupNameLookupMap } from "../types";
 import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import {
-  UserMembershipSchemaArrayValidator,
-  UserMembershipSchemaType,
-} from "@/src/schemas/groups/userMembershipSchema";
+import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import { UserMembershipSchemaArrayValidator } from "../../lib/validation/schemaValidators";
 import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { StatusLookupType } from "@/src/server/core/lib/utils/filterRsvps";
 import { type NameSlugDescriptionLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";

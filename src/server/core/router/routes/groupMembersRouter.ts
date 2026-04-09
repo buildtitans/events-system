@@ -3,16 +3,10 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
 import {
-  GroupIDForInsertSchemaType,
-  GroupIDForInsertSchemaValidator,
   MemberToRemoveInputValidator,
-} from "@/src/schemas/groups/groupMembersSchema";
-
-export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
-  GroupIDForInsertSchemaValidator,
-);
+  groupIdInputValidator,
+} from "../inputValidators/inputValidation";
 
 const groupMembersRouter = router({
   addNewMember: publicProcedure

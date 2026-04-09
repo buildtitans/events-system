@@ -13,7 +13,27 @@ import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 import { GroupIdSchema } from "@/src/schemas/events/eventSchema";
 import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
-import { EventIdsSchema } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchema,
+  EventAttendantStatusSchema,
+  EventIdsSchema,
+} from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  UserMembershipSchema,
+  UserMembershipSchemaArray,
+} from "@/src/schemas/groups/userMembershipSchema";
+import {
+  NotificationSchema,
+  NotificationSchemaArray,
+} from "@/src/schemas/notifications/notificationsSchema";
+import { LoginCredentialsSchema } from "@/src/schemas/auth/loginCredentialsSchema";
+import { RsvpSchema, RsvpSchemaArray } from "@/src/schemas/events/rsvpSchema";
+import {
+  GroupMembersArraySchema,
+  GroupMemberSchema,
+  GroupRoleSchema,
+  MemberCountSchema,
+} from "@/src/schemas/groups/groupMembersSchema";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -91,6 +111,68 @@ const NewEventSchemaValidator = createValidator(
 const ValidateGroupId = createValidator(GroupIdSchema, "GroupIdSchema");
 
 const CompiledGroupIdsSchema = TypeCompiler.Compile(EventIdsSchema);
+
+export const UserMembershipSchemaArrayValidator = createValidator(
+  UserMembershipSchemaArray,
+  "UserMembershipSchemaArray",
+);
+
+export const UserMembershipSchemaValidator = createValidator(
+  UserMembershipSchema,
+  "UserMembershipSchema",
+);
+
+export const NotificationSchemaValidator = createValidator(
+  NotificationSchema,
+  "NotificationsSchema",
+);
+
+export const NotificationSchemaArrayValidator = createValidator(
+  NotificationSchemaArray,
+  "NotificationSchemaArray",
+);
+
+export const validateLoginInput = createValidator(
+  LoginCredentialsSchema,
+  "LoginCredentialsSchema",
+);
+
+export const ValidateRawAttendants = createValidator(
+  EventAttendantsSchema,
+  "EventAttendantsSchema",
+);
+
+export const RsvpStatusSchemaValidator = createValidator(
+  EventAttendantStatusSchema,
+  "EventAttendantStatusSchema",
+);
+
+export const RsvpSchemaValidator = createValidator(RsvpSchema, "RsvpSchema");
+
+export const RsvpSchemaArrayValidator = createValidator(
+  RsvpSchemaArray,
+  "RsvpSchemaArray",
+);
+
+export const ValidateGroupMember = createValidator(
+  GroupMemberSchema,
+  "GroupMemberSchema",
+);
+
+export const MemberCountSchemaValidator = createValidator(
+  MemberCountSchema,
+  "MemberCountSchema",
+);
+
+export const GroupRoleSchemaValidator = createValidator(
+  GroupRoleSchema,
+  "GroupRoleSchema",
+);
+
+export const ValidateGroupMembersArray = createValidator(
+  GroupMembersArraySchema,
+  "GroupMembersArraySchema",
+);
 
 export {
   CompiledGroupIdsSchema,

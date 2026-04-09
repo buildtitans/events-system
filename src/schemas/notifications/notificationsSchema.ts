@@ -1,7 +1,5 @@
-import { createValidator } from "@/src/lib/utils/validation/validateSchema";
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { typeboxInput } from "@/src/server/core/router/adaptors/typeBoxValidation";
 
 export const NotificationSchema = Type.Object({
   created_at: Type.String({ format: "date-time" }),
@@ -44,9 +42,6 @@ export const CompiledCreateNotificationSchema = TypeCompiler.Compile(
   CreateNotificationSchema,
 );
 
-export const createNotificationInput =
-  typeboxInput<CreateNotificationSchemaType>(CompiledCreateNotificationSchema);
-
 export const CompiledNotificationSchemaArray = TypeCompiler.Compile(
   NotificationSchemaArray,
 );
@@ -56,22 +51,4 @@ export const CompiledNotificationSchema =
 
 export const CompiledViewedNotificationsIdsSchema = TypeCompiler.Compile(
   ViewedNotificationsIdsSchema,
-);
-
-export const SeenNotificationsInputValidator =
-  typeboxInput<ViewedNotificationsIdsSchemaType>(
-    CompiledViewedNotificationsIdsSchema,
-  );
-
-export const NotificationArrayInputValidator =
-  typeboxInput<NotificationSchemaArrayType>(CompiledNotificationSchemaArray);
-
-export const NotificationSchemaValidator = createValidator(
-  NotificationSchema,
-  "NotificationsSchema",
-);
-
-export const NotificationSchemaArrayValidator = createValidator(
-  NotificationSchemaArray,
-  "NotificationSchemaArray",
 );

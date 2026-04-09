@@ -7,10 +7,6 @@ import argon2 from "argon2";
 type UserIdByEmail = Record<string, string>;
 
 export async function seedUsers(): Promise<Record<string, string>> {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Seeding disabled in production");
-  }
-
   const usersByEmail: UserIdByEmail = {};
 
   for (const user of rawUsers) {

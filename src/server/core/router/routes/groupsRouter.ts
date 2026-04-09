@@ -3,21 +3,13 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
-import { typeboxInput, typeboxInputV2 } from "../adaptors/typeBoxValidation";
-import {
-  GroupSlugSchemaType,
-  GroupSlugSchemaValidator,
-  NewGroupInputSchemaType,
-  NewGroupInputSchemaValidator,
-} from "@/src/schemas/groups/groupSchema";
-import {
-  CompiledSearchSchema,
-  SearchSchemaType,
-} from "@/src/schemas/search/searchSchema";
+import { typeboxInputV2 } from "../adaptors/typeBoxValidation";
 import { GroupIdArraySchema } from "@/src/schemas/events/eventSchema";
-
-const searchInputValidator =
-  typeboxInput<SearchSchemaType>(CompiledSearchSchema);
+import {
+  searchInputValidator,
+  newGroupInputValidator,
+  groupSlugInputValidator,
+} from "../inputValidators/inputValidation";
 
 export const groupsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
@@ -29,7 +21,7 @@ export const groupsRouter = router({
   }),
 
   createNewGroup: protectedProcedure
-    .input(typeboxInput<NewGroupInputSchemaType>(NewGroupInputSchemaValidator))
+    .input(newGroupInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.groupLifecycle.createNewGroup(
         ctx.req.user?.id,
@@ -38,7 +30,7 @@ export const groupsRouter = router({
     }),
 
   groupBySlug: publicProcedure
-    .input(typeboxInput<GroupSlugSchemaType>(GroupSlugSchemaValidator))
+    .input(groupSlugInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.getGroupFromSlug(input);
     }),

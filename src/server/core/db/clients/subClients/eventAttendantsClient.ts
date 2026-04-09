@@ -1,9 +1,7 @@
 import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
-import {
-  EventAttendantsSchemaType,
-  ValidateRawAttendants,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import { ValidateRawAttendants } from "../../../lib/validation/schemaValidators";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
