@@ -19,6 +19,7 @@ const ENV_MAP = {
   postgresDb: "PGDATABASE",
   db_user: "PGUSER",
   cookies_secret: "COOKIES_SECRET",
+  dev_client_url: "DEV_CLIENT_URL",
   client_url: "CLIENT_URL",
   dev_host: "DEV_FASTIFY_HOST",
   dev_fastify_port: "DEV_FASTIFY_PORT",
