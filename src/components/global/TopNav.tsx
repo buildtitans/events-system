@@ -17,7 +17,7 @@ import MobileNav from "./nav/mobile/mobileNav";
 
 export default function TopNav() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch<AppDispatch>();
 
   const openSignupDrawer = () => {
@@ -43,23 +43,24 @@ export default function TopNav() {
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
-        <Container
-          disableGutters
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            maxWidth: { md: "lg", lg: "lg" },
-          }}
-        >
-          {!isMobile && (
+        {isMobile ? (
+          <MobileNav />
+        ) : (
+          <Container
+            disableGutters
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              maxWidth: { md: "lg", lg: "lg" },
+            }}
+          >
             <DesktopNav
               showSignoutModal={showConfirmSignout}
               openSignupDrawer={openSignupDrawer}
             />
-          )}
-          {isMobile && <MobileNav />}
-        </Container>
+          </Container>
+        )}
       </AppBar>
       {!isMobile && <LeftAnchoredSidebar />}
     </Box>

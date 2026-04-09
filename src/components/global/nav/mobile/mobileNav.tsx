@@ -13,6 +13,7 @@ import MenuList from "@mui/material/MenuList";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import { Search } from "@/src/features/search/search";
 
 export default function MobileNav() {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
@@ -29,10 +30,21 @@ export default function MobileNav() {
   };
 
   return (
-    <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1 }}>
-      <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
+    <Box
+      sx={{
+        display: { xs: "flex", md: "none" },
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        gap: 1,
+        px: { xs: 2, sm: 3 },
+      }}
+    >
+      <IconButton aria-label="Menu button" onClick={() => setOpen(prev => !prev)}>
         <MenuIcon />
       </IconButton>
+
+      <Search />
       <Drawer
         anchor="top"
         open={open}
