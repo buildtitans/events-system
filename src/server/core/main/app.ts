@@ -38,8 +38,8 @@ function buildServer() {
         };
 
   const app = Fastify({
+    trustProxy: true,
     logger,
-
     routerOptions: {
       maxParamLength: 1000,
     },

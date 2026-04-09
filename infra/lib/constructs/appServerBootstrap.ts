@@ -97,10 +97,14 @@ export class AppServerBootstrap {
           key: "write-cookie-secret",
         },
       ),
-
       ec2.InitFile.fromString(
         "/etc/nginx/conf.d/events-system.conf",
         [
+          "map $http_x_forwarded_proto $forwarded_proto {",
+          "    default $http_x_forwarded_proto;",
+          '    ""      $scheme;',
+          "}",
+          "",
           "server {",
           "    listen 80;",
           "    server_name _;",
@@ -111,7 +115,7 @@ export class AppServerBootstrap {
           "        proxy_set_header Host $host;",
           "        proxy_set_header X-Real-IP $remote_addr;",
           "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "        proxy_set_header X-Forwarded-Proto $scheme;",
+          "        proxy_set_header X-Forwarded-Proto $forwarded_proto;",
           "    }",
           "",
           "    location / {",
@@ -120,7 +124,7 @@ export class AppServerBootstrap {
           "        proxy_set_header Host $host;",
           "        proxy_set_header X-Real-IP $remote_addr;",
           "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "        proxy_set_header X-Forwarded-Proto $scheme;",
+          "        proxy_set_header X-Forwarded-Proto $forwarded_proto;",
           "    }",
           "}",
           "",
