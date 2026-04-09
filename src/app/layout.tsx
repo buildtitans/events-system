@@ -25,14 +25,12 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = buildMetaData();
-export const dynamic = "force-dynamic";
 
 type RootLayoutType = Readonly<{ children: React.ReactNode }>;
 
-async function RootLayout({
+function RootLayout({
   children
-}: RootLayoutType): Promise<React.ReactNode> {
-  const domains = await syncDomains();
+}: RootLayoutType): React.ReactNode {
 
   return (
     <html
@@ -47,7 +45,6 @@ async function RootLayout({
         }>
         <AppRouterCacheProvider>
           <Providers
-            domains={domains}
           >
             {children}
           </Providers>

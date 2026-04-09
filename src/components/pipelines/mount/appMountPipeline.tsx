@@ -3,23 +3,22 @@ import { JSX, PropsWithChildren } from "react";
 import ClientComponentsShell from "../../shell/ClientComponentsShell";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
-import type { SyncDomainsResult } from "@/src/lib/types/server/types";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
 type AppMountPipelineProps = PropsWithChildren<{
     children: React.ReactNode,
-    domains: SyncDomainsResult
 }>
 
 export function AppMountPipeline({
     children,
-    domains
 }: AppMountPipelineProps): JSX.Element | null {
+    const domainStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus)
 
-    switch (domains.status) {
-        case "fulfilled":
+    switch (domainStatus) {
+        case "idle":
             return (
                 <ClientComponentsShell
-                    domains={domains.data}
                 >
                     <Container
                         key="content_container"
