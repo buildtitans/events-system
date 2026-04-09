@@ -1,0 +1,1 @@
+{"commands":["systemctl status fastify --no-pager -l","journalctl -u fastify -n 100 --no-pager -l"]}

@@ -14,26 +14,31 @@ import { getEnv } from "@/src/server/core/lib/init/getEnv";
 
 function buildServer() {
   const cookie_secret = getEnv("cookies_secret");
+  const serializers = {
+    res(reply: { statusCode: number }) {
+      return {
+        statusCode: reply.statusCode,
+      };
+    },
+    req(request: { method: string; url: string }) {
+      return {
+        method: request.method,
+        url: request.url,
+      };
+    },
+  };
+  const logger =
+    process.env.NODE_ENV === "production"
+      ? { serializers }
+      : {
+          transport: {
+            target: "pino-pretty",
+          },
+          serializers,
+        };
 
   const app = Fastify({
-    logger: {
-      transport: {
-        target: "pino-pretty",
-      },
-      serializers: {
-        res(reply) {
-          return {
-            statusCode: reply.statusCode,
-          };
-        },
-        req(request) {
-          return {
-            method: request.method,
-            url: request.url,
-          };
-        },
-      },
-    },
+    logger,
 
     routerOptions: {
       maxParamLength: 1000,

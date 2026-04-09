@@ -8,6 +8,7 @@ import type { DB } from "@/src/server/core/db/types/db";
 const pgPort = Number(process.env.PGPORT);
 
 const pgMax = Number(process.env.PGMAX);
+const isProduction = process.env.NODE_ENV === "production";
 
 const dialect = new PostgresDialect({
   pool: new Pool({
@@ -17,6 +18,7 @@ const dialect = new PostgresDialect({
     password: process.env.PGPASSWORD,
     port: pgPort,
     max: pgMax,
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
   }),
 });
 

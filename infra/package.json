@@ -8,7 +8,12 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "db:init:remote": "powershell -ExecutionPolicy Bypass -File .\\scripts\\run-db-remote.ps1 -Seed",
+    "db:migrate:remote": "powershell -ExecutionPolicy Bypass -File .\\scripts\\run-db-remote.ps1",
+    "release:build": "powershell -ExecutionPolicy Bypass -File .\\scripts\\build-release.ps1",
+    "release:upload": "powershell -ExecutionPolicy Bypass -File .\\scripts\\upload-release.ps1",
+    "release:deploy:remote": "powershell -ExecutionPolicy Bypass -File .\\scripts\\deploy-release-remote.ps1"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

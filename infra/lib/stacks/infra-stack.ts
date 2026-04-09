@@ -4,6 +4,7 @@ import { Stack, StackProps, CfnOutput, Tags } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import { AppServerBootstrap } from "../constructs/appServerBootstrap";
 import { AppSecrets } from "../constructs/appSecrets";
 import { DbBootstrap } from "../constructs/dbBootstrap";
@@ -17,6 +18,9 @@ export class InfraStack extends Stack {
     const vpc = this.lookupVpc();
     const instanceRole = this.createInstanceRole();
     const webSecurityGroup = this.createWebSecurityGroup(vpc);
+    const releaseBucket = this.createReleaseBucket();
+
+    releaseBucket.grantRead(instanceRole);
 
     const appSecrets = new AppSecrets(this, "AppSecrets", {
       instanceRole,
@@ -37,7 +41,7 @@ export class InfraStack extends Stack {
     );
 
     Tags.of(instance).add("Name", "events-system-webserver");
-    this.addInstanceOutputs(instance);
+    this.addInstanceOutputs(instance, releaseBucket);
   }
 
   private lookupVpc(): ec2.IVpc {
@@ -81,6 +85,14 @@ export class InfraStack extends Stack {
     return securityGroup;
   }
 
+  private createReleaseBucket(): s3.Bucket {
+    return new s3.Bucket(this, "ReleaseArtifactsBucket", {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+    });
+  }
+
   private createWebInstance(
     vpc: ec2.IVpc,
     role: iam.Role,
@@ -88,7 +100,7 @@ export class InfraStack extends Stack {
     db: DbBootstrap,
     appSecrets: AppSecrets,
   ): ec2.Instance {
-    const boostrap = new AppServerBootstrap({
+    const bootstrap = new AppServerBootstrap({
       dbHost: db.database.instanceEndpoint.hostname,
       dbName: db.databaseName,
       dbPort: db.database.instanceEndpoint.port.toString(),
@@ -106,11 +118,14 @@ export class InfraStack extends Stack {
       instanceType: new ec2.InstanceType("t3.large"),
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
       securityGroup,
-      init: boostrap.buildInit(),
+      init: bootstrap.buildInit(),
     });
   }
 
-  private addInstanceOutputs(instance: ec2.Instance): void {
+  private addInstanceOutputs(
+    instance: ec2.Instance,
+    releaseBucket: s3.Bucket,
+  ): void {
     new CfnOutput(this, "InstancePublicIp", {
       value: instance.instancePublicIp,
     });
@@ -121,6 +136,10 @@ export class InfraStack extends Stack {
 
     new CfnOutput(this, "InstanceId", {
       value: instance.instanceId,
+    });
+
+    new CfnOutput(this, "ReleaseBucketName", {
+      value: releaseBucket.bucketName,
     });
   }
 }

@@ -1,0 +1,6 @@
+﻿{
+    "Status": "Success",
+    "StatusDetails": "Success",
+    "ResponseCode": 0,
+    "StdErr": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0   0     0   0     0     0     0  --:--:-- --:--:-- --:--:--     0\r100 12961 100 12961   0     0  1029k     0  --:--:-- --:--:-- --:--:--  1054k\n  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0   0     0   0     0     0     0  --:--:-- --:--:-- --:--:--     0\r  0     0   0     0   0     0     0     0  --:--:-- --:--:-- --:--:--     0\ncurl: (7) Failed to connect to 127.0.0.1 port 3001 after 0 ms: Could not connect to server\n  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0   0     0   0     0     0     0  --:--:-- --:--:-- --:--:--     0\r100 12961 100 12961   0     0  1711k     0  --:--:-- --:--:-- --:--:--  1808k\n",
+    "StdOut": 

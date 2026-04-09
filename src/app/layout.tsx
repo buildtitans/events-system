@@ -25,6 +25,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = buildMetaData();
+export const dynamic = "force-dynamic";
 
 type RootLayoutType = Readonly<{ children: React.ReactNode }>;
 

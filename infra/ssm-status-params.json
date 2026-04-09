@@ -1,0 +1,1 @@
+{"commands":["systemctl status nginx --no-pager","systemctl status next --no-pager","systemctl status fastify --no-pager","curl -s -o /dev/null -w 'NEXT:%{http_code}\\n' http://127.0.0.1:3000","curl -s -o /dev/null -w 'FASTIFY:%{http_code}\\n' http://127.0.0.1:3001/api/trpc","curl -s -o /dev/null -w 'NGINX:%{http_code}\\n' http://127.0.0.1"]}
