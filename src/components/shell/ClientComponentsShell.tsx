@@ -15,8 +15,6 @@ export default function ClientComponentsShell({
         <>
             <TopNav />
             <TopLayerHost />
-            
-           
             {children}
             <Footer />
         </>

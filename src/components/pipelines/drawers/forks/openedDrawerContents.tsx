@@ -1,6 +1,6 @@
 "use client";
 import type { JSX } from "react";
-import type { ActiveDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import type { ActiveDrawer } from "@/src/lib/store/slices/rendering/types";
 import SignInDrawerContents from "@/src/components/ui/drawers/signInDrawerContents";
 import OpenedEventDrawerPipeline from "../interfaces/openedEventDrawerPipeline";
 import NewEventDrawerContents from "@/src/components/ui/containers/NewEventDrawerContents";

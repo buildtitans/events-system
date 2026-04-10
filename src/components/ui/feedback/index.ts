@@ -1,3 +1,3 @@
 import { NotFound } from "./failure/notFound";
-import { LinearIndeterminate } from "./pending/linearLoader";
-export { NotFound, LinearIndeterminate };
+import { LinearLoader } from "./pending/linearLoader";
+export { NotFound, LinearLoader };

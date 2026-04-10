@@ -4,6 +4,7 @@ import type {
   GroupsSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
+import { initializeDomains } from "../rendering/RenderingSlice";
 
 type GroupsInitialState = {
   communities: GroupsSchemaType;
@@ -45,6 +46,16 @@ const GroupsSlice = createSlice({
     ) => {
       state.currentPage = action.payload;
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(initializeDomains, (state, action) => {
+      const result = action.payload;
+
+      if (result.status === "fulfilled") {
+        state.communities = result.data.groups;
+        state.groupNameLookup = result.data.groupNameDictionary;
+      }
+    });
   },
 });
 

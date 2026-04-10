@@ -9,8 +9,6 @@ import Container from '@mui/material/Container';
 
 export default function HomeHeadSection({ isMobile }: {isMobile: boolean}): JSX.Element {
 
-  console.log(isMobile)
-
     return (
         <Container>
             <LandingHeader 

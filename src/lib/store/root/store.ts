@@ -11,26 +11,24 @@ import NotificationSlice from "../slices/notifications/notificationSlice";
 import UserSlice from "@/src/lib/store/slices/user/userSlice";
 import ViewerSlice from "@/src/lib/store/slices/viewer/ViewerSlice";
 
-const store = configureStore({
-  reducer: {
-    events: EventsSlice,
-    groups: GroupsSlice,
-    rendering: RenderingSlice,
-    auth: AuthSlice,
-    categories: CategoriesSlice,
-    viewer: ViewerSlice,
-    eventAttendants: EventAttendantsSlice,
-    eventDrawer: EventDrawerSlice,
-    openGroup: OpenedGroupSlice,
-    notifications: NotificationSlice,
-    user: UserSlice,
-  },
-});
+export function makeStore() {
+  return configureStore({
+    reducer: {
+      events: EventsSlice,
+      groups: GroupsSlice,
+      rendering: RenderingSlice,
+      auth: AuthSlice,
+      categories: CategoriesSlice,
+      viewer: ViewerSlice,
+      eventAttendants: EventAttendantsSlice,
+      eventDrawer: EventDrawerSlice,
+      openGroup: OpenedGroupSlice,
+      notifications: NotificationSlice,
+      user: UserSlice,
+    },
+  });
+}
 
-type RootState = ReturnType<typeof store.getState>;
-
-type AppDispatch = typeof store.dispatch;
-
-export { store };
-
-export type { RootState, AppDispatch };
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

@@ -3,9 +3,10 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { ReduxProvider } from '@/src/lib/store';
-import {type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { AppMountPipeline } from '../components/pipelines/mount/appMountPipeline';
-import AppBootstrapHydrator from '../components/hydration/AppBootstrapHydrator';
+import { SyncDomainsResult } from '../lib/types/server/types';
+import SessionHydrator from '../components/hydration/sessionHydrator';
 
 const theme = createTheme({
     palette: {
@@ -16,21 +17,21 @@ const theme = createTheme({
     }
 });
 
-type ProvidersProps = PropsWithChildren
+type ProvidersProps = PropsWithChildren<{ domains: SyncDomainsResult}>
 
 export default function Providers({
-    children
+    children,
+    domains
 }: ProvidersProps) {
 
     return (
-        <ReduxProvider>
+        <ReduxProvider domains={domains}>
             <StyledEngineProvider >
                 <ThemeProvider
                     theme={theme}
                 >
                     <CssBaseline enableColorScheme />
-                    <AppBootstrapHydrator
-            />
+                    <SessionHydrator />
                     <AppMountPipeline
                     >
                         {children}
