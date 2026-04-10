@@ -64,7 +64,11 @@ function buildServer() {
       router: appRouter,
       createContext,
       onError({ path, error }: { path?: string; error: TRPCError }) {
-        console.error(`Error in tRPC handler on path ${path} — ${error}`);
+        app.log.error({
+          path,
+          tRPCErrorCode: error.code,
+          cause: error.cause,
+        });
       },
     } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"],
   });
