@@ -5,21 +5,18 @@ import Badge from "@mui/material/Badge";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HistoryIcon from '@mui/icons-material/History';
 import dayjs from "dayjs";
-
+import { CalendarLookup } from "@/src/lib/hooks/hydration/useHydrateCalandar";
+import { checkCalandarDay } from "@/src/lib/utils/dates/checkCalandarDay";
 
 export type DayScheduledProps = PickersDayProps & {
-  scheduledDateKeys?: Set<string>;
+  scheduledDateKeys?: CalendarLookup;
 };
-
 
 export default function DayScheduled(
   props: DayScheduledProps,
 ): JSX.Element {
   const { scheduledDateKeys, day, outsideCurrentMonth, ...rest } = props;
-
-  const isSelected =
-    !outsideCurrentMonth && !!scheduledDateKeys?.has(day.format("YYYY-MM-DD"));
-
+  const isSelected = checkCalandarDay({scheduledDateKeys, outsideCurrentMonth, day});
   const isPast = day.isBefore(dayjs(), "day");
 
   return (
