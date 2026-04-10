@@ -4,9 +4,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { ReduxProvider } from '@/src/lib/store';
 import type { PropsWithChildren } from 'react';
-import { AppMountPipeline } from '../components/pipelines/mount/appMountPipeline';
 import { SyncDomainsResult } from '../lib/types/server/types';
 import SessionHydrator from '../components/hydration/sessionHydrator';
+import ClientComponentsShell from '../components/shell/ClientComponentsShell';
 
 const theme = createTheme({
     palette: {
@@ -32,10 +32,9 @@ export default function Providers({
                 >
                     <CssBaseline enableColorScheme />
                     <SessionHydrator />
-                    <AppMountPipeline
-                    >
+                    <ClientComponentsShell>
                         {children}
-                    </AppMountPipeline>
+                    </ClientComponentsShell>
                 </ThemeProvider>
             </StyledEngineProvider>
         </ReduxProvider>
