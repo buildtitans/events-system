@@ -111,6 +111,7 @@ export class AuthClient {
 
   private async createSession(user_id: string): Promise<StoredSession> {
     const token = crypto.randomUUID();
+
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 4);
 
     const session = await this.db

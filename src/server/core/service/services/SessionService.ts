@@ -26,6 +26,14 @@ export class SessionService {
   async recoverSession(token: string | undefined | null) {
     const cookie = this.policy.requireToken(token);
 
-    return this.db.auth.getSession(cookie);
+    const session = await this.db.auth.getSession(cookie);
+
+    if (!session) return undefined;
+
+    if (session?.expires_at <= new Date()) {
+      return undefined;
+    }
+
+    return session;
   }
 }

@@ -3,7 +3,7 @@ import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
-import { PropsWithChildren, type JSX } from "react";
+import { PropsWithChildren, useEffect, type JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { CurrentDisplay, displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
@@ -21,11 +21,15 @@ export default function LocalGroupNav({
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = (option: CurrentDisplay) => {
-      if(groupHistoryStatus === "ready") {
 dispatch(displaySection(option));
-      }
-      
   };
+
+  useEffect(() => {
+
+    return () => {
+      dispatch(displaySection("overview"));
+    }
+  }, []);
 
 
   return (
@@ -62,7 +66,7 @@ dispatch(displaySection(option));
   value={option}
   sx={{
     borderRadius: 2,
-    color: (enabled) ? "white" : "rgba(255, 255, 255, 0.4)",
+    color:"white",
     backgroundColor:
       displayed === option ? "rgba(255, 255, 255, 0.2)" : "transparent",
   }}
@@ -77,3 +81,5 @@ dispatch(displaySection(option));
     </Stack>
   );
 }
+
+//    color: (enabled) ? "white" : "rgba(255, 255, 255, 0.4)",
