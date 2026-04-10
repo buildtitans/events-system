@@ -95,8 +95,6 @@ const RenderingSlice = createSlice({
 
       const result = action.payload;
 
-      console.log(result);
-
       if (result.status === "fulfilled") {
         state.initialLoadStatus = "idle";
       } else {
