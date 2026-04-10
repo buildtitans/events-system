@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Providers from "./providers";
 import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { syncDomains } from "../lib/store/sync/syncDomains";
 import "./globals.css";
+import ClientShell from "@/src/components/shell/clientShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +24,12 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = buildMetaData();
-export const dynamic = "force-dynamic";
 
 type RootLayoutType = Readonly<{ children: React.ReactNode }>;
 
-async function RootLayout({
+function RootLayout({
   children
-}: RootLayoutType): Promise<React.ReactNode> {
-  const domains = await syncDomains();
+}: RootLayoutType): React.ReactNode {
 
   return (
     <html
@@ -46,11 +43,9 @@ async function RootLayout({
           antialiased`
         }>
         <AppRouterCacheProvider>
-          <Providers
-            domains={domains}
-          >
+          <ClientShell>
             {children}
-          </Providers>
+          </ClientShell>
         </AppRouterCacheProvider>
 
       </body>

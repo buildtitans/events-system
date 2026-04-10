@@ -1,13 +1,13 @@
 import type { AlertMessagesType } from "@/src/lib/types/tokens/types";
 import { alertMessages } from "@/src/lib/tokens/AlertMessages";
-import { AlertType } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { AlertType } from "@/src/lib/store/slices/rendering/types";
 
 function createAlertMessages(
-    alert: AlertType
+  alert: AlertType,
 ): AlertMessagesType["message"] | null {
-    if ((alert.action === null) || (alert.kind === null)) return null;
+  if (alert.action === null || alert.kind === null) return null;
 
-    return alertMessages[alert.action][alert.kind]
-};
+  return alertMessages[alert.action][alert.kind];
+}
 
 export { createAlertMessages };

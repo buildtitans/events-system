@@ -1,43 +1,20 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
+import type { LoadingStatus, DomainStatus } from "@/src/lib/types/tokens/types";
+
 import type {
-  AlertMessagesType,
-  LoadingStatus,
-  RequestStatus,
-  SnackbarMessages,
-  DomainStatus,
-} from "@/src/lib/types/tokens/types";
+  MainContentTabType,
+  ActiveModal,
+  ActiveDrawer,
+  ActiveSidebar,
+  SnackbarStatusAndKind,
+  AlertType,
+} from "./types";
+import { SyncDomainsResult } from "@/src/lib/types/server/types";
+import { styleText } from "util";
 
-type MainContentTabType =
-  | "Upcoming Events"
-  | "Local Events"
-  | "Categories"
-  | "Popular Events";
-
-export type ActiveModal =
-  | "confirm cancel"
-  | "confirm signout"
-  | "confirm leave group"
-  | null;
-
-export type ActiveDrawer =
-  | "create event drawer"
-  | "sign in drawer"
-  | "event drawer"
-  | "new group"
-  | "sign up drawer"
-  | null;
-
-export type ActiveSidebar = "group" | "user" | null;
-
-type AlertType = {
-  action: AlertMessagesType["action"];
-  kind: AlertMessagesType["kind"];
-};
-
-export type SnackbarStatusAndKind = {
-  kind: keyof SnackbarMessages | null;
-  status: RequestStatus;
-};
+export const initializeDomains = createAction<SyncDomainsResult>(
+  "app/initializeDomains",
+);
 
 type RenderingInitialState = {
   mainContent: MainContentTabType;
@@ -111,6 +88,19 @@ const RenderingSlice = createSlice({
     ) => {
       state.initialLoadStatus = action.payload;
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(initializeDomains, (state, action) => {
+      state.initialLoadStatus = "pending";
+
+      const result = action.payload;
+
+      if (result.status === "fulfilled") {
+        state.initialLoadStatus = "idle";
+      } else {
+        state.initialLoadStatus = "failed";
+      }
+    });
   },
 });
 

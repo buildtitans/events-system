@@ -1,9 +1,14 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  ActionReducerMapBuilder,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import type {
   EventDisplayFilter,
   EventsDomainType,
   GroupNameByGroupID,
 } from "./types";
+import { initializeDomains } from "../rendering/RenderingSlice";
 
 type EventCategoryState = {
   displayed: EventDisplayFilter;
@@ -56,6 +61,27 @@ export const EventsSlice = createSlice({
     ) => {
       state.currentPage = action.payload;
     },
+  },
+  extraReducers: (builder: ActionReducerMapBuilder<EventCategoryState>) => {
+    builder.addCase(initializeDomains, (state, action) => {
+      state.eventPages.status = "pending";
+
+      const result = action.payload;
+
+      if (result.status === "fulfilled") {
+        state.eventPages = {
+          status: "ready",
+          data: result.data.events,
+        };
+
+        state.currentPage = 0;
+      } else {
+        state.eventPages = {
+          status: "failed",
+          error: "Failed to retrieve events",
+        };
+      }
+    });
   },
 });
 

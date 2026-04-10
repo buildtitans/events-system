@@ -7,14 +7,16 @@ type CategoryChipProps = {
     isActive: boolean,
     handleFilter: (filter: EventDisplayFilter) => void,
     filter: EventDisplayFilter,
-    pendingFilter: boolean
+    pendingFilter: boolean,
+    isMobile: boolean
 };
 
 function CategoryChip({
     isActive,
     filter,
     handleFilter,
-    pendingFilter
+    pendingFilter,
+    isMobile
 }: CategoryChipProps
 ): React.JSX.Element {
 
@@ -27,7 +29,7 @@ function CategoryChip({
             color={(isActive) ? 'primary' : "default"}
             clickable={true}
             onClick={requestFilter}
-            size="medium"
+            size={isMobile ? "small" : "medium"}
             label={filter}
             disabled={pendingFilter}
         />

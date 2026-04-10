@@ -12,19 +12,21 @@ import { getCatLookup } from "@/src/lib/store/slices/categories/CategorySlice";
 import { getNameLookup } from "@/src/lib/store/slices/groups/GroupsSlice";
 import { useRecoverSession } from "@/src/lib/hooks/auth/useRecoverSession";
 import { useHydrateNotifications } from "@/src/lib/hooks/hydration/useHydrateNotifications";
+import { syncDomains } from "@/src/lib/store/sync/syncDomains";
 
-export default function AppBootstrapHydrator({
-  domains,
-}: {
-  domains: DomainStateType;
-}): React.ReactNode {
+export default function AppBootstrapHydrator(): React.ReactNode {
   useRecoverSession();
   useHydrateNotifications();
   const dispatch = useDispatch<AppDispatch>();
 
 
-  useEffect(() => {
-    if (!domains) return;
+  useEffect(() => { 
+
+    const executeHydrateDomains = async () => {
+      const domains = await syncDomains();
+
+      hydrateDomains(domains.data);
+    }
 
     const dispatchDomains = (
       events: DomainStateType["events"],
@@ -52,15 +54,16 @@ export default function AppBootstrapHydrator({
       dispatch(signalDomainStatus("idle"));
     };
 
-    const hydrateDomains = async () => {
+    const hydrateDomains = async (domains: DomainStateType) => {
       dispatch(signalDomainStatus("pending"));
       dispatch(populateEvents({ status: "pending" }));
 
       dispatchDomains(domains.events, domains.groups, domains.categories, domains.groupNameDictionary);
     };
 
-    void hydrateDomains();
-  }, [domains, dispatch]);
+    void executeHydrateDomains();
+
+  }, [dispatch]);
 
   return null;
 }

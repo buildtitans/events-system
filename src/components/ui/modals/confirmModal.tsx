@@ -1,5 +1,5 @@
 "use client";
-import type { ActiveModal } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import type { ActiveModal } from "@/src/lib/store/slices/rendering/types";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";

@@ -1,9 +1,8 @@
-"use client"
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
 
-function LinearIndeterminate() {
+function LinearLoader() {
     return (
 
         <Stack
@@ -29,4 +28,4 @@ function LinearIndeterminate() {
     );
 }
 
-export { LinearIndeterminate }
+export { LinearLoader }

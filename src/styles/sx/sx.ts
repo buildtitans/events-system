@@ -35,7 +35,7 @@ const searchBarSx = {
   borderRadius: 999,
   xs: "100%",
   md: "25ch",
-  width: "400px",
+  width: { xs: "300px", md: "400px" },
 };
 
 const navActionsButtonSx = {

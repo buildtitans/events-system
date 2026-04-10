@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { RenderCategoryChips } from "@/src/components/pipelines/buttons/renderCategoryChips";
 
-function CategoryChips(): JSX.Element {
+function CategoryChips({ isMobile }: { isMobile: boolean}): JSX.Element {
     const eventsPages = useSelector((s: RootState) => s.events.eventPages);
     const pages = eventsPages.status === "ready" ? eventsPages.data.length : 0;
     const {
@@ -29,14 +29,15 @@ function CategoryChips(): JSX.Element {
 
 const chipProps: EventCategoriesProps = {
         handleFilter,
-        pendingFilter
+        pendingFilter,
+        isMobile
     }
 
     return (
         <Box sx={activeCategorySx}>
             {RenderCategoryChips({ status: mountStatus, rest: chipProps})}
 
-            {RenderEventPagination(
+            {!isMobile && RenderEventPagination(
                 eventStatus,
                 mountStatus,
                 pages

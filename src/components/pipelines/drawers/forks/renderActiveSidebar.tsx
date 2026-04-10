@@ -1,6 +1,6 @@
 "use client";
 import type { JSX } from "react";
-import { ActiveSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { ActiveSidebar } from "@/src/lib/store/slices/rendering/types";
 import { RenderGroupSidebar } from "../interfaces/renderGroupSidebar";
 import RenderUserAccountMenu from "./renderUserAccountMenu";
 import { useSelector } from "react-redux";

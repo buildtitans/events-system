@@ -25,7 +25,7 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
                 paper: {
                     elevation: 4,
                     sx: {
-                        width: 500,
+                        width: { xs: 350, md: 500 },
                         backgroundColor: 'black',
                     },
                 }
