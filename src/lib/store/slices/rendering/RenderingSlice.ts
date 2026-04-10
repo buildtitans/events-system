@@ -10,6 +10,7 @@ import type {
   AlertType,
 } from "./types";
 import { SyncDomainsResult } from "@/src/lib/types/server/types";
+import { styleText } from "util";
 
 export const initializeDomains = createAction<SyncDomainsResult>(
   "app/initializeDomains",
@@ -87,6 +88,19 @@ const RenderingSlice = createSlice({
     ) => {
       state.initialLoadStatus = action.payload;
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(initializeDomains, (state, action) => {
+      state.initialLoadStatus = "pending";
+
+      const result = action.payload;
+
+      if (result.status === "fulfilled") {
+        state.initialLoadStatus = "idle";
+      } else {
+        state.initialLoadStatus = "failed";
+      }
+    });
   },
 });
 
