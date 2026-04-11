@@ -6,11 +6,13 @@ import { JSX } from "react";
 export default function RenderMobileAuthButtons({
     userKind, 
     showSigninDrawer,
-    showSignoutModal
+    showSignoutModal,
+    openSignupDrawer
 }: {
     userKind: UserKind, 
     showSigninDrawer: () => void,
-    showSignoutModal: () => void
+    showSignoutModal: () => void,
+    openSignupDrawer: () => void
 }): JSX.Element {
   switch (userKind) {
     case "authenticated": {
@@ -31,7 +33,9 @@ export default function RenderMobileAuthButtons({
     case "anonymous": {
       return (
         <Stack>
-          <Button color="primary" variant="outlined" fullWidth>
+          <Button 
+          onClick={openSignupDrawer}
+          color="primary" variant="outlined" fullWidth>
             Sign up
           </Button>
 
