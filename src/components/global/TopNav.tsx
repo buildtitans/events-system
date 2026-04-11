@@ -44,7 +44,10 @@ export default function TopNav() {
         }}
       >
         {isMobile ? (
-          <MobileNav />
+          <MobileNav 
+          openSignupDrawer={openSignupDrawer}
+          showSignoutModal={showConfirmSignout}
+          />
         ) : (
           <Container
             disableGutters

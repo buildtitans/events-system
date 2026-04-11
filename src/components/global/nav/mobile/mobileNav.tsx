@@ -11,12 +11,20 @@ import { useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuList from "@mui/material/MenuList";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/lib/store";
 import { Search } from "@/src/features/search/search";
+import { NavActionsProps } from "../toolbar/navActions";
+import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import Stack from "@mui/material/Stack";
+import RenderMobileAuthButtons from "@/src/components/pipelines/nav/renderMobileAuthButtons";
 
-export default function MobileNav() {
+export default function MobileNav({ 
+  openSignupDrawer,
+  showSignoutModal
+}: Pick<NavActionsProps, "openSignupDrawer" | "showSignoutModal">) {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -27,6 +35,11 @@ export default function MobileNav() {
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const showSigninDrawer = () => {
+    dispatch(enqueueDrawer("sign in drawer"));
+    setOpen(false)
   };
 
   return (
@@ -55,7 +68,7 @@ export default function MobileNav() {
           },
         }}
       >
-        <Box sx={{ p: 2, backgroundColor: "background.default" }}>
+        <Stack sx={{ p: 2, backgroundColor: "background.default" }}>
           <Box
             sx={{
               display: "flex",
@@ -70,24 +83,14 @@ export default function MobileNav() {
             <MenuItem onClick={handleHomeClicked}>Home</MenuItem>
           </MenuList>
           <Divider sx={{ my: 3 }} />
-          {userKind === "anonymous" && (
-            <Button color="primary" variant="contained" fullWidth>
-              Sign up
-            </Button>
-          )}
 
-          {userKind === "anonymous" && (
-            <Button
-              component={Link}
-              href="/login"
-              color="primary"
-              variant="outlined"
-              fullWidth
-            >
-              Sign in
-            </Button>
-          )}
-        </Box>
+            <RenderMobileAuthButtons 
+            userKind={userKind}
+            showSigninDrawer={showSigninDrawer}
+            showSignoutModal={showSignoutModal}
+            />
+          
+        </Stack>
       </Drawer>
     </Box>
   );
