@@ -20,7 +20,7 @@ export default function MobileGroupNav() {
     return () => {
       dispatch(displaySection("overview"))
     }
-  }, [])
+  }, [dispatch])
 
 
   return (

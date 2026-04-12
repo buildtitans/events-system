@@ -17,7 +17,7 @@ export default function MobileDashboardNav() {
     return () => {
       dispatch(changeAccountTab("my groups"))
     }
-  }, []);
+  }, [dispatch]);
 
   return (
         <Paper
