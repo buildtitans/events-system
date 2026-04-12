@@ -14,7 +14,8 @@ type MobileMenuDrawerProps = {
   showSignoutModal: () => void;
   open: boolean;
   openSignupDrawer: () => void;
-  openUserDashboard: () => void
+  openUserDashboard: () => void;
+  mobileOpenSignOutModal: () => void;
 };
 
 export default function MobileMenuDrawer({
@@ -25,7 +26,8 @@ export default function MobileMenuDrawer({
   showSignoutModal,
   open,
   openSignupDrawer,
-  openUserDashboard
+  openUserDashboard,
+  mobileOpenSignOutModal
 }: MobileMenuDrawerProps) {
 
   return (
@@ -58,6 +60,7 @@ export default function MobileMenuDrawer({
           showSignoutModal={showSignoutModal}
           openSignupDrawer={openSignupDrawer}
           openUserDashboard={openUserDashboard}
+          mobileOpenSignOutModal={mobileOpenSignOutModal}
         />
       </Stack>
     </Drawer>

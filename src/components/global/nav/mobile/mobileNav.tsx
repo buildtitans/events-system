@@ -26,6 +26,11 @@ export default function MobileNav({
     router.push(route);
   };
 
+  const mobileOpenSignOutModal = () => {
+    setOpen(false);
+    showSignoutModal();
+  }
+
   const handleHomeClicked = () => {
     dispatch(enqueueSidebar(null));
     router.push("/");
@@ -66,6 +71,7 @@ export default function MobileNav({
       handleHomeClicked={handleHomeClicked}
       openSignupDrawer={openSignupDrawer}
       openUserDashboard={openUserDashboard}
+      mobileOpenSignOutModal={mobileOpenSignOutModal}
       />
     </Box>
   );

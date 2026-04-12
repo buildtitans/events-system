@@ -69,7 +69,12 @@ export default function TimelineItem({
             },
           },
         }}
-        sx={{}}
+        sx={{
+          fontSize: {
+             xs: "12px",
+                  md: "16px"
+          }
+        }}
         primary={historyLog.title}
         secondary={toMonthDayYearHour(historyLog.starts_at)}
       />

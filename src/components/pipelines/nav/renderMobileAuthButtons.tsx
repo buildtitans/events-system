@@ -9,13 +9,15 @@ export default function RenderMobileAuthButtons({
     showSigninDrawer,
     showSignoutModal,
     openSignupDrawer,
-    openUserDashboard
+    openUserDashboard,
+    mobileOpenSignOutModal
 }: {
     userKind: UserKind, 
     showSigninDrawer: () => void,
     showSignoutModal: () => void,
     openSignupDrawer: () => void,
-    openUserDashboard: () => void
+    openUserDashboard: () => void,
+    mobileOpenSignOutModal: () => void
 }): JSX.Element {
   switch (userKind) {
     case "authenticated": {
@@ -35,7 +37,7 @@ export default function RenderMobileAuthButtons({
           </Button>
 
           <Button
-              onClick={showSignoutModal}
+              onClick={mobileOpenSignOutModal}
               type="button"
               color="info"
               variant="outlined"
@@ -48,7 +50,9 @@ export default function RenderMobileAuthButtons({
     }
     case "anonymous": {
       return (
-        <Stack>
+        <Stack
+        gap={2}
+        >
           <Button 
           onClick={openSignupDrawer}
           color="primary" variant="outlined" fullWidth>
