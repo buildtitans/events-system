@@ -5,11 +5,19 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { UserAccountViewType } from "@/src/lib/store/slices/user/types";
 import { changeAccountTab } from "@/src/lib/store/slices/user/userSlice";
+import { useEffect } from "react";
 
 export default function MobileDashboardNav() {
   const dispatch = useDispatch<AppDispatch>();
   const displayed = useSelector((s: RootState) => s.user.view);
   const labels: UserAccountViewType[] = ["my groups", "memberships", "rsvps"]; 
+
+  useEffect(() => {
+
+    return () => {
+      dispatch(changeAccountTab("my groups"))
+    }
+  }, []);
 
   return (
         <Paper
