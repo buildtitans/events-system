@@ -2,27 +2,43 @@ import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { JSX } from "react";
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 export default function RenderMobileAuthButtons({
     userKind, 
     showSigninDrawer,
     showSignoutModal,
-    openSignupDrawer
+    openSignupDrawer,
+    openUserDashboard
 }: {
     userKind: UserKind, 
     showSigninDrawer: () => void,
     showSignoutModal: () => void,
-    openSignupDrawer: () => void
+    openSignupDrawer: () => void,
+    openUserDashboard: () => void
 }): JSX.Element {
   switch (userKind) {
     case "authenticated": {
       return (
-        <Stack>
-          <Button
-              onClick={showSignoutModal}
+        <Stack
+        gap={2}
+        >
+          <Button 
+              onClick={openUserDashboard}
               type="button"
               color="primary"
               variant="contained"
+              fullWidth
+              startIcon={<SpaceDashboardIcon />}
+          >
+            Dashboard
+          </Button>
+
+          <Button
+              onClick={showSignoutModal}
+              type="button"
+              color="info"
+              variant="outlined"
               fullWidth
             >
               Sign Out

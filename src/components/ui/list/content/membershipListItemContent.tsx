@@ -16,11 +16,19 @@ export default function MembershipListItemBody({ membership }: MembershipListIte
     <Box>
       <ListItemText
         primary={
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 1 }}>
             <Typography
               variant="caption"
               fontWeight={"light"}
-              fontSize={"16px"}
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "16px"
+                }
+              }}
             >
               {membership.group_description}
             </Typography>

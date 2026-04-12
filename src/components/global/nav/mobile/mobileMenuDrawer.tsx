@@ -1,14 +1,10 @@
 "use client";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
-import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import RenderMobileAuthButtons from "@/src/components/pipelines/nav/renderMobileAuthButtons";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
+import Button from "@mui/material/Button";
 
 type MobileMenuDrawerProps = {
   toggleDrawer: (newOpen: boolean) => () => void;
@@ -17,7 +13,8 @@ type MobileMenuDrawerProps = {
   showSigninDrawer: () => void;
   showSignoutModal: () => void;
   open: boolean;
-  openSignupDrawer: () => void
+  openSignupDrawer: () => void;
+  openUserDashboard: () => void
 };
 
 export default function MobileMenuDrawer({
@@ -27,33 +24,32 @@ export default function MobileMenuDrawer({
   showSigninDrawer,
   showSignoutModal,
   open,
-  openSignupDrawer
+  openSignupDrawer,
+  openUserDashboard
 }: MobileMenuDrawerProps) {
+
   return (
     <Drawer
       anchor="top"
       open={open}
       onClose={toggleDrawer(false)}
-      PaperProps={{
+      slotProps={{ paper: {
         sx: {
-          top: "var(--template-frame-height, 0px)",
-        },
-      }}
+          top: "var(--template-frame-height, 40px)",
+        }
+      }}}
     >
-      <Stack sx={{ p: 2, backgroundColor: "background.default" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <IconButton onClick={toggleDrawer(false)}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </Box>
-        <MenuList>
-          <MenuItem onClick={handleHomeClicked}>Home</MenuItem>
-        </MenuList>
+      <Stack sx={{ p: 4, backgroundColor: "background.default" }}>
+        <Button
+              type="button"
+              color="primary"
+              variant="outlined"
+              fullWidth
+                        onClick={handleHomeClicked}
+          >
+          Home
+          </Button>
+       
         <Divider sx={{ my: 3 }} />
 
         <RenderMobileAuthButtons
@@ -61,8 +57,10 @@ export default function MobileMenuDrawer({
           showSigninDrawer={showSigninDrawer}
           showSignoutModal={showSignoutModal}
           openSignupDrawer={openSignupDrawer}
+          openUserDashboard={openUserDashboard}
         />
       </Stack>
     </Drawer>
   );
 }
+

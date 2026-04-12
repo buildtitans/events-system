@@ -19,8 +19,14 @@ export default function Calandar({ history }: CalandarProps): JSX.Element {
   return (
     <Box
       sx={{
-        width: "500px",
-        height: "500px",
+        width: {
+          xs: "350px",
+          md:"500px"
+        },
+        height: {
+          xs: "350px",
+          md:"500px"
+        }
       }}
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>

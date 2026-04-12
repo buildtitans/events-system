@@ -32,6 +32,7 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
         ":hover": {
           bgcolor: "rgba(255, 255, 255, 0.11)",
         },
+        width: "100%"
       }}
     >
     <Stack
@@ -40,7 +41,7 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
     justifyContent={"space-between"}
     sx={{
         height: '100%',
-        width:  '100%'
+        width:  '100%',
     }}
     >
         <ListItemText
@@ -64,7 +65,14 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
                 icon={<GroupRoundedIcon sx={{ minWidth: 0 }} />}
               />
 
-              <Typography>{rsvp.event_title}</Typography>
+              <Typography
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "16px"
+                }
+              }}
+              >{rsvp.event_title}</Typography>
             </Box>
 
             <Box
@@ -88,7 +96,11 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
                 <ListItemIcon sx={{ minWidth: 0 }}>
                   <EventRoundedIcon />
                 </ListItemIcon>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: {
+                    xs: "12px",
+                  md: "16px"
+                
+                } }}>
                   {toMonthDayYearHour(rsvp.starts_at)}
                 </Typography>
               </Box>
@@ -104,7 +116,10 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "end",
-        gap: 1
+        gap: {
+          xs: 0.5,
+          md: 1
+        },
      }}
      >
         <Box
@@ -149,7 +164,10 @@ export default function RsvpListItem({ rsvp, handleOpenEditStatus, handleNavigat
      <EditIcon
     className="edit-icon"
     sx={{
-      fontSize: 18,
+      fontSize: {
+        xs: 15,
+        md: 18
+      },
       color: "rgba(255,255,255,0.4)",
       transition: "color 0.2s ease",
     }}

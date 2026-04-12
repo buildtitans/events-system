@@ -57,8 +57,6 @@ dispatch(displaySection(option));
         <MenuList variant="menu">
           {options.map((option) => {
               const label = capitalizeFirstLetter(option);
-              const enabled = option === "overview" || groupHistoryStatus === "ready";
-
               return (
                  <MenuItem
   onClick={() => handleClick(option)}

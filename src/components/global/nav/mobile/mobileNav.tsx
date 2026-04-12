@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { Search } from "@/src/features/search/search";
 import { NavActionsProps } from "../toolbar/navActions";
-import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { enqueueDrawer, enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import MobileMenuDrawer from "./mobileMenuDrawer";
 
 export default function MobileNav({ 
@@ -20,7 +20,14 @@ export default function MobileNav({
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
+  const openUserDashboard = () => {
+    setOpen(false);
+    const route = "/user";
+    router.push(route);
+  };
+
   const handleHomeClicked = () => {
+    dispatch(enqueueSidebar(null));
     router.push("/");
     setOpen(false);
   };
@@ -58,6 +65,7 @@ export default function MobileNav({
       userKind={userKind}
       handleHomeClicked={handleHomeClicked}
       openSignupDrawer={openSignupDrawer}
+      openUserDashboard={openUserDashboard}
       />
     </Box>
   );

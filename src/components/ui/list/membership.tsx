@@ -40,7 +40,12 @@ export default function MembershipListItem({
       }}
     >
     <Stack
-    direction={"row"}
+    sx={{
+      flexDirection: {
+        xs: "column",
+        md: "row",
+      },
+    }}
     justifyContent={"space-between"}
     alignItems={"start"}
     width={"100%"}

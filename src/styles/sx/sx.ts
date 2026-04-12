@@ -29,6 +29,16 @@ const sidebarStyles = {
   border: "none",
 };
 
+const bottomDrawerSx = {
+  width: "100%",
+  backgroundColor: "#191919",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  border: "none",
+};
+
 const searchBarSx = {
   transition: "ease-in-out",
   transitionDuration: "200ms",
@@ -69,4 +79,5 @@ export {
   navActionsButtonSx,
   sidebarStyles,
   createGroupButtonSx,
+  bottomDrawerSx,
 };

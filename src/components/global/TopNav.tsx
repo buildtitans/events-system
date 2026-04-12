@@ -1,6 +1,5 @@
 "use client";
 import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import {
@@ -12,8 +11,8 @@ import Box from "@mui/material/Box";
 import LeftAnchoredSidebar from "@/src/components/ui/sidebars/leftAnchoredSidebar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import DesktopNav from "./nav/desktop/desktopNav";
-import MobileNav from "./nav/mobile/mobileNav";
+import RenderNavigation from "../pipelines/nav/renderNavigation";
+import { MobileBottomDrawer } from "../ui/drawers/mobileBottomDrawer";
 
 export default function TopNav() {
   const theme = useTheme();
@@ -27,6 +26,11 @@ export default function TopNav() {
   const showConfirmSignout = () => {
     dispatch(showModal("confirm signout"));
   };
+
+  const navProps = {
+    openSignupDrawer,
+    showSignoutModal: showConfirmSignout
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -43,29 +47,13 @@ export default function TopNav() {
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
-        {isMobile ? (
-          <MobileNav 
-          openSignupDrawer={openSignupDrawer}
-          showSignoutModal={showConfirmSignout}
-          />
-        ) : (
-          <Container
-            disableGutters
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              maxWidth: { md: "lg", lg: "lg" },
-            }}
-          >
-            <DesktopNav
-              showSignoutModal={showConfirmSignout}
-              openSignupDrawer={openSignupDrawer}
-            />
-          </Container>
-        )}
+       <RenderNavigation 
+       isMobile={isMobile}
+       navProps={navProps}
+       />
       </AppBar>
       {!isMobile && <LeftAnchoredSidebar />}
+      {isMobile && <MobileBottomDrawer />}
     </Box>
   );
 }
