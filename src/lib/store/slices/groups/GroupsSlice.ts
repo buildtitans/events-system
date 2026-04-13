@@ -5,17 +5,26 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
+import { LandingGroupsDisplayed } from "./types";
+
+export type GroupsFilter = "all" | "popular";
 
 type GroupsInitialState = {
   communities: GroupsSchemaType;
   currentPage: number;
   groupNameLookup: NameSlugDescriptionLookup;
+  popularCommunities: GroupsSchemaType;
+  groupsDisplayed: GroupsFilter;
+  landingGroupsTab: LandingGroupsDisplayed;
 };
 
 const initialState: GroupsInitialState = {
   communities: [],
   currentPage: 0,
   groupNameLookup: {},
+  popularCommunities: [],
+  groupsDisplayed: "all",
+  landingGroupsTab: { status: "pending" },
 };
 
 const GroupsSlice = createSlice({
@@ -46,6 +55,19 @@ const GroupsSlice = createSlice({
     ) => {
       state.currentPage = action.payload;
     },
+
+    changeDisplayedGroupFilter: (
+      state: GroupsInitialState,
+      action: PayloadAction<GroupsFilter>,
+    ) => {
+      state.groupsDisplayed = action.payload;
+    },
+    changeLandingGroupsTab: (
+      state: GroupsInitialState,
+      action: PayloadAction<LandingGroupsDisplayed>,
+    ) => {
+      state.landingGroupsTab = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(initializeDomains, (state, action) => {
@@ -59,8 +81,14 @@ const GroupsSlice = createSlice({
   },
 });
 
-export const { getAllGroups, addGroup, paginateGroups, getNameLookup } =
-  GroupsSlice.actions;
+export const {
+  getAllGroups,
+  addGroup,
+  paginateGroups,
+  getNameLookup,
+  changeLandingGroupsTab,
+  changeDisplayedGroupFilter,
+} = GroupsSlice.actions;
 
 type GroupsSliceType = ReturnType<typeof GroupsSlice.reducer>;
 

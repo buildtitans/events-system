@@ -30,6 +30,18 @@ export class GroupsClient {
     return this.formatRawGroups(raw);
   }
 
+  async getGroupsByIds(
+    ids: GroupSchemaType["id"][],
+  ): Promise<GroupSchemaType[]> {
+    const raw = await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("id", "in", ids)
+      .execute();
+
+    return this.formatRawGroups(raw);
+  }
+
   async getGroupsByOrganizerId(user_id: string) {
     const raw = await this.db
       .selectFrom("groups")

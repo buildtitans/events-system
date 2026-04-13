@@ -13,6 +13,7 @@ import { CensusHandler } from "../handlers/censusHandler";
 import { filterUserRsvps } from "@/src/server/core/lib/utils/filterRsvps";
 import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import { ParticipationDtoHandler } from "../handlers/participationDtoHandler";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export class ParticipationsService {
   public readonly census: CensusHandler;
@@ -36,6 +37,10 @@ export class ParticipationsService {
       { event_id, user_id: userId },
       newStatus,
     );
+  }
+
+  async getMostPopularGroups(): Promise<GroupSchemaType[]> {
+    return this.census.getPopularGroups();
   }
 
   async getUserRsvpToEvent(

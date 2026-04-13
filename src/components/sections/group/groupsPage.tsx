@@ -33,7 +33,7 @@ export function GroupsPage({
   };
 
   return (
-    <Grid container spacing={2} columns={columns} sx={{ minHeight: 800 }}>
+    <Grid container spacing={2} columns={columns} sx={{ minHeight: 400 }}>
       {page.map((group, index) => (
         <Group
           handleGroupClicked={handleGroupClicked}

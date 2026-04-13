@@ -1,5 +1,25 @@
 import { CensusHandler } from "@/src/server/core/service/handlers/censusHandler";
-import { dbMock, makeAttendanceUpdate, makeMembership } from "../mockers/mocks";
+import type { DBClient } from "@/src/server/core/db";
+import {
+  dbMock,
+  makeAttendanceUpdate,
+  makeGroup,
+  makeMembership,
+} from "../mockers/mocks";
+
+function makePopularGroupsDbMock(): DBClient {
+  return {
+    ...dbMock,
+    groups: {
+      ...dbMock.groups,
+      getGroupsByIds: jest.fn(),
+    },
+    groupMembers: {
+      ...dbMock.groupMembers,
+      getAllMembershipRecords: jest.fn(),
+    },
+  } as unknown as DBClient;
+}
 
 describe("CensusHandler.getNumberOfAttendantsForEvent", () => {
   const getAttendantsInDb = dbMock.eventAttendants.getAttendants as jest.Mock;
@@ -112,5 +132,58 @@ describe("CensusHandler.getPopularEventsIds", () => {
     ]);
 
     expect(getAllAttendanceRecordsInDb).toHaveBeenCalled();
+  });
+});
+
+describe("CensusHandler.getPopularGroups", () => {
+  let testDbMock: DBClient;
+  let getAllMembershipRecordsInDb: jest.Mock;
+  let getGroupsByIdsInDb: jest.Mock;
+  let handler: CensusHandler;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    testDbMock = makePopularGroupsDbMock();
+    getAllMembershipRecordsInDb = testDbMock.groupMembers
+      .getAllMembershipRecords as jest.Mock;
+    getGroupsByIdsInDb = testDbMock.groups.getGroupsByIds as jest.Mock;
+    handler = new CensusHandler(testDbMock);
+  });
+
+  it("returns groups with at least two members", async () => {
+    getAllMembershipRecordsInDb.mockResolvedValue([
+      makeMembership({ user_id: "user-1", group_id: "group-1" }),
+      makeMembership({ user_id: "user-2", group_id: "group-1" }),
+      makeMembership({ user_id: "user-3", group_id: "group-2" }),
+      makeMembership({ user_id: "user-4", group_id: "group-3" }),
+      makeMembership({ user_id: "user-5", group_id: "group-3" }),
+      makeMembership({ user_id: "user-6", group_id: "group-3" }),
+    ]);
+
+    const popularGroups = [
+      makeGroup({ id: "group-1", name: "group 1" }),
+      makeGroup({ id: "group-3", name: "group 3" }),
+    ];
+
+    getGroupsByIdsInDb.mockResolvedValue(popularGroups);
+
+    await expect(handler.getPopularGroups()).resolves.toEqual(popularGroups);
+
+    expect(getAllMembershipRecordsInDb).toHaveBeenCalled();
+    expect(getGroupsByIdsInDb).toHaveBeenCalledWith(["group-1", "group-3"]);
+  });
+
+  it("returns an empty array when no groups meet the popularity threshold", async () => {
+    getAllMembershipRecordsInDb.mockResolvedValue([
+      makeMembership({ user_id: "user-1", group_id: "group-1" }),
+      makeMembership({ user_id: "user-2", group_id: "group-2" }),
+    ]);
+
+    getGroupsByIdsInDb.mockResolvedValue([]);
+
+    await expect(handler.getPopularGroups()).resolves.toEqual([]);
+
+    expect(getAllMembershipRecordsInDb).toHaveBeenCalled();
+    expect(getGroupsByIdsInDb).toHaveBeenCalledWith([]);
   });
 });

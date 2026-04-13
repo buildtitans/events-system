@@ -34,6 +34,14 @@ export class GroupMembersClient {
     return this.parseRawMembers(raw);
   }
 
+  async getAllMembershipRecords() {
+    const records = await this.db
+      .selectFrom("group_members")
+      .selectAll()
+      .execute();
+    return this.parseRawMembers(records);
+  }
+
   async getMembershipRole(
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],

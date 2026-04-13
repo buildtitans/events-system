@@ -3,9 +3,9 @@ import Box from '@mui/material/Box';
 import { type JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { loadGroupsPipeline } from '@/src/components/pipelines/groups/loadGroupsPipeline';
 import { EventsPipeline } from '../../pipelines/events/eventsPipeline';
 import { RenderEventPagination } from '../../pipelines/buttons/renderEventPagination';
+import LandingPageGroupSection from '../group/landingPageGroupSection';
 
 export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Element {
     const events = useSelector((s: RootState) => s.events.eventPages);
@@ -26,7 +26,7 @@ export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Elem
 
             {isMobile && RenderEventPagination(events.status, initialLoadStatus, pages)}
 
-            {loadGroupsPipeline(initialLoadStatus)}
+            <LandingPageGroupSection />
 
         </Box>
 

@@ -46,4 +46,8 @@ export const groupsRouter = router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.getNextEventLookupMap(input);
     }),
+
+  popularGroups: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.participations.getMostPopularGroups();
+  }),
 });
