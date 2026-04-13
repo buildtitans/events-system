@@ -1,63 +1,60 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
 import {
   changeDisplayedGroupFilter,
   changeLandingGroupsTab,
-  GroupsFilter,
 } from "../../store/slices/groups/GroupsSlice";
-import React, { SetStateAction, useEffect, useState } from "react";
+import type { GroupsFilter } from "../../store/slices/groups/types";
+import { useEffect, useState } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { chunkGroupsIntoPages } from "../../utils/helpers/chunk/chunkGroupsIntoPages";
+import { wait } from "../../utils/rendering/wait";
 
 type FilterGroupsHook = {
-  setFilter: React.Dispatch<SetStateAction<GroupsFilter>>;
+  handleFilterSelect: (option: GroupsFilter) => void;
+  filter: GroupsFilter;
 };
 
 export const useFilterGroups = (): FilterGroupsHook => {
   const [filter, setFilter] = useState<GroupsFilter>("all");
   const dispatch = useDispatch<AppDispatch>();
 
+  const handleFilterSelect = (option: GroupsFilter) => {
+    setFilter((current) => (current === option ? current : option));
+  };
+
   useEffect(() => {
+    let cancelled = false;
+
     const executeFilterGroups = async () => {
-      const displayAllGroups = async () => {
-        dispatch(changeDisplayedGroupFilter("all"));
+      dispatch(changeLandingGroupsTab({ status: "pending" }));
 
-        dispatch(changeLandingGroupsTab({ status: "pending" }));
+      const groups =
+        filter === "all"
+          ? await trpcClient.groups.list.mutate()
+          : await trpcClient.groups.popularGroups.mutate();
 
-        const groups = await trpcClient.groups.list.mutate();
+      if (cancelled) return;
 
-        const all = chunkGroupsIntoPages(groups);
+      dispatch(
+        changeLandingGroupsTab({
+          status: "ready",
+          data: chunkGroupsIntoPages(groups),
+        }),
+      );
 
-        dispatch(changeLandingGroupsTab({ status: "ready", data: all }));
-      };
-
-      const displayPopularGroups = async () => {
-        dispatch(changeDisplayedGroupFilter("popular"));
-        dispatch(changeLandingGroupsTab({ status: "pending" }));
-
-        const popularGroups = await trpcClient.groups.popularGroups.mutate();
-
-        const popular = chunkGroupsIntoPages(popularGroups);
-
-        dispatch(changeLandingGroupsTab({ status: "ready", data: popular }));
-      };
-
-      switch (filter) {
-        case "all": {
-          await displayAllGroups();
-          return;
-        }
-        case "popular": {
-          await displayPopularGroups();
-          return;
-        }
-      }
+      dispatch(changeDisplayedGroupFilter(filter));
     };
 
     void executeFilterGroups();
-  }, [filter]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [filter, dispatch]);
 
   return {
-    setFilter,
+    handleFilterSelect,
+    filter,
   };
 };

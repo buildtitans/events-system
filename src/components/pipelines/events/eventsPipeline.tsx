@@ -14,9 +14,7 @@ export const EventsPipeline = (events: EventsDomainType): JSX.Element => {
     switch (events.status) {
         case "pending":
             return (
-                <RelativeSpinner
-                    key={"pending-spinner"}
-                />
+                <RelativeSpinner />
             )
         case "ready":
             return (<EventsLayout

@@ -43,7 +43,7 @@ export default function GroupsPagesContainer({
     in={assertIsDefined(groupsPages[currentPage])}
     timeout={400}
     >
-      <Box>
+      <Box minHeight={600}>
         {!silenceHeader && (
           <Typography variant="h2" gutterBottom>
             Groups

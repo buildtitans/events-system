@@ -1,34 +1,38 @@
+"use client";
 import SelectActiveGroupsFilter from "@/src/features/group/selectActiveGroupsFilter";
-import { useFilterGroups } from "@/src/lib/hooks/filters/useFilterGroups";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import RenderLandingGroupsTab from "../../pipelines/groups/renderLandingGroupsTab";
+import { JSX, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/src/lib/store";
+import { changeDisplayedGroupFilter } from "@/src/lib/store/slices/groups/GroupsSlice";
 
+export default function LandingPageGroupSection(): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    return () => {
+      dispatch(changeDisplayedGroupFilter("all"));
+    };
+  }, []);
 
-export default function LandingPageGroupSection() {
-    const { setFilter } = useFilterGroups();
+  return (
+    <Container
+      disableGutters
+    >
+      <Stack
+        minHeight={800}
+        gap={2}
+        direction={"column"}
+        alignItems={"start"}
+        justifyContent={"start"}
+      >
+        <SelectActiveGroupsFilter 
+        />
 
-
-    return (
-        <Container
-        disableGutters
-        sx={{
-            height: "auto"
-        }}
-        >
-            <Stack
-            gap={2}
-            direction={"column"}
-            alignItems={"start"}
-            justifyContent={"start"}
-            >
-                <SelectActiveGroupsFilter setFilter={setFilter} />
-
-                <RenderLandingGroupsTab />
-
-            </Stack>
-
-        </Container>
-    )
+        <RenderLandingGroupsTab />
+      </Stack>
+    </Container>
+  );
 }
