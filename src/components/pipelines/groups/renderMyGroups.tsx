@@ -1,17 +1,21 @@
 "use client";
 import type { JSX } from "react";
-import type { MyGroupsType } from "@/src/lib/store/slices/user/types";
+import type { MyGroupsState } from "@/src/lib/store/slices/user/types";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import RenderGroupsOrFallback from "./renderGroupsOrFallback";
+import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
 
 type RenderMyGroupsProps = {
-  myGroups: MyGroupsType;
+  myGroups: MyGroupsState;
 };
 
 export default function RenderMyGroups({
   myGroups,
 }: RenderMyGroupsProps): JSX.Element | null {
+
+  console.log(myGroups.status)
+
   switch (myGroups.status) {
     case "ready": {
       return (
@@ -25,8 +29,14 @@ export default function RenderMyGroups({
       <RelativeSpinner />;
     }
 
+    case "n/a": {
+     return <NoGroup />;
+    }
+
     case "failed": {
-      <NoGroup />;
+     return (<AsyncFailedFallback 
+      message={myGroups.error}
+      />) 
     }
 
     default: {

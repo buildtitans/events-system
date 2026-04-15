@@ -1,10 +1,10 @@
 import type { DomainStatus } from "@/src/lib/types/tokens/types";
-import type { EventsDomainType } from "@/src/lib/store/slices/events/types";
+import type {  EventsStateType } from "@/src/lib/store/slices/events/types";
 import type { JSX } from "react";
 import { PaginateEvents } from "@/src/components/ui/box/pagination/paginateEvents";
 
 const RenderEventPagination = (
-    eventStatus: EventsDomainType["status"],
+    eventStatus: EventsStateType["status"],
     mountStatus: DomainStatus,
     pages: number
 ): JSX.Element | null => {

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
   EventSchemaType,
   UpdateEventArgsSchemaType,
@@ -19,7 +19,6 @@ export const useCancelEvent = (
   event: EventSchemaType,
   organizer_id: string | null | undefined,
 ): CancelEventHook => {
-  const [isUpdated, setIsUpdated] = useState<boolean>(false);
   const [options, setOptions] = useState<UpdateEventArgsSchemaType>({
     status: event.status,
     event_id: event.id,
@@ -28,6 +27,12 @@ export const useCancelEvent = (
   });
   const dispatch = useDispatch<AppDispatch>();
 
+  async function executeCreateNotifications(): Promise<void> {
+    const notification = createScheduleNotification(event, options);
+
+    await trpcClient.notifications.createNotification.mutate(notification);
+  }
+
   const handleStatusChange = () => {
     setOptions((prev: UpdateEventArgsSchemaType) => ({
       ...prev,
@@ -35,10 +40,12 @@ export const useCancelEvent = (
     }));
   };
 
-  function handleUpdateResult(
+  async function handleUpdateResult(
     updateStatus: "success" | "failure" | undefined,
-  ): void {
+  ): Promise<void> {
     if (updateStatus === "success") {
+      void executeCreateNotifications();
+
       dispatch(
         enqueueSnackbar({
           kind: "changeEventScheduling",
@@ -67,15 +74,10 @@ export const useCancelEvent = (
 
     try {
       const result = await trpcClient.events.updateEventStatus.mutate(options);
-
       if (!result?.updateStatus) {
         throw new Error(`Error attempting to cancel event`);
       }
-
       handleUpdateResult(result.updateStatus);
-
-      if (result.updateStatus === "success") setIsUpdated(true);
-
       dispatch(
         enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }),
       );
@@ -87,18 +89,6 @@ export const useCancelEvent = (
       );
     }
   };
-
-  useEffect(() => {
-    const executeCreateNotifications = async () => {
-      const notification = createScheduleNotification(event, options);
-
-      await trpcClient.notifications.createNotification.mutate(notification);
-    };
-
-    if (!isUpdated) return;
-
-    void executeCreateNotifications();
-  }, [isUpdated, event, options]);
 
   return {
     options,

@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type {
-  UserEmailType,
   ParticipationsType,
-  MyGroupsType,
+  MyGroupsState,
   UserAccountViewType,
   NextGroupEventLookupMapType,
+  UserEmailState,
 } from "./types";
 
 type InitialState = {
-  email: UserEmailType;
+  email: UserEmailState;
   participations: ParticipationsType;
-  myGroups: MyGroupsType;
+  myGroups: MyGroupsState;
   view: UserAccountViewType;
   nextEventLookup: NextGroupEventLookupMapType;
 };
@@ -29,7 +29,7 @@ const UserSlice = createSlice({
   reducers: {
     storeUserEmail: (
       state: InitialState,
-      action: PayloadAction<UserEmailType>,
+      action: PayloadAction<UserEmailState>,
     ) => {
       state.email = action.payload;
     },
@@ -39,7 +39,10 @@ const UserSlice = createSlice({
     ) => {
       state.participations = action.payload;
     },
-    getMyGroups: (state: InitialState, action: PayloadAction<MyGroupsType>) => {
+    getMyGroups: (
+      state: InitialState,
+      action: PayloadAction<MyGroupsState>,
+    ) => {
       state.myGroups = action.payload;
     },
     getNextGroupEventLookup: (

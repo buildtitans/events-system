@@ -1,3 +1,4 @@
+import { AsyncState } from "@/src/lib/types/state/types";
 import type { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 export type EventDisplayFilter =
@@ -11,9 +12,4 @@ export type GroupNameByGroupID = Record<string, string>;
 
 export type EventsPages = Array<LayoutSlotSchemaType[]>;
 
-export type EventsDomainType =
-  | { status: "initial" }
-  | { status: "pending" }
-  | { status: "ready"; data: EventsPages }
-  | { status: "n/a"; message: "No events found" }
-  | { status: "failed"; error: string };
+export type EventsStateType = AsyncState<EventsPages, "No events found">;

@@ -88,10 +88,16 @@ export default function HydrateGroupBySlug({
       dispatch(getFlattenedGroupEvents({ status: "pending" }))
       dispatch(enqueueSidebar("group"));
 
+      try{
       const { events, group, role, numMembers, organizerEmail, allGroupEvents } =
-        await syncOpenedGroup(slug);
-
+        await syncOpenedGroup(slug);  
+      
       handlePayload(group, events, role, numMembers, organizerEmail, allGroupEvents);
+      } catch (err) {
+        console.error(err);
+        dispatch(groupOpened({ status: "failed", error: "Group hydration error"}));
+      }
+      
     };
     void executeHydration();
   }, [slug, userKind, dispatch]);

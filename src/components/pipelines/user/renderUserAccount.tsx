@@ -1,10 +1,10 @@
 "use client";
 import AccountDetails from "../../sections/user/accountDetails";
-import type { UserEmailType } from "@/src/lib/store/slices/user/types";
+import type { UserEmailState } from "@/src/lib/store/slices/user/types";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 
 
-export default function RenderUserAccount({ email }: { email: UserEmailType}) {
+export default function RenderUserAccount({ email }: { email: UserEmailState}) {
 
 
     switch(email.status) {

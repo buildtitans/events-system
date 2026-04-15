@@ -1,5 +1,4 @@
 "use client"
-import Box from '@mui/material/Box';
 import { type JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';

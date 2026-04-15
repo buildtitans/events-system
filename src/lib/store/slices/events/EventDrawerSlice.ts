@@ -3,6 +3,9 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { AsyncState } from "@/src/lib/types/state/types";
+
+export type OpenedEventState = AsyncState<EventSchemaType, "Event not found">;
 
 export type OpenedEvent =
   | { status: "idle" }
@@ -24,7 +27,7 @@ export type GroupSlug =
   | { status: "ready"; data: GroupSchemaType["slug"] };
 
 type InitialState = {
-  event: OpenedEvent;
+  event: OpenedEventState;
   groupName: NameOfGroup;
   groupSlug: GroupSlug;
   viewerAttendanceStatus: EventAttendantsSchemaType["status"];
@@ -34,7 +37,7 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  event: { status: "idle" },
+  event: { status: "initial" },
   groupName: { status: "initial" },
   groupSlug: { status: "initial" },
   viewerAttendanceStatus: "not_going",
@@ -49,7 +52,7 @@ const EventDrawerSlice = createSlice({
   reducers: {
     fillEventDrawer: (
       state: InitialState,
-      action: PayloadAction<OpenedEvent>,
+      action: PayloadAction<OpenedEventState>,
     ) => {
       state.event = action.payload;
     },

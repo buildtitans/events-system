@@ -8,7 +8,7 @@ import type {
 } from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
 import type {
-  EventsDomainType,
+  EventsStateType,
   EventsPages,
   EventDisplayFilter,
 } from "../../store/slices/events/types";
@@ -81,7 +81,7 @@ type DebouncedSearchHook = {
 
 type ChangeActiveCategoryHook = {
   setFilter: React.Dispatch<SetStateAction<FilterType>>;
-  eventStatus: EventsDomainType["status"];
+  eventStatus: EventsStateType["status"];
   mountStatus: DomainStatus;
   pendingFilter: boolean;
 };

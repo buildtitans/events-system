@@ -5,14 +5,14 @@ import {
 } from "@reduxjs/toolkit";
 import type {
   EventDisplayFilter,
-  EventsDomainType,
+  EventsStateType,
   GroupNameByGroupID,
 } from "./types";
 import { initializeDomains } from "../rendering/RenderingSlice";
 
 type EventCategoryState = {
   displayed: EventDisplayFilter;
-  eventPages: EventsDomainType;
+  eventPages: EventsStateType;
   currentPage: number;
   nameByGroupId: GroupNameByGroupID;
 };
@@ -36,7 +36,7 @@ export const EventsSlice = createSlice({
     },
     populateEvents: (
       state: EventCategoryState,
-      action: PayloadAction<EventsDomainType>,
+      action: PayloadAction<EventsStateType>,
     ) => {
       state.eventPages = action.payload;
       state.currentPage = 0;

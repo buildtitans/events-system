@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/src/lib/store";
 import { useEffect } from "react";
 import {
+  fillEventDrawer,
   getDrawerViewerRole,
   getGroupName,
   getGroupSlug,
@@ -56,6 +57,9 @@ export const useHydrateEventDrawer = () => {
         );
       } catch (err) {
         console.error("Failed to hydrate event drawer", err);
+        dispatch(
+          fillEventDrawer({ status: "failed", error: "Event not found" }),
+        );
       }
 
       const { name, slug } = getSlugAndName(event.data.group_id);

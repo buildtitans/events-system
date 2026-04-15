@@ -3,6 +3,7 @@ import type { EventsPages } from "../events/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
+import { AsyncState } from "@/src/lib/types/state/types";
 
 export type GroupHydrated =
   | { status: "idle" }
@@ -21,6 +22,11 @@ export type HydratedEventsForOpenedGroup =
   | { status: "failed"; error: "Error hydrating events for opened group" }
   | { status: "ready"; data: EventsPages };
 
+export type FlattenedGroupEventsState = AsyncState<
+  EventsArraySchemaType,
+  "No Events held for this group"
+>;
+
 export type GroupHistoryType =
   | { status: "initial" }
   | { status: "pending" }
@@ -38,7 +44,7 @@ type InitialState = {
   history: GroupHistoryType;
   numMembers: number;
   organizerEmail: string;
-  flattenedEvents: GroupHistoryType;
+  flattenedEvents: FlattenedGroupEventsState;
 };
 
 const initialState: InitialState = {
@@ -99,7 +105,7 @@ const OpenedGroupSlice = createSlice({
     },
     getFlattenedGroupEvents: (
       state: InitialState,
-      action: PayloadAction<GroupHistoryType>,
+      action: PayloadAction<FlattenedGroupEventsState>,
     ) => {
       state.flattenedEvents = action.payload;
     },

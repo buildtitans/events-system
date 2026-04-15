@@ -8,7 +8,6 @@ import type { GroupsFilter } from "../../store/slices/groups/types";
 import { useEffect, useState } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { chunkGroupsIntoPages } from "../../utils/helpers/chunk/chunkGroupsIntoPages";
-import { wait } from "../../utils/rendering/wait";
 
 type FilterGroupsHook = {
   handleFilterSelect: (option: GroupsFilter) => void;
@@ -29,21 +28,31 @@ export const useFilterGroups = (): FilterGroupsHook => {
     const executeFilterGroups = async () => {
       dispatch(changeLandingGroupsTab({ status: "pending" }));
 
-      const groups =
-        filter === "all"
-          ? await trpcClient.groups.list.mutate()
-          : await trpcClient.groups.popularGroups.mutate();
+      try {
+        const groups =
+          filter === "all"
+            ? await trpcClient.groups.list.mutate()
+            : await trpcClient.groups.popularGroups.mutate();
 
-      if (cancelled) return;
+        if (cancelled) return;
 
-      dispatch(
-        changeLandingGroupsTab({
-          status: "ready",
-          data: chunkGroupsIntoPages(groups),
-        }),
-      );
+        dispatch(
+          changeLandingGroupsTab({
+            status: "ready",
+            data: chunkGroupsIntoPages(groups),
+          }),
+        );
 
-      dispatch(changeDisplayedGroupFilter(filter));
+        dispatch(changeDisplayedGroupFilter(filter));
+      } catch (err) {
+        console.error(err);
+        dispatch(
+          changeLandingGroupsTab({
+            status: "failed",
+            error: "Failed to retrieve groups",
+          }),
+        );
+      }
     };
 
     void executeFilterGroups();

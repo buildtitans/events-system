@@ -5,6 +5,7 @@ import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSli
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
+import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
 
 type RenderOpenedGroupProps = {
     group: GroupHydrated,
@@ -36,7 +37,7 @@ export function RenderOpenedGroup({
 
             )
         case "failed":
-            return <NoGroup />
+            return <AsyncFailedFallback message={group.error} />
         case "ready":
             return (
                 <ViewGroupSection

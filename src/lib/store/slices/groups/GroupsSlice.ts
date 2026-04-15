@@ -5,7 +5,7 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
-import { LandingGroupsDisplayed, GroupsFilter } from "./types";
+import { GroupsFilter, LandingGroupsDisplayedState } from "./types";
 
 type GroupsInitialState = {
   communities: GroupsSchemaType;
@@ -13,7 +13,7 @@ type GroupsInitialState = {
   groupNameLookup: NameSlugDescriptionLookup;
   popularCommunities: GroupsSchemaType;
   groupsDisplayed: GroupsFilter;
-  landingGroupsTab: LandingGroupsDisplayed;
+  landingGroupsTab: LandingGroupsDisplayedState;
 };
 
 const initialState: GroupsInitialState = {
@@ -62,7 +62,7 @@ const GroupsSlice = createSlice({
     },
     changeLandingGroupsTab: (
       state: GroupsInitialState,
-      action: PayloadAction<LandingGroupsDisplayed>,
+      action: PayloadAction<LandingGroupsDisplayedState>,
     ) => {
       state.landingGroupsTab = action.payload;
     },
