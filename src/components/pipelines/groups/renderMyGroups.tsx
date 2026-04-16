@@ -14,7 +14,6 @@ export default function RenderMyGroups({
   myGroups,
 }: RenderMyGroupsProps): JSX.Element | null {
 
-  console.log(myGroups.status)
 
   switch (myGroups.status) {
     case "ready": {

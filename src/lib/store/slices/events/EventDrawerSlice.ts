@@ -7,12 +7,6 @@ import { AsyncState } from "@/src/lib/types/state/types";
 
 export type OpenedEventState = AsyncState<EventSchemaType, "Event not found">;
 
-export type OpenedEvent =
-  | { status: "idle" }
-  | { status: "pending" }
-  | { status: "ready"; data: EventSchemaType }
-  | { status: "failed"; error: string };
-
 export type NumberOfAttendantsType =
   | { status: "initial" }
   | { status: "none" }

@@ -8,23 +8,15 @@ type UserAccountViewType = "memberships" | "rsvps" | "my groups" | "settings";
 
 export type UserEmailState = AsyncState<string, "No email found">;
 
-type ParticipationsType =
-  | { status: "initial" }
-  | { status: "pending" }
-  | {
-      status: "ready";
-      data: {
-        rsvps: RsvpSchemaType[];
-        memberships: UserMembershipSchemaType[];
-      };
-    }
-  | { status: "failed"; error: string };
+type ParticipationsStatePayload = {
+  rsvps: RsvpSchemaType[];
+  memberships: UserMembershipSchemaType[];
+};
 
-type MyGroupsType =
-  | { status: "initial" }
-  | { status: "pending" }
-  | { status: "ready"; data: GroupSchemaType[][] }
-  | { status: "failed"; error: string };
+type PariticpationsState = AsyncState<
+  ParticipationsStatePayload,
+  "We couldn't find any records of user participations"
+>;
 
 type MyGroupsState = AsyncState<GroupSchemaType[][], "No groups created yet">;
 
@@ -35,8 +27,8 @@ type NextGroupEventLookupMapType = Record<
 
 export type {
   UserAccountViewType,
-  ParticipationsType,
-  MyGroupsType,
   NextGroupEventLookupMapType,
   MyGroupsState,
+  PariticpationsState,
+  ParticipationsStatePayload,
 };

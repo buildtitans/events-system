@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type {
-  ParticipationsType,
   MyGroupsState,
   UserAccountViewType,
+  PariticpationsState,
   NextGroupEventLookupMapType,
   UserEmailState,
 } from "./types";
 
 type InitialState = {
   email: UserEmailState;
-  participations: ParticipationsType;
+  participations: PariticpationsState;
   myGroups: MyGroupsState;
   view: UserAccountViewType;
   nextEventLookup: NextGroupEventLookupMapType;
@@ -35,7 +35,7 @@ const UserSlice = createSlice({
     },
     getParticipations: (
       state: InitialState,
-      action: PayloadAction<ParticipationsType>,
+      action: PayloadAction<PariticpationsState>,
     ) => {
       state.participations = action.payload;
     },
