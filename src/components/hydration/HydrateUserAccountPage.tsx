@@ -14,16 +14,25 @@ export default function HydrateUserAccountPage(): React.ReactNode {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    const handleAccountHydration = (
-      email: string,
-      myGroups: GroupsSchemaType[],
-    ) => {
+    const handleHydrationFailure = () => {
       dispatch(
         storeUserEmail({
           status: "failed",
           error: "Failed to get user email",
         }),
       );
+      dispatch(
+        getMyGroups({
+          status: "failed",
+          error: "We couldn't load your groups",
+        }),
+      );
+    };
+
+    const handleAccountHydration = (
+      email: string,
+      myGroups: GroupsSchemaType[],
+    ) => {
       dispatch(getMyGroups({ status: "ready", data: myGroups }));
       dispatch(storeUserEmail({ status: "ready", data: email }));
     };
@@ -39,18 +48,7 @@ export default function HydrateUserAccountPage(): React.ReactNode {
         handleAccountHydration(email, myGroups);
       } catch (err) {
         console.error(err);
-        dispatch(
-          storeUserEmail({
-            status: "failed",
-            error: "Failed to get user email",
-          }),
-        );
-        dispatch(
-          getMyGroups({
-            status: "failed",
-            error: "We couldn't load your groups",
-          }),
-        );
+        handleHydrationFailure();
       }
     };
 
