@@ -1,7 +1,8 @@
 "use client";
 import { Provider } from "react-redux";
-import { AppStore, makeStore } from "./store";
-import { useEffect, useRef } from "react";
+import { makeStore } from "./store";
+import { useEffect, useState } from "react";
+
 import { initializeDomains } from "../slices/rendering/RenderingSlice";
 import { useInitializeDomains } from "../../hooks/hydration/useInitializeDomains";
 
@@ -10,17 +11,28 @@ type Props = {
 };
 
 export default function ReduxProvider({ children }: Props) {
+
   const { domains } = useInitializeDomains();
-  const storeRef = useRef<AppStore | null>(null);
+const [store] = useState(() => makeStore());
 
-  if (!storeRef.current) {
-    storeRef.current = makeStore();
-  }
+useEffect(() => {
+  if (!domains) return;
+  store.dispatch(initializeDomains(domains));
+}, [domains, store]);
 
-  useEffect(() => {
-    if (!domains) return;
-    storeRef.current!.dispatch(initializeDomains(domains));
-  }, [domains]);
+return <Provider store={store}>{children}</Provider>;
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+ // const { domains } = useInitializeDomains();
+ // const storeRef = useRef<AppStore | null>(null);
+//
+ // if (!storeRef.current) {
+ //   storeRef.current = makeStore();
+ // }
+//
+ // useEffect(() => {
+ //   if (!domains) return;
+ //   storeRef.current!.dispatch(initializeDomains(domains));
+ // }, [domains]);
+//
+ // return <Provider store={storeRef.current}>{children}</Provider>;
 }
