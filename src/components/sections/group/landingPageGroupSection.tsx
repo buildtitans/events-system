@@ -15,7 +15,7 @@ export default function LandingPageGroupSection(): JSX.Element {
     return () => {
       dispatch(changeDisplayedGroupFilter("all"));
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <Container

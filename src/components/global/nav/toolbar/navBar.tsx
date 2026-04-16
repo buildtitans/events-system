@@ -1,24 +1,8 @@
 "use client";
 import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Divider from "@mui/material/Divider";
-import MenuItem from "@mui/material/MenuItem";
-import Drawer from "@mui/material/Drawer";
-import MenuIcon from "@mui/icons-material/Menu";
-import Link from "next/link";
-import ColorModeIconDropdown from "../ColorModelIconDropdown";
-import { useState } from "react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import type { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import HomeButton from "../../../ui/buttons/homeButton";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { Search } from "@/src/features/search/search";
-import MenuList from "@mui/material/MenuList";
-import { useRouter } from "next/navigation";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -36,13 +20,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "8px 12px",
 }));
 
-type NavLinksProps = {
-  userKind: UserKind;
-};
 
-export default function NavBar({ userKind }: NavLinksProps) {
-  const theme = useTheme();
 
+export default function NavBar() {
   return (
     <StyledToolbar
       variant="dense"

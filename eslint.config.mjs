@@ -7,20 +7,22 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     files: ["src/server/core/db/migrations/**/*.ts"],
-    
+
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-    }
+    },
   },
   globalIgnores([
-  ".next/**",
-  "infra/**",
-  "out/**",
-  "build/**",
-  "coverage/**",
-  "next-env.d.ts",
-]),
-
+    ".deploy",
+    ".next/**",
+    ".deploy/**",
+    "infra/**",
+    "out/**",
+    "build/**",
+    "coverage/**",
+    "src/server/dist/**",
+    "next-env.d.ts",
+  ]),
 ]);
 
 export default eslintConfig;

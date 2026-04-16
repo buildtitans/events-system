@@ -2,7 +2,6 @@
 import ViewGroupSection from "../../sections/group/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import NoGroup from "../../ui/feedback/failure/noGroups";
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";

@@ -1,7 +1,8 @@
 describe("configureTrpcRoute", () => {
   const ORIGINAL_ENV = { ...process.env };
+  let configureTrpcRoute: typeof import("./configureTrpcRoute").configureTrpcRoute;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.resetModules();
 
     process.env = {
@@ -10,6 +11,8 @@ describe("configureTrpcRoute", () => {
       NEXT_PUBLIC_DEV_API_URL: "http://localhost:3001/api/trpc",
       NEXT_PUBLIC_PROD_API_URL: "/api/trpc",
     };
+
+    ({ configureTrpcRoute } = await import("./configureTrpcRoute"));
   });
 
   afterEach(() => {
@@ -42,8 +45,6 @@ describe("configureTrpcRoute", () => {
       expected: "http://127.0.0.1:3001/api/trpc",
     },
   ])("$label", ({ isProduction, isBrowser, expected }) => {
-    const { configureTrpcRoute } = require("./configureTrpcRoute");
-
     expect(configureTrpcRoute(isProduction, isBrowser)).toBe(expected);
   });
 });

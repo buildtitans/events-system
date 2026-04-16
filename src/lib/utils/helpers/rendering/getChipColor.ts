@@ -6,7 +6,7 @@ type GetChipColorParams = {
   condition: boolean;
 };
 
-export function getChipColor<T>({
+export function getChipColor({
   condition,
 }: GetChipColorParams): ChipColor["color"] {
   let color: ChipColor["color"];

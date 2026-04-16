@@ -25,7 +25,6 @@ const footerLinks = [
 ] satisfies FooterLinkType[];
 
 export default function Footer() {
-  const year = new Date().getFullYear();
 
   return (
     <>

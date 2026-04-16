@@ -2,10 +2,8 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '@/src/components/ui/icons/CustomIcons';
 import Email from '@/src/components/sections/inputs/Email';
 import Stack from '@mui/material/Stack';
 import { useValidateSignupCredentials } from '@/src/lib/hooks/auth/useValidateSignupCredentials';
@@ -43,9 +41,6 @@ export default function SignUpCard() {
             }}
         >
 
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                <SitemarkIcon />
-            </Box>
             <Typography
                 component="h1"
                 variant="h4"

@@ -14,7 +14,6 @@ export default function DesktopNav({
     return (
         <>
         <NavBar
-        userKind={userKind}
         />
         <NavActions 
         openSignupDrawer={openSignupDrawer}

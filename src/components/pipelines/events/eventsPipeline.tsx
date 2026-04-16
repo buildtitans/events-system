@@ -13,6 +13,8 @@ export const EventsPipeline = (events: EventsStateType): JSX.Element => {
     const currentPage = useSelector((s: RootState) => s.events.currentPage);
 
     switch (events.status) {
+
+        case "initial":
         case "pending":
             return (
                 <RelativeSpinner />

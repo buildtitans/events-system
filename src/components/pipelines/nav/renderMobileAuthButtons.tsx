@@ -7,7 +7,6 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 export default function RenderMobileAuthButtons({
     userKind, 
     showSigninDrawer,
-    showSignoutModal,
     openSignupDrawer,
     openUserDashboard,
     mobileOpenSignOutModal
