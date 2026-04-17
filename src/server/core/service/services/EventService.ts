@@ -13,14 +13,23 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "../handlers/hydrationHandler";
 import { isPastEvent } from "../../lib/utils/isPastEvent";
+import { LayoutFormatter } from "../handlers/layoutFormatter";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 export class EventService {
   public readonly hydrate: EventHydrationHandler;
+  private readonly layout: LayoutFormatter;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
+    this.layout = new LayoutFormatter();
+  }
+
+  async getAllEventsLayout(): Promise<PaginatedLayoutSchemaType> {
+    const events = await this.getAllEvents();
+    return this.layout.compileLayout(events);
   }
 
   async getAllEvents(): Promise<EventsArraySchemaType> {
@@ -37,8 +46,9 @@ export class EventService {
 
   async selectEventsById(
     ids: EventSchemaType["id"][],
-  ): Promise<EventsArraySchemaType> {
-    return await this.db.events.getEventsByIds(ids);
+  ): Promise<PaginatedLayoutSchemaType> {
+    const events = await this.db.events.getEventsByIds(ids);
+    return this.layout.compileLayout(events);
   }
 
   async getEventAttendants(event_id: string) {
@@ -65,6 +75,11 @@ export class EventService {
     await this.policy.requireCanCreateEvent(userId, group_id);
 
     return await this.db.events.createNewEvent(newEvent);
+  }
+
+  async getGroupEventsLayout(group_id: string) {
+    const groupEvents = await this.db.events.getGroupEvents(group_id);
+    return this.layout.compileLayout(groupEvents);
   }
 
   async getGroupEvents(group_id: string) {

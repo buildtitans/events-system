@@ -1,4 +1,4 @@
-import { LayoutFormatter } from "@/src/server/core/service/services/layoutFormatter";
+import { LayoutFormatter } from "@/src/server/core/service/handlers/layoutFormatter";
 import {
   fullPage,
   multiplePages,

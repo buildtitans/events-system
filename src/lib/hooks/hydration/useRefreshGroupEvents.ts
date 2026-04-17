@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { getGroupEvents } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
-import { syncEventsForGroup } from "@/src/lib/store/sync/syncEvents";
+import { syncEventsForGroup } from "@/src/lib/store/sync/syncEventsForGroup";
 
 export const useRefreshGroupEvents = () => {
   const groupEvents = useSelector((s: RootState) => s.openGroup.events);

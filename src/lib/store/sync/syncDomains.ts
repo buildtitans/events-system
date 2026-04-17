@@ -22,7 +22,7 @@ async function syncDomains(): Promise<SyncDomainsResult> {
 
 async function runSync(): Promise<SyncResults> {
   const map = {
-    events: trpcClient.events.list.mutate(),
+    events: trpcClient.events.allEventsLayout.mutate(),
     groups: trpcClient.groups.list.mutate(),
     categories: trpcClient.categories.getAllCategories.mutate(),
     groupNameDictionary: trpcClient.groups.nameLookup.mutate(),

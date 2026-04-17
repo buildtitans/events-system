@@ -19,10 +19,8 @@ import {
 } from "../inputValidators/inputValidation";
 
 export const eventsRouter = router({
-  list: publicProcedure.mutation(async ({ ctx }) => {
-    const events = await ctx.services.api.domains.events.getAllEvents();
-
-    return ctx.services.layout.compileLayout(events);
+  allEventsLayout: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.events.getAllEventsLayout();
   }),
 
   newEvent: protectedProcedure
@@ -38,18 +36,7 @@ export const eventsRouter = router({
   groupEventsLayout: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const events =
-        await ctx.services.api.domains.events.getGroupEvents(input);
-
-      return ctx.services.layout.compileLayout(events);
-    }),
-
-  getGroupEvents: publicProcedure
-    .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      const events =
-        await ctx.services.api.domains.events.getGroupEvents(input);
-      return ctx.services.layout.compileLayout(events);
+      return await ctx.services.api.domains.events.getGroupEventsLayout(input);
     }),
 
   getFlattenedGroupEvents: publicProcedure
@@ -78,9 +65,7 @@ export const eventsRouter = router({
   eventsById: publicProcedure
     .input(EventIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      const events =
-        await ctx.services.api.domains.events.selectEventsById(input);
-      return ctx.services.layout.compileLayout(events);
+      return await ctx.services.api.domains.events.selectEventsById(input);
     }),
 
   getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
