@@ -1,6 +1,7 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 export type AttendantCountType = {
   numGoing: number;
@@ -31,6 +32,11 @@ export type GroupCreatedResult = {
   group: GroupSchemaType;
   organizer: GroupMemberSchemaType;
 };
+
+export type PastEventAttendanceLookup = Record<
+  EventAttendantsSchemaType["event_id"],
+  number
+>;
 
 export type GroupAction =
   | "manage group"

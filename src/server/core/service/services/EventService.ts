@@ -13,18 +13,18 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "../handlers/hydrationHandler";
 import { isPastEvent } from "../../lib/utils/isPastEvent";
-import { LayoutFormatter } from "../handlers/layoutFormatter";
+import { EventLayoutComposer } from "../handlers/eventLayoutComposer";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 export class EventService {
   public readonly hydrate: EventHydrationHandler;
-  private readonly layout: LayoutFormatter;
+  private readonly layout: EventLayoutComposer;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
-    this.layout = new LayoutFormatter();
+    this.layout = new EventLayoutComposer();
   }
 
   async getAllEventsLayout(): Promise<PaginatedLayoutSchemaType> {
@@ -38,6 +38,10 @@ export class EventService {
 
   async searchEvents(query: SearchSchemaType) {
     return await this.db.events.searchEventByTitle(query);
+  }
+
+  async getGroupHistoryAttendance(ids: string[]) {
+    return await this.hydrate.getAttendantsOfPastEvents(ids);
   }
 
   async getEventById(event_id: string) {
@@ -89,7 +93,13 @@ export class EventService {
   async getPastEvents(group_id: string) {
     const groupEvents = await this.db.events.getGroupEvents(group_id);
 
-    return this.filterCurrentAndFutureEvents(groupEvents);
+    const ids = groupEvents.map((ev) => ev.id);
+
+    const pastEventsRecords = await this.hydrate.getAttendantsOfPastEvents(ids);
+
+    const history = this.filterCurrentAndFutureEvents(groupEvents);
+
+    return { history, pastEventsRecords };
   }
 
   async getNextEventLookupMap(

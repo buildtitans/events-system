@@ -9,7 +9,7 @@ import {
 } from "@/src/schemas/events/layoutSlotSchema";
 import { CardDesignation, CardType, LayoutSlot } from "../../lib/types";
 
-export class LayoutFormatter {
+export class EventLayoutComposer {
   constructor() {}
 
   public compileLayout(events: EventSchemaType[]): PaginatedLayoutSchemaType {

@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { getGroupHistory } from "../../store/slices/groups/OpenedGroupSlice";
+import {
+  getGroupHistory,
+  getPastEventsAttendanceRecords,
+} from "../../store/slices/groups/OpenedGroupSlice";
 import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 
 function sortByDate(events: EventsArraySchemaType): EventsArraySchemaType {
@@ -32,14 +35,14 @@ export const useHydrateGroupHisory = () => {
     const executeHydrateGroupHistory = async () => {
       dispatch(getGroupHistory({ status: "pending" }));
 
-      const res = await trpcClient.events.getGroupHistory.mutate(
-        openedGroup.data.id,
-      );
+      const { pastEventsRecords, history } =
+        await trpcClient.events.getGroupHistory.mutate(openedGroup.data.id);
 
-      if (res.length > 0) {
-        const sortedBydate = sortByDate(res);
+      if (history.length > 0) {
+        const sortedBydate = sortByDate(history);
 
         dispatch(getGroupHistory({ status: "ready", data: sortedBydate }));
+        dispatch(getPastEventsAttendanceRecords(pastEventsRecords));
       } else {
         dispatch(
           getGroupHistory({

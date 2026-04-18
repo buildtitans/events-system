@@ -5,6 +5,7 @@ import { ValidateRawAttendants } from "../../../lib/validation/schemaValidators"
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { retryLink } from "@trpc/client";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
@@ -40,6 +41,19 @@ export class EventAttendantsClient {
 
   async getAttendants(event_id: string): Promise<EventAttendantsSchemaType[]> {
     const raw = await this.getRawAttendants(event_id);
+    return this.parseRawAttendants(raw);
+  }
+
+  async getPastEventRecords(
+    ids: string[],
+  ): Promise<EventAttendantsSchemaType[]> {
+    const raw = await this.db
+      .selectFrom("event_attendants")
+      .selectAll()
+      .where("event_id", "in", ids)
+      .where("status", "=", "going")
+      .execute();
+
     return this.parseRawAttendants(raw);
   }
 

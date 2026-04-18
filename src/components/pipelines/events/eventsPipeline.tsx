@@ -10,43 +10,29 @@ import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
 
 export const EventsPipeline = (events: EventsStateType): JSX.Element => {
-    const currentPage = useSelector((s: RootState) => s.events.currentPage);
+  const currentPage = useSelector((s: RootState) => s.events.currentPage);
 
-    switch (events.status) {
+  switch (events.status) {
+    case "initial":
+    case "pending":
+      return <RelativeSpinner />;
+    case "ready":
+      return (
+        <EventsLayout
+          key={"events-layout"}
+          eventsPages={events.data}
+          currentPage={currentPage}
+        />
+      );
 
-        case "initial":
-        case "pending":
-            return (
-                <RelativeSpinner />
-            )
-        case "ready":
-            return (<EventsLayout
-                key={"events-layout"}
-                eventsPages={events.data}
-                currentPage={currentPage}
-            />)
+    case "failed":
+      return <AsyncFailedFallback message={events.error} />;
 
-        case "failed":
-            return (
-                <AsyncFailedFallback 
-                message={events.error}
-                />
-            )
+    case "n/a":
+      return <NoScheduledEvents key={"no-scheduled-events"} />;
 
-        case "n/a":
-            return (
-                <NoScheduledEvents
-                    key={"no-scheduled-events"}
-                />
-            )
-
-        default: {
-            return (
-                <NoEventsFound
-                    key={"default-fallback"}
-                />
-
-            )
-        }
+    default: {
+      return <NoEventsFound key={"default-fallback"} />;
     }
-}
+  }
+};

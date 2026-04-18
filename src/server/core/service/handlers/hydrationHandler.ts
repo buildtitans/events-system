@@ -1,6 +1,10 @@
 import { DBClient } from "../../db";
-import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchemaType,
+  EventAttendantStatusSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpStatusSchemaValidator } from "../../lib/validation/schemaValidators";
+import { PastEventAttendanceLookup } from "../types";
 
 export class EventHydrationHandler {
   constructor(private readonly db: DBClient) {}
@@ -29,6 +33,30 @@ export class EventHydrationHandler {
         event.group_id,
       );
     } else return "anonymous";
+  }
+
+  async getAttendantsOfPastEvents(
+    ids: string[],
+  ): Promise<PastEventAttendanceLookup> {
+    const attendees = await this.db.eventAttendants.getPastEventRecords(ids);
+    return this.mapPastEventHeadCounts(ids, attendees);
+  }
+
+  private mapPastEventHeadCounts(
+    ids: string[],
+    attendees: EventAttendantsSchemaType[],
+  ): PastEventAttendanceLookup {
+    const lookup = Object.fromEntries(
+      ids.map((id) => [id, 0]),
+    ) satisfies PastEventAttendanceLookup;
+
+    for (const attendant of attendees) {
+      if (attendant.status === "going") {
+        lookup[attendant.event_id] += 1;
+      }
+    }
+
+    return lookup;
   }
 
   private async getEventRsvp(

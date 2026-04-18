@@ -1,16 +1,16 @@
-import { LayoutFormatter } from "@/src/server/core/service/handlers/layoutFormatter";
+import { EventLayoutComposer } from "@/src/server/core/service/handlers/eventLayoutComposer";
 import {
   fullPage,
   multiplePages,
   sixEvents,
   sevenEvents,
-} from "@/src/server/core/service/tests/services/layoutFormatter.fixtures";
+} from "@/src/server/core/service/tests/services/eventLayoutComposer.fixtures";
 
-describe("LayoutFormatter.compileLayout", () => {
-  let formatter: LayoutFormatter;
+describe("EventLayoutComposer.compileLayout", () => {
+  let formatter: EventLayoutComposer;
 
   beforeEach(() => {
-    formatter = new LayoutFormatter();
+    formatter = new EventLayoutComposer();
   });
 
   it("returns an empty layout when no events are provided", () => {

@@ -25,8 +25,8 @@ export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Elem
             <Stack
             minHeight={800}
             width={"100%"}
-            alignItems={"center"}
-            justifyContent={"center"}
+            alignItems={"start"}
+            justifyContent={"start"}
             direction={"row"}
             >
             {EventsPipeline(events)}

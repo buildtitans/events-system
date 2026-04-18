@@ -4,6 +4,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 export type GroupHydrated =
   | { status: "idle" }
@@ -45,6 +46,10 @@ type InitialState = {
   numMembers: number;
   organizerEmail: string;
   flattenedEvents: FlattenedGroupEventsState;
+  attendanceHistoryLookup: Record<
+    EventAttendantsSchemaType["event_id"],
+    number
+  >;
 };
 
 const initialState: InitialState = {
@@ -57,6 +62,7 @@ const initialState: InitialState = {
   numMembers: 0,
   organizerEmail: "N/A",
   flattenedEvents: { status: "initial" },
+  attendanceHistoryLookup: {},
 };
 
 const OpenedGroupSlice = createSlice({
@@ -109,6 +115,14 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.flattenedEvents = action.payload;
     },
+    getPastEventsAttendanceRecords: (
+      state: InitialState,
+      action: PayloadAction<
+        Record<EventAttendantsSchemaType["event_id"], number>
+      >,
+    ) => {
+      state.attendanceHistoryLookup = action.payload;
+    },
 
     clearOpenedGroupSlice: () => initialState,
   },
@@ -124,6 +138,7 @@ export const {
   getNumMembers,
   getEmailOfGroupOrganizer,
   getFlattenedGroupEvents,
+  getPastEventsAttendanceRecords,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

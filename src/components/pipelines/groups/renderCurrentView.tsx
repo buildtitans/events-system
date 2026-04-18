@@ -5,10 +5,12 @@ import Overview from "../../sections/group/displays/overview";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import RenderGroupHistory from "./renderGroupHistory";
 
+type RenderCurrentViewProps = {
+  view: CurrentDisplay;
+  isMobile: boolean
+};
 
-export const RenderCurrentView = (
-    view: CurrentDisplay
-): JSX.Element => {
+export default function RenderCurrentView ({ view, isMobile }: RenderCurrentViewProps): JSX.Element {
 
     switch(view) {
         case "overview": {
@@ -16,7 +18,9 @@ export const RenderCurrentView = (
         }
 
         case "group history": {
-            return <RenderGroupHistory />
+            return <RenderGroupHistory 
+            isMobile={isMobile}
+            />
         }
 
         case "events": {

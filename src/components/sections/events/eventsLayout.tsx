@@ -25,11 +25,9 @@ function EventsLayout({ eventsPages, currentPage }: { eventsPages: EventsPages, 
         setFocusedCardIndex(null);
     };
 
-
     return (
-        <AnimatePresence >
+        <AnimatePresence mode='wait'>
             {(page) && <MotionGrid
-
                 key={currentPage}
                 variants={fadeInOut}
                 initial="initial"

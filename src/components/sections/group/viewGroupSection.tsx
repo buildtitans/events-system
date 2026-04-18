@@ -2,7 +2,7 @@
 import type { JSX } from "react";
 import GroupHeadSecton from "./groupHeadSection";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { RenderCurrentView } from "../../pipelines/groups/renderCurrentView";
+import RenderCurrentView from "../../pipelines/groups/renderCurrentView";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
@@ -22,23 +22,24 @@ export default function ViewGroupSection({
 }: ViewGroupSectionProps): JSX.Element {
   const theme = useTheme();
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   useHydrateGroupHisory();
 
   return (
     <Container
-    disableGutters
-    id="opened-group-container"
+      disableGutters
+      id="opened-group-container"
       sx={{
         minHeight: "100vh",
         width: "100%",
       }}
     >
       <Stack
-      id="opened-group-stack"
-      divider={<Divider />}
-      alignItems={lgScreen ? "start" : "center"}
-      justifyContent={"start"}
+        id="opened-group-stack"
+        divider={<Divider />}
+        alignItems={lgScreen ? "start" : "center"}
+        justifyContent={"start"}
         sx={{
           width: "100%",
           minHeight: "70vh",
@@ -46,18 +47,17 @@ export default function ViewGroupSection({
         }}
       >
         <Stack
-        gap={4}
-        sx={{
-          width: "100%",
-          height: "100%"
-        }}
->
-<GroupHeadSecton groupName={group.name} />
-        <GroupDescription group={group} />
-        <Divider />
-        {RenderCurrentView(displayed)}
+          gap={4}
+          sx={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <GroupHeadSecton groupName={group.name} />
+          <GroupDescription group={group} />
+          <Divider />
+          <RenderCurrentView view={displayed} isMobile={isMobile} />
         </Stack>
-        
       </Stack>
     </Container>
   );
