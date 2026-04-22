@@ -7,6 +7,7 @@ const alertsPipeline = (alert: AlertType) => {
 
     return (
         <AlertResult
+            key={"alert"}
             severity={alert.kind}
             variant="filled"
             message={createAlertMessages(alert)}

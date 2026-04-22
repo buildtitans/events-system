@@ -7,6 +7,7 @@ const LoginCredentialsSchema = Type.Object({
 });
 
 const EmailSchema = Type.String({ format: "email" });
+const PasswordResetTokenSchema = Type.String({ pattern: "^[a-f0-9]{64}$" });
 
 const AuthenticationSchema = Type.Object({
   success: Type.Boolean(),
@@ -14,8 +15,8 @@ const AuthenticationSchema = Type.Object({
 });
 
 const TokenAndPasswordSchema = Type.Object({
-  token: Type.String({ format: "uuid" }),
-  password: Type.String(),
+  token: PasswordResetTokenSchema,
+  password: Type.String({ minLength: 8 }),
 });
 
 type TokenAndPasswordSchemaType = Static<typeof TokenAndPasswordSchema>;

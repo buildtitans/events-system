@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+
+    "allowJs": false,
+    "isolatedModules": false,
+    "noEmit": true,
+
+    "baseUrl": "../..",
+    "paths": {
+      "@/*": ["./*"]
+    },
+
+    "types": ["node"],
+    "incremental": true
+  },
+  "include": [
+    "./index.ts",
+    "./core/**/*.ts",
+    "./core/**/*.d.ts"
+  ],
+  "exclude": [
+    "./dist",
+    "./node_modules",
+    "./core/**/*.test.ts",
+    "./core/**/*.spec.ts",
+    "./core/service/tests/**"
+  ]
+}

@@ -55,6 +55,12 @@ const snackbarMessages: SnackbarMessages = {
     success: "Left group successfully",
     failed: "Failed to leave the group",
   },
+  pwResetEmail: {
+    idle: "",
+    pending: "Sending reset link...",
+    success: "Resend email sent!",
+    failed: "Failed to send reset link",
+  },
 };
 
 export { snackbarMessages };

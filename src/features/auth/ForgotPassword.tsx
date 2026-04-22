@@ -8,15 +8,21 @@ import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useValidateSignupCredentials } from '@/src/lib/hooks/auth/useValidateSignupCredentials';
 import { useRequestPasswordReset } from '@/src/lib/hooks/auth/useRequestPasswordReset';
+import type { SetStateAction } from 'react';
 
 interface ForgotPasswordProps {
     open: boolean;
+    setOpen: React.Dispatch<SetStateAction<boolean>>;
     handleClose: () => void;
 }
 
-export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
-    const { errors, handleEmailInput } = useValidateSignupCredentials()
-    const { submitPasswordResetRequest } = useRequestPasswordReset({ emailError: errors.invalidEmail })
+export default function ForgotPassword({ open, handleClose, setOpen }: ForgotPasswordProps) {
+    const { errors, handleEmailInput, email } = useValidateSignupCredentials();
+    const { submitPasswordResetRequest } = useRequestPasswordReset({
+        emailError: errors.invalidEmail,
+        email,
+        setOpen
+    });
 
 
     return (

@@ -11,10 +11,9 @@ export default function AlertsAndSnackbarsHost(): JSX.Element | null {
     const alert = useSelector((s: RootState) => s.rendering.alert);
 
     return (
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
             {(alert.action !== null) && alertsPipeline(alert)}
             {snackbarPipeline(snackbar.kind, snackbar.status)}
-
         </AnimatePresence>
     )
 }

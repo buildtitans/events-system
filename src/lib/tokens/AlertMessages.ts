@@ -17,6 +17,18 @@ const alertMessages: AlertMessages = {
     success: "Attendance updated!",
     error: "Failed to update attendance",
   },
+  resetLinkSent: {
+    success: "Reset link sent to your email!",
+    error: "Failed to send reset link",
+  },
+  passwordReset: {
+    success: "Password changed successfully",
+    error: "Password change failed",
+  },
+  invalidEmail: {
+    success: "",
+    error: "Invalid email submitted",
+  },
 };
 
 export { alertMessages };

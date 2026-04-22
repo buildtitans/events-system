@@ -11,7 +11,7 @@ export class EmailService {
 
   public async sendResetEmail(email: string, resetUrl: string) {
     const { data, error } = await this.resend.emails.send({
-      from: "Events System <no-reply@events-system.dev>",
+      from: "onboarding@resend.dev",
       to: [email],
       subject: "Password Reset Request",
       html: `

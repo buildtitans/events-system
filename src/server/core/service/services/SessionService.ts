@@ -45,7 +45,11 @@ export class SessionService {
   }
 
   async resetPassword(token: string, password: string): Promise<{ ok: true }> {
-    await this.db.auth.resetPassword(token, password);
+    const didReset = await this.db.auth.resetPassword(token, password);
+
+    if (!didReset) {
+      throw new Error("This password reset link is invalid or has expired.");
+    }
 
     return { ok: true };
   }

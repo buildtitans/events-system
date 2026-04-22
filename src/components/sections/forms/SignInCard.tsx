@@ -55,8 +55,6 @@ export default function SignInCard({
 
             }}
         >
-
-            
             <Typography
                 component="h1"
                 variant="h4"
@@ -86,7 +84,11 @@ export default function SignInCard({
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
                 />
-                <ForgotPassword open={open} handleClose={handleClose} />
+                <ForgotPassword 
+                open={open} 
+                handleClose={handleClose} 
+                setOpen={setOpen}
+                />
                 <Button type="submit" fullWidth variant="contained" disabled={(!isSubmittable) || (userKind === "authenticated")}>
                     Sign in
                 </Button>

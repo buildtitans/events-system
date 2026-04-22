@@ -36,7 +36,7 @@ function Password({
                 variant="outlined"
                 color={passwordError ? 'error' : 'primary'}
             />
-            <Box sx={{ display: 'flex', justifyContent: 'end', paddingTop: 1 }}>
+            {handleClickOpen && <Box sx={{ display: 'flex', justifyContent: 'end', paddingTop: 1 }}>
 
                 <Link
                     component="button"
@@ -47,7 +47,7 @@ function Password({
                 >
                     Forgot your password?
                 </Link>
-            </Box>
+            </Box>}
         </FormControl>
     )
 };

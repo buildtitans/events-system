@@ -22,6 +22,7 @@ type SnackbarMessages = {
   changeEventScheduling: Record<RequestStatus, string>;
   signup: Record<RequestStatus, string>;
   leaveGroup: Record<RequestStatus, string>;
+  pwResetEmail: Record<RequestStatus, string>;
 };
 
 type UserInGroupRoleType = "anonymous" | "member" | "organizer";
@@ -43,6 +44,9 @@ type AlertMessages = {
   signup: Record<AlertKind, string>;
   createEvent: Record<AlertKind, string>;
   updateAttendance: Record<AlertKind, string>;
+  resetLinkSent: Record<AlertKind, string>;
+  passwordReset: Record<AlertKind, string>;
+  invalidEmail: Record<AlertKind, string>;
 };
 
 type AlertMessagesType =
