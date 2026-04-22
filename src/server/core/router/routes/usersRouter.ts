@@ -1,4 +1,12 @@
-import { router, protectedProcedure } from "@/src/server/core/context/init";
+import {
+  router,
+  protectedProcedure,
+  publicProcedure,
+} from "@/src/server/core/context/init";
+import {
+  TokenAndPasswordValidator,
+  UserEmailInputValidator,
+} from "../inputValidators/inputValidation";
 
 export const usersRouter = router({
   getUserEmail: protectedProcedure.mutation(async ({ ctx }) => {
@@ -22,4 +30,19 @@ export const usersRouter = router({
       ctx.req.user?.id,
     );
   }),
+
+  requestPasswordReset: publicProcedure
+    .input(UserEmailInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.session.requestPwReset(input);
+    }),
+
+  resetUserPassword: publicProcedure
+    .input(TokenAndPasswordValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.session.resetPassword(
+        input.token,
+        input.password,
+      );
+    }),
 });

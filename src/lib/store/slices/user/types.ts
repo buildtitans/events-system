@@ -25,6 +25,10 @@ type NextGroupEventLookupMapType = Record<
   EventSchemaType["starts_at"]
 >;
 
+export type RequestPwResetState = AsyncState<{ ok: true }>;
+
+export type PasswordResetState = AsyncState<{ ok: true }>;
+
 export type {
   UserAccountViewType,
   NextGroupEventLookupMapType,

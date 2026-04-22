@@ -72,6 +72,15 @@ export interface Notifications {
   user_id: string;
 }
 
+export interface PasswordResetTokens {
+  created_at: Generated<Timestamp>;
+  expires_at: Timestamp;
+  id: Generated<string>;
+  token_hash: string;
+  used_at: Timestamp | null;
+  user_id: string;
+}
+
 export interface Sessions {
   created_at: Generated<Timestamp>;
   expires_at: Timestamp;
@@ -93,6 +102,7 @@ export interface DB {
   group_members: GroupMembers;
   groups: Groups;
   notifications: Notifications;
+  password_reset_tokens: PasswordResetTokens;
   sessions: Sessions;
   users: Users;
 }

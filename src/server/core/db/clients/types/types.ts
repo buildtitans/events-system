@@ -39,6 +39,16 @@ type RBACType = Record<
   GroupMemberSchemaType["role"]
 >;
 
+type PasswordResetRequestResult = Promise<{
+  result:
+    | {
+        expires_at: Date;
+        created_at: Date;
+      }
+    | undefined;
+  token: string;
+}>;
+
 export type {
   StoredSession,
   SessionType,
@@ -46,4 +56,5 @@ export type {
   NotificationCreationProcedure,
   NewUserResponse,
   RBACType,
+  PasswordResetRequestResult,
 };

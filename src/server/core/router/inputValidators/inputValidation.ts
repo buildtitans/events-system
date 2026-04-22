@@ -37,6 +37,12 @@ import {
   NotificationSchemaArrayType,
   ViewedNotificationsIdsSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
+import {
+  CompiledEmailSchema,
+  CompiledTokenAndPasswordSchema,
+  EmailSchemaType,
+  TokenAndPasswordSchemaType,
+} from "@/src/schemas/auth/loginCredentialsSchema";
 
 export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
   NewEventInputSchemaValidator,
@@ -87,3 +93,9 @@ export const SeenNotificationsInputValidator =
 
 export const NotificationArrayInputValidator =
   typeboxInput<NotificationSchemaArrayType>(CompiledNotificationSchemaArray);
+
+export const UserEmailInputValidator =
+  typeboxInput<EmailSchemaType>(CompiledEmailSchema);
+
+export const TokenAndPasswordValidator =
+  typeboxInput<TokenAndPasswordSchemaType>(CompiledTokenAndPasswordSchema);

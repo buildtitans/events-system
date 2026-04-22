@@ -1,12 +1,19 @@
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
+import { EmailService } from "./emailService";
+import { getEnv } from "../../lib/init/getEnv";
+
+const PW_RESET_URL = getEnv("devPwResetUrl");
 
 export class SessionService {
+  private readonly email: EmailService;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
-  ) {}
+  ) {
+    this.email = new EmailService();
+  }
 
   async login(emailInput: string, passwordInput: string) {
     const { email, password } = validateLoginCredentials(
@@ -35,5 +42,26 @@ export class SessionService {
     }
 
     return session;
+  }
+
+  async resetPassword(token: string, password: string): Promise<{ ok: true }> {
+    await this.db.auth.resetPassword(token, password);
+
+    return { ok: true };
+  }
+
+  async requestPwReset(email: string): Promise<{ ok: true }> {
+    const result = await this.db.auth.requestPasswordReset(email);
+
+    if (!result.token) {
+      return { ok: true };
+    }
+
+    const url = new URL(PW_RESET_URL);
+    url.searchParams.set("token", result.token);
+
+    await this.email.sendResetEmail(email, url.toString());
+
+    return { ok: true };
   }
 }

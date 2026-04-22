@@ -5,6 +5,8 @@ import type {
   PariticpationsState,
   NextGroupEventLookupMapType,
   UserEmailState,
+  PasswordResetState,
+  RequestPwResetState,
 } from "./types";
 
 type InitialState = {
@@ -13,6 +15,8 @@ type InitialState = {
   myGroups: MyGroupsState;
   view: UserAccountViewType;
   nextEventLookup: NextGroupEventLookupMapType;
+  requestPwReset: RequestPwResetState;
+  pwReset: PasswordResetState;
 };
 
 const initialState: InitialState = {
@@ -21,6 +25,8 @@ const initialState: InitialState = {
   participations: { status: "initial" },
   view: "my groups",
   nextEventLookup: {},
+  pwReset: { status: "initial" },
+  requestPwReset: { status: "initial" },
 };
 
 const UserSlice = createSlice({
@@ -57,6 +63,18 @@ const UserSlice = createSlice({
     ) => {
       state.view = action.payload;
     },
+    requestResetPassword: (
+      state: InitialState,
+      action: PayloadAction<RequestPwResetState>,
+    ) => {
+      state.requestPwReset = action.payload;
+    },
+    resetPassword: (
+      state: InitialState,
+      action: PayloadAction<PasswordResetState>,
+    ) => {
+      state.pwReset = action.payload;
+    },
   },
 });
 
@@ -66,6 +84,8 @@ export const {
   getMyGroups,
   changeAccountTab,
   getNextGroupEventLookup,
+  requestResetPassword,
+  resetPassword,
 } = UserSlice.actions;
 
 export type UserSliceType = ReturnType<typeof UserSlice.reducer>;

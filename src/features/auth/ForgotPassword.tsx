@@ -6,6 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { useValidateSignupCredentials } from '@/src/lib/hooks/auth/useValidateSignupCredentials';
+import { useRequestPasswordReset } from '@/src/lib/hooks/auth/useRequestPasswordReset';
 
 interface ForgotPasswordProps {
     open: boolean;
@@ -13,6 +15,10 @@ interface ForgotPasswordProps {
 }
 
 export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
+    const { errors, handleEmailInput } = useValidateSignupCredentials()
+    const { submitPasswordResetRequest } = useRequestPasswordReset({ emailError: errors.invalidEmail })
+
+
     return (
         <Dialog
             open={open}
@@ -37,6 +43,7 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                     reset your password.
                 </DialogContentText>
                 <OutlinedInput
+                    onChange={handleEmailInput}
                     autoFocus
                     required
                     margin="dense"
@@ -50,7 +57,9 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
             </DialogContent>
             <DialogActions sx={{ pb: 3, px: 3 }}>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" type="submit">
+                <Button 
+                onClick={submitPasswordResetRequest}
+                variant="contained" type="button">
                     Continue
                 </Button>
             </DialogActions>

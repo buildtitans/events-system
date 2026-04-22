@@ -25,6 +25,9 @@ const ENV_MAP = {
   dev_fastify_port: "DEV_FASTIFY_PORT",
   prodFastifyHost: "PROD_FASTIFY_HOST",
   prodFastifyPort: "PROD_FASTIFY_PORT",
+  devPwResetUrl: "DEV_PW_RESET_URL",
+  pwResetUrl: "PW_RESET_URL",
+  resendDevKey: "RESEND_DEV_API_KEY",
 } as const;
 
 type EnvKey = keyof typeof ENV_MAP;
