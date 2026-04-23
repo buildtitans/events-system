@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import type { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
+import LocationInput from "../inputs/event/locationInput";
 
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
     const { control } = useForm<NewEventType>()
@@ -20,10 +21,6 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
         handleTitle,
         handleLocation,
         isSubmittable,
-        getInput,
-        suggestions,
-        query,
-        selected
     } = useCreateEvent(group_id);
 
 
@@ -104,30 +101,11 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     )}
                 />
 
-                <Controller
-                    name="meeting_location"
-                    control={control}
-                    render={() => (
-
-                        <FormControl>
-
-                            <TextField
-                                onChange={(e) => handleLocation(e)}
-                                label="Location"
-                                sx={{
-                                    "& .MuiOutlinedInput-notchedOutline": {
-                                        borderRadius: 2,
-                                    },
-
-                                    "& .MuiFormLabel-root.Mui-focused": {
-                                        border: 0
-                                    },
-                                }}
-                            />
-                        </FormControl>
-                    )}
+                <LocationInput 
+                control={control}  
+                handleLocation={handleLocation}
                 />
-
+                
                 <Controller
                     name="starts_at"
                     control={control}

@@ -1,6 +1,10 @@
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AsyncState } from "../../types/state/types";
+import {
+  AutocompleteChangeReason,
+  AutocompleteInputChangeReason,
+} from "@mui/material";
 
 export type AddressSuggestion = {
   label: string;
@@ -19,11 +23,19 @@ export type AddressSearchState = AsyncState<
 
 export type SearchAddressSuggestionsHook = {
   suggestions: AddressSearchState;
-  getInput: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  onInputChange: (
+    _event: React.SyntheticEvent<Element, Event>,
+    value: string,
+    reason: AutocompleteInputChangeReason,
   ) => void;
+
   query: string;
-  selected: AddressSuggestion["label"] | undefined;
+  selectOption: (option: AddressSuggestion) => void;
+  selectAddressOption: (
+    _event: React.SyntheticEvent,
+    value: AddressSuggestion | null,
+    reason: AutocompleteChangeReason,
+  ) => void;
 };
 
 export type EventLookupMap = Record<

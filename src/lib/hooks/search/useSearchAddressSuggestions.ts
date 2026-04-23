@@ -1,17 +1,21 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
-  AddressSuggestion,
+  type AddressSuggestion,
   type AddressSearchState,
   type SearchAddressSuggestionsHook,
 } from "./types";
+import { CreateEventHook } from "../../types/hooks/types";
+import type {
+  AutocompleteChangeReason,
+  AutocompleteInputChangeReason,
+} from "@mui/material/useAutocomplete";
 
 const WAIT_DURATION = 300;
 
-export const useSearchAddressSuggestions = (): SearchAddressSuggestionsHook => {
-  const [selected, setSelected] = useState<
-    AddressSuggestion["label"] | undefined
-  >(undefined);
+export const useSearchAddressSuggestions = (
+  handleLocation: CreateEventHook["handleLocation"],
+): SearchAddressSuggestionsHook => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<AddressSearchState>({
     status: "initial",
@@ -67,32 +71,72 @@ export const useSearchAddressSuggestions = (): SearchAddressSuggestionsHook => {
     }
   };
 
-  const getInput = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const value = e.target.value;
-    setQuery(value);
+  const debounce = useCallback(
+    async (query: string) => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
+      timerRef.current = window.setTimeout(() => {
+        void sendRequest(query);
+        timerRef.current = null;
+      }, WAIT_DURATION);
+    },
+    [sendRequest],
+  );
 
-    if (!value.trim()) {
-      requestIdRef.current++;
-      setSuggestions({ status: "initial" });
-      return;
-    }
+  const onInputChange = useCallback(
+    (
+      _event: React.SyntheticEvent,
+      value: string,
+      reason: AutocompleteInputChangeReason,
+    ) => {
+      if (reason === "input") {
+        setQuery(value);
+        debounce(value);
+      }
 
-    timerRef.current = window.setTimeout(() => {
-      void sendRequest(value);
-      timerRef.current = null;
-    }, WAIT_DURATION);
+      if (reason === "clear") {
+        setQuery("");
+        requestIdRef.current++;
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+        setSuggestions((prev: AddressSearchState) => ({
+          ...prev,
+          status: "initial",
+        }));
+      }
+    },
+    [debounce],
+  );
+
+  const selectAddressOption = useCallback(
+    (
+      _event: React.SyntheticEvent,
+      value: AddressSuggestion | null,
+      reason: AutocompleteChangeReason,
+    ) => {
+      if (reason === "selectOption" && value?.label) {
+        const address = value.label;
+        handleLocation(address);
+        setSuggestions({ status: "initial" });
+      }
+    },
+    [handleLocation],
+  );
+
+  const selectOption = (option: AddressSuggestion) => {
+    handleLocation(option.label);
+    setSuggestions({ status: "initial" });
   };
 
   return {
     suggestions,
-    getInput,
     query,
-    selected,
+    selectOption,
+    selectAddressOption,
+    onInputChange,
   };
 };

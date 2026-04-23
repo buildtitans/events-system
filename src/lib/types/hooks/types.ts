@@ -100,17 +100,9 @@ type CreateEventHook = {
   handleDescription: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => void;
-  handleLocation: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => void;
+  handleLocation: (input: string) => void;
   schedule: (e: React.FormEvent<HTMLFormElement>) => void;
   isSubmittable: boolean;
-  suggestions: AddressSearchState;
-  selected: AddressSuggestion["label"] | undefined;
-  getInput: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  query: string;
 };
 
 type ValidateCredentialsHook = {
