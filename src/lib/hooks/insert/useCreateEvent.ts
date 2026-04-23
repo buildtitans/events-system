@@ -16,6 +16,7 @@ import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
+import { useSearchAddressSuggestions } from "../search/useSearchAddressSuggestions";
 
 export type NewEventType = {
   title: EventSchemaType["title"];
@@ -39,6 +40,8 @@ export const useCreateEvent = (
   const groups = useSelector((s: RootState) => s.groups.communities);
   const picDate = getPicDate();
   const [createNotification, setCreateNotification] = useState<boolean>();
+  const { suggestions, query, getInput, selected } =
+    useSearchAddressSuggestions();
   const [newEvent, setNewEvent] = useState<NewEventType>({
     title: "",
     description: "",
@@ -158,5 +161,9 @@ export const useCreateEvent = (
     handleStartsAt,
     handleLocation,
     isSubmittable,
+    getInput,
+    suggestions,
+    selected,
+    query,
   };
 };

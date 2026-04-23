@@ -28,6 +28,8 @@ const ENV_MAP = {
   devPwResetUrl: "DEV_PW_RESET_URL",
   pwResetUrl: "PW_RESET_URL",
   resendDevKey: "RESEND_DEV_API_KEY",
+  geoApifyKey: "GEOAPIFY_API_KEY",
+  geoApifyUrl: "GEOAPIFY_REQ_BASE_URL",
 } as const;
 
 type EnvKey = keyof typeof ENV_MAP;

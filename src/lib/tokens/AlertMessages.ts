@@ -22,7 +22,8 @@ const alertMessages: AlertMessages = {
     error: "Failed to send reset link",
   },
   passwordReset: {
-    success: "Password changed successfully",
+    success:
+      "Password changed successfully! Log back in with your new password",
     error: "Password change failed",
   },
   invalidEmail: {

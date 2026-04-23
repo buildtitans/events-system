@@ -7,6 +7,7 @@ import { groupMembersRouter } from "./routes/groupMembersRouter";
 import { eventAttendantsRouter } from "./routes/eventAttendantsRouter";
 import { notificationsRouter } from "./routes/notificationsRouter";
 import { usersRouter } from "./routes/usersRouter";
+import { geoCodingRouter } from "./routes/geoCodingRouter";
 
 export const appRouter = router({
   events: eventsRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   eventAttendants: eventAttendantsRouter,
   notifications: notificationsRouter,
   users: usersRouter,
+  addressSearch: geoCodingRouter,
 });
 
 export type AppRouter = typeof appRouter;

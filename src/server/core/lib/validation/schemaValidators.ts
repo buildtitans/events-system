@@ -34,6 +34,7 @@ import {
   GroupRoleSchema,
   MemberCountSchema,
 } from "@/src/schemas/groups/groupMembersSchema";
+import { GeoapifyGeocodingResponseSchema } from "@/src/schemas/geoapify/geoapifySchemas";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -111,6 +112,11 @@ const NewEventSchemaValidator = createValidator(
 const ValidateGroupId = createValidator(GroupIdSchema, "GroupIdSchema");
 
 const CompiledGroupIdsSchema = TypeCompiler.Compile(EventIdsSchema);
+
+export const GeoapifySearchResultsValidator = createValidator(
+  GeoapifyGeocodingResponseSchema,
+  "GeoapifyGeocodingResponseSchema",
+);
 
 export const UserMembershipSchemaArrayValidator = createValidator(
   UserMembershipSchemaArray,

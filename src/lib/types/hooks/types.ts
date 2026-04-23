@@ -27,6 +27,9 @@ import type {
   AutocompleteChangeReason,
 } from "@mui/material/useAutocomplete";
 import type {
+  AddressSearchState,
+  AddressSuggestion,
+  AddressSuggestionsState,
   AutoCompleteOptions,
   SuggestionOptions,
   SuggestionType,
@@ -102,6 +105,12 @@ type CreateEventHook = {
   ) => void;
   schedule: (e: React.FormEvent<HTMLFormElement>) => void;
   isSubmittable: boolean;
+  suggestions: AddressSearchState;
+  selected: AddressSuggestion["label"] | undefined;
+  getInput: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+  query: string;
 };
 
 type ValidateCredentialsHook = {

@@ -19,7 +19,11 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
         schedule,
         handleTitle,
         handleLocation,
-        isSubmittable
+        isSubmittable,
+        getInput,
+        suggestions,
+        query,
+        selected
     } = useCreateEvent(group_id);
 
 

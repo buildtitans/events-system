@@ -1,5 +1,30 @@
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { AsyncState } from "../../types/state/types";
+
+export type AddressSuggestion = {
+  label: string;
+  sublabel: string;
+  lat: number;
+  lon: number;
+  placeId: string;
+};
+
+export type AddressSuggestionsState = Array<AddressSuggestion>;
+
+export type AddressSearchState = AsyncState<
+  AddressSuggestionsState,
+  "No suggestions found"
+>;
+
+export type SearchAddressSuggestionsHook = {
+  suggestions: AddressSearchState;
+  getInput: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+  query: string;
+  selected: AddressSuggestion["label"] | undefined;
+};
 
 export type EventLookupMap = Record<
   EventSchemaType["title"],
