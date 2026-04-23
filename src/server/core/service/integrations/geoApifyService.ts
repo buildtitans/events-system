@@ -34,7 +34,8 @@ export class GeoApifyAddressSearch {
   private formQuery(address: string) {
     const url = new URL(geoApifyUrl);
     url.searchParams.set("text", address);
-    url.searchParams.set("limit", "10");
+    url.searchParams.set("limit", "20");
+    url.searchParams.set("type", "street");
     url.searchParams.set("lang", "en");
     url.searchParams.set("format", "json");
     url.searchParams.set("apiKey", geoApifyKey);
@@ -68,8 +69,8 @@ export class GeoApifyAddressSearch {
     data: GeoapifyAutocompleteJsonResponse,
   ): AddressSuggestion[] {
     return data.results.map((result) => ({
-      label: result.address_line1 ?? result.formatted ?? "",
-      sublabel: result.address_line2 ?? "",
+      label: result.formatted ?? "",
+      sublabel: result.county ?? "",
       country: result.country ?? "",
       city: result.city ?? "",
       state: result.state ?? "",

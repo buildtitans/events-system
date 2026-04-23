@@ -123,7 +123,7 @@ export const useSearchAddressSuggestions = (
     ) => {
       if (reason === "selectOption" && value?.label) {
         const address = value.label;
-        setQuery(address);
+        setQuery(value.label);
         handleLocation(address);
         setSuggestions({ status: "initial" });
       }
