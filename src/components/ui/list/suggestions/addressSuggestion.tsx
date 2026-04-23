@@ -26,21 +26,21 @@ export default function AddressSuggestionOption({ option, props } : AddressSugge
             
                   <ListItemText
                     primary={
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
                         <Typography variant="body2" sx={{ fontWeight: 600 }}>
                           {option.label}
                         </Typography>
             
                         <Chip
                           size="small"
-                          label={option.sublabel}
+                          label={option.country}
                           sx={{ height: 20 }}
                         />
                       </Box>
                     }
                     secondary={
                       <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                        {option.sublabel}
+                        {option.state}
                       </Typography>
                     }
                   />

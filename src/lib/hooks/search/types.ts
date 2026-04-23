@@ -9,9 +9,10 @@ import {
 export type AddressSuggestion = {
   label: string;
   sublabel: string;
-  lat: number;
-  lon: number;
-  placeId: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  street?: string;
 };
 
 export type AddressSuggestionsState = Array<AddressSuggestion>;

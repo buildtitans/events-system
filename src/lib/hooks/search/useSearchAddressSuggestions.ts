@@ -21,6 +21,8 @@ export const useSearchAddressSuggestions = (
     status: "initial",
   });
 
+  console.log(suggestions);
+
   const timerRef = useRef<number | null>(null);
   const requestIdRef = useRef(0);
 
@@ -98,6 +100,7 @@ export const useSearchAddressSuggestions = (
 
       if (reason === "clear") {
         setQuery("");
+        handleLocation("");
         requestIdRef.current++;
         if (timerRef.current) {
           clearTimeout(timerRef.current);
@@ -109,7 +112,7 @@ export const useSearchAddressSuggestions = (
         }));
       }
     },
-    [debounce],
+    [debounce, handleLocation],
   );
 
   const selectAddressOption = useCallback(
@@ -120,6 +123,7 @@ export const useSearchAddressSuggestions = (
     ) => {
       if (reason === "selectOption" && value?.label) {
         const address = value.label;
+        setQuery(address);
         handleLocation(address);
         setSuggestions({ status: "initial" });
       }

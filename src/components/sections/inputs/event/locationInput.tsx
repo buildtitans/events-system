@@ -33,7 +33,7 @@ export default function LocationInput({
           <Autocomplete
             onChange={selectAddressOption}
             onInputChange={onInputChange}
-            disabled={suggestions.status === "pending"}
+            disabled={false}
             noOptionsText={"Query matched 0 locations"}
             inputValue={query}
             getOptionLabel={(option: AddressSuggestion) => option.label}
