@@ -1,10 +1,6 @@
 import { getEnv } from "../../lib/init/getEnv";
 import { GeoapifyAutocompleteValidator } from "../../lib/validation/schemaValidators";
-import { GeoapifyGeocodingResponseType } from "@/src/schemas/geoapify/geoapifySchemas";
-import type {
-  GeoapifyAutocompleteJsonResponse,
-  GeoapifyAutocompleteResultType,
-} from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
+import type { GeoapifyAutocompleteJsonResponse } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 
 const geoApifyKey = getEnv("geoApifyKey");
 const geoApifyUrl = getEnv("geoApifyUrl");
@@ -34,11 +30,13 @@ export class GeoApifyAddressSearch {
   private formQuery(address: string) {
     const url = new URL(geoApifyUrl);
     url.searchParams.set("text", address);
-    url.searchParams.set("limit", "20");
     url.searchParams.set("type", "street");
+    url.searchParams.set("filter", "countrycode:us");
+    url.searchParams.set("limit", "10");
     url.searchParams.set("lang", "en");
     url.searchParams.set("format", "json");
     url.searchParams.set("apiKey", geoApifyKey);
+
     return url.toString();
   }
 

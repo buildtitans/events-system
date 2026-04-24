@@ -1,7 +1,15 @@
 import { Resend } from "resend";
-import { getEnv } from "../../lib/init/getEnv";
+import { EnvKey, getEnv } from "../../lib/init/getEnv";
 
-const RESEND_API_KEY = getEnv("resendDevKey");
+function getResendKey() {
+  if (process.env.NODE_ENV === "production") {
+    return getEnv("resendProdKey");
+  } else {
+    return getEnv("resendDevKey");
+  }
+}
+
+const RESEND_API_KEY = getResendKey();
 
 export class EmailService {
   private readonly resend: Resend;

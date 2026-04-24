@@ -27,12 +27,13 @@ const ENV_MAP = {
   prodFastifyPort: "PROD_FASTIFY_PORT",
   devPwResetUrl: "DEV_PW_RESET_URL",
   pwResetUrl: "PW_RESET_URL",
+  resendProdKey: "RESEND_API_KEY",
   resendDevKey: "RESEND_DEV_API_KEY",
   geoApifyKey: "GEOAPIFY_API_KEY",
   geoApifyUrl: "GEOAPIFY_REQ_BASE_URL",
 } as const;
 
-type EnvKey = keyof typeof ENV_MAP;
+export type EnvKey = keyof typeof ENV_MAP;
 
 export function getEnv(key: EnvKey): string {
   ensureEnvLoaded();

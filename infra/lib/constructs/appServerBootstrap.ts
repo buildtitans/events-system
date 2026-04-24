@@ -1,5 +1,6 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { AppServerServices } from "./appServerServices";
+import { requireEnv } from "../config/requireEnv";
 
 type AppServerBootstrapDeps = {
   dbHost: string;
@@ -16,6 +17,10 @@ export class AppServerBootstrap {
   private readonly dbName: string;
   private readonly dbUser: string;
   private readonly dbSecretArn: string;
+  private readonly pwResetUrl: string;
+  private readonly geoapifyKey: string;
+  private readonly geoapifyUrl: string;
+  private readonly resendApiKey: string;
   private readonly cookieSecretArn: string;
   constructor(deps: AppServerBootstrapDeps) {
     this.dbHost = deps.dbHost;
@@ -24,6 +29,10 @@ export class AppServerBootstrap {
     this.dbUser = deps.dbUser;
     this.dbSecretArn = deps.dbSecretArn;
     this.cookieSecretArn = deps.cookieSecretArn;
+    this.geoapifyKey = requireEnv("GEOAPIFY_API_KEY");
+    this.pwResetUrl = requireEnv("PROD_PW_RESET_URL");
+    this.geoapifyUrl = requireEnv("GEOAPIFY_REQ_BASE_URL");
+    this.resendApiKey = requireEnv("RESEND_API_KEY");
   }
 
   public buildInit(): ec2.CloudFormationInit {
@@ -67,6 +76,10 @@ export class AppServerBootstrap {
           `PGPORT=${this.dbPort}`,
           `PGDATABASE=${this.dbName}`,
           `PGUSER=${this.dbUser}`,
+          `GEOAPIFY_API_KEY=${this.geoapifyKey}`,
+          `GEOAPIFY_REQ_BASE_URL=${this.geoapifyUrl}`,
+          `PROD_PW_RESET_URL=${this.pwResetUrl}`,
+          `RESEND_API_KEY=${this.resendApiKey}`,
           "PGMAX=10",
           "PROD_FASTIFY_HOST=127.0.0.1",
           "PROD_FASTIFY_PORT=3001",
