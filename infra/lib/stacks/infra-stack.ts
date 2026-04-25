@@ -115,6 +115,7 @@ export class InfraStack extends Stack {
       dbUser: db.databaseUser,
       dbSecretArn: db.secret.secretArn,
       cookieSecretArn: appSecrets.cookieSecret.secretArn,
+      appRuntimeConfigArn: appSecrets.appRuntimeConfig.secretArn,
     });
 
     return new ec2.Instance(this, "ES-Webserver", {

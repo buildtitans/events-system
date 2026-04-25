@@ -8,7 +8,7 @@ type AppSecretsProps = {
 
 export class AppSecrets extends Construct {
   public readonly cookieSecret: secretsmanager.Secret;
-
+  public readonly appRuntimeConfig: secretsmanager.ISecret;
   constructor(scope: Construct, id: string, props: AppSecretsProps) {
     super(scope, id);
 
@@ -25,6 +25,13 @@ export class AppSecrets extends Construct {
       },
     });
 
+    this.appRuntimeConfig = secretsmanager.Secret.fromSecretNameV2(
+      this,
+      "AppRuntimeConfig",
+      "events-system/app/runtime",
+    );
+
     this.cookieSecret.grantRead(instanceRole);
+    this.appRuntimeConfig.grantRead(instanceRole);
   }
 }
