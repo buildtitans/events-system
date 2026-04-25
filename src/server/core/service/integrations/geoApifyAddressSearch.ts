@@ -1,6 +1,6 @@
 import { getEnv } from "../../lib/init/getEnv";
-import { GeoapifySearchResultsValidator } from "../../lib/validation/schemaValidators";
-import { GeoapifyGeocodingResponseType } from "@/src/schemas/geoapify/geoapifySchemas";
+import { GeoapifyAutocompleteValidator } from "../../lib/validation/schemaValidators";
+import type { GeoapifyAutocompleteJsonResponse } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 
 const geoApifyKey = getEnv("geoApifyKey");
 const geoApifyUrl = getEnv("geoApifyUrl");
@@ -8,9 +8,10 @@ const geoApifyUrl = getEnv("geoApifyUrl");
 type AddressSuggestion = {
   label: string;
   sublabel: string;
-  lat: number;
-  lon: number;
-  placeId: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  street?: string;
 };
 
 type SuggestAddressesResults = Promise<
@@ -29,10 +30,13 @@ export class GeoApifyAddressSearch {
   private formQuery(address: string) {
     const url = new URL(geoApifyUrl);
     url.searchParams.set("text", address);
+    url.searchParams.set("type", "street");
+    url.searchParams.set("filter", "countrycode:us");
     url.searchParams.set("limit", "10");
     url.searchParams.set("lang", "en");
     url.searchParams.set("format", "json");
     url.searchParams.set("apiKey", geoApifyKey);
+
     return url.toString();
   }
 
@@ -51,7 +55,7 @@ export class GeoApifyAddressSearch {
     }
     const result = await request.json();
 
-    const parsed = GeoapifySearchResultsValidator(result);
+    const parsed = GeoapifyAutocompleteValidator(result);
 
     return {
       status: "success",
@@ -60,14 +64,15 @@ export class GeoApifyAddressSearch {
   }
 
   private toSuggestions(
-    data: GeoapifyGeocodingResponseType,
+    data: GeoapifyAutocompleteJsonResponse,
   ): AddressSuggestion[] {
     return data.results.map((result) => ({
-      label: result.address_line1 ?? result.formatted,
-      sublabel: result.address_line2 ?? "",
-      lat: result.lat,
-      lon: result.lon,
-      placeId: result.place_id,
+      label: result.formatted ?? "",
+      sublabel: result.county ?? "",
+      country: result.country ?? "",
+      city: result.city ?? "",
+      state: result.state ?? "",
+      street: result.street ?? "",
     }));
   }
 }

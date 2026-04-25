@@ -8,6 +8,7 @@ type AppServerBootstrapDeps = {
   dbUser: string;
   dbSecretArn: string;
   cookieSecretArn: string;
+  appRuntimeConfigArn: string;
 };
 
 export class AppServerBootstrap {
@@ -17,6 +18,8 @@ export class AppServerBootstrap {
   private readonly dbUser: string;
   private readonly dbSecretArn: string;
   private readonly cookieSecretArn: string;
+  private readonly appRuntimeConfigArn: string;
+
   constructor(deps: AppServerBootstrapDeps) {
     this.dbHost = deps.dbHost;
     this.dbPort = deps.dbPort;
@@ -24,6 +27,7 @@ export class AppServerBootstrap {
     this.dbUser = deps.dbUser;
     this.dbSecretArn = deps.dbSecretArn;
     this.cookieSecretArn = deps.cookieSecretArn;
+    this.appRuntimeConfigArn = deps.appRuntimeConfigArn;
   }
 
   public buildInit(): ec2.CloudFormationInit {
@@ -61,40 +65,53 @@ export class AppServerBootstrap {
         key: "06-install-nginx",
       }),
       ec2.InitFile.fromString(
-        "/etc/events-system/server.env",
+        "/usr/local/bin/refresh-events-system-env.sh",
         [
+          "#!/usr/bin/env bash",
+          "set -euo pipefail",
+          "",
+          `DB_SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.dbSecretArn} --query SecretString --output text)`,
+          `COOKIE_SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.cookieSecretArn} --query SecretString --output text)`,
+          `APP_RUNTIME_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.appRuntimeConfigArn} --query SecretString --output text)`,
+          "",
+          'PGPASSWORD=$(echo "$DB_SECRET_JSON" | jq -er .password)',
+          'COOKIES_SECRET=$(echo "$COOKIE_SECRET_JSON" | jq -er .secret)',
+          'RESEND_API_KEY=$(echo "$APP_RUNTIME_JSON" | jq -er .RESEND_API_KEY)',
+          'GEOAPIFY_API_KEY=$(echo "$APP_RUNTIME_JSON" | jq -er .GEOAPIFY_API_KEY)',
+          'GEOAPIFY_REQ_BASE_URL=$(echo "$APP_RUNTIME_JSON" | jq -er .GEOAPIFY_REQ_BASE_URL)',
+          'PROD_PW_RESET_URL=$(echo "$APP_RUNTIME_JSON" | jq -er .PROD_PW_RESET_URL)',
+          "",
+          "TMP_FILE=$(mktemp)",
+          'cat > "$TMP_FILE" <<EOF',
           `PGHOST=${this.dbHost}`,
           `PGPORT=${this.dbPort}`,
           `PGDATABASE=${this.dbName}`,
           `PGUSER=${this.dbUser}`,
+          "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY",
+          "GEOAPIFY_REQ_BASE_URL=$GEOAPIFY_REQ_BASE_URL",
+          "PROD_PW_RESET_URL=$PROD_PW_RESET_URL",
+          "RESEND_API_KEY=$RESEND_API_KEY",
           "PGMAX=10",
           "PROD_FASTIFY_HOST=127.0.0.1",
           "PROD_FASTIFY_PORT=3001",
           "NODE_ENV=production",
-        ].join("\n") + "\n",
+          "PGPASSWORD=$PGPASSWORD",
+          "COOKIES_SECRET=$COOKIES_SECRET",
+          "EOF",
+          'install -o root -g root -m 600 "$TMP_FILE" /etc/events-system/server.env',
+          'rm -f "$TMP_FILE"',
+          "",
+        ].join("\n"),
         {
-          mode: "000600",
+          mode: "000700",
           owner: "root",
           group: "root",
         },
       ),
       ec2.InitCommand.shellCommand(
-        [
-          `DB_SECRET=$(aws secretsmanager get-secret-value --secret-id ${this.dbSecretArn} --query SecretString --output text)`,
-          `DB_PASSWORD=$(echo "$DB_SECRET" | jq -r .password)`,
-          `echo "PGPASSWORD=$DB_PASSWORD" >> /etc/events-system/server.env`,
-        ].join(" && "),
+        "/usr/local/bin/refresh-events-system-env.sh",
         {
-          key: "07-write-db-password",
-        },
-      ),
-      ec2.InitCommand.shellCommand(
-        [
-          `COOKIE_SECRET=$(aws secretsmanager get-secret-value --secret-id ${this.cookieSecretArn} --query SecretString --output text | jq -r .secret)`,
-          `echo "COOKIES_SECRET=$COOKIE_SECRET" >> /etc/events-system/server.env`,
-        ].join(" && "),
-        {
-          key: "write-cookie-secret",
+          key: "07-refresh-server-env",
         },
       ),
       ec2.InitFile.fromString(

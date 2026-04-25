@@ -6,6 +6,7 @@ param(
 )
 
 $commands = @(
+  "/usr/local/bin/refresh-events-system-env.sh",
   "cd /var/www/events-system/src/server",
   "set -a",
   ". /etc/events-system/server.env",

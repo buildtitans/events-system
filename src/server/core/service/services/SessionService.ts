@@ -4,7 +4,15 @@ import { validateLoginCredentials } from "../../lib/validation/validateLoginCred
 import { EmailService } from "./emailService";
 import { getEnv } from "../../lib/init/getEnv";
 
-const PW_RESET_URL = getEnv("devPwResetUrl");
+function getResetUrl(): string {
+  if (process.env.NODE_ENV === "production") {
+    return getEnv("pwResetUrl");
+  } else {
+    return getEnv("devPwResetUrl");
+  }
+}
+
+const PW_RESET_URL = getResetUrl();
 
 export class SessionService {
   private readonly email: EmailService;

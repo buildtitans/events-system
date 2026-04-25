@@ -40,8 +40,6 @@ export const useCreateEvent = (
   const groups = useSelector((s: RootState) => s.groups.communities);
   const picDate = getPicDate();
   const [createNotification, setCreateNotification] = useState<boolean>();
-  const { suggestions, query, getInput, selected } =
-    useSearchAddressSuggestions();
   const [newEvent, setNewEvent] = useState<NewEventType>({
     title: "",
     description: "",
@@ -72,13 +70,10 @@ export const useCreateEvent = (
     }));
   };
 
-  const handleLocation = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const val = e.target.value;
+  const handleLocation = (input: string) => {
     setNewEvent((prev: NewEventType) => ({
       ...prev,
-      meeting_location: val,
+      meeting_location: input,
     }));
   };
 
@@ -161,9 +156,5 @@ export const useCreateEvent = (
     handleStartsAt,
     handleLocation,
     isSubmittable,
-    getInput,
-    suggestions,
-    selected,
-    query,
   };
 };

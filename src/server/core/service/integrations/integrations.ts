@@ -1,4 +1,4 @@
-import { GeoApifyAddressSearch } from "./geoApifyService";
+import { GeoApifyAddressSearch } from "./geoApifyAddressSearch";
 
 export class Integrations {
   public readonly geoApify: GeoApifyAddressSearch;

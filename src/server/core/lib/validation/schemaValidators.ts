@@ -35,6 +35,7 @@ import {
   MemberCountSchema,
 } from "@/src/schemas/groups/groupMembersSchema";
 import { GeoapifyGeocodingResponseSchema } from "@/src/schemas/geoapify/geoapifySchemas";
+import { GeoapifyAutocompleteJsonResponseSchema } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -178,6 +179,11 @@ export const GroupRoleSchemaValidator = createValidator(
 export const ValidateGroupMembersArray = createValidator(
   GroupMembersArraySchema,
   "GroupMembersArraySchema",
+);
+
+export const GeoapifyAutocompleteValidator = createValidator(
+  GeoapifyAutocompleteJsonResponseSchema,
+  "GeoapifyAutocompleteJsonResponseSchema",
 );
 
 export {

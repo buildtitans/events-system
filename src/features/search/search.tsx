@@ -20,9 +20,6 @@ export function Search(): JSX.Element {
 
   return (
     <Autocomplete
-      sx={{
-
-      }}
       loading={status === "pending"}
       disabled={mountStatus !== "idle"}
       noOptionsText={"Query matched 0 results"}
@@ -35,9 +32,14 @@ export function Search(): JSX.Element {
           key: React.Key;
         },
         option: SuggestionType,
-      ) =>  { 
+      ) => {
         const { key, ...rest } = props;
-        return (<SearchSuggestion props={rest} key={key} option={option} />)}}
+        return <SearchSuggestion 
+        props={rest} 
+        key={key} 
+        option={option} 
+        />;
+      }}
       disablePortal
       options={suggestions}
       renderInput={(params: AutocompleteRenderInputParams) => (

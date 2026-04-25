@@ -33,6 +33,7 @@ $commands = @(
   "cp -a /tmp/events-system-release/. /var/www/events-system/",
   "cd /var/www/events-system",
   "pnpm install --prod --frozen-lockfile",
+  "/usr/local/bin/refresh-events-system-env.sh",
   "systemctl daemon-reload",
   "systemctl enable next",
   "systemctl enable fastify",
