@@ -1,6 +1,6 @@
 "use client";
 import Stack from "@mui/material/Stack";
-import CalandarHeader from "@/src/components/ui/typography/calandarHeader";
+import CalandarHeader from "@/src/components/ui/headers/calandarHeader";
 import type { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";

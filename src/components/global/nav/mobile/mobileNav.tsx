@@ -10,6 +10,10 @@ import { Search } from "@/src/features/search/search";
 import { NavActionsProps } from "../toolbar/navActions";
 import { enqueueDrawer, enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import MobileMenuDrawer from "./mobileMenuDrawer";
+import {
+  mobileNavIconButtonSx,
+  mobileNavSurfaceSx,
+} from "@/src/styles/sx/nav";
 
 export default function MobileNav({ 
   openSignupDrawer,
@@ -52,20 +56,23 @@ export default function MobileNav({
         display: { xs: "flex", md: "none" },
         width: "100%",
         alignItems: "center",
-        justifyContent: "flex-start",
-        gap: 1,
-        px: { xs: 2, sm: 3 },
+        px: { xs: 1, sm: 3 },
       }}
     >
-      <IconButton aria-label="Menu button" onClick={() => setOpen(prev => !prev)}>
-        <MenuIcon />
-      </IconButton>
+      <Box sx={mobileNavSurfaceSx}>
+        <IconButton
+          aria-label="Menu button"
+          onClick={() => setOpen(prev => !prev)}
+          sx={mobileNavIconButtonSx}
+        >
+          <MenuIcon />
+        </IconButton>
 
-      <Search />
+        <Search />
+      </Box>
       <MobileMenuDrawer 
       toggleDrawer={toggleDrawer}
       showSigninDrawer={showSigninDrawer}
-      showSignoutModal={showSignoutModal}
       open={open}
       userKind={userKind}
       handleHomeClicked={handleHomeClicked}

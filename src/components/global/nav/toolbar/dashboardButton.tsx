@@ -2,7 +2,7 @@
 import { type JSX } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
-import { navActionsButtonSx } from "@/src/styles/sx/sx";
+import { navPrimaryButtonSx } from "@/src/styles/sx/nav";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 
@@ -18,14 +18,13 @@ export default function DashboardButton(): JSX.Element {
   return (
     <Button
       onClick={handleClick}
-      sx={navActionsButtonSx}
+      sx={navPrimaryButtonSx}
       type="button"
-     color="info"
-          variant="contained"
-          size="small"
-          startIcon={<SpaceDashboardIcon />}
+      variant="contained"
+      size="small"
+      startIcon={<SpaceDashboardIcon />}
     >
-            Dashboard
+      Dashboard
     </Button>
   );
 }

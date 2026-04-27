@@ -3,6 +3,10 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { JSX } from "react";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import {
+  navPrimaryButtonSx,
+  navSecondaryButtonSx,
+} from "@/src/styles/sx/nav";
 
 export default function RenderMobileAuthButtons({
     userKind, 
@@ -13,7 +17,6 @@ export default function RenderMobileAuthButtons({
 }: {
     userKind: UserKind, 
     showSigninDrawer: () => void,
-    showSignoutModal: () => void,
     openSignupDrawer: () => void,
     openUserDashboard: () => void,
     mobileOpenSignOutModal: () => void
@@ -25,25 +28,33 @@ export default function RenderMobileAuthButtons({
         gap={2}
         >
           <Button 
-              onClick={openUserDashboard}
-              type="button"
-              color="primary"
-              variant="contained"
-              fullWidth
-              startIcon={<SpaceDashboardIcon />}
+            onClick={openUserDashboard}
+            type="button"
+            variant="contained"
+            fullWidth
+            startIcon={<SpaceDashboardIcon />}
+            sx={{
+              ...navPrimaryButtonSx,
+              justifyContent: "flex-start",
+              px: 2,
+            }}
           >
             Dashboard
           </Button>
 
           <Button
-              onClick={mobileOpenSignOutModal}
-              type="button"
-              color="info"
-              variant="outlined"
-              fullWidth
-            >
-              Sign Out
-            </Button>
+            onClick={mobileOpenSignOutModal}
+            type="button"
+            variant="contained"
+            fullWidth
+            sx={{
+              ...navSecondaryButtonSx,
+              justifyContent: "flex-start",
+              px: 2,
+            }}
+          >
+            Sign Out
+          </Button>
         </Stack>
       );
     }
@@ -53,20 +64,31 @@ export default function RenderMobileAuthButtons({
         gap={2}
         >
           <Button 
-          onClick={openSignupDrawer}
-          color="primary" variant="outlined" fullWidth>
+            onClick={openSignupDrawer}
+            variant="contained"
+            fullWidth
+            sx={{
+              ...navPrimaryButtonSx,
+              justifyContent: "flex-start",
+              px: 2,
+            }}
+          >
             Sign up
           </Button>
 
-            <Button
-              onClick={showSigninDrawer}
-              type="button"
-              color="primary"
-              variant="contained"
-              fullWidth
-            >
-              Sign in
-            </Button>
+          <Button
+            onClick={showSigninDrawer}
+            type="button"
+            variant="contained"
+            fullWidth
+            sx={{
+              ...navSecondaryButtonSx,
+              justifyContent: "flex-start",
+              px: 2,
+            }}
+          >
+            Sign in
+          </Button>
         </Stack>
       );
     }

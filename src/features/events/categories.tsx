@@ -23,9 +23,21 @@ export function EventCategories({
         <Box
             sx={{
                 display: 'inline-flex',
-                flexDirection: 'row',
-                gap: 2,
-                overflow: 'auto',
+                alignItems: 'center',
+                gap: 1.25,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                width: { xs: "100%", md: "fit-content"},
+                maxWidth: '100%',
+                p: 0.5,
+                borderRadius: 999,
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                background: 'rgba(255, 255, 255, 0.03)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.04)',
+                scrollbarWidth: 'none',
+                '&::-webkit-scrollbar': {
+                    display: 'none',
+                },
             }}
         >
             {FILTERS.map((filter) => (

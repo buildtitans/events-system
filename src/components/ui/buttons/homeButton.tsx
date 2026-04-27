@@ -1,12 +1,13 @@
 "use client"
 import Button from "@mui/material/Button";
 import Link from "next/link";
-import { HomeIcon } from "../icons/CustomIcons";
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import type { JSX } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { clearOpenedGroupSlice } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { navHomeButtonSx } from "@/src/styles/sx/nav";
 
 export default function HomeButton(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,16 +22,12 @@ export default function HomeButton(): JSX.Element {
             LinkComponent={Link}
             onClick={handleClick}
             href="/"
-            startIcon={<HomeIcon />}
             size="small"
             variant="contained"
-            sx={{
-                backgroundColor: 'rgb(255, 255, 255, 0.95)',
-                borderRadius: 999,
-                ':hover': {
-                    backgroundColor: 'white',
-                }
-            }}>
+            sx={navHomeButtonSx}
+            startIcon={<HomeRoundedIcon/>}
+            >
+
             Home
         </Button>
     );

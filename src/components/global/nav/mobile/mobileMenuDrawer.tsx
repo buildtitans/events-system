@@ -5,13 +5,16 @@ import Stack from "@mui/material/Stack";
 import RenderMobileAuthButtons from "@/src/components/pipelines/nav/renderMobileAuthButtons";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import Button from "@mui/material/Button";
+import {
+  mobileNavDrawerPaperSx,
+  navSecondaryButtonSx,
+} from "@/src/styles/sx/nav";
 
 type MobileMenuDrawerProps = {
   toggleDrawer: (newOpen: boolean) => () => void;
   handleHomeClicked: () => void;
   userKind: UserKind;
   showSigninDrawer: () => void;
-  showSignoutModal: () => void;
   open: boolean;
   openSignupDrawer: () => void;
   openUserDashboard: () => void;
@@ -23,7 +26,6 @@ export default function MobileMenuDrawer({
   handleHomeClicked,
   userKind,
   showSigninDrawer,
-  showSignoutModal,
   open,
   openSignupDrawer,
   openUserDashboard,
@@ -38,26 +40,37 @@ export default function MobileMenuDrawer({
       slotProps={{ paper: {
         sx: {
           top: "var(--template-frame-height, 40px)",
+          ...mobileNavDrawerPaperSx,
         }
       }}}
     >
-      <Stack sx={{ p: 4, backgroundColor: "background.default" }}>
+      <Stack
+        sx={{
+          p: 3,
+          gap: 2.5,
+          marginTop: 4,
+          backgroundColor: "transparent",
+        }}
+      >
         <Button
-              type="button"
-              color="primary"
-              variant="outlined"
-              fullWidth
-                        onClick={handleHomeClicked}
-          >
+          type="button"
+          variant="contained"
+          fullWidth
+          onClick={handleHomeClicked}
+          sx={{
+            ...navSecondaryButtonSx,
+            justifyContent: "flex-start",
+            px: 2,
+          }}
+        >
           Home
-          </Button>
+        </Button>
        
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.08)" }} />
 
         <RenderMobileAuthButtons
           userKind={userKind}
           showSigninDrawer={showSigninDrawer}
-          showSignoutModal={showSignoutModal}
           openSignupDrawer={openSignupDrawer}
           openUserDashboard={openUserDashboard}
           mobileOpenSignOutModal={mobileOpenSignOutModal}

@@ -20,12 +20,18 @@ function NotificationListItem({
 
     return (
         <MenuItem divider sx={{
-            paddingY: 1,
+            paddingY: 1.25,
+            paddingX: 1.25,
             display: 'flex',
             alignContent: 'start',
-            justifyContent: "start"
+            justifyContent: "start",
+            borderRadius: 2,
+            color: "rgba(255, 255, 255, 0.88)",
+            "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.06)",
+            }
         }}>
-            <ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 34 }}>
                 <NotificationsActiveIcon
                     sx={{
                         color: "#2196f3",
@@ -50,9 +56,9 @@ function NotificationListItem({
                     component={"h4"}
                     sx={{
                         fontSize: '15px',
-                        color: 'white',
+                        color: 'rgba(255, 255, 255, 0.92)',
                         textWrap: "wrap",
-                        fontWeight: "light"
+                        fontWeight: 500
                     }}
                 >
                     {notification.subject}:
@@ -62,9 +68,9 @@ function NotificationListItem({
                     component={"p"}
                     sx={{
                         fontSize: '13px',
-                        color: 'white',
+                        color: 'rgba(255, 255, 255, 0.72)',
                         textWrap: "wrap",
-                        fontWeight: "light"
+                        fontWeight: 400
                     }}
                 >
                     {notification.message}

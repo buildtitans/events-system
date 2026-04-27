@@ -29,9 +29,20 @@ export default function SearchSuggestion({
         gap: 1.25,
         py: 1,
         px: 1.25,
+        borderRadius: 2,
+        color: "rgba(255, 255, 255, 0.88)",
+        transition: "background-color 160ms ease",
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.06)",
+        },
       }}
     >
-      <ListItemIcon sx={{ minWidth: 0 }}>
+      <ListItemIcon
+        sx={{
+          minWidth: 0,
+          color: option.kind === "event" ? "#7cc6ff" : "rgba(255, 255, 255, 0.72)",
+        }}
+      >
         {option.kind === "event" ? (
           <EventRoundedIcon fontSize="small" />
         ) : (
@@ -49,7 +60,13 @@ export default function SearchSuggestion({
             <Chip
               size="small"
               label={option.kind === "event" ? "Event" : "Group"}
-              sx={{ height: 20 }}
+              sx={{
+                height: 22,
+                borderRadius: 999,
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                color: "rgba(255, 255, 255, 0.74)",
+              }}
             />
           </Box>
         }

@@ -3,12 +3,16 @@ import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { AppDispatch } from "@/src/lib/store";
-import Container from "@mui/material/Container";
 import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
 import type { JSX } from "react";
 import Notifications from "../menus/notifications/notifications";
 import Box from "@mui/material/Box";
-import { navActionsButtonSx } from "@/src/styles/sx/sx";
+import {
+  navActionsContainerSx,
+  navActionsGroupSx,
+  navPrimaryButtonSx,
+  navSecondaryButtonSx,
+} from "@/src/styles/sx/nav";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardButton from "./dashboardButton";
 
@@ -22,60 +26,41 @@ export default function NavActions({
   userKind,
   openSignupDrawer,
   showSignoutModal,
-}: NavActionsProps): JSX.Element | null {
+}: NavActionsProps): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
-    <Container
-      sx={{
-        display: {
-          xs: "none",
-          md: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        },
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
+    <Box sx={navActionsContainerSx}>
+      <Box sx={navActionsGroupSx}>
         {userKind === "anonymous" && (
           <Button
             suppressHydrationWarning={true}
             onClick={() => dispatch(enqueueDrawer("sign in drawer"))}
-            color="info"
             variant="contained"
             size="small"
-            sx={navActionsButtonSx}
+            sx={navSecondaryButtonSx}
           >
             Sign in
           </Button>
-        )}{" "}
+        )}
+
         {userKind === "anonymous" && (
           <Button
             suppressHydrationWarning={true}
             onClick={openSignupDrawer}
-            sx={navActionsButtonSx}
-            color="info"
             variant="contained"
             size="small"
+            sx={navPrimaryButtonSx}
           >
             Sign up
           </Button>
         )}
+
         {userKind === "authenticated" && (
           <Button
             suppressHydrationWarning={true}
-            sx={navActionsButtonSx}
+            sx={navSecondaryButtonSx}
             onClick={showSignoutModal}
-            color="info"
             variant="contained"
             size="small"
             startIcon={<LogoutIcon />}
@@ -85,21 +70,12 @@ export default function NavActions({
         )}
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        {userKind === "authenticated" && (
+      {userKind === "authenticated" && (
+        <Box sx={navActionsGroupSx}>
           <Notifications key={"notifications-badge"} />
-        )}
-
-        {userKind === "authenticated" && <DashboardButton />}
-      </Box>
-    </Container>
+          <DashboardButton />
+        </Box>
+      )}
+    </Box>
   );
 }

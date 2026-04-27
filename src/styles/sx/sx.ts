@@ -39,27 +39,6 @@ const bottomDrawerSx = {
   border: "none",
 };
 
-const searchBarSx = {
-  transition: "ease-in-out",
-  transitionDuration: "200ms",
-  borderRadius: 999,
-  xs: "100%",
-  md: "25ch",
-  width: { xs: "300px", md: "400px" },
-};
-
-const navActionsButtonSx = {
-  borderRadius: 999,
-  backgroundColor: "white",
-  color: "black",
-  textWrap: "nowrap",
-  ":hover": {
-    bgcolor: "rgba(255, 255, 255, 0.1)",
-    color: "white",
-    transition: "all 0.3s ease",
-  },
-};
-
 const createGroupButtonSx = {
   borderRadius: 999,
   textWrap: "nowrap",
@@ -69,15 +48,4 @@ const createGroupButtonSx = {
     transition: "all 0.3s ease",
   },
 };
-
-const PANEL_GRAY = "#212121";
-
-export {
-  overrides,
-  searchBarSx,
-  PANEL_GRAY,
-  navActionsButtonSx,
-  sidebarStyles,
-  createGroupButtonSx,
-  bottomDrawerSx,
-};
+export { overrides, sidebarStyles, createGroupButtonSx, bottomDrawerSx };

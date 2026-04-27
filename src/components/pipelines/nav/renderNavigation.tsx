@@ -24,20 +24,20 @@ export default function RenderNavigation({
     default: {
       return (
         <Container
-            disableGutters
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              maxWidth: { md: "lg", lg: "lg" },
-            }}
-          >
-<DesktopNav
-          openSignupDrawer={navProps.openSignupDrawer}
-          showSignoutModal={navProps.showSignoutModal}
-        />
-          </Container>
-        
+          disableGutters
+          maxWidth="lg"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: { md: 3 },
+          }}
+        >
+          <DesktopNav
+            openSignupDrawer={navProps.openSignupDrawer}
+            showSignoutModal={navProps.showSignoutModal}
+          />
+        </Container>
       );
     }
   }

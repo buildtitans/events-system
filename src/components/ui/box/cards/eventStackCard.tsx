@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import {
   StyledCard,
@@ -11,6 +12,7 @@ import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Box from "@mui/material/Box";
 import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
+import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 type EventStackCardProps = {
   handleBlur: EventCardProps["handleBlur"];
@@ -31,6 +33,9 @@ function EventStackCard({
 }: EventStackCardProps) {
   const date = new Date(event.starts_at);
   const isFutureDateOrNow = isFutureOrNow(date);
+  const scheduled_at = useMemo(() => {
+      return toMonthDayYearHour(event.starts_at);
+    }, [event]);
 
   return (
     <StyledCard
@@ -74,6 +79,7 @@ function EventStackCard({
       <CardFooter
         isFutureDateOrNow={isFutureDateOrNow}
         location={event.meeting_location}
+        scheduled_at={scheduled_at}
       />
     </StyledCard>
   );

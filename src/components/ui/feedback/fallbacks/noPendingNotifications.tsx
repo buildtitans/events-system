@@ -15,10 +15,8 @@ export default function NoPendingNotifications(): JSX.Element {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                cursor: 'pointer',
-                "&hover": {
-                    pointerEvents: 'none',
-                }
+                borderRadius: 2,
+                pointerEvents: 'none',
             }}
         >
             <Box sx={{

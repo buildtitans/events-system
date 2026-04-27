@@ -5,6 +5,7 @@ import HomeHeadSection from "../sections/headers/homeHeadSection";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import LandingContentContainer from "../containters/landingContentContainer";
 
 function HomePage(): JSX.Element {
   const theme = useTheme();
@@ -20,12 +21,17 @@ function HomePage(): JSX.Element {
         minWidth: "100%",
       }}
     >
-      <HomeHeadSection  
+      <LandingContentContainer isMobile={isMobile}>
+      <Stack gap={4}>
+<HomeHeadSection  
       isMobile={isMobile}
       />
       <HomeContent 
       isMobile={isMobile}
-      />
+      />  
+      </Stack>
+      
+      </LandingContentContainer>
     </Stack>
   );
 }

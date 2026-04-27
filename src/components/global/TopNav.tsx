@@ -6,7 +6,6 @@ import {
   enqueueDrawer,
   showModal,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { PANEL_GRAY } from "@/src/styles/sx/sx";
 import Box from "@mui/material/Box";
 import LeftAnchoredSidebar from "@/src/components/ui/sidebars/leftAnchoredSidebar";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -40,10 +39,12 @@ export default function TopNav() {
         enableColorOnDark
         elevation={24}
         sx={{
-          paddingY: 1,
+          paddingY: { xs: 1.25, md: 1.5 },
           boxShadow: 0,
-          bgcolor: PANEL_GRAY,
+          bgcolor: "rgba(18, 18, 18, 0.72)",
+          backdropFilter: "blur(24px)",
           backgroundImage: "none",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >

@@ -10,6 +10,11 @@ import React, { JSX } from "react";
 import SearchSuggestion from "./searchSuggestion";
 import SearchBar from "./searchBar";
 import type { SuggestionType } from "@/src/lib/hooks/search/types";
+import {
+  navMenuListSx,
+  navMenuPaperSx,
+  navSearchAutocompleteSx,
+} from "@/src/styles/sx/nav";
 
 export function Search(): JSX.Element {
   const mountStatus = useSelector(
@@ -20,6 +25,7 @@ export function Search(): JSX.Element {
 
   return (
     <Autocomplete
+      sx={navSearchAutocompleteSx}
       loading={status === "pending"}
       disabled={mountStatus !== "idle"}
       noOptionsText={"Query matched 0 results"}
@@ -40,8 +46,30 @@ export function Search(): JSX.Element {
         option={option} 
         />;
       }}
-      disablePortal
       options={suggestions}
+      slotProps={{
+        clearIndicator: {
+          sx: {
+            color: "rgba(255, 255, 255, 0.5)",
+          },
+        },
+        listbox: {
+          sx: navMenuListSx,
+        },
+        paper: {
+          sx: navMenuPaperSx,
+        },
+        popper: {
+          sx: {
+            zIndex: 1600,
+          },
+        },
+        popupIndicator: {
+          sx: {
+            color: "rgba(255, 255, 255, 0.5)",
+          },
+        },
+      }}
       renderInput={(params: AutocompleteRenderInputParams) => (
         <SearchBar params={params} />
       )}

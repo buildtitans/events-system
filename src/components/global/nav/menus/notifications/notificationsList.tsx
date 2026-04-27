@@ -7,6 +7,7 @@ import {
 } from "@/src/schemas/notifications/notificationsSchema";
 import NotificationListItem from "./notificationListItem";
 import NoPendingNotifications from "../../../../ui/feedback/fallbacks/noPendingNotifications";
+import { navMenuListSx, navMenuPaperSx } from "@/src/styles/sx/nav";
 
 export type NotificationsListProps = {
     anchorEl: null | HTMLElement,
@@ -40,21 +41,21 @@ export default function NotificationsList({
             slotProps={{
                 list: {
                     sx: {
-                        width: 250,
+                        ...navMenuListSx,
+                        width: 320,
                         minHeight: 180,
-                        bgcolor: '#373737',
                         height: "auto",
-                        borderRadius: 2
+                        borderRadius: 3
                     }
                 },
                 paper: {
                     sx: {
-                        maxWidth: 250,
-                        maxHeight: 250,
+                        ...navMenuPaperSx,
+                        maxWidth: 320,
+                        maxHeight: 320,
                         height: "auto",
                         overflowX: 'hidden',
                         overflowY: "auto",
-                        borderRadius: 2,
                     }
 
                 }
