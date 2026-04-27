@@ -35,17 +35,6 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
           width: "100%",
         }}
       >
-        <Box>
-          <Typography
-            variant="h4"
-            color="primary.info"
-            fontWeight={"light"}
-            fontSize={"30px"}
-          >
-            {"RSVP'd Events"}
-          </Typography>
-        </Box>
-
        <RenderRsvpsOrFallback 
        rsvps={rsvps}
        handleNavigateToGroup={handleNavigateToGroup}

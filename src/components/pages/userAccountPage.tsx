@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
 import RenderUserAccount from "../pipelines/user/renderUserAccount";
+import DashboardHeader from "../pipelines/user/dashboardHeader";
 
 export default function UserAccount(): JSX.Element {
   useHydrateMyRsvps();
@@ -33,8 +34,11 @@ export default function UserAccount(): JSX.Element {
           minHeight: "100svh",
           width: "100%",
           minWidth: "100%",
+          
         }}
       >
+        <DashboardHeader />
+        
         <RenderUserAccount email={email} />
         
       </Stack>

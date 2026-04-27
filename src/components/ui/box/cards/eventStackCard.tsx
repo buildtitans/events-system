@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
+import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 type EventStackCardProps = {
   handleBlur: EventCardProps["handleBlur"];
@@ -21,6 +22,7 @@ type EventStackCardProps = {
   event: EventCardProps["event"];
   groupName: string;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
+  cardKind?: LayoutSlotSchemaType["kind"];
 };
 
 function EventStackCard({
@@ -30,6 +32,7 @@ function EventStackCard({
   event,
   groupName,
   handleOpenEvent,
+  cardKind
 }: EventStackCardProps) {
   const date = new Date(event.starts_at);
   const isFutureDateOrNow = isFutureOrNow(date);
@@ -80,6 +83,7 @@ function EventStackCard({
         isFutureDateOrNow={isFutureDateOrNow}
         location={event.meeting_location}
         scheduled_at={scheduled_at}
+        cardKind={cardKind}
       />
     </StyledCard>
   );

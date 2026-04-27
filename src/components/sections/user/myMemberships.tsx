@@ -36,16 +36,6 @@ export default function MyMemberships({
           width: "100%",
         }}
       >
-        <Box>
-          <Typography
-            variant="h4"
-            color="primary.info"
-            fontWeight={"light"}
-            fontSize={"30px"}
-          >
-            Memberships
-          </Typography>
-        </Box>
         <List
           sx={{
             display: "flex",

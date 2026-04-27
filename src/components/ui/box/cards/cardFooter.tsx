@@ -7,11 +7,13 @@ import type { JSX } from "react";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HistoryIcon from "@mui/icons-material/History";
+import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 type CardFooterProps = {
   location?: EventSchemaType["meeting_location"] | GroupSchemaType["location"];
   scheduled_at?: EventSchemaType["starts_at"];
   groupName?: GroupSchemaType["name"];
+  cardKind?: LayoutSlotSchemaType["kind"];
   isFutureDateOrNow: boolean | undefined;
 };
 
@@ -20,6 +22,7 @@ function CardFooter({
   location,
   groupName,
   isFutureDateOrNow,
+  cardKind
 }: CardFooterProps): JSX.Element | null {
 
   return (
@@ -43,7 +46,7 @@ function CardFooter({
           }}
         >
           <LocationOnIcon fontSize="medium" />
-          <Typography variant="caption">{location}</Typography>
+          <Typography variant="caption" maxWidth={"70%"}>{location}</Typography>
         </Box>
       )}
 
