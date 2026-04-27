@@ -4,8 +4,18 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
-import { CardFooter } from "./cardFooter";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
+import {
+  getGroupCardCategorySx,
+  getGroupCardDescriptionSx,
+  getGroupCardMetaChipSx,
+  getGroupCardMetaIconSx,
+  getGroupCardMetaWrapSx,
+  getGroupCardSurfaceSx,
+  getGroupCardTitleSx,
+} from "@/src/styles/sx/groupCard";
 
 const StyledTypography = styled(Typography)({
   display: "-webkit-box",
@@ -60,7 +70,10 @@ type GroupCardProps = {
   focusedCardIndex: number | null;
   categoryName?: string | null;
   handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void;
+  variant?: GroupCardVariant;
 };
+
+export type GroupCardVariant = "landing" | "dashboard";
 
 function Group({
   index,
@@ -70,23 +83,24 @@ function Group({
   focusedCardIndex,
   categoryName,
   handleGroupClicked,
+  variant = "landing",
 }: GroupCardProps): React.JSX.Element {
+  const isFocused = focusedCardIndex === index;
+
   return (
     <Grid flexShrink={0} size={{ xs: 2, sm: 1, md: 1, lg: 1, xl: 1 }}>
       <Box
         onClick={handleGroupClicked(group.slug)}
         component={"div"}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          gap: 1,
-          height: "auto",
-          width: "100%",
-        }}
+        sx={getGroupCardSurfaceSx(variant, isFocused)}
       >
-        <Typography gutterBottom variant="caption" component="div">
-          {categoryName}
+        <Typography
+          gutterBottom
+          variant="caption"
+          component="div"
+          sx={getGroupCardCategorySx(variant)}
+        >
+          {categoryName ?? "Community"}
         </Typography>
         <TitleTypography
           gutterBottom
@@ -94,7 +108,8 @@ function Group({
           onFocus={() => handleFocus(index)}
           onBlur={handleBlur}
           tabIndex={0}
-          className={focusedCardIndex === index ? "Mui-focused" : ""}
+          className={isFocused ? "Mui-focused" : ""}
+          sx={getGroupCardTitleSx(variant)}
         >
           {group.name}
           <NavigateNextRoundedIcon
@@ -102,14 +117,47 @@ function Group({
             sx={{ fontSize: "1rem" }}
           />
         </TitleTypography>
-        <StyledTypography variant="body2" color="text.secondary" gutterBottom>
-          {group.description}
+        <StyledTypography
+          variant="body2"
+          color="text.secondary"
+          gutterBottom
+          sx={getGroupCardDescriptionSx(variant)}
+        >
+          {group.description ?? "No description provided yet."}
         </StyledTypography>
 
-        <CardFooter groupName={group.name} isFutureDateOrNow={undefined}/>
+        <GroupMetaRow location={group.location} variant={variant} />
       </Box>
     </Grid>
   );
 }
 
 export default React.memo(Group);
+
+function GroupMetaRow({
+  location,
+  variant,
+}: {
+  location: GroupSchemaType["location"];
+  variant: GroupCardVariant;
+}): React.JSX.Element {
+  return (
+    <Box sx={getGroupCardMetaWrapSx(variant)}>
+      <Box sx={getGroupCardMetaChipSx(variant, true)}>
+        <GroupsRoundedIcon sx={getGroupCardMetaIconSx(true)} />
+        <Typography variant="caption" sx={{ fontWeight: 700 }}>
+          Community
+        </Typography>
+      </Box>
+
+      {location && (
+        <Box sx={getGroupCardMetaChipSx(variant)}>
+          <LocationOnRoundedIcon sx={getGroupCardMetaIconSx()} />
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+            {location}
+          </Typography>
+        </Box>
+      )}
+    </Box>
+  );
+}

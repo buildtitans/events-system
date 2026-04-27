@@ -5,55 +5,79 @@ import {
   CurrentDisplay,
   displaySection,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import Stack from "@mui/material/Stack";
-import Paper from "@mui/material/Paper";
+import type { JSX } from "react";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useEffect } from "react";
+import Typography from "@mui/material/Typography";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import EventRoundedIcon from "@mui/icons-material/EventRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import {
+  getMobileBottomDrawerIconWrapSx,
+  getMobileBottomDrawerTabSx,
+  mobileBottomDrawerNavSx,
+  mobileBottomDrawerSectionLabelSx,
+  mobileBottomDrawerTabLabelSx,
+  mobileBottomDrawerTabsSx,
+} from "@/src/styles/sx/mobileBottomDrawer";
+
+const groupOptions = [
+  {
+    label: "Overview",
+    value: "overview",
+    icon: <DashboardRoundedIcon fontSize="small" />,
+  },
+  {
+    label: "Events",
+    value: "events",
+    icon: <EventRoundedIcon fontSize="small" />,
+  },
+  {
+    label: "History",
+    value: "group history",
+    icon: <HistoryRoundedIcon fontSize="small" />,
+  },
+] satisfies Array<{
+  label: string;
+  value: CurrentDisplay;
+  icon: JSX.Element;
+}>;
 
 export default function MobileGroupNav() {
   const dispatch = useDispatch<AppDispatch>();
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
-  const labels: CurrentDisplay[] = ["overview", "events", "group history"];
 
   useEffect(() => {
-
     return () => {
-      dispatch(displaySection("overview"))
-    }
-  }, [dispatch])
-
+      dispatch(displaySection("overview"));
+    };
+  }, [dispatch]);
 
   return (
-    <Paper
-      component={"nav"}
-      variant="outlined"
-      sx={{
-        width: "100%",
-        backgroundColor: "paper.background",
-        borderTop: 1,
-        borderTopColor: "rgba(255, 255, 255, 0.4)",
-        padding: 2,
-      }}
-    >
-      <Stack
-        gap={2}
-            direction={"row"} 
-            alignItems={"center"} 
-            justifyContent={"center"}
-      >
-        {labels.map((label) => (
+    <Box component="nav" sx={mobileBottomDrawerNavSx}>
+      <Typography sx={mobileBottomDrawerSectionLabelSx}>Explore</Typography>
+      <Box sx={mobileBottomDrawerTabsSx}>
+        {groupOptions.map((option) => {
+          const active = displayed === option.value;
+
+          return (
           <Button
-            key={label}
-            onClick={() => dispatch(displaySection(label))}
+            key={option.value}
+            onClick={() => dispatch(displaySection(option.value))}
             type="button"
-            variant={displayed === label ? "contained"
-                  : "outlined" }
-            size="small"
+            sx={getMobileBottomDrawerTabSx(active)}
           >
-            {label}
+            <Box sx={getMobileBottomDrawerIconWrapSx(active)}>
+              {option.icon}
+            </Box>
+            <Typography sx={mobileBottomDrawerTabLabelSx}>
+              {option.label}
+            </Typography>
           </Button>
-        ))}
-      </Stack>
-    </Paper>
+          );
+        })}
+      </Box>
+    </Box>
   );
 }

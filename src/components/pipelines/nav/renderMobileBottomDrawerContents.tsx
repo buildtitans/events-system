@@ -7,7 +7,7 @@ type MobileBottomDrawerProps = {
   sideBar: ActiveSidebar;
 };
 
-export default function RenderMobileBottomDrawer({
+export default function RenderMobileBottomDrawerContents({
   sideBar,
 }: MobileBottomDrawerProps) {
   switch (sideBar) {

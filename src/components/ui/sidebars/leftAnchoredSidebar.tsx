@@ -7,12 +7,13 @@ import { RootState } from "@/src/lib/store";
 import { RenderActiveSidebar } from "../../pipelines/drawers/forks/renderActiveSidebar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { getDesktopSidebarWidth } from "@/src/styles/sx/sidebar";
 
 export default function LeftAnchoredSidebar(): JSX.Element | null {
   const theme = useTheme();
   const sidebar = useSelector((s:RootState) => s.rendering.sidebar);
   const lgScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const drawerWidth = lgScreen ? 200 : 160;
+  const drawerWidth = getDesktopSidebarWidth(lgScreen);
 
   return (
     <Drawer

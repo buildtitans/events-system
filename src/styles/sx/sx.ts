@@ -28,14 +28,4 @@ const sidebarStyles = {
   alignItems: "center",
   border: "none",
 };
-
-const bottomDrawerSx = {
-  width: "100%",
-  backgroundColor: "#191919",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  border: "none",
-};
-export { overrides, sidebarStyles, bottomDrawerSx };
+export { overrides, sidebarStyles };

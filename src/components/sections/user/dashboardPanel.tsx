@@ -1,7 +1,7 @@
 "use client";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { Box, Divider } from "@mui/material";
+import { Box, Container, Divider } from "@mui/material";
 import {
   dashboardRootSx,
   dashboardPanelSx,
@@ -16,7 +16,10 @@ export default function DashboardPanel(): JSX.Element {
   const email = useSelector((s: RootState) => s.user.email);
 
   return (
-    <Box sx={dashboardRootSx}>
+    <Container
+    component={"section"}
+    >
+<Box sx={dashboardRootSx}>
       <Box sx={dashboardPanelSx}>
         <Box sx={dashboardHeaderInnerSx}>
           <DashboardHeader />
@@ -25,5 +28,7 @@ export default function DashboardPanel(): JSX.Element {
         <RenderUserAccount email={email} />
       </Box>
     </Box>
+    </Container>
+    
   );
 }

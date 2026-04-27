@@ -1,9 +1,15 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
-import RenderMobileBottomDrawer from "../../pipelines/nav/renderMobileBottomDrawer";
+import Box from "@mui/material/Box";
+import RenderMobileBottomDrawerContents from "../../pipelines/nav/renderMobileBottomDrawerContents";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { bottomDrawerSx } from "@/src/styles/sx/sx";
+import {
+  mobileBottomDrawerHandleSx,
+  mobileBottomDrawerInnerSx,
+  mobileBottomDrawerPanelSx,
+  mobileBottomDrawerPaperSx,
+} from "@/src/styles/sx/mobileBottomDrawer";
 
 export function MobileBottomDrawer() {
   const sideBar = useSelector((s: RootState) => s.rendering.sidebar);
@@ -25,11 +31,16 @@ export function MobileBottomDrawer() {
       slotProps={{
         paper: {
           elevation: 16,
-          sx: bottomDrawerSx,
+          sx: mobileBottomDrawerPaperSx,
         },
       }}
     >
-      <RenderMobileBottomDrawer sideBar={sideBar} />
+      <Box sx={mobileBottomDrawerPanelSx}>
+        <Box sx={mobileBottomDrawerInnerSx}>
+          <Box sx={mobileBottomDrawerHandleSx} />
+          <RenderMobileBottomDrawerContents sideBar={sideBar} />
+        </Box>
+      </Box>
     </Drawer>
   );
 }
