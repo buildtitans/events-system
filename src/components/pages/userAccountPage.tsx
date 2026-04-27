@@ -7,8 +7,9 @@ import { useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
-import RenderUserAccount from "../pipelines/user/renderUserAccount";
-import DashboardHeader from "../pipelines/user/dashboardHeader";
+import RenderUserAccount from "@/src/components/pipelines/user/renderUserAccount";
+import DashboardHeader from "@/src/components/ui/headers/dashboardHeader";
+import DashboardPanel from "../sections/user/dashboardPanel";
 
 export default function UserAccount(): JSX.Element {
   useHydrateMyRsvps();
@@ -34,12 +35,9 @@ export default function UserAccount(): JSX.Element {
           minHeight: "100svh",
           width: "100%",
           minWidth: "100%",
-          
         }}
       >
-        <DashboardHeader />
-        
-        <RenderUserAccount email={email} />
+        <DashboardPanel />
         
       </Stack>
     )

@@ -11,7 +11,6 @@ export default function AccountDetails({
 }: AccountDetailsProps): JSX.Element {
   return (
     <Container
-      disableGutters
       sx={{
         width: "100%",
         height: "100%",

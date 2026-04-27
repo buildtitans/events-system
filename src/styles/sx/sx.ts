@@ -38,14 +38,4 @@ const bottomDrawerSx = {
   alignItems: "center",
   border: "none",
 };
-
-const createGroupButtonSx = {
-  borderRadius: 999,
-  textWrap: "nowrap",
-  ":hover": {
-    bgcolor: "rgba(255, 255, 255, 0.1)",
-    color: "white",
-    transition: "all 0.3s ease",
-  },
-};
-export { overrides, sidebarStyles, createGroupButtonSx, bottomDrawerSx };
+export { overrides, sidebarStyles, bottomDrawerSx };
