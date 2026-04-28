@@ -5,7 +5,6 @@ import { EventStackCard } from "../cards/eventStackCard";
 import { EventCardProps } from "../cards/eventHeroCard";
 import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 
 type EventStackSlotProps = {
   handleBlur: EventCardProps["handleBlur"];
@@ -14,7 +13,6 @@ type EventStackSlotProps = {
   events: EventCardProps["event"][];
   groupNameLookup: NameSlugDescriptionLookup ;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
-  cardKind?: LayoutSlotSchemaType["kind"];
 };
 
 function EventStackSlot({
@@ -24,7 +22,6 @@ function EventStackSlot({
   events,
   groupNameLookup,
   handleOpenEvent,
-  cardKind
 }: EventStackSlotProps): React.ReactNode {
   return (
     <Grid size={{ xs: 12, md: 4 }}>
@@ -46,7 +43,6 @@ function EventStackSlot({
             focusedCardIndex={focusedCardIndex}
             event={event}
             handleOpenEvent={handleOpenEvent}
-            cardKind={cardKind}
           />
         ))}
       </Box>

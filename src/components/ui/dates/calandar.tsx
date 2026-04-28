@@ -8,6 +8,17 @@ import { JSX } from "react";
 import type { DayScheduledProps } from "./dayScheduled";
 import type { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 import { useHydrateCalendar } from "@/src/lib/hooks/hydration/useHydrateCalandar";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import {
+  getGroupCalendarLegendDotSx,
+  groupCalendarLegendItemSx,
+  groupCalendarLegendSx,
+  groupCalendarPickerSx,
+  groupCalendarPickerWrapSx,
+  groupCalendarRootSx,
+  groupCalendarSurfaceSx,
+} from "@/src/styles/sx/groupCalendar";
 
 type CalandarProps = {
   history: EventsArraySchemaType;
@@ -17,37 +28,39 @@ export default function Calandar({ history }: CalandarProps): JSX.Element {
   const scheduledDateKeys = useHydrateCalendar(history);
 
   return (
-    <Box
-      sx={{
-        width: {
-          xs: "350px",
-          md:"500px"
-        },
-        height: {
-          xs: "350px",
-          md:"500px"
-        }
-      }}
-    >
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateCalendar
-          readOnly
-          sx={{
-            backgroundColor: "#373737",
-            borderRadius: 3,
-            width: "100%",
-            height: "100%",
-          }}
-          slots={{
-            day: DayScheduled,
-          }}
-          slotProps={{
-            day: {
-              scheduledDateKeys,
-            }  as Partial<DayScheduledProps>,
-          }}
-        />
-      </LocalizationProvider>
+    <Box sx={groupCalendarRootSx}>
+      <Box sx={groupCalendarSurfaceSx}>
+        <Box sx={groupCalendarPickerWrapSx}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              readOnly
+              sx={groupCalendarPickerSx}
+              slots={{
+                day: DayScheduled,
+              }}
+              slotProps={{
+                day: {
+                  scheduledDateKeys,
+                } as Partial<DayScheduledProps>,
+              }}
+            />
+          </LocalizationProvider>
+        </Box>
+        <Stack direction="row" sx={groupCalendarLegendSx}>
+          <Box sx={groupCalendarLegendItemSx}>
+            <Box sx={getGroupCalendarLegendDotSx("upcoming")} />
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+              Upcoming event
+            </Typography>
+          </Box>
+          <Box sx={groupCalendarLegendItemSx}>
+            <Box sx={getGroupCalendarLegendDotSx("past")} />
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+              Past event
+            </Typography>
+          </Box>
+        </Stack>
+      </Box>
     </Box>
   );
 }

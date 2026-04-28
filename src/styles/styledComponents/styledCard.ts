@@ -3,17 +3,15 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Card from '@mui/material/Card';
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(() => ({
     display: 'flex',
     flexDirection: 'column',
     padding: 0,
     height: '100%',
-    backgroundColor: (theme.vars || theme).palette.background.paper,
+    backgroundColor: 'transparent',
     transition: 'ease-in-out',
-    borderRadius: '2%',
     transitionDuration: '200ms',
     '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
         cursor: 'pointer',
 
     },
@@ -41,6 +39,7 @@ const StyledTypography = styled(Typography)({
     WebkitLineClamp: 2,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    lineHeight: 1.65,
 });
 
 export {

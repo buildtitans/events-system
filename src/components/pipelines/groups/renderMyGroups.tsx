@@ -5,6 +5,7 @@ import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import RenderGroupsOrFallback from "./renderGroupsOrFallback";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
+import { Container } from "@mui/material";
 
 type RenderMyGroupsProps = {
   myGroups: MyGroupsState;
@@ -18,9 +19,12 @@ export default function RenderMyGroups({
   switch (myGroups.status) {
     case "ready": {
       return (
-        <RenderGroupsOrFallback 
+        <Container>
+<RenderGroupsOrFallback 
         pages={myGroups.data} 
         />
+        </Container>
+        
       )
     }
 

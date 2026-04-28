@@ -23,7 +23,7 @@ export default function LeftAnchoredSidebar(): JSX.Element | null {
       open={(sidebar !== null)}
       transitionDuration={{ enter: 300, exit: 250 }}
       sx={{
-width: drawerWidth,
+width: 250,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
           

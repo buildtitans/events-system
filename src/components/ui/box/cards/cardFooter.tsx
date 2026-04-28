@@ -7,13 +7,17 @@ import type { JSX } from "react";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import HistoryIcon from "@mui/icons-material/History";
-import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import {
+  eventCardFooterClusterSx,
+  eventCardFooterSx,
+  eventCardFooterTextSx,
+  getEventCardFooterIconSx,
+} from "@/src/styles/sx/eventCard";
 
 type CardFooterProps = {
   location?: EventSchemaType["meeting_location"] | GroupSchemaType["location"];
   scheduled_at?: EventSchemaType["starts_at"];
   groupName?: GroupSchemaType["name"];
-  cardKind?: LayoutSlotSchemaType["kind"];
   isFutureDateOrNow: boolean | undefined;
 };
 
@@ -22,60 +26,35 @@ function CardFooter({
   location,
   groupName,
   isFutureDateOrNow,
-  cardKind
 }: CardFooterProps): JSX.Element | null {
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        gap: 2,
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "16px",
-      }}
-    >
+    <Box sx={eventCardFooterSx}>
       {location && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <LocationOnIcon fontSize="medium" />
-          <Typography variant="caption" maxWidth={"70%"}>{location}</Typography>
+        <Box sx={eventCardFooterClusterSx}>
+          <LocationOnIcon sx={getEventCardFooterIconSx()} />
+          <Typography variant="caption" sx={eventCardFooterTextSx}>
+            {location}
+          </Typography>
         </Box>
       )}
 
       {groupName && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <GroupsIcon />
-          <Typography variant="caption">{groupName}</Typography>
+        <Box sx={eventCardFooterClusterSx}>
+          <GroupsIcon sx={getEventCardFooterIconSx()} />
+          <Typography variant="caption" sx={eventCardFooterTextSx}>
+            {groupName}
+          </Typography>
         </Box>
       )}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 1,
-          alignItems: "center",
-        }}
-      >
+      <Box sx={eventCardFooterClusterSx}>
         <RenderScheduleIcon
           isFutureDateOrNow={isFutureDateOrNow}
           scheduled_at={scheduled_at}
         />
-        <Typography variant="caption">{scheduled_at}</Typography>
+        <Typography variant="caption" sx={eventCardFooterTextSx}>
+          {scheduled_at}
+        </Typography>
       </Box>
     </Box>
   );
@@ -97,9 +76,9 @@ function RenderScheduleIcon({
 
     default: {
       if (isFutureDateOrNow) {
-        return <EventAvailableIcon />;
+        return <EventAvailableIcon sx={getEventCardFooterIconSx(true)} />;
       } else {
-        return <HistoryIcon />;
+        return <HistoryIcon sx={getEventCardFooterIconSx()} />;
       }
     }
   }

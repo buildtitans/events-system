@@ -11,7 +11,6 @@ export default function GroupCalandar(): JSX.Element {
 
   return (
     <Stack gap={6}>
-      <CalandarHeader />
       <RenderGroupCalandar flattenedGroupEvents={groupEvents} />
     </Stack>
   );

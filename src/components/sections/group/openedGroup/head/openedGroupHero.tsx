@@ -1,26 +1,26 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { Divider, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import GroupHeadSecton from "./groupHeadSection";
 import GroupDescription from "./groupDescription";
+import {
+  openedGroupHeroDividerSx,
+  openedGroupHeroInnerSx,
+  openedGroupHeroPanelSx,
+  openedGroupHeroRootSx,
+} from "@/src/styles/sx/openedGroupHero";
 
 type OpenedGroupHeroProps = {
-    group: GroupSchemaType;
-}
+  group: GroupSchemaType;
+};
 
 export default function OpenedGroupHero({ group }: OpenedGroupHeroProps) {
-
-    return (
-        <Stack
-        sx={{paddingTop: 2}}
-        gap={2}
-        >
-            <GroupHeadSecton 
-            groupName={group.name}
-            />
-            <GroupDescription 
-            group={group}
-            />
-            <Divider sx={{paddingY: 2}}/>
+  return (
+    
+        <Stack sx={openedGroupHeroInnerSx} gap={3}>
+          <GroupHeadSecton groupName={group.name} />
+          <GroupDescription group={group} />
+          <Divider sx={openedGroupHeroDividerSx} />
         </Stack>
-    )
+    
+  );
 }

@@ -1,15 +1,13 @@
 "use client";
 import type { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import RenderCurrentView from "@/src/components/pipelines/groups/renderCurrentView";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Divider from "@mui/material/Divider";
 import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
 import { useTheme } from "@mui/material/styles";
-import OpenedGroupHero from "./head/openedGroupHero";
+import OpenedGroupPanel from "@/src/components/sections/group/openedGroup/openedGroupPanel";
 
 type ViewGroupSectionProps = {
   group: GroupSchemaType;
@@ -34,18 +32,14 @@ export default function ViewGroupSection({
           minHeight: "70vh",
           height: "100%",
         }}
-      >
-        <Stack
-          gap={4}
-          sx={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <OpenedGroupHero group={group} />
 
-          <RenderCurrentView view={displayed} isMobile={isMobile} />
-        </Stack>
+      gap={4}
+      >
+        <OpenedGroupPanel 
+        displayed={displayed}
+        isMobile={isMobile}
+        group={group}
+        />
       </Stack>
   );
 }

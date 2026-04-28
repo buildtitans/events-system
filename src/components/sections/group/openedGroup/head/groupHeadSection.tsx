@@ -5,40 +5,24 @@ import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import GroupEventsHeader from "./groupEventsHeader";
+import { openedGroupHeroHeaderWrapSx } from "@/src/styles/sx/openedGroupHero";
 
 type GroupHeadSectionProps = {
-    groupName: GroupSchemaType["name"]
-}
+  groupName: GroupSchemaType["name"];
+};
 
 export default function GroupHeadSecton(
-    {
-        groupName
-    }: GroupHeadSectionProps): JSX.Element | null {
-
-
-    return (
-        <AnimatePresence>
-            {(groupName) && <FadeInOutBox styles={{ width: '100%', height: 'auto' }}>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                    justifyContent: "start",
-                    width: 'auto',
-                    height: 'auto',
-                }}>
-                    <GroupEventsHeader
-                        groupName={groupName}
-                    />
-
-                </Box>
-
-            </FadeInOutBox>
-            }
-        </AnimatePresence>
-
-
-
-
-    )
+  { groupName }: GroupHeadSectionProps,
+): JSX.Element | null {
+  return (
+    <AnimatePresence>
+      {groupName && (
+        <FadeInOutBox styles={{ width: "100%", height: "auto" }}>
+          <Box sx={openedGroupHeroHeaderWrapSx}>
+            <GroupEventsHeader groupName={groupName} />
+          </Box>
+        </FadeInOutBox>
+      )}
+    </AnimatePresence>
+  );
 }

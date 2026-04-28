@@ -21,31 +21,27 @@ export default function HistoryTimeline({
   isMobile,
 }: HistoryTimelineProps) {
   const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
-  const pastEventsRecords = useSelector((s: RootState) => s.openGroup.attendanceHistoryLookup);
+  const pastEventsRecords = useSelector(
+    (s: RootState) => s.openGroup.attendanceHistoryLookup,
+  );
 
   return (
     <Container
       sx={{
-        minHeight: "600px",
         width: "100%",
         height: "100%",
+        minHeight: "600px",
       }}
       disableGutters
     >
-      <Typography
-        component={"h2"}
-        sx={{
-          fontSize: "32px",
-          fontWeight: "light",
-        }}
-      >
-        History
-      </Typography>
-
       <List
-        component={"ul"}
+        component="ul"
         sx={{
           width: "100%",
+          p: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
         }}
       >
         {history.map((log: EventSchemaType) => {

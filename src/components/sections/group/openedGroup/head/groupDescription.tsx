@@ -5,7 +5,22 @@ import type { JSX } from "react";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import Divider from "@mui/material/Divider";
+import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
+import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
+import AlternateEmailRoundedIcon from "@mui/icons-material/AlternateEmailRounded";
+import {
+  openedGroupHeroDescriptionGridSx,
+  openedGroupHeroLeadLabelSx,
+  openedGroupHeroLeadSx,
+  openedGroupHeroLeadTextSx,
+  openedGroupHeroMetaCardSx,
+  openedGroupHeroMetaContentSx,
+  openedGroupHeroMetaGridSx,
+  openedGroupHeroMetaIconWrapSx,
+  openedGroupHeroMetaLabelSx,
+  openedGroupHeroMetaValueSx,
+  openedGroupHeroWideMetaCardSx,
+} from "@/src/styles/sx/openedGroupHero";
 
 type GroupDescriptionProps = {
   group: GroupSchemaType;
@@ -16,110 +31,57 @@ export default function GroupDescription({
 }: GroupDescriptionProps): JSX.Element {
   const memberCount = useSelector((s: RootState) => s.openGroup.numMembers);
   const organizerEmail = useSelector((s: RootState) => s.openGroup.organizerEmail);
-
+  const normalizedDescription =
+    group.description?.trim() || "This community is still building out its story.";
+  const locationValue =
+    group.location === "Online"
+      ? "Hosts events online"
+      : group.location?.trim() || "Location coming soon";
+  const memberValue = `${memberCount} ${memberCount === 1 ? "member" : "members"}`;
+  const organizerValue = organizerEmail || "Organizer details coming soon";
 
   return (
-    <Stack
-      sx={{
-        width: "100%",
-      }}
-      gap={2}
-    >
-      <Stack
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Box>
-          <Typography
-          fontSize={"14px"}
-            sx={{
-              color: "rgba(255, 255, 255, 0.7)",
-            }}
-          >
-            Community Details
-          </Typography>
-        </Box>
-
-        <Box>
-          <Typography fontSize={"14px"}>{group.description}</Typography>
-        </Box>
+    <Box sx={openedGroupHeroDescriptionGridSx}>
+      <Stack sx={openedGroupHeroLeadSx}>
+        <Typography sx={openedGroupHeroLeadLabelSx}>Community Details</Typography>
+        <Typography sx={openedGroupHeroLeadTextSx}>
+          {normalizedDescription}
+        </Typography>
       </Stack>
 
-      <Stack
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Box>
-          <Typography
-          fontSize={"14px"}
-            sx={{
-              color: "rgba(255, 255, 255, 0.7)",
-            }}
-          >
-            Location
-          </Typography>
+      <Box sx={openedGroupHeroMetaGridSx}>
+        <Box sx={openedGroupHeroMetaCardSx}>
+          <Box sx={openedGroupHeroMetaIconWrapSx}>
+            <PlaceRoundedIcon fontSize="small" />
+          </Box>
+          <Box sx={openedGroupHeroMetaContentSx}>
+            <Typography sx={openedGroupHeroMetaLabelSx}>Location</Typography>
+            <Typography sx={openedGroupHeroMetaValueSx}>{locationValue}</Typography>
+          </Box>
         </Box>
 
-        <Box>
-          <Typography fontSize={"14px"}>
-            {group.location === "Online"
-              ? "This group hosts events online"
-              : group.location}
-          </Typography>
+        <Box sx={openedGroupHeroMetaCardSx}>
+          <Box sx={openedGroupHeroMetaIconWrapSx}>
+            <Groups2RoundedIcon fontSize="small" />
+          </Box>
+          <Box sx={openedGroupHeroMetaContentSx}>
+            <Typography sx={openedGroupHeroMetaLabelSx}>Members</Typography>
+            <Typography sx={openedGroupHeroMetaValueSx}>{memberValue}</Typography>
+          </Box>
         </Box>
-      </Stack>
 
-      <Stack
-      direction={"row"}
-      divider={<Divider  
-        sx={{ opacity: 0.6 }}
-        orientation="vertical"
-      />}
-      >
-                <Stack
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Box>
-          <Typography
-          fontSize={"14px"}
-            sx={{
-              color: "rgba(255, 255, 255, 0.7)",
-            }}
-          >
-            Number of Members
-          </Typography>
-          <Typography fontSize={"14px"}>
-            {memberCount}
-          </Typography>
+        <Box sx={{ ...openedGroupHeroMetaCardSx, ...openedGroupHeroWideMetaCardSx }}>
+          <Box sx={openedGroupHeroMetaIconWrapSx}>
+            <AlternateEmailRoundedIcon fontSize="small" />
+          </Box>
+          <Box sx={openedGroupHeroMetaContentSx}>
+            <Typography sx={openedGroupHeroMetaLabelSx}>Organizer</Typography>
+            <Typography sx={openedGroupHeroMetaValueSx}>
+              {organizerValue}
+            </Typography>
+          </Box>
         </Box>
-      </Stack>
-
-            <Stack
-        sx={{
-          width: "100%",
-        }}
-      >
-        <Box>
-          <Typography
-          fontSize={"14px"}
-            sx={{
-              color: "rgba(255, 255, 255, 0.7)",
-            }}
-          >
-            Organizer
-          </Typography>
-          <Typography fontSize={"14px"}>
-            {organizerEmail}
-          </Typography>
-        </Box>
-      </Stack>            
-      </Stack>
-
-
-    </Stack>
+      </Box>
+    </Box>
   );
 }
