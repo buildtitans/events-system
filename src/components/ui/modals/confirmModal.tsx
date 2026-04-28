@@ -6,6 +6,7 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import Backdrop from "@mui/material/Backdrop";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
@@ -15,19 +16,18 @@ import {
   showModal,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: 2,
-};
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import {
+  confirmModalActionsSx,
+  confirmModalBackdropSx,
+  confirmModalBodySx,
+  confirmModalEyebrowSx,
+  confirmModalPaperSx,
+  confirmModalPrimaryButtonSx,
+  confirmModalSecondaryButtonSx,
+  confirmModalTitleSx,
+} from "@/src/styles/sx/confirmModal";
 
 export default function ConfirmModal({
   activeModal,
@@ -65,41 +65,46 @@ export default function ConfirmModal({
       slotProps={{
         backdrop: {
           timeout: 500,
+          sx: confirmModalBackdropSx,
         },
       }}
     >
       <Fade in={activeModal !== null}>
-        <Box sx={style}>
-          <Typography
-            id="transition-modal-title"
-            variant="h6"
-            component="h2"
-            sx={{
-              textAlign: "center",
-              fontSize: "24px",
-              fontWeight: "light",
-            }}
-          >
-            Sign Out?
-          </Typography>
-          <Box
-            sx={{
-              paddingY: 4,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 4,
-            }}
-          >
-            <Button onClick={handleSignout} type="button" variant="contained">
-              Yes
+        <Box sx={confirmModalPaperSx}>
+          <Stack spacing={2}>
+            <Typography component="span" sx={confirmModalEyebrowSx}>
+              Account
+            </Typography>
+            <Typography
+              id="transition-modal-title"
+              component="h2"
+              sx={confirmModalTitleSx}
+            >
+              Sign out?
+            </Typography>
+            <Typography component="p" sx={confirmModalBodySx}>
+              You&apos;ll need to sign in again to access your dashboard,
+              memberships, and organizer tools.
+            </Typography>
+          </Stack>
+          <Box sx={confirmModalActionsSx}>
+            <Button
+              onClick={() => dispatch(showModal(null))}
+              type="button"
+              variant="outlined"
+              startIcon={<CloseRoundedIcon />}
+              sx={confirmModalSecondaryButtonSx}
+            >
+              Stay signed in
             </Button>
-            <Button 
-            onClick={() => dispatch(showModal(null))}
-            type="button" 
-            variant="contained">
-              No
+            <Button
+              onClick={handleSignout}
+              type="button"
+              variant="contained"
+              startIcon={<LogoutRoundedIcon />}
+              sx={confirmModalPrimaryButtonSx}
+            >
+              Sign out
             </Button>
           </Box>
         </Box>
