@@ -1,7 +1,7 @@
 "use client";
 import { RenderEventsForGroup } from "./renderEventsForGroup";
 import { JSX } from "react";
-import Overview from "../../sections/group/displays/overview";
+import Overview from "../../sections/group/openedGroup/displays/overview";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import RenderGroupHistory from "./renderGroupHistory";
 

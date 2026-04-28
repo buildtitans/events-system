@@ -6,7 +6,7 @@ import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroup
 import Spinner, {
   RelativeSpinner,
 } from "@/src/components/ui/feedback/pending/spinner";
-import HistoryTimeline from "../../sections/group/displays/groupHistory";
+import HistoryTimeline from "../../sections/group/openedGroup/displays/groupHistory";
 import NoGroupHistory from "../../ui/feedback/fallbacks/noGroupHIstory";
 
 type RenderGroupHistoryProps = {

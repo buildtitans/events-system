@@ -1,6 +1,6 @@
 const sidebarDesktopWidths = {
   compact: 160,
-  full: 200,
+  full: 250,
 } as const;
 
 const getDesktopSidebarWidth = (lgScreen: boolean) =>

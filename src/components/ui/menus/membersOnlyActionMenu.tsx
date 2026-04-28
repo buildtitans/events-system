@@ -1,15 +1,16 @@
-import * as React from "react";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
-import AddIcon from "@mui/icons-material/Add";
+import type { JSX } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { useLeaveGroup } from "@/src/lib/hooks/auth/useLeaveGroup";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import {
+  groupSidebarActionCardSx,
+  groupSidebarActionDescriptionSx,
+  groupSidebarActionTitleSx,
+  groupSidebarDangerButtonSx,
+} from "@/src/styles/sx/groupSidebar";
 
 type MembersOnlyActionsMenuProps = {
   group_id: GroupMemberSchemaType["group_id"];
@@ -17,59 +18,22 @@ type MembersOnlyActionsMenuProps = {
 
 export default function MembersOnlyActionMenu({
   group_id,
-}: MembersOnlyActionsMenuProps): React.JSX.Element {
+}: MembersOnlyActionsMenuProps): JSX.Element {
   const { removeUserFromGroup } = useLeaveGroup();
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   return (
-    <List
-      sx={{
-        width: "100%",
-        marginTop: 2,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-      }}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-    >
-      <ListItemButton onClick={handleClick}>
-        <ListItemIcon>
-          <SpaceDashboardIcon />
-        </ListItemIcon>
-        <ListItemText primary="Actions" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton
-            onClick={() => removeUserFromGroup(group_id)}
-            sx={{
-              pl: 2,
-            }}
-          >
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText sx={{}} primary="leave group" />
-          </ListItemButton>
-        </List>
-      </Collapse>
-    </List>
+    <Box sx={groupSidebarActionCardSx}>
+      <Typography sx={groupSidebarActionTitleSx}>Membership</Typography>
+      <Typography sx={groupSidebarActionDescriptionSx}>
+        Leave this group if you no longer want updates or member access.
+      </Typography>
+      <Button
+        onClick={() => removeUserFromGroup(group_id)}
+        startIcon={<LogoutRoundedIcon />}
+        sx={groupSidebarDangerButtonSx}
+      >
+        Leave Group
+      </Button>
+    </Box>
   );
 }
-
-//
-//subheader={
-//  <ListSubheader
-//  component="div"
-//  sx={{
-//      borderRadius: 2
-//  }}
-//  id="nested-list-subheader">
-//  Actions
-//  </ListSubheader>
-//}
