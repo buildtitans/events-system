@@ -17,14 +17,16 @@ type ConfirmCancelEventPopoverProps = {
     anchorEl: HTMLElement | null;
     onClose: () => void;
     handleSubmit: CancelEventHook["handleSubmit"];
-    currentStatus: CancelEventHook["options"]["status"]
+    currentStatus: CancelEventHook["options"]["status"];
+        handleStatusChange: CancelEventHook["handleStatusChange"],
 };
 
 export default function ConfirmCancelEventPopover({
     anchorEl,
     onClose,
     handleSubmit,
-    currentStatus
+    currentStatus,
+    handleStatusChange
 }: ConfirmCancelEventPopoverProps): JSX.Element {
 
     const open = Boolean(anchorEl);
@@ -34,6 +36,12 @@ export default function ConfirmCancelEventPopover({
         onClose();
         handleSubmit(e)
     }
+
+    const handleNevermind = () => {
+
+        handleStatusChange();
+        onClose()
+    };
 
     return (
         <Popover
@@ -70,7 +78,7 @@ export default function ConfirmCancelEventPopover({
                     <Button
                         fullWidth
                         variant="outlined"
-                        onClick={onClose}
+                        onClick={handleNevermind}
                         sx={getOpenedEventActionButtonSx(false)}
                     >
                         Nevermind

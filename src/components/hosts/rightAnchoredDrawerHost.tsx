@@ -6,11 +6,14 @@ import { JSX } from "react";
 import { OpenedDrawerContents } from "@/src/components/pipelines/drawers/forks/openedDrawerContents";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { openedEventDrawerPaperSx } from "@/src/styles/sx/openedEventDrawer";
+import { authDrawerPaperSx } from "@/src/styles/sx/authDrawer";
 
 export default function RightAnchoredDrawerHost(): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
     const drawerType = useSelector((s: RootState) => s.rendering.drawer);
     const isEventDrawer = drawerType === "event drawer";
+    const isAuthDrawer =
+      drawerType === "sign in drawer" || drawerType === "sign up drawer";
 
     return (
         <Drawer
@@ -28,6 +31,8 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
                     elevation: 4,
                     sx: isEventDrawer
                       ? openedEventDrawerPaperSx
+                      : isAuthDrawer
+                      ? authDrawerPaperSx
                       : {
                           width: { xs: 350, md: 550 },
                           backgroundColor: 'black',

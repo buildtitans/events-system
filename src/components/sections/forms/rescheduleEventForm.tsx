@@ -11,9 +11,11 @@ import ConfirmCancelEventPopover from "../../ui/modals/confirmCancelEventPopover
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 import {
   getOpenedEventActionButtonSx,
   openedEventControlsDescriptionSx,
+  openedEventControlsFormSx,
   openedEventControlsSectionSx,
   openedEventControlsTitleSx,
   openedEventSectionLabelSx,
@@ -42,12 +44,14 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
 
     if(!isCurrent) return null;
 
+    const handleCancelClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        handleStatusChange();
+        setAnchorEl(e.currentTarget);
+    };
 
     const closePopover = () => {
         setAnchorEl(null)
     }
-
-    console.log("rendering schedule form")
 
     return (
         <Container
@@ -62,17 +66,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
             disableGutters
         >
 
-            <form
-                style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "start",
-                    gap: 20,
-                }}
-            >
+            <Stack component="form" sx={openedEventControlsFormSx}>
                 <Typography component="span" sx={openedEventSectionLabelSx}>
                     Organizer
                 </Typography>
@@ -83,7 +77,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                     Cancel or restore this event when the schedule changes.
                 </Typography>
                 <CheckCancelEventButton
-                    handleStatusChange={handleStatusChange}
+                    handleCancelClick={handleCancelClick}
                     newStatus={options.status}
                     currentStatus={event.status}
                 />
@@ -93,6 +87,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                     handleSubmit={handleSubmit}
                     onClose={closePopover}
                     currentStatus={event.status}
+                    handleStatusChange={handleStatusChange}
                 />
                 {(event.status !== options.status) && <Button
                     type="button"
@@ -103,7 +98,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                 >
                     {(event.status === "scheduled") ? "Confirm Cancellation" : "Confirm Rescind Cancellation"}
                 </Button>}
-            </form>
+            </Stack>
         </Container>
 
     )

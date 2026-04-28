@@ -166,16 +166,17 @@ const openedEventAttendancePanelSx = {
   flexDirection: "column",
   gap: 0.7,
   width: "100%",
-  p: 1.35,
-  borderRadius: 3.25,
-  border: "1px solid rgba(255, 255, 255, 0.06)",
+  p: 1.6,
+  borderRadius: 3.5,
+  border: "1px solid rgba(255, 255, 255, 0.08)",
   background:
-    "linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%)",
+    "linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.02) 100%)",
+  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.03)",
 };
 
 const openedEventAttendancePrimarySx = {
   color: "#ffffff",
-  fontSize: "1rem",
+  fontSize: "1.02rem",
   fontWeight: 700,
   lineHeight: 1.5,
 };
@@ -190,26 +191,107 @@ const openedEventAttendanceSecondarySx = {
 const openedEventControlsSectionSx = {
   display: "flex",
   flexDirection: "column",
-  gap: 1.2,
+  gap: 1.35,
   width: "100%",
-  p: 1.35,
-  borderRadius: 3.25,
-  border: "1px solid rgba(255, 255, 255, 0.06)",
-  backgroundColor: "rgba(255, 255, 255, 0.03)",
-  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+  p: 1.6,
+  borderRadius: 3.5,
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  background:
+    "linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0%, rgba(255, 255, 255, 0.018) 100%)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 18px 36px rgba(0, 0, 0, 0.16)",
+};
+
+const openedEventControlsFormSx = {
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: 2,
 };
 
 const openedEventControlsTitleSx = {
   color: "#ffffff",
+  fontSize: "1.05rem",
   fontWeight: 700,
-  lineHeight: 1.2,
+  lineHeight: 1.3,
+  letterSpacing: "-0.02em",
 };
 
 const openedEventControlsDescriptionSx = {
   color: "rgba(255, 255, 255, 0.62)",
-  fontSize: "0.92rem",
-  lineHeight: 1.65,
+  fontSize: "0.95rem",
+  lineHeight: 1.7,
 };
+
+const openedEventActionsSectionSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 1.15,
+  width: "100%",
+  p: 0.7,
+  borderRadius: 3.2,
+  border: "1px solid rgba(255, 255, 255, 0.06)",
+  background:
+    "linear-gradient(180deg, rgba(255, 255, 255, 0.026) 0%, rgba(255, 255, 255, 0.014) 100%)",
+  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.025)",
+};
+
+const openedEventActionsLabelSx = {
+  color: "rgba(255, 255, 255, 0.42)",
+  fontSize: "0.66rem",
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+  textAlign: "center",
+};
+
+const openedEventActionRailSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "1fr",
+    sm: "repeat(2, minmax(0, 1fr))",
+    md: "repeat(auto-fit, minmax(0, 1fr))",
+  },
+  gap: 0.8,
+  width: "100%",
+  p: 0.7,
+};
+
+const getOpenedEventActionOptionSx = (active?: boolean) => ({
+  minHeight: 48,
+  width: "100%",
+  justifyContent: "flex-start",
+  gap: 0.95,
+  px: 1.35,
+  py: 1,
+  borderRadius: 2.8,
+  border: "1px solid",
+  borderColor: active
+    ? "rgba(124, 198, 255, 0.24)"
+    : "rgba(255, 255, 255, 0.06)",
+  background: active
+    ? "linear-gradient(135deg, rgba(124, 198, 255, 0.18) 0%, rgba(92, 157, 255, 0.12) 100%)"
+    : "rgba(255, 255, 255, 0.02)",
+  color: active ? "#e5f2ff" : "rgba(255, 255, 255, 0.72)",
+  textTransform: "none",
+  fontWeight: 700,
+  fontSize: "0.93rem",
+  letterSpacing: "-0.01em",
+  boxShadow: active ? "0 14px 30px rgba(92, 167, 255, 0.12)" : "none",
+  "& .MuiButton-startIcon": {
+    margin: 0,
+    color: active ? "#7cc6ff" : "rgba(255, 255, 255, 0.46)",
+  },
+  "&:hover": {
+    background: active
+      ? "linear-gradient(135deg, rgba(124, 198, 255, 0.22) 0%, rgba(92, 157, 255, 0.16) 100%)"
+      : "rgba(255, 255, 255, 0.05)",
+    borderColor: active
+      ? "rgba(124, 198, 255, 0.32)"
+      : "rgba(255, 255, 255, 0.1)",
+  },
+});
 
 const openedEventSelectLabelSx = {
   color: "rgba(255, 255, 255, 0.55)",
@@ -315,6 +397,7 @@ const openedEventCheckboxLabelSx = {
   "& .MuiFormControlLabel-label": {
     fontSize: "0.98rem",
   },
+  padding: 2,
 };
 
 const getOpenedEventCheckboxSx = (danger?: boolean) => ({
@@ -359,16 +442,21 @@ const openedEventSpinnerSx = {
 };
 
 export {
+  getOpenedEventActionOptionSx,
   getOpenedEventActionButtonSx,
   getOpenedEventCheckboxSx,
   getOpenedEventMetaChipSx,
   getOpenedEventMetaIconSx,
+  openedEventActionRailSx,
+  openedEventActionsLabelSx,
+  openedEventActionsSectionSx,
   openedEventAttendancePanelSx,
   openedEventAttendancePrimarySx,
   openedEventAttendanceSecondarySx,
   openedEventBodyTextSx,
   openedEventCheckboxLabelSx,
   openedEventControlsDescriptionSx,
+  openedEventControlsFormSx,
   openedEventControlsSectionSx,
   openedEventControlsTitleSx,
   openedEventDrawerInnerSx,

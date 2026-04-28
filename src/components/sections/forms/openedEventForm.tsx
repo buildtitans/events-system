@@ -14,8 +14,10 @@ import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 import {
   openedEventControlsDescriptionSx,
+  openedEventControlsFormSx,
   openedEventControlsTitleSx,
   openedEventMenuPaperSx,
   openedEventPrimaryButtonSx,
@@ -57,16 +59,10 @@ export default function UpdateViewerAttendanceForm({
                     width: "100%",
                 }}
                 disableGutters>
-                <form
+                <Stack
+                    component="form"
                     onSubmit={(e) => handleSubmit(e)}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        gap: 16,
-                        display: 'flex',
-                        flexDirection: 'column',
-
-                    }}
+                    sx={openedEventControlsFormSx}
                 >
                     <Typography component="span" sx={openedEventSectionLabelSx}>
                         Attendance
@@ -131,7 +127,7 @@ export default function UpdateViewerAttendanceForm({
                         </Button>
                     </FormControl>
 
-                </form>
+                </Stack>
             </Container>
         </FadeInOutBox>
 

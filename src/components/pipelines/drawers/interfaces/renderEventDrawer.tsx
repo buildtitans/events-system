@@ -11,6 +11,7 @@ import {
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import MemberEventDrawer from "@/src/components/ui/drawers/memberEventDrawer";
 import AnonEventDrawer from "@/src/components/ui/drawers/anonEventDrawer";
+import OpenedEvent from "@/src/components/ui/stack/OpenedEvent";
 
 type RenderEventDrawerContentsProps = {
   role: GroupMemberSchemaType["role"];
@@ -29,7 +30,20 @@ export default function RenderEventDrawerContents({
   name,
   slug,
 }: RenderEventDrawerContentsProps): JSX.Element | null {
-const isCurrent = isFutureOrNow(new Date(event.starts_at));
+  const isCurrent = isFutureOrNow(new Date(event.starts_at));
+
+  if (!isCurrent) {
+    return (
+      <AnonEventDrawer
+        role={role}
+        event={event}
+        numAttendants={numAttendants}
+        numInterested={numInterested}
+        name={name}
+        slug={slug}
+      />
+    );
+  }
 
   switch (role) {
     case "member":

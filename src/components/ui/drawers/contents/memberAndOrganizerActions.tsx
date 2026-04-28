@@ -35,8 +35,8 @@ export type ButtonActions = Array<ButtonAction>;
 export function createActions(role: GroupMemberSchemaType["role"], isCurrent: boolean): ButtonActions {
   if (role === "member") {
     return [
-      { label: "RSVP Update", kind: "attendance form" },
       { label: "Event Details", kind: "details" },
+      { label: "RSVP Update", kind: "attendance form" }
     ];
   } else if ((role === "organizer") && isCurrent) {
     return [
@@ -47,8 +47,9 @@ export function createActions(role: GroupMemberSchemaType["role"], isCurrent: bo
     ];
   } else if(role === "organizer" && (!isCurrent)) {
     return [
-      { label: "RSVP Update", kind: "attendance form" },
+      
       { label: "Event Details", kind: "details" },
+      { label: "RSVP Update", kind: "attendance form" },
     ];
   } else { 
     return []
@@ -70,7 +71,7 @@ export default function MemberAndOrganizerActions({
 
   return (
     <React.Fragment>
-      <Stack sx={openedEventHeroSx} spacing={1}>
+      <Stack sx={openedEventHeroSx} spacing={1.35}>
         <OpenedEventHead
           event={event}
           numAttendants={numAttendants}
@@ -78,7 +79,14 @@ export default function MemberAndOrganizerActions({
           name={name}
           slug={slug}
         />
-        <RenderOpenEventFormSection
+      <ActionButtons
+        actions={actions}
+        currentAction={openSection}
+        setOpenAction={setOpenSection}
+      />
+        
+      </Stack>
+      <RenderOpenEventFormSection
           role={role}
           event={event}
           numAttendants={numAttendants}
@@ -87,8 +95,6 @@ export default function MemberAndOrganizerActions({
           slug={slug}
           state={openSection}
         />
-      </Stack>
-      <ActionButtons actions={actions} setOpenAction={setOpenSection} />
     </React.Fragment>
   );
 }

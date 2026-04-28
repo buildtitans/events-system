@@ -2,6 +2,11 @@ import { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
+import {
+    authFieldControlSx,
+    authFieldLabelSx,
+    authTextFieldSx,
+} from "@/src/styles/sx/authDrawer";
 
 type EmailInputProps = {
     emailErrorMessage: string,
@@ -16,8 +21,8 @@ function Email({
 }: EmailInputProps): JSX.Element {
 
     return (
-        <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
+        <FormControl fullWidth sx={authFieldControlSx}>
+            <FormLabel htmlFor="email" sx={authFieldLabelSx}>Email</FormLabel>
             <TextField
                 onChange={(e) => handleEmail(e)}
                 error={emailError}
@@ -31,6 +36,7 @@ function Email({
                 required
                 fullWidth
                 variant="outlined"
+                sx={authTextFieldSx}
                 color={emailError ? 'error' : 'primary'}
             />
         </FormControl>
