@@ -8,6 +8,7 @@ import Spinner, {
 } from "@/src/components/ui/feedback/pending/spinner";
 import HistoryTimeline from "../../sections/group/openedGroup/displays/groupHistory";
 import NoGroupHistory from "../../ui/feedback/fallbacks/noGroupHIstory";
+import OpenedGroupFallback from "../../ui/feedback/fallbacks/groupFallback";
 
 type RenderGroupHistoryProps = {
   isMobile: boolean;
@@ -28,7 +29,12 @@ export default function RenderGroupHistory({
       return <HistoryTimeline isMobile={isMobile} history={history.data} />;
     }
     case "failed": {
-      return <NoGroupHistory />;
+      return <OpenedGroupFallback 
+      eyeBrow={"History"}
+      fallbackTitle={"No events held yet"}
+      fallbackDescripton={"This group has not hosted any completed events yet, so there is no activity history to show here."}
+      fallbackCaption={"If you want to get in touch with the organizer, their email is listed above."}
+      />;
     }
 
     default: {

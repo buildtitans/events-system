@@ -8,6 +8,14 @@ import RsvpListItem from "../../ui/list/rsvpListItem";
 import { useRouter } from "next/navigation";
 import NoRsvps from "../../ui/feedback/fallbacks/noRsvps";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import DashboardFallback from "../../ui/feedback/fallbacks/dashboardFallback";
+import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/src/lib/store";
+import { changeAccountTab } from "@/src/lib/store/slices/user/userSlice";
+import { noGroupsFallbackActionButtonSx, noGroupsFallbackIconSx } from "@/src/styles/sx/noGroupsFallback";
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 
 type MyRsvpsProps = {
   rsvps: RsvpSchemaType[];
@@ -44,8 +52,29 @@ function RenderRsvpsOrFallback({
   handleNavigateToGroup,
   handleOpenEditStatus,
 }: RenderRsvpsOrFallbackProps) {
+  const action = () => {
+    return (
+      <CheckMembershipsForNextEventButton />
+    )
+  }
+  const icon = () => {
+    return (
+      <EventAvailableRoundedIcon sx={noGroupsFallbackIconSx} />
+    )
+  }
+
+
+
   if (rsvps.length === 0) {
-    return <NoRsvps />;
+    return (
+    <DashboardFallback 
+    eyeBrow={"Workspace"}
+    fallbackTitle={"No commitments yet"}
+    fallbackBody={"You have not saved any event plans yet. If you have already joined communities, your memberships can help you find upcoming events worth RSVPing to."}
+    action={action()}
+    icon={icon()}
+    actionCaption={"Once you mark an event as going or interested, it will appear here for quick access later."}
+    />);
   }
 
   return (
@@ -67,4 +96,23 @@ function RenderRsvpsOrFallback({
       ))}
     </List>
   );
+}
+
+
+function CheckMembershipsForNextEventButton() {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleClick = () => {
+    dispatch(changeAccountTab("memberships"));
+  }
+
+  return (
+    <Button
+    onClick={handleClick}
+    sx={noGroupsFallbackActionButtonSx}
+    variant={"contained"}
+    startIcon={<PersonSearchIcon />}
+    >
+    Check memberships
+    </Button>
+  )
 }

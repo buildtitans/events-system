@@ -8,9 +8,7 @@ import Box from "@mui/material/Box";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
-import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import {
-  noGroupsFallbackActionButtonSx,
   noGroupsFallbackActionWrapSx,
   noGroupsFallbackDescriptionSx,
   noGroupsFallbackEyebrowSx,
@@ -28,12 +26,19 @@ type DashboardFallbackProps = {
     fallbackTitle: 'No groups created yet' | 'Nothing joined yet' | 'No commitments yet',
     fallbackBody: string,
     action?: React.ReactNode,
+    icon?: React.ReactNode,
     actionCaption?: string;
 }
 
 
-export default function UserHasCreatedNoGroups(): JSX.Element {
-    const dispatch = useDispatch<AppDispatch>();
+export default function DashboardFallback({ 
+    eyeBrow,
+    fallbackTitle,
+    fallbackBody,
+    action,
+    actionCaption,
+    icon
+ }: DashboardFallbackProps): JSX.Element {
 
     return (
         <Box sx={noGroupsFallbackRootSx}>
@@ -44,7 +49,7 @@ export default function UserHasCreatedNoGroups(): JSX.Element {
             sx={noGroupsFallbackPanelSx}
             >
                 <Box component={"header"} sx={noGroupsFallbackIconWrapSx}>
-                    <Groups2RoundedIcon sx={noGroupsFallbackIconSx} />
+                    {icon}           
                 </Box>
 
                 <Box>
@@ -52,41 +57,31 @@ export default function UserHasCreatedNoGroups(): JSX.Element {
                     variant="overline"
                     sx={noGroupsFallbackEyebrowSx}
                     >
-                        Workspace
+                        {eyeBrow}
                     </Typography>
                     <Typography
                     variant="h4"
                     sx={noGroupsFallbackTitleSx}
                     >
-                        No groups yet
+                        {fallbackTitle}
                     </Typography>
                     <Typography
                     variant="body1"
                     sx={noGroupsFallbackDescriptionSx}
                     >
-                        Create your first community to start organizing events,
-                        invite members, and build a shared schedule around the
-                        things you care about.
+                        {fallbackBody}
                     </Typography>
                 </Box>
 
                 <Box sx={noGroupsFallbackActionWrapSx}>
-                    <Button
-                    onClick={() => dispatch(enqueueDrawer("new group"))}
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    sx={noGroupsFallbackActionButtonSx}
-                    >
-                        Create Group
-                    </Button>
+                    {action}
                 </Box>
 
                 <Typography
                 variant="body2"
                 sx={noGroupsFallbackHintSx}
                 >
-                    Once you create a group, it will show up here with quick
-                    access to members, history, and upcoming events.
+                    {actionCaption}
                     </Typography>
             </Stack>
         </Box>

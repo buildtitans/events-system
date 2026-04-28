@@ -9,19 +9,17 @@ import { JSX } from "react";
 export default function RenderAccountView(): JSX.Element | null {
   const view = useSelector((s: RootState) => s.user.view);
   const participations = useSelector((s: RootState) => s.user.participations);
- const myGroups = useSelector((s: RootState) => s.user.myGroups);
+  const myGroups = useSelector((s: RootState) => s.user.myGroups);
 
   switch (view) {
     case "rsvps": {
-        return (
-          <RenderRsvps participations={participations} />
-        ) 
+      return <RenderRsvps participations={participations} />;
     }
     case "memberships": {
       return <RenderMemberships participations={participations} />;
     }
     case "my groups": {
-      return <RenderMyGroups myGroups={myGroups}/>
+      return <RenderMyGroups myGroups={myGroups} />;
     }
 
     default: {

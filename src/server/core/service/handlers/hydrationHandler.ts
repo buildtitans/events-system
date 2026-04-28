@@ -38,6 +38,8 @@ export class EventHydrationHandler {
   async getAttendantsOfPastEvents(
     ids: string[],
   ): Promise<PastEventAttendanceLookup> {
+    if (ids.length === 0) return {};
+
     const attendees = await this.db.eventAttendants.getPastEventRecords(ids);
     return this.mapPastEventHeadCounts(ids, attendees);
   }

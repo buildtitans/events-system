@@ -35,15 +35,25 @@ export const useHydrateGroupHisory = () => {
     const executeHydrateGroupHistory = async () => {
       dispatch(getGroupHistory({ status: "pending" }));
 
-      const { pastEventsRecords, history } =
-        await trpcClient.events.getGroupHistory.mutate(openedGroup.data.id);
+      try {
+        const { pastEventsRecords, history } =
+          await trpcClient.events.getGroupHistory.mutate(openedGroup.data.id);
 
-      if (history.length > 0) {
-        const sortedBydate = sortByDate(history);
+        if (history.length > 0 && pastEventsRecords) {
+          const sortedBydate = sortByDate(history);
 
-        dispatch(getGroupHistory({ status: "ready", data: sortedBydate }));
-        dispatch(getPastEventsAttendanceRecords(pastEventsRecords));
-      } else {
+          dispatch(getGroupHistory({ status: "ready", data: sortedBydate }));
+          dispatch(getPastEventsAttendanceRecords(pastEventsRecords));
+        } else {
+          dispatch(
+            getGroupHistory({
+              status: "failed",
+              error: "failed to get group history",
+            }),
+          );
+        }
+      } catch (err) {
+        console.error(err);
         dispatch(
           getGroupHistory({
             status: "failed",

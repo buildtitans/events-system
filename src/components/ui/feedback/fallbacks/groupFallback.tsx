@@ -14,7 +14,20 @@ import {
   noGroupHistoryTitleSx,
 } from "@/src/styles/sx/noGroupHistoryFallback";
 
-export default function NoGroupHistory() {
+type OpenedGroupFallbackProps = {
+    eyeBrow: "History" | "Events" | "Overview",
+    fallbackTitle: 'No events held yet' | 'No events have been scheduled',
+    fallbackDescripton: 'This group has not hosted any completed events yet, so there is no activity history to show here.' | "This group has not scheduled any events yet, so there are no events to RSVP to right now.",
+    fallbackCaption: "If you want to get in touch with the organizer, their email is listed above."
+
+}
+
+export default function OpenedGroupFallback({
+eyeBrow,
+fallbackTitle,
+fallbackDescripton,
+fallbackCaption
+}: OpenedGroupFallbackProps) {
   return (
     <FadeInOutBox>
       <Box sx={noGroupHistoryRootSx}>
@@ -29,21 +42,19 @@ export default function NoGroupHistory() {
           </Box>
 
           <Typography variant="overline" sx={noGroupHistoryEyebrowSx}>
-            History
+            {eyeBrow}
           </Typography>
 
           <Typography component="h3" variant="h4" sx={noGroupHistoryTitleSx}>
-            No past events yet
+            {fallbackTitle}
           </Typography>
 
           <Typography variant="body1" sx={noGroupHistoryDescriptionSx}>
-            This group has not hosted any completed events yet, so there is no
-            activity history to show here.
+            {fallbackDescripton}
           </Typography>
 
           <Typography variant="body2" sx={noGroupHistoryHintSx}>
-            Once events are held, this space will track what happened and how
-            many people attended.
+            {fallbackCaption}
           </Typography>
         </Stack>
       </Box>
