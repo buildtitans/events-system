@@ -1,6 +1,11 @@
 import type { AddressSuggestion } from "@/src/lib/hooks/search/types";
 import { Box, Chip, ListItemText, Typography } from "@mui/material";
 import { HTMLAttributes, JSX } from "react";
+import {
+  createEventSuggestionChipSx,
+  createEventSuggestionRowSx,
+  createEventSuggestionTextSx,
+} from "@/src/styles/sx/createEventDrawer";
 
 type AddressSuggestionProps = {
   option: AddressSuggestion;
@@ -14,15 +19,7 @@ export default function AddressSuggestionOption({
     <Box
       component="li"
       {...props}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1.25,
-        py: 1,
-        px: 1.25,
-        borderTop: 1,
-        borderColor: "rgba(255, 255, 255, 0.25)",
-      }}
+      sx={createEventSuggestionRowSx}
     >
       <ListItemText
         primary={
@@ -34,7 +31,7 @@ export default function AddressSuggestionOption({
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <Typography variant="body2" sx={createEventSuggestionTextSx}>
               {option.label}
             </Typography>
 
@@ -42,7 +39,7 @@ export default function AddressSuggestionOption({
               size="small"
               color="default"
               label={option.state}
-              sx={{ height: 20 }}
+              sx={createEventSuggestionChipSx}
             />
           </Box>
         }
