@@ -17,9 +17,7 @@ const overrides = {
 const sidebarStyles = {
   width: {
     xs: "auto",
-    md: "140px",
-    lg: "180px",
-    xl: "200px",
+    md: "200px",
   },
   backgroundColor: "#191919",
   display: "flex",

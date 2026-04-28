@@ -6,6 +6,12 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { JSX } from "react";
 import { CancelEventHook } from "@/src/lib/types/hooks/types";
+import {
+  getOpenedEventActionButtonSx,
+  openedEventPopoverActionsSx,
+  openedEventPopoverPaperSx,
+  openedEventPopoverTitleSx,
+} from "@/src/styles/sx/openedEventDrawer";
 
 type ConfirmCancelEventPopoverProps = {
     anchorEl: HTMLElement | null;
@@ -34,6 +40,9 @@ export default function ConfirmCancelEventPopover({
             open={open}
             anchorEl={anchorEl}
             onClose={onClose}
+            PaperProps={{
+              sx: openedEventPopoverPaperSx,
+            }}
             anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "center"
@@ -45,29 +54,24 @@ export default function ConfirmCancelEventPopover({
         >
             <Stack
                 sx={{
-                    width: 320,
-                    p: 3,
                     gap: 3
                 }}
             >
                 <Typography
                     component="h2"
-                    sx={{
-                        fontSize: 20,
-                        fontWeight: 400,
-                        textAlign: "center"
-                    }}
+                    sx={openedEventPopoverTitleSx}
                 >
                     {(currentStatus === "scheduled") ? "Cancel this event?" : "Rescind cancellation?"}
                 </Typography>
 
-                <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={openedEventPopoverActionsSx}>
 
 
                     <Button
                         fullWidth
                         variant="outlined"
                         onClick={onClose}
+                        sx={getOpenedEventActionButtonSx(false)}
                     >
                         Nevermind
                     </Button>
@@ -76,6 +80,7 @@ export default function ConfirmCancelEventPopover({
                         variant="contained"
                         color={(currentStatus === "scheduled") ? "error" : "primary"}
                         onClick={(e) => executeSubmmitAndClosePopover(e)}
+                        sx={getOpenedEventActionButtonSx(currentStatus === "scheduled")}
                     >
                         {(currentStatus === "scheduled") ? "Yes, Cancel" : "Yes"}
                     </Button>

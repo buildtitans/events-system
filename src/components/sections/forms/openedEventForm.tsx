@@ -13,6 +13,16 @@ import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
+import Typography from "@mui/material/Typography";
+import {
+  openedEventControlsDescriptionSx,
+  openedEventControlsTitleSx,
+  openedEventMenuPaperSx,
+  openedEventPrimaryButtonSx,
+  openedEventSectionLabelSx,
+  openedEventSelectLabelSx,
+  openedEventSelectSx,
+} from "@/src/styles/sx/openedEventDrawer";
 
 type UpdateViewerAttendanceFormProps = {
     currentStatus: EventAttendantStatusSchemaType,
@@ -42,14 +52,15 @@ export default function UpdateViewerAttendanceForm({
                     display: "flex",
                     justifyContent: "start",
                     alignItems: "center",
-                    paddingX: 3,
-                    paddingTop: 2
+                    paddingX: 0,
+                    paddingTop: 0,
+                    width: "100%",
                 }}
                 disableGutters>
                 <form
                     onSubmit={(e) => handleSubmit(e)}
                     style={{
-                        width: '450px',
+                        width: '100%',
                         height: '100%',
                         gap: 16,
                         display: 'flex',
@@ -57,6 +68,15 @@ export default function UpdateViewerAttendanceForm({
 
                     }}
                 >
+                    <Typography component="span" sx={openedEventSectionLabelSx}>
+                        Attendance
+                    </Typography>
+                    <Typography component="h3" sx={openedEventControlsTitleSx}>
+                        Update your RSVP
+                    </Typography>
+                    <Typography component="p" sx={openedEventControlsDescriptionSx}>
+                        Let the organizer know whether you&apos;re going or still interested.
+                    </Typography>
 
 
                     <Controller
@@ -64,13 +84,24 @@ export default function UpdateViewerAttendanceForm({
                         control={control}
                         render={() => (
                             <FormControl fullWidth>
-                                <InputLabel id="attendance-interest-selector">Mark me as</InputLabel>
+                                <InputLabel
+                                  id="attendance-interest-selector"
+                                  sx={openedEventSelectLabelSx}
+                                >
+                                  Mark me as
+                                </InputLabel>
                                 <Select
                                     id="select-attendance-status"
                                     value={newStatus}
                                     label="Attendance"
                                     onChange={(e) => handleStatusChange(e)}
                                     labelId="attendance-interest-selector"
+                                    sx={openedEventSelectSx}
+                                    MenuProps={{
+                                      PaperProps: {
+                                        sx: openedEventMenuPaperSx,
+                                      },
+                                    }}
                                 >
                                     {ATTENDANCE_OPTIONS.map((option) => (
                                         <MenuItem
@@ -94,6 +125,7 @@ export default function UpdateViewerAttendanceForm({
                             disabled={newStatus === currentStatus}
                             type="submit"
                             variant="contained"
+                            sx={openedEventPrimaryButtonSx}
                         >
                             Update My Attendance
                         </Button>

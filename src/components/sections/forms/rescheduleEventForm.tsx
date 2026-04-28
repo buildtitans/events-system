@@ -3,19 +3,28 @@ import { useCancelEvent } from "@/src/lib/hooks/update/useCancelEvent";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
 import { CheckCancelEventButton } from "../../ui/buttons/CheckCancelEventButton";
-import { useMemo, useState } from "react";
+import { JSX, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
 import ConfirmCancelEventPopover from "../../ui/modals/confirmCancelEventPopover";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Typography from "@mui/material/Typography";
+import {
+  getOpenedEventActionButtonSx,
+  openedEventControlsDescriptionSx,
+  openedEventControlsSectionSx,
+  openedEventControlsTitleSx,
+  openedEventSectionLabelSx,
+} from "@/src/styles/sx/openedEventDrawer";
+import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 
 type RescheduleEventFormProps = {
     event: EventSchemaType
 }
 
-export default function RescheduleEventForm({ event }: RescheduleEventFormProps) {
+export default function RescheduleEventForm({ event }: RescheduleEventFormProps): JSX.Element | null {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const groups = useSelector((s: RootState) => s.groups.communities);
     const organizer_id = useMemo(() => {
@@ -28,22 +37,29 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
         handleSubmit,
         options
     } = useCancelEvent(event, organizer_id);
+    const isCurrent = isFutureOrNow(new Date(event.starts_at));
+    
+
+    if(!isCurrent) return null;
 
 
     const closePopover = () => {
         setAnchorEl(null)
     }
 
+    console.log("rendering schedule form")
+
     return (
         <Container
             sx={{
+                ...openedEventControlsSectionSx,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 10,
                 width: '100%',
             }}
+            disableGutters
         >
 
             <form
@@ -54,9 +70,18 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "start",
-                    gap: 40,
+                    gap: 20,
                 }}
             >
+                <Typography component="span" sx={openedEventSectionLabelSx}>
+                    Organizer
+                </Typography>
+                <Typography component="h3" sx={openedEventControlsTitleSx}>
+                    Event Status
+                </Typography>
+                <Typography component="p" sx={openedEventControlsDescriptionSx}>
+                    Cancel or restore this event when the schedule changes.
+                </Typography>
                 <CheckCancelEventButton
                     handleStatusChange={handleStatusChange}
                     newStatus={options.status}
@@ -73,9 +98,7 @@ export default function RescheduleEventForm({ event }: RescheduleEventFormProps)
                     type="button"
                     variant="contained"
                     onClick={(e) => setAnchorEl(e.currentTarget)}
-                    sx={{
-                        width: "100%"
-                    }}
+                    sx={getOpenedEventActionButtonSx(event.status === "scheduled")}
                     startIcon={(event.status === "scheduled") ? (<CancelIcon />) : (<SettingsBackupRestoreIcon />)}
                 >
                     {(event.status === "scheduled") ? "Confirm Cancellation" : "Confirm Rescind Cancellation"}

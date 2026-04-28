@@ -5,10 +5,12 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { JSX } from "react";
 import { OpenedDrawerContents } from "@/src/components/pipelines/drawers/forks/openedDrawerContents";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { openedEventDrawerPaperSx } from "@/src/styles/sx/openedEventDrawer";
 
 export default function RightAnchoredDrawerHost(): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();
     const drawerType = useSelector((s: RootState) => s.rendering.drawer);
+    const isEventDrawer = drawerType === "event drawer";
 
     return (
         <Drawer
@@ -24,10 +26,12 @@ export default function RightAnchoredDrawerHost(): JSX.Element | null {
             slotProps={{
                 paper: {
                     elevation: 4,
-                    sx: {
-                        width: { xs: 350, md: 500 },
-                        backgroundColor: 'black',
-                    },
+                    sx: isEventDrawer
+                      ? openedEventDrawerPaperSx
+                      : {
+                          width: { xs: 350, md: 550 },
+                          backgroundColor: 'black',
+                        },
                 }
             }}
         >

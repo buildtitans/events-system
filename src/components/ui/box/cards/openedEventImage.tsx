@@ -1,9 +1,13 @@
 "use client";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
-import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { useState } from "react";
+import {
+  openedEventImageMediaSx,
+  openedEventImageSkeletonSx,
+  openedEventImageWrapSx,
+} from "@/src/styles/sx/openedEventDrawer";
 
 export default function OpenedEventImage({ thumbnail }: {
     thumbnail: string | null
@@ -13,20 +17,11 @@ export default function OpenedEventImage({ thumbnail }: {
     if (!thumbnail) return null;
 
     return (
-        <Box sx={{
-            width: "100%",
-            height: "auto",
-            maxWidth: 500,
-            textAlign: "center",
-            borderRadius: 2,
-            overflow: "hidden",
-        }} >
-            <Card variant="elevation" >
+        <Box sx={openedEventImageWrapSx} >
                 <CardMedia
                     sx={{
+                        ...openedEventImageMediaSx,
                         display: loaded ? "block" : "none",
-                        width: "100%",
-                        height: "auto"
                     }}
                     onLoad={() => setLoaded(true)}
                     component={"img"}
@@ -34,16 +29,11 @@ export default function OpenedEventImage({ thumbnail }: {
 
                 />
                 {!loaded && <Skeleton
-                    sx={{
-                        borderRadius: 2,
-                        overflow: "hidden",
-                    }}
+                    sx={openedEventImageSkeletonSx}
                     variant="rectangular"
                     animation="wave"
                     width="100%"
                     height={300} />}
-
-            </Card>
 
         </Box>
     )
