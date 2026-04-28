@@ -4,8 +4,6 @@ import EventsLayout from "../../sections/events/eventsLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import React, { JSX } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 
 export const RenderEventsForGroup = (): JSX.Element => {
@@ -22,14 +20,6 @@ export const RenderEventsForGroup = (): JSX.Element => {
         
       return (
         <React.Fragment>
-        <Box>
-          <Typography
-            component={"h2"}
-            sx={{ fontSize: "26px", fontWeight: "light" }}
-          >
-            Events
-          </Typography>
-        </Box>
         <EventsLayout eventsPages={events.data} currentPage={page} />
       </React.Fragment>
       )

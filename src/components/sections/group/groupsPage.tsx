@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Group from "@/src/components/ui/box/cards/group";
+import type { GroupCardVariant } from "@/src/components/ui/box/cards/group";
 import type { CategoryMap } from "./groupsPages";
 import {
   GroupSchemaType,
@@ -14,6 +15,7 @@ type GroupsPageProps = {
   categoryMap: CategoryMap;
   columns: number;
   handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void;
+  cardVariant?: GroupCardVariant;
 };
 
 export function GroupsPage({
@@ -21,6 +23,7 @@ export function GroupsPage({
   categoryMap,
   columns,
   handleGroupClicked,
+  cardVariant = "landing",
 }: GroupsPageProps) {
   const [focusedCardIndex, setFocusedCardIndex] = useState<number | null>(null);
 
@@ -33,7 +36,12 @@ export function GroupsPage({
   };
 
   return (
-    <Grid container spacing={2} columns={columns} sx={{ minHeight: 400 }}>
+    <Grid
+      container
+      spacing={cardVariant === "dashboard" ? 3 : 2}
+      columns={columns}
+      sx={{ minHeight: 400 }}
+    >
       {page.map((group, index) => (
         <Group
           handleGroupClicked={handleGroupClicked}
@@ -44,6 +52,7 @@ export function GroupsPage({
           handleBlur={handleBlur}
           handleFocus={handleFocus}
           focusedCardIndex={focusedCardIndex}
+          variant={cardVariant}
         />
       ))}
     </Grid>

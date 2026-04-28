@@ -15,6 +15,16 @@ import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
+import {
+  eventCardContentSx,
+  eventCardDescriptionSx,
+  eventCardGroupLabelSx,
+  eventCardMediaOverlaySx,
+  eventCardMediaSx,
+  eventCardMediaWrapSx,
+  eventCardRootSx,
+  eventCardTitleSx,
+} from "@/src/styles/sx/eventCard";
 
 export type MobileEventCard = 12;
 
@@ -76,38 +86,34 @@ function EventHeroCard({
         tabIndex={0}
         className={focusedCardIndex === 2 ? "Mui-focused" : ""}
         sx={{
+          ...eventCardRootSx,
           height: "100%",
           opacity: event.status === "cancelled" ? "55%" : "100%",
         }}
       >
-        <Box
-          sx={{
-            position: "relative",
-            height: { sm: "auto", md: "50%" },
-          }}
-        >
+        <Box sx={eventCardMediaWrapSx}>
           <CardMedia
             component="img"
             alt="green iguana"
             image={event.img ?? undefined}
             sx={{
-              height: "100%",
-              aspectRatio: { sm: "16 / 9", md: "" },
+              ...eventCardMediaSx,
               filter: event.status === "cancelled" ? "grayscale(40%)" : "none",
             }}
           />
+          <Box sx={eventCardMediaOverlaySx} />
 
           {event.status === "cancelled" && <EventCancelledOverlay />}
         </Box>
 
-        <StyledCardContent>
-          { <Typography gutterBottom variant="caption" color="info" component="div">
+        <StyledCardContent sx={eventCardContentSx}>
+          { <Typography gutterBottom variant="caption" component="div" sx={eventCardGroupLabelSx}>
             {groupName}
           </Typography> }
-          <Typography gutterBottom variant="h6" component="div">
+          <Typography gutterBottom variant="h6" component="div" sx={eventCardTitleSx}>
             {event.title}
           </Typography>
-          <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+          <StyledTypography variant="body2" gutterBottom sx={eventCardDescriptionSx}>
             {event.description}
           </StyledTypography>
         </StyledCardContent>

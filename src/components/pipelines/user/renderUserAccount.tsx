@@ -1,8 +1,8 @@
 "use client";
-import AccountDetails from "../../sections/user/accountDetails";
+import AccountDetails from "@/src/components/sections/user/accountDetails";
 import type { UserEmailState } from "@/src/lib/store/slices/user/types";
-import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
-import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
+import SimpleBackdrop from "@/src/components/ui/feedback/pending/backdrop";
+import AsyncFailedFallback from "@/src/components/ui/feedback/failure/asyncFailedFallback";
 import { JSX } from "react";
 
 export default function RenderUserAccount({

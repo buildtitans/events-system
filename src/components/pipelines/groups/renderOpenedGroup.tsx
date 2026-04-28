@@ -1,5 +1,5 @@
 "use client";
-import ViewGroupSection from "../../sections/group/viewGroupSection";
+import ViewGroupSection from "../../sections/group/openedGroup/viewGroupSection";
 import type { JSX } from "react";
 import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import Container from "@mui/material/Container";

@@ -9,17 +9,22 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import { CreateNewGroupHook } from '@/src/lib/hooks/insert/useCreateNewGroup';
 import type { SelectChangeEvent } from "@mui/material/Select";
+import {
+    createGroupFieldControlSx,
+    createGroupMenuPaperSx,
+    createGroupSelectLabelSx,
+    createGroupSelectSx,
+} from '@/src/styles/sx/createGroupDrawer';
 
 
 type SelectCategoryProps = {
 
     handleGroupCategory: CreateNewGroupHook["handleGroupCategory"],
     chosen: CreateNewGroupHook["newGroup"]["category_id"],
-    width: string
 };
 
-export default function SelectCategory({ handleGroupCategory, width }: SelectCategoryProps): React.JSX.Element {
-    const [displayed, setDisplayed] = React.useState<string | null>("");
+export default function SelectCategory({ handleGroupCategory, chosen }: SelectCategoryProps): React.JSX.Element {
+    const [displayed, setDisplayed] = React.useState<string | null>(chosen ?? "");
     const categories = useSelector((s: RootState) => s.categories.categories);
 
     const handleChange = (e: SelectChangeEvent<string | null>) => {
@@ -30,26 +35,24 @@ export default function SelectCategory({ handleGroupCategory, width }: SelectCat
 
 
     return (
-        <>
-            <Box sx={{ width: width, height: 'auto' }}>
-                <FormControl fullWidth>
-                    <InputLabel id="category-label">Categories</InputLabel>
+            <Box sx={{ width: '100%', height: 'auto' }}>
+                <FormControl fullWidth sx={createGroupFieldControlSx}>
+                    <InputLabel id="category-label" sx={createGroupSelectLabelSx}>Categories</InputLabel>
                     <Select
-                        sx={{
-                            '& .MuiSelect-select': {
-                                padding: '12px 14px',
-                            },
-                        }}
-
+                        sx={createGroupSelectSx}
                         onChange={(e) => handleChange(e)}
                         labelId="category-label"
                         id="demo-simple-select"
                         value={displayed}
                         label="Categories"
+                        MenuProps={{
+                            PaperProps: {
+                                sx: createGroupMenuPaperSx,
+                            },
+                        }}
                     >
                         {(Array.isArray(categories) && (categories.length > 0) && categories.map((cat) => (
                             <MenuItem
-                                sx={{ color: 'white' }}
                                 key={cat.id}
                                 value={cat.id}
                             >
@@ -59,7 +62,6 @@ export default function SelectCategory({ handleGroupCategory, width }: SelectCat
                     </Select>
                 </FormControl>
             </Box>
-        </>
 
     );
 }

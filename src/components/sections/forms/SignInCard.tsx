@@ -4,15 +4,20 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Typography from '@mui/material/Typography';
 import Email from '@/src/components/sections/inputs/Email';
 import Password from '@/src/components/sections/inputs/Password';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import ForgotPassword from '@/src/features/auth/ForgotPassword';
 import type { ValidateCredentialsHook } from '@/src/lib/types/hooks/types';
-import { UseLoginHook } from '@/src/lib/types/hooks/types';
-import Stack from '@mui/material/Stack';
+import type { UseLoginHook } from '@/src/lib/types/hooks/types';
+import AuthDrawerShell from '@/src/components/ui/drawers/authDrawerShell';
+import {
+    authCheckboxLabelSx,
+    authCheckboxSx,
+    authDrawerFormSx,
+    authPrimaryButtonSx,
+} from '@/src/styles/sx/authDrawer';
 
 type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
     handleSubmit: UseLoginHook["handleSubmit"]
@@ -42,32 +47,17 @@ export default function SignInCard({
 
 
     return (
-        <Stack
-            sx={{
-                width: '80%',
-                height: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'start',
-                alignItems: 'center',
-                paddingTop: 4,
-                marginX: 'auto',
-
-            }}
+        <AuthDrawerShell
+            eyebrow="Welcome Back"
+            title="Sign in"
+            description="Jump back into your groups, events, and dashboard with the account you already use."
         >
-            <Typography
-                component="h1"
-                variant="h4"
-                sx={{ width: '100%', fontSize: '28px', fontWeight: 'light', borderBottom: 1, borderColor: 'rgba(255, 255, 255, 0.2)', marginBottom: 4 }}
-            >
-                Sign in
-            </Typography>
             <Box
                 component="form"
                 method="POST"
                 noValidate
                 onSubmit={(e) => handleSubmit(e)}
-                sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+                sx={authDrawerFormSx}
             >
                 <Email
                     handleEmail={handleEmail}
@@ -81,7 +71,8 @@ export default function SignInCard({
                     handleClickOpen={handleClickOpen}
                 />
                 <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
+                    sx={authCheckboxLabelSx}
+                    control={<Checkbox value="remember" sx={authCheckboxSx} />}
                     label="Remember me"
                 />
                 <ForgotPassword 
@@ -89,11 +80,17 @@ export default function SignInCard({
                 handleClose={handleClose} 
                 setOpen={setOpen}
                 />
-                <Button type="submit" fullWidth variant="contained" disabled={(!isSubmittable) || (userKind === "authenticated")}>
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={authPrimaryButtonSx}
+                    disabled={(!isSubmittable) || (userKind === "authenticated")}
+                >
                     Sign in
                 </Button>
             </Box>
             
-        </Stack>
+        </AuthDrawerShell>
     );
 }

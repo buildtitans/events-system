@@ -1,24 +1,49 @@
-import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import { PropsWithChildren, useEffect, type JSX } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useEffect, type JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import {
   CurrentDisplay,
   displaySection,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import EventRoundedIcon from "@mui/icons-material/EventRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import {
+  getGroupSidebarIconSx,
+  getGroupSidebarItemSx,
+  groupSidebarListSx,
+  groupSidebarNavSx,
+  groupSidebarSectionLabelMap,
+  groupSidebarSectionLabelSx,
+} from "@/src/styles/sx/groupSidebar";
 
-const options: CurrentDisplay[] = ["overview", "events", "group history"];
+const options = [
+  {
+    value: "overview",
+    label: groupSidebarSectionLabelMap.overview,
+    icon: <DashboardRoundedIcon fontSize="small" />,
+  },
+  {
+    value: "events",
+    label: groupSidebarSectionLabelMap.events,
+    icon: <EventRoundedIcon fontSize="small" />,
+  },
+  {
+    value: "group history",
+    label: groupSidebarSectionLabelMap["group history"],
+    icon: <HistoryRoundedIcon fontSize="small" />,
+  },
+] satisfies Array<{
+  value: CurrentDisplay;
+  label: string;
+  icon: JSX.Element;
+}>;
 
-type LocalGroupNavProps = PropsWithChildren<{ children?: React.ReactNode }>;
-
-export default function LocalGroupNav({
-  children,
-}: LocalGroupNavProps): JSX.Element {
+export default function LocalGroupNav(): JSX.Element {
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -33,51 +58,34 @@ export default function LocalGroupNav({
   }, [dispatch]);
 
   return (
-    <Stack
-      sx={{
-        width: "95%",
-        height: "100%",
-        marginX: "auto",
-      }}
-      direction={"column"}
-      alignItems={"center"}
-      spacing={2}
-      divider={<Divider orientation="horizontal" flexItem />}
-    >
-      <Paper
-        component={"nav"}
-        variant="outlined"
-        sx={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "paper.background",
-          border: "none",
-        }}
-      >
-        <MenuList variant="menu">
-          {options.map((option) => {
-            const label = capitalizeFirstLetter(option);
-            return (
-              <MenuItem
-                onClick={() => handleClick(option)}
-                key={option}
-                value={option}
+    <Box component="nav" sx={groupSidebarNavSx}>
+      <Typography sx={groupSidebarSectionLabelSx}>Navigate</Typography>
+      <MenuList variant="menu" sx={groupSidebarListSx}>
+        {options.map((option) => {
+          const active = displayed === option.value;
+
+          return (
+            <MenuItem
+              selected={active}
+              onClick={() => handleClick(option.value)}
+              key={option.value}
+              value={option.value}
+              sx={getGroupSidebarItemSx(active)}
+            >
+              <Box sx={getGroupSidebarIconSx(active)}>{option.icon}</Box>
+              <Typography
                 sx={{
-                  borderRadius: 2,
-                  color: "white",
-                  backgroundColor:
-                    displayed === option
-                      ? "rgba(255, 255, 255, 0.2)"
-                      : "transparent",
+                  color: active ? "#ffffff" : "rgba(255, 255, 255, 0.86)",
+                  fontWeight: 700,
+                  lineHeight: 1.2,
                 }}
               >
-                {label}
-              </MenuItem>
-            );
-          })}
-          {children}
-        </MenuList>
-      </Paper>
-    </Stack>
+                {option.label}
+              </Typography>
+            </MenuItem>
+          );
+        })}
+      </MenuList>
+    </Box>
   );
 }

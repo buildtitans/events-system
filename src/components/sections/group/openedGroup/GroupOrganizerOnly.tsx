@@ -1,7 +1,7 @@
 "use client";
 import type { JSX } from "react";
 import Box from "@mui/material/Box";
-import GroupActionsMenu from "../../global/nav/menus/groupActionsMenu";
+import GroupActionsMenu from "@/src/components/global/nav/menus/groupActionsMenu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";

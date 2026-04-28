@@ -17,9 +17,7 @@ const overrides = {
 const sidebarStyles = {
   width: {
     xs: "auto",
-    md: "140px",
-    lg: "180px",
-    xl: "200px",
+    md: "200px",
   },
   backgroundColor: "#191919",
   display: "flex",
@@ -28,24 +26,4 @@ const sidebarStyles = {
   alignItems: "center",
   border: "none",
 };
-
-const bottomDrawerSx = {
-  width: "100%",
-  backgroundColor: "#191919",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  border: "none",
-};
-
-const createGroupButtonSx = {
-  borderRadius: 999,
-  textWrap: "nowrap",
-  ":hover": {
-    bgcolor: "rgba(255, 255, 255, 0.1)",
-    color: "white",
-    transition: "all 0.3s ease",
-  },
-};
-export { overrides, sidebarStyles, createGroupButtonSx, bottomDrawerSx };
+export { overrides, sidebarStyles };

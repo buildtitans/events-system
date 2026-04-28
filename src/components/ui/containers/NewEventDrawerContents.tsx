@@ -2,6 +2,7 @@
 import NewEventForm from "../../sections/forms/newEventForm";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import CreateEventDrawerShell from "../drawers/createEventDrawerShell";
 
 export default function NewEventDrawerContents() {
     const group = useSelector((s: RootState) => s.openGroup.group);
@@ -9,9 +10,14 @@ export default function NewEventDrawerContents() {
     if (status !== "ready") return null;
 
     return (
-        <NewEventForm
-            group_id={group.data.id}
-        />
+        <CreateEventDrawerShell
+            groupName={group.data.name}
+            groupLocation={group.data.location}
+        >
+            <NewEventForm
+                group_id={group.data.id}
+            />
+        </CreateEventDrawerShell>
     )
 }
 

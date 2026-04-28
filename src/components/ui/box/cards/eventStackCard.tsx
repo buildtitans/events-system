@@ -13,7 +13,13 @@ import Box from "@mui/material/Box";
 import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
-import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import {
+  eventCardContentSx,
+  eventCardDescriptionSx,
+  eventCardGroupLabelSx,
+  eventCardRootSx,
+  eventCardTitleSx,
+} from "@/src/styles/sx/eventCard";
 
 type EventStackCardProps = {
   handleBlur: EventCardProps["handleBlur"];
@@ -22,7 +28,6 @@ type EventStackCardProps = {
   event: EventCardProps["event"];
   groupName: string;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
-  cardKind?: LayoutSlotSchemaType["kind"];
 };
 
 function EventStackCard({
@@ -32,13 +37,12 @@ function EventStackCard({
   event,
   groupName,
   handleOpenEvent,
-  cardKind
 }: EventStackCardProps) {
   const date = new Date(event.starts_at);
   const isFutureDateOrNow = isFutureOrNow(date);
   const scheduled_at = useMemo(() => {
-      return toMonthDayYearHour(event.starts_at);
-    }, [event]);
+    return toMonthDayYearHour(event.starts_at);
+  }, [event]);
 
   return (
     <StyledCard
@@ -48,11 +52,12 @@ function EventStackCard({
       onBlur={handleBlur}
       tabIndex={0}
       className={focusedCardIndex === 3 ? "Mui-focused" : ""}
-      sx={{ height: "100%", position: "relative" }}
+      sx={{ ...eventCardRootSx, height: "100%", position: "relative" }}
     >
       {event.status === "cancelled" && <EventCancelledOverlay />}
       <StyledCardContent
         sx={{
+          ...eventCardContentSx,
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -65,16 +70,21 @@ function EventStackCard({
             position: "relative",
             height: "100%",
             width: "100%",
-            opacity: event.status === "cancelled" ? 0.55 : "none",
+            opacity: event.status === "cancelled" ? 0.55 : 1,
           }}
         >
-          <Typography gutterBottom variant="caption" component="div">
+          <Typography
+            gutterBottom
+            variant="caption"
+            component="div"
+            sx={eventCardGroupLabelSx}
+          >
             {groupName}
           </Typography>
-          <Typography gutterBottom variant="h6" component="div">
+          <Typography gutterBottom variant="h6" component="div" sx={eventCardTitleSx}>
             {event.title}
           </Typography>
-          <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+          <StyledTypography variant="body2" gutterBottom sx={eventCardDescriptionSx}>
             {event.description}
           </StyledTypography>
         </Box>
@@ -83,7 +93,6 @@ function EventStackCard({
         isFutureDateOrNow={isFutureDateOrNow}
         location={event.meeting_location}
         scheduled_at={scheduled_at}
-        cardKind={cardKind}
       />
     </StyledCard>
   );

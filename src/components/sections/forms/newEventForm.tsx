@@ -1,9 +1,8 @@
 "use client"
 import type { JSX } from "react";
-import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import StartTime from "../inputs/event/startTime";
 import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
 import { useForm, Controller } from 'react-hook-form';
@@ -11,6 +10,12 @@ import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import type { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
 import LocationInput from "../inputs/event/locationInput";
+import {
+    createEventDrawerFormSx,
+    createEventFieldControlSx,
+    createEventPrimaryButtonSx,
+    createEventTextFieldSx,
+} from "@/src/styles/sx/createEventDrawer";
 
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
     const { control } = useForm<NewEventType>()
@@ -25,55 +30,25 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
 
 
     return (
-        <Stack
-            sx={{
-                width: 'auto',
-                height: '100%',
-                paddingY: '100px',
-                marginX: 'auto',
-            }}
+        <Box
+            component="form"
+            sx={createEventDrawerFormSx}
+            onSubmit={(e) => schedule(e)}
         >
-            <form
-                style={{
-                    width: '450px',
-                    height: '100%',
-                    gap: 40,
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-                onSubmit={(e) => schedule(e)}
-            >
                 <Controller
 
                     name="title"
                     control={control}
                     render={() => (
-                        <>
-                            <Typography component={"h1"} sx={{
-                                fontSize: '26px',
-                                borderBottom: 1,
-                                borderColor: 'rgb(255, 255, 255, 0.15)'
-                            }}>
-                                New Event
-                            </Typography>
-                            <FormControl sx={{
-                            }}>
+                            <FormControl fullWidth sx={createEventFieldControlSx}>
                                 <TextField
                                     onChange={(e) => handleTitle(e)}
                                     label="Title"
-                                    sx={{
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                            borderRadius: 2,
-                                        },
-
-                                        "& .MuiFormLabel-root.Mui-focused": {
-                                            border: 0
-                                        },
-                                    }}
-
+                                    fullWidth
+                                    autoFocus
+                                    sx={createEventTextFieldSx}
                                 />
                             </FormControl>
-                        </>
 
                     )}
                 />
@@ -81,20 +56,12 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     name="description"
                     control={control}
                     render={() => (
-                        <FormControl sx={{
-                        }}>
+                        <FormControl fullWidth sx={createEventFieldControlSx}>
                             <TextField
                                 onChange={(e) => handleDescription(e)}
                                 label="Description"
-                                sx={{
-                                    "& .MuiOutlinedInput-notchedOutline": {
-                                        borderRadius: 2,
-                                    },
-
-                                    "& .MuiFormLabel-root.Mui-focused": {
-                                        border: 0
-                                    },
-                                }}
+                                fullWidth
+                                sx={createEventTextFieldSx}
                             />
                         </FormControl>
 
@@ -110,7 +77,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     name="starts_at"
                     control={control}
                     render={() => (
-                        <FormControl>
+                        <FormControl fullWidth sx={createEventFieldControlSx}>
                             <StartTime
                                 handleStartsAt={handleStartsAt}
                             />
@@ -123,17 +90,12 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                         variant="contained"
                         type="submit"
                         startIcon={<AddIcon />}
+                        sx={createEventPrimaryButtonSx}
                     >
                         Schedule Event
                     </Button>
                 </FormControl>
-
-
-
-            </form>
-
-
-        </Stack>
+        </Box>
     )
 }
 

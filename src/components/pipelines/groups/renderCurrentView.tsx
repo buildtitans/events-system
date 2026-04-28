@@ -1,9 +1,9 @@
 "use client";
 import { RenderEventsForGroup } from "./renderEventsForGroup";
 import { JSX } from "react";
-import Overview from "../../sections/group/displays/overview";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import RenderGroupHistory from "./renderGroupHistory";
+import GroupCalandar from "@/src/features/group/groupCalandar";
 
 type RenderCurrentViewProps = {
   view: CurrentDisplay;
@@ -14,7 +14,7 @@ export default function RenderCurrentView ({ view, isMobile }: RenderCurrentView
 
     switch(view) {
         case "overview": {
-            return <Overview />
+            return <GroupCalandar />
         }
 
         case "group history": {

@@ -1,5 +1,5 @@
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
-import { RenderEventsLayout } from "../../pipelines/events/renderEventsLayout";
+import { RenderEventsLayout } from "@/src/components/pipelines/events/renderEventsLayout";
 import Box from "@mui/material/Box";
 
 export default function ScheduledEvents({ layout }: { layout: LayoutSlotSchemaType[] }) {

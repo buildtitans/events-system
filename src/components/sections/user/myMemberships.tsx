@@ -5,10 +5,6 @@ import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";
 import MembershipListItem from "../../ui/list/membership";
 import List from "@mui/material/List";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +16,9 @@ export default function MyMemberships({
   memberships,
 }: MyMembershipsProps): JSX.Element | null {
   const router = useRouter();
-  const nextEventLookup = useSelector((s: RootState) => s.user.nextEventLookup);
+  const nextEventLookup = useSelector(
+    (s: RootState) => s.user.nextEventLookup,
+  );
 
   const handleClick = (slug: UserMembershipSchemaType["group_slug"]) => {
     const path = `/group/${slug}`;
@@ -29,30 +27,23 @@ export default function MyMemberships({
 
   return (
     <Container>
-      <Stack
-        gap={6}
-        divider={<Divider />}
+      <List
         sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
           width: "100%",
         }}
       >
-        <List
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          {memberships.map((membership) => (
-            <MembershipListItem
-              key={membership.group_id}
-              handleClick={handleClick}
-              membership={membership}
-              nextEvent={nextEventLookup[membership.group_id]}
-            />
-          ))}
-        </List>
-      </Stack>
+        {memberships.map((membership) => (
+          <MembershipListItem
+            key={membership.group_id}
+            handleClick={handleClick}
+            membership={membership}
+            nextEvent={nextEventLookup[membership.group_id]}
+          />
+        ))}
+      </List>
     </Container>
   );
 }

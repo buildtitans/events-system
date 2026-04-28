@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import SimpleBackdrop from "../ui/feedback/pending/backdrop";
+import { Stack } from "@mui/material";
 type ClientComponentsShellProps = PropsWithChildren;
 
 export default function ClientComponentsShell({
@@ -24,13 +25,18 @@ export default function ClientComponentsShell({
   return (
     <Container
       key="content_container"
-      maxWidth="lg"
+      maxWidth={false}
       component="main"
-      sx={{ display: "flex", flexDirection: "column", my: 16, gap: 4 }}
     >
       <TopNav />
       <TopLayerHost />
+      <Stack
+      direction={"column"}
+      gap={4}
+      marginTop={10}
+      >
       {children}
+      </Stack>
       <Footer />
     </Container>
   );

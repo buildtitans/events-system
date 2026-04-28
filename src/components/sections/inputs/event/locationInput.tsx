@@ -11,9 +11,15 @@ import Autocomplete, {
 } from "@mui/material/Autocomplete";
 import AddressSuggestionOption from "@/src/components/ui/list/suggestions/addressSuggestion";
 import { AddressSuggestion } from "@/src/lib/hooks/search/types";
+import {
+  createEventAutocompletePaperSx,
+  createEventAutocompleteSx,
+  createEventFieldControlSx,
+  createEventTextFieldSx,
+} from "@/src/styles/sx/createEventDrawer";
 
 type LocationInputProps = {
-  control: Control<NewEventType, any, NewEventType>;
+  control: Control<NewEventType>;
   handleLocation: (input: string) => void;
 };
 
@@ -29,8 +35,9 @@ export default function LocationInput({
       name="meeting_location"
       control={control}
       render={() => (
-        <FormControl>
+        <FormControl fullWidth sx={createEventFieldControlSx}>
           <Autocomplete
+            sx={createEventAutocompleteSx}
             onChange={selectAddressOption}
             onInputChange={onInputChange}
             disabled={false}
@@ -55,6 +62,11 @@ export default function LocationInput({
             renderInput={(params: AutocompleteRenderInputParams) => (
               <LocationInputTextField params={params} />
             )}
+            slotProps={{
+              paper: {
+                sx: createEventAutocompletePaperSx,
+              },
+            }}
             disablePortal
             options={suggestions.status === "ready" ? suggestions.data : []}
           />
@@ -69,15 +81,8 @@ function LocationInputTextField({ params}: { params: AutocompleteRenderInputPara
     <TextField
         {...params}
       label="Location"
-      sx={{
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderRadius: 2,
-        },
-
-        "& .MuiFormLabel-root.Mui-focused": {
-          border: 0,
-        },
-      }}
+      fullWidth
+      sx={createEventTextFieldSx}
     />
   );
 }

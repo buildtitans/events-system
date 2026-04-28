@@ -5,22 +5,23 @@ import UserHasCreatedNoGroups from "../../ui/feedback/fallbacks/UserHasCreatedNo
 import GroupsPagesContainer from "../../sections/group/groupsPages";
 
 type RenderGroupsOrFallbackProps = {
-    pages: GroupsSchemaType[];
-}
+  pages: GroupsSchemaType[];
+};
 
-export default function RenderGroupsOrFallback({ pages }: RenderGroupsOrFallbackProps) {
-    const hasPages = ((Array.isArray(pages)) && (pages.length >0))
+export default function RenderGroupsOrFallback({
+  pages,
+}: RenderGroupsOrFallbackProps) {
+  const hasPages = Array.isArray(pages) && pages.length > 0;
 
+  if (!hasPages) {
+    return <UserHasCreatedNoGroups />;
+  }
 
-    if(!hasPages) {
-        return (
-            <UserHasCreatedNoGroups />
-        )
-    }
-
-    return (
-        <GroupsPagesContainer 
-        silenceHeader={true}
-        groupsPages={pages} />
-    )
+  return (
+    <GroupsPagesContainer
+      cardVariant="dashboard"
+      silenceHeader={true}
+      groupsPages={pages}
+    />
+  );
 }
