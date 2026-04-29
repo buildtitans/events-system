@@ -43,15 +43,15 @@ const openedEventDrawerInnerSx = {
   zIndex: 1,
   display: "flex",
   flexDirection: "column",
-  gap: 2.5,
+  gap: { xs: 1, md: 2.5 },
   width: "100%",
   px: { xs: 2.5, md: 3 },
-  py: { xs: 2.5, md: 3 },
+  py: { xs: 1, md: 3 },
 };
 
 const openedEventHeroSx = {
   width: "100%",
-  pb: 2.5,
+  pb: { xs: 1, md: 2.5 },
   borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
 };
 
@@ -71,7 +71,7 @@ const openedEventGroupLinkSx = {
 
 const openedEventGroupNameSx = {
   color: "inherit",
-  fontSize: "0.9rem",
+  fontSize: { xs: "0.8rem", md: "0.9rem" },
   fontWeight: 600,
   lineHeight: 1.4,
 };
@@ -81,7 +81,7 @@ const openedEventTitleSx = {
   fontWeight: 600,
   letterSpacing: "-0.03em",
   lineHeight: 1.16,
-  fontSize: { xs: "1.95rem", md: "1.95rem" },
+  fontSize: { xs: "1.2rem", md: "1.95rem" },
 };
 
 const openedEventImageWrapSx = {
@@ -127,7 +127,7 @@ const openedEventSectionLabelSx = {
 
 const openedEventBodyTextSx = {
   color: "rgba(255, 255, 255, 0.82)",
-  fontSize: "0.95rem",
+  fontSize: { xs: "0.8rem", md: "0.95rem" },
   lineHeight: 1.75,
 };
 
@@ -176,7 +176,7 @@ const openedEventAttendancePanelSx = {
 
 const openedEventAttendancePrimarySx = {
   color: "#ffffff",
-  fontSize: "1.02rem",
+  fontSize: { xs: "0.8rem", md: "1.02rem" },
   fontWeight: 700,
   lineHeight: 1.5,
 };
@@ -207,12 +207,12 @@ const openedEventControlsFormSx = {
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  gap: 2,
+  gap: { xs: 1.5, md: 2 },
 };
 
 const openedEventControlsTitleSx = {
   color: "#ffffff",
-  fontSize: "1.05rem",
+  fontSize: { xs: "0.9rem", md: "1.05rem" },
   fontWeight: 700,
   lineHeight: 1.3,
   letterSpacing: "-0.02em",
@@ -220,7 +220,7 @@ const openedEventControlsTitleSx = {
 
 const openedEventControlsDescriptionSx = {
   color: "rgba(255, 255, 255, 0.62)",
-  fontSize: "0.95rem",
+  fontSize: { xs: "0.8rem", md: "0.95rem" },
   lineHeight: 1.7,
 };
 
@@ -259,7 +259,7 @@ const openedEventActionRailSx = {
 };
 
 const getOpenedEventActionOptionSx = (active?: boolean) => ({
-  minHeight: 48,
+  minHeight: { xs: 34, md: 48 },
   width: "100%",
   justifyContent: "flex-start",
   gap: 0.95,
@@ -276,7 +276,7 @@ const getOpenedEventActionOptionSx = (active?: boolean) => ({
   color: active ? "#e5f2ff" : "rgba(255, 255, 255, 0.72)",
   textTransform: "none",
   fontWeight: 700,
-  fontSize: "0.93rem",
+  fontSize: { xs: "0.75rem", md: "0.93rem" },
   letterSpacing: "-0.01em",
   boxShadow: active ? "0 14px 30px rgba(92, 167, 255, 0.12)" : "none",
   "& .MuiButton-startIcon": {
@@ -338,7 +338,7 @@ const openedEventMenuPaperSx = {
 };
 
 const openedEventPrimaryButtonSx = {
-  minHeight: 44,
+  minHeight: { md: 44 },
   borderRadius: 999,
   border: "1px solid rgba(124, 198, 255, 0.28)",
   background:

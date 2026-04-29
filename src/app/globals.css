@@ -1,6 +1,5 @@
 @layer theme, base, mui, components, utilities;
-@import 'tailwindcss';
-
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -9,6 +8,11 @@
 
 body::-webkit-scrollbar {
   display: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @theme inline {
