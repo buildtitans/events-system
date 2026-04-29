@@ -5,6 +5,7 @@ import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
 import DashboardPanel from "../sections/user/dashboardPanel";
 import { useDetectActiveSession } from "@/src/lib/hooks/auth/useDetectActiveSession";
 
+
 export default function UserAccount(): JSX.Element {
   useHydrateMyRsvps();
   useDetectActiveSession();
