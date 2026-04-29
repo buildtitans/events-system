@@ -1,7 +1,7 @@
 "use client"
 import GroupName from "./groupName";
 import EventTitle from "./eventTitle";
-import OpenedEventImage from "../../box/cards/openedEventImage";
+import OpenedEventImage from "../../../box/cards/openedEventImage";
 import EventMeta from "./eventMeta";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {

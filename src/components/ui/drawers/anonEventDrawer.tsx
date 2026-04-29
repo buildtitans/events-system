@@ -1,6 +1,6 @@
 "use client";
 import type { JSX } from "react";
-import OpenedEvent from "../stack/OpenedEvent";
+import OpenedEvent from "@/src/components/ui/stack/openedEvent/OpenedEvent";
 import CheckOutGroupButton from "../buttons/checkOutGroupButton";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";

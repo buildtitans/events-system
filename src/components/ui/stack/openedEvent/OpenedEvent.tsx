@@ -1,9 +1,9 @@
 "use client";
 import Stack from "@mui/material/Stack";
-import FadeInOutBox from "../box/motionboxes/fadeInOutBox";
+import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
 import { type JSX } from "react";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import OpenedEventImage from "../box/cards/openedEventImage";
+import OpenedEventImage from "@/src/components/ui/box/cards/openedEventImage";
 import {
   GroupSlug,
   NameOfGroup,
@@ -11,11 +11,11 @@ import {
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
-import EventAttendants from "./openedEvent/eventAttendants";
-import EventTitle from "./openedEvent/eventTitle";
-import GroupName from "./openedEvent/groupName";
-import EventDescription from "./openedEvent/eventDescription";
-import EventMeta from "./openedEvent/eventMeta";
+import EventAttendants from "@/src/components/ui/stack/openedEvent/contents/eventAttendants";
+import EventTitle from "@/src/components/ui/stack/openedEvent/contents/eventTitle";
+import GroupName from "@/src/components/ui/stack/openedEvent/contents/groupName";
+import EventDescription from "@/src/components/ui/stack/openedEvent/contents/eventDescription";
+import EventMeta from "@/src/components/ui/stack/openedEvent/contents/eventMeta";
 import { openedEventHeroSx } from "@/src/styles/sx/openedEventDrawer";
 
 type OpenedEventProps = {

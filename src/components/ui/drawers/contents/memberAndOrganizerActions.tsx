@@ -9,7 +9,7 @@ import {
   NameOfGroup,
   NumberOfAttendantsType,
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import OpenedEventHead from "../../stack/openedEvent/openedEventHead";
+import OpenedEventHead from "../../stack/openedEvent/contents/openedEventHead";
 import { RenderOpenEventFormSection } from "@/src/components/pipelines/drawers/interfaces/renderOpenedEventSection";
 import { ActionButtons } from "../actions/actionButtons";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";

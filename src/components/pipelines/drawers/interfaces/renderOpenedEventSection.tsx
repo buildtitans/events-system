@@ -7,7 +7,7 @@ import {
   NameOfGroup,
   NumberOfAttendantsType,
 } from "@/src/lib/store/slices/events/EventDrawerSlice";
-import OpenedEventDetails from "@/src/components/ui/stack/openedEvent/openedEventDetails";
+import OpenedEventDetails from "@/src/components/ui/stack/openedEvent/contents/openedEventDetails";
 import RescheduleEventForm from "@/src/components/sections/forms/rescheduleEventForm";
 import type { EventDrawerFormState } from "@/src/components/ui/drawers/contents/memberAndOrganizerActions";
 
