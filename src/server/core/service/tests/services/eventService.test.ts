@@ -7,12 +7,15 @@ import {
   dbMock,
   policyMock,
   makeEvent,
+  makeAttendanceUpdate,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventsService.getPastEvents", () => {
   const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
+  const getPastEventRecords = dbMock.eventAttendants
+    .getPastEventRecords as jest.Mock;
   let service: EventService;
 
   beforeEach(() => {
@@ -42,10 +45,27 @@ describe("EventsService.getPastEvents", () => {
 
     getGroupEvents.mockResolvedValue([pastEvent, futureEvent]);
 
+    getPastEventRecords.mockResolvedValue([
+      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-1" }, "going"),
+      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-2" }, "going"),
+      makeAttendanceUpdate(
+        { event_id: "future-1", user_id: "user-3" },
+        "interested",
+      ),
+    ]);
+
     const result = await service.getPastEvents("group-1");
 
-    expect(result).toEqual([pastEvent]);
+    expect(result).toEqual({
+      history: [pastEvent],
+      pastEventsRecords: {
+        "past-1": 2,
+        "future-1": 0,
+      },
+    });
+
     expect(getGroupEvents).toHaveBeenCalledWith("group-1");
+    expect(getPastEventRecords).toHaveBeenCalledWith(["past-1", "future-1"]);
   });
 
   it("returns an empty array when a group has no past events", async () => {
@@ -58,9 +78,17 @@ describe("EventsService.getPastEvents", () => {
       }),
     ]);
 
+    getPastEventRecords.mockResolvedValue([]);
+
     const result = await service.getPastEvents("group-1");
 
-    expect(result).toEqual([]);
+    expect(result).toEqual({
+      history: [],
+      pastEventsRecords: {
+        "future-1": 0,
+      },
+    });
+    expect(getPastEventRecords).toHaveBeenCalledWith(["future-1"]);
   });
 
   it("returns all events when every event in the group is in the past", async () => {
@@ -78,10 +106,22 @@ describe("EventsService.getPastEvents", () => {
     });
 
     getGroupEvents.mockResolvedValue([olderPastEvent, recentPastEvent]);
+    getPastEventRecords.mockResolvedValue([
+      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-1" }, "going"),
+      makeAttendanceUpdate({ event_id: "past-2", user_id: "user-2" }, "going"),
+      makeAttendanceUpdate({ event_id: "past-2", user_id: "user-3" }, "going"),
+    ]);
 
     const result = await service.getPastEvents("group-1");
 
-    expect(result).toEqual([olderPastEvent, recentPastEvent]);
+    expect(result).toEqual({
+      history: [olderPastEvent, recentPastEvent],
+      pastEventsRecords: {
+        "past-1": 1,
+        "past-2": 2,
+      },
+    });
+    expect(getPastEventRecords).toHaveBeenCalledWith(["past-1", "past-2"]);
   });
 });
 

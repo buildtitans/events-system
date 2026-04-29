@@ -186,6 +186,15 @@ describe("ParticipationsService", () => {
   });
 
   describe("getRsvpdEvents", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it("throws a 401 error when the user is not authenticated", async () => {
       unauthenticated();
 
@@ -217,14 +226,22 @@ describe("ParticipationsService", () => {
         ),
       ]);
 
-      getFlattenedEventsByIdsInDb.mockResolvedValue(events);
+      getFlattenedEventsByIdsInDb
+        .mockResolvedValueOnce(events)
+        .mockResolvedValueOnce(events);
 
       await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual(rsvps);
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
       expect(getGroupsInDb).toHaveBeenCalled();
       expect(getUserAttendanceRecordsInDb).toHaveBeenCalled();
-      expect(getFlattenedEventsByIdsInDb).toHaveBeenCalledWith([
+      expect(getFlattenedEventsByIdsInDb).toHaveBeenCalledTimes(2);
+      expect(getFlattenedEventsByIdsInDb).toHaveBeenNthCalledWith(1, [
+        EVENT_ID_1,
+        EVENT_ID_2,
+        EVENT_ID_3,
+      ]);
+      expect(getFlattenedEventsByIdsInDb).toHaveBeenNthCalledWith(2, [
         EVENT_ID_1,
         EVENT_ID_2,
         EVENT_ID_3,
@@ -234,13 +251,12 @@ describe("ParticipationsService", () => {
     it("returns an empty array when an authenticated user has no RSVP records", async () => {
       authenticateAs();
 
-      getGroupsInDb.mockResolvedValue(groups);
       getUserAttendanceRecordsInDb.mockResolvedValue([]);
 
       await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
-      expect(getGroupsInDb).toHaveBeenCalled();
+      expect(getGroupsInDb).not.toHaveBeenCalled();
       expect(getUserAttendanceRecordsInDb).toHaveBeenCalledWith(USER_ID);
       expect(getFlattenedEventsByIdsInDb).not.toHaveBeenCalled();
     });
@@ -265,12 +281,19 @@ describe("ParticipationsService", () => {
         ),
       ]);
 
+      getFlattenedEventsByIdsInDb.mockResolvedValueOnce(events);
+
       await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
-      expect(getGroupsInDb).toHaveBeenCalled();
+      expect(getGroupsInDb).not.toHaveBeenCalled();
       expect(getUserAttendanceRecordsInDb).toHaveBeenCalledWith(USER_ID);
-      expect(getFlattenedEventsByIdsInDb).not.toHaveBeenCalled();
+      expect(getFlattenedEventsByIdsInDb).toHaveBeenCalledTimes(1);
+      expect(getFlattenedEventsByIdsInDb).toHaveBeenCalledWith([
+        EVENT_ID_1,
+        EVENT_ID_2,
+        EVENT_ID_3,
+      ]);
     });
   });
 });

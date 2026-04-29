@@ -156,6 +156,7 @@ export const dbMock = {
     upsertStatus: jest.fn(),
     parseRawAttendants: jest.fn(),
     parseRawAttendant: jest.fn(),
+    getPastEventRecords: jest.fn(),
   },
   notifications: {
     markOpenedNotifications: jest.fn(),

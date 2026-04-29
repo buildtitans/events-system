@@ -90,16 +90,50 @@ export class ParticipationsService {
     user_id: string | null | undefined,
   ): Promise<RsvpSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const groups = await this.db.groups.getGroups();
-    const userRecords =
-      await this.db.eventAttendants.getUserAttendanceRecords(userId);
-
-    const hash = buildGroupNameLookup(groups);
-    const filtered = filterUserRsvps(userRecords);
+    const activeUserRecords = await this.getUserAttendance(userId);
+    const filtered = filterUserRsvps(activeUserRecords);
     const keys = Object.keys(filtered);
     if (keys.length === 0) return [];
+    const groups = await this.db.groups.getGroups();
+    const hash = buildGroupNameLookup(groups);
     const events = await this.db.events.getFlattenedEventsByIds(keys);
     const rsvps = this.parse.toRsvpShape(events, hash, filtered);
     return RsvpSchemaArrayValidator(rsvps);
+  }
+
+  private async getUserAttendance(userId: string) {
+    const userRecords =
+      await this.db.eventAttendants.getUserAttendanceRecords(userId);
+
+    if (userRecords.length === 0) {
+      return [];
+    }
+    const activeUserRecords =
+      await this.getActiveAttendanceRecords(userRecords);
+
+    if (activeUserRecords.length === 0) {
+      return [];
+    }
+    return activeUserRecords;
+  }
+
+  private async getActiveAttendanceRecords(
+    userRecords: EventAttendantsSchemaType[],
+  ) {
+    const ids = userRecords.map((record) => record.event_id);
+    const events = await this.db.events.getFlattenedEventsByIds(ids);
+    const activeEvents = events.map((event) => {
+      const scheduledFor = new Date(event.starts_at);
+      const today = new Date();
+      if (today < scheduledFor) {
+        return event.id;
+      }
+    });
+    return userRecords.filter((record) => {
+      const activeEvent = activeEvents.find((id) => id === record.event_id);
+      if (activeEvent) {
+        return record;
+      }
+    });
   }
 }
