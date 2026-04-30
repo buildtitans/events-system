@@ -11,7 +11,6 @@ import {
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import MemberEventDrawer from "@/src/components/ui/drawers/memberEventDrawer";
 import AnonEventDrawer from "@/src/components/ui/drawers/anonEventDrawer";
-import OpenedEvent from "@/src/components/ui/stack/OpenedEvent";
 
 type RenderEventDrawerContentsProps = {
   role: GroupMemberSchemaType["role"];

@@ -5,8 +5,6 @@ import {
   openedEventDrawerRootSx,
 } from "@/src/styles/sx/openedEventDrawer";
 import { PropsWithChildren } from "react";
-import MembersOnlyAttendanceForm from "../../sections/events/membersOnlyAttendanceForm";
-import OpenedEvent from "../stack/OpenedEvent";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
