@@ -4,22 +4,27 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { RenderOpenedGroup } from "../pipelines/groups/renderOpenedGroup";
 import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import { getDesktopSidebarOffsetSx } from "@/src/styles/sx/sidebar";
 
 export default function OpenedGroup(): JSX.Element | null {
   const { group } = useSelector((s: RootState) => s.openGroup);
+  const sidebar = useSelector((s: RootState) => s.rendering.sidebar);
+  const showDesktopSidebar = sidebar === "group";
 
   return (
     <Container
+      maxWidth={false}
       disableGutters
+      component="main"
       sx={{
-        minHeight: "100svh",
-        width: { xs: "100%", md: "80%", xl: "100svw" },
+        height: "100%",
+        ...getDesktopSidebarOffsetSx(showDesktopSidebar),
       }}
     >
-      <Stack>
+      <Box sx={{ width: "100%", height: "100%" }}>
         <RenderOpenedGroup group={group} />
-      </Stack>
+      </Box>
     </Container>
   );
 }

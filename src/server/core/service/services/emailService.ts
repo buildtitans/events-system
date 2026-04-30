@@ -1,8 +1,16 @@
 import { Resend } from "resend";
-import { getEnv } from "../../lib/init/getEnv";
 import type { CreateEmailOptions } from "resend";
+import { getEnv } from "../../lib/init/getEnv";
 
-function getResendKey() {
+function getResetUrl(): string {
+  if (process.env.NODE_ENV === "production") {
+    return getEnv("pwResetUrl");
+  } else {
+    return getEnv("devPwResetUrl");
+  }
+}
+
+function getResendKey(): string {
   if (process.env.NODE_ENV === "production") {
     return getEnv("resendProdKey");
   } else {
@@ -10,23 +18,28 @@ function getResendKey() {
   }
 }
 
-const RESEND_API_KEY = getResendKey();
-
 export class EmailService {
   private readonly resend: Resend;
   constructor() {
-    this.resend = new Resend(RESEND_API_KEY);
+    this.resend = new Resend(getResendKey());
   }
 
-  public async sendResetEmail(email: string, resetUrl: string) {
+  async sendEmail(token: string, email: string) {
+    const url = this.constructUrl(token);
     const { data, error } = await this.resend.emails.send(
-      this.resendOptions(resetUrl, email),
+      this.resendOptions(url, email),
     );
 
     if (error) {
       throw new Error(`Failed to send reset email: ${error.message}`);
     }
     return data;
+  }
+
+  private constructUrl(token: string) {
+    const url = new URL(getResetUrl());
+    url.searchParams.set("token", token);
+    return url.toString();
   }
 
   private resendOptions(resetUrl: string, email: string): CreateEmailOptions {

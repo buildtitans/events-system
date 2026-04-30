@@ -2,17 +2,6 @@ import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 import { EmailService } from "./emailService";
-import { getEnv } from "../../lib/init/getEnv";
-
-function getResetUrl(): string {
-  if (process.env.NODE_ENV === "production") {
-    return getEnv("pwResetUrl");
-  } else {
-    return getEnv("devPwResetUrl");
-  }
-}
-
-const PW_RESET_URL = getResetUrl();
 
 export class SessionService {
   private readonly email: EmailService;
@@ -69,11 +58,7 @@ export class SessionService {
       return { ok: true };
     }
 
-    const url = new URL(PW_RESET_URL);
-    url.searchParams.set("token", result.token);
-
-    await this.email.sendResetEmail(email, url.toString());
-
+    await this.email.sendEmail(result.token, email);
     return { ok: true };
   }
 }

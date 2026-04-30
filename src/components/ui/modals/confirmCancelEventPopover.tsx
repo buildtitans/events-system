@@ -48,8 +48,10 @@ export default function ConfirmCancelEventPopover({
             open={open}
             anchorEl={anchorEl}
             onClose={onClose}
-            PaperProps={{
-              sx: openedEventPopoverPaperSx,
+            slotProps={{
+                paper: {
+                    sx: openedEventPopoverPaperSx
+                }
             }}
             anchorOrigin={{
                 vertical: "bottom",

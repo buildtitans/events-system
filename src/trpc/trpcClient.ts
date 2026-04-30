@@ -12,9 +12,9 @@ export const trpcClient = createTRPCProxyClient<AppRouter>({
     httpBatchLink({
       url: url,
       transformer: superjson,
-      fetch(url, options) {
+      fetch(url, init) {
         return fetch(url, {
-          ...options,
+          ...init,
           credentials: "include",
         });
       },

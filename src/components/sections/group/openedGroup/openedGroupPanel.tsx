@@ -21,23 +21,30 @@ export default function OpenedGroupPanel({
   isMobile,
 }: OpenedGroupContentProps) {
   return (
-    <Box minHeight={"100svh"} paddingY={4} sx={openedGroupHeroRootSx}>
-      <Box sx={openedGroupHeroPanelSx}>
-        <OpenedGroupHero group={group} />
-        <Container
-          sx={{
-            padding: 2,
-            width: "100%",
-          }}
-          disableGutters
-          maxWidth={false}
-        >
-          <Stack gap={4} width={"100%"} alignContent={"start"} justifyContent={"start"}>
-            <ActiveDisplayHeader />
-            <RenderCurrentView isMobile={isMobile} view={displayed} />
-          </Stack>
-        </Container>
+    <Container component="section">
+      <Box minHeight={"100svh"} paddingY={4} sx={openedGroupHeroRootSx}>
+        <Box sx={openedGroupHeroPanelSx}>
+          <OpenedGroupHero group={group} />
+          <Container
+            sx={{
+              padding: 2,
+              width: "100%",
+            }}
+            disableGutters
+            maxWidth={false}
+          >
+            <Stack
+              gap={4}
+              width={"100%"}
+              alignContent={"start"}
+              justifyContent={"start"}
+            >
+              <ActiveDisplayHeader />
+              <RenderCurrentView isMobile={isMobile} view={displayed} />
+            </Stack>
+          </Container>
+        </Box>
       </Box>
-    </Box>
+    </Container>
   );
 }

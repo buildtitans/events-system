@@ -1,5 +1,5 @@
 const sidebarDesktopWidths = {
-  compact: 160,
+  compact: 230,
   full: 250,
 } as const;
 

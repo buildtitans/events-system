@@ -67,9 +67,7 @@ export default function UpdateViewerAttendanceForm({
                     <Typography component="span" sx={openedEventSectionLabelSx}>
                         Attendance
                     </Typography>
-                    <Typography component="h3" sx={openedEventControlsTitleSx}>
-                        Update your RSVP
-                    </Typography>
+                    
                     <Typography component="p" sx={openedEventControlsDescriptionSx}>
                         Let the organizer know whether you&apos;re going or still interested.
                     </Typography>
