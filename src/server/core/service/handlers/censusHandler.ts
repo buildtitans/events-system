@@ -26,7 +26,10 @@ export class CensusHandler {
   async getPopularEventsIds() {
     const records = await this.api.eventAttendants.getAllAttendanceRecords();
 
-    return curatePopularEventsIds(records);
+    const events = await this.api.events.getEvents();
+    const activeRecords = this.filterPastEventsFromRecords(events, records);
+
+    return curatePopularEventsIds(activeRecords);
   }
 
   async getPopularGroups() {
@@ -35,6 +38,35 @@ export class CensusHandler {
     const popularGroupIds = this.filterPopularGroupIds(records);
 
     return await this.api.groups.getGroupsByIds(popularGroupIds);
+  }
+
+  private filterPastEventsFromRecords(
+    events: EventSchemaType[],
+    records: EventAttendantsSchemaType[],
+  ) {
+    const activeEvents: EventSchemaType[] = [];
+    const activeRecords: EventAttendantsSchemaType[] = [];
+
+    for (const event of events) {
+      const startsAt = new Date(event.starts_at).getTime();
+      const now = Date.now();
+
+      if (startsAt > now) {
+        activeEvents.push(event);
+      }
+    }
+
+    for (const record of records) {
+      const activeId: EventSchemaType | undefined = activeEvents.find(
+        (event) => event.id === record.event_id,
+      );
+
+      if (activeId) {
+        activeRecords.push(record);
+      }
+    }
+
+    return activeRecords;
   }
 
   private filterPopularGroupIds(

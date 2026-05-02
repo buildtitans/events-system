@@ -71,7 +71,7 @@ export const EventsSlice = createSlice({
       if (result.status === "fulfilled") {
         state.eventPages = {
           status: "ready",
-          data: result.data.events,
+          data: result.data.activeEvents,
         };
 
         state.currentPage = 0;
