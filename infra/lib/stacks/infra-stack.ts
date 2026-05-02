@@ -124,7 +124,7 @@ export class InfraStack extends Stack {
         subnetType: ec2.SubnetType.PUBLIC,
       },
       role,
-      instanceType: new ec2.InstanceType("t3.small"),
+      instanceType: new ec2.InstanceType("t3.medium"),
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
       securityGroup,
       init: bootstrap.buildInit(),
