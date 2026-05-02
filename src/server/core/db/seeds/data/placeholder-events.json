@@ -1,122 +1,242 @@
 [
   {
-    "starts_at": "2026-04-02T18:00:00Z",
+    "starts_at": "2026-02-10T20:00:00Z",
     "status": "scheduled",
     "img": "https://picsum.photos/800/450?random=1",
+    "tag": "DevOps",
+    "title": "Sustainable AI Infrastructure for Practical Teams",
+    "description": "Join us for a discussion on the environmental cost of AI systems, efficient infrastructure choices, and the tradeoffs teams face when balancing speed, cost, and sustainability.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-03-04T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=2",
     "tag": "Engineering",
     "title": "Modern Dev Tools That Actually Improve Team Workflow",
-    "description": "Join fellow engineers for a discussion on modern development tooling, workflow improvements, and the practical ways new tools are changing how teams build software.",
+    "description": "A conversation for engineers about modern tooling, build pipelines, and the kinds of practical workflow upgrades that genuinely help teams ship faster.",
     "group": "blono-devs-bloomington-il",
     "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-08T19:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=2",
+    "img": "https://picsum.photos/800/450?random=3",
     "tag": "Product",
     "title": "What Makes a Feature Worth Building?",
-    "description": "Come explore how thoughtful product decisions, feature prioritization, and user feedback shape successful releases and stronger product outcomes.",
+    "description": "Explore how thoughtful product decisions, user feedback, and business goals come together when teams decide which features deserve to make the roadmap.",
     "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-15T17:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=3",
-    "tag": "Design",
-    "title": "Design Trends Worth Paying Attention To in 2026",
-    "description": "A conversation for designers and frontend folks about emerging design trends, interface patterns, and how to build experiences that stay relevant over time.",
-    "group": "uiux-and-frontend-design-lab-normal-il",
     "meeting_location": "Online"
   },
   {
     "starts_at": "2026-04-22T18:00:00Z",
     "status": "scheduled",
     "img": "https://picsum.photos/800/450?random=4",
-    "tag": "Company",
-    "title": "Startup Milestones, Setbacks, and Lessons Learned",
-    "description": "Hear the story behind key milestones, lessons learned, and the decisions that helped shape a growing company from its early stages to where it is today.",
-    "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-02-10T20:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=41",
-    "tag": "DevOps",
-    "title": "Sustainable AI: Building Smarter, Greener Systems",
-    "description": "Join us for a discussion on the environmental impact of AI systems, sustainable infrastructure choices, and how teams can balance performance with responsible engineering practices.",
-    "group": "devops-and-cloud-illinois-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-12T18:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=11",
-    "tag": "Software Solutions",
-    "title": "Small Software Changes That Save Teams Big Time",
-    "description": "A practical session on workflow optimization, software improvements, and the kinds of product decisions that help teams work faster and more effectively.",
-    "group": "midwest-full-stack-collective-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-18T19:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=101",
-    "tag": "AI Research",
-    "title": "Behind the Stack: How Modern ML Platforms Are Built",
-    "description": "Take a closer look at the infrastructure, research ideas, and engineering tradeoffs behind modern machine learning platforms in this deep-dive session for AI enthusiasts and builders.",
-    "group": "data-and-ai-central-il-normal-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-20T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=102",
-    "tag": "Growth",
-    "title": "Using Data to Improve Retention and Customer Success",
-    "description": "Join this session on experimentation, analytics, and growth strategy to see how data-informed decisions can improve customer experience and long-term retention.",
-    "group": "backend-engineering-guild-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-25T17:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=103",
-    "tag": "UX",
-    "title": "Turning User Research Into Better Interface Decisions",
-    "description": "A UX-focused event on turning user interviews, feedback, and behavioral insights into more intuitive interfaces and stronger product experiences.",
+    "tag": "Design",
+    "title": "Design Trends Worth Paying Attention To in 2026",
+    "description": "Frontend developers and designers will look at emerging interface patterns, visual trends, and the decisions that help digital products stay useful and current.",
     "group": "uiux-and-frontend-design-lab-normal-il",
     "meeting_location": "Online"
   },
   {
-    "starts_at": "2026-04-28T18:00:00Z",
+    "starts_at": "2026-05-05T19:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=104",
+    "img": "https://picsum.photos/800/450?random=5",
+    "tag": "Frontend",
+    "title": "React State Patterns for Growing Products",
+    "description": "A hands-on discussion about organizing state, managing complexity, and keeping React applications maintainable as features and team size continue to grow.",
+    "group": "central-illinois-react-normal-il-61761",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-09T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=6",
+    "tag": "Software Solutions",
+    "title": "Small Software Changes That Save Teams Big Time",
+    "description": "We will look at practical improvements to internal tools, release workflows, and engineering habits that create a surprisingly large productivity payoff over time.",
+    "group": "midwest-full-stack-collective-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-12T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=7",
+    "tag": "AI Research",
+    "title": "Behind the Stack: How Modern ML Platforms Are Built",
+    "description": "Take a closer look at the infrastructure, experimentation loops, and system design choices behind modern machine learning platforms and applied AI products.",
+    "group": "data-and-ai-central-il-normal-il",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-16T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=8",
+    "tag": "Backend",
+    "title": "Choosing the Right Data Boundaries in Distributed Systems",
+    "description": "A backend-focused session on service boundaries, persistence decisions, and the tradeoffs that show up when systems become more distributed and interconnected.",
+    "group": "backend-engineering-guild-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-20T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=9",
     "tag": "Culture",
     "title": "Building Team Culture That Supports Great Work",
-    "description": "Join us for a conversation on team culture, collaboration, and the workplace habits that help creative and technical teams do their best work together.",
+    "description": "Join us for a conversation on collaboration, mentorship, and the team habits that help people do strong technical work without burning out.",
     "group": "women-in-tech-bloomington-normal-bloomington-il",
     "meeting_location": "Online"
   },
   {
-    "starts_at": "2026-05-02T18:00:00Z",
+    "starts_at": "2026-05-23T17:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=45",
+    "img": "https://picsum.photos/800/450?random=10",
+    "tag": "Career",
+    "title": "Portfolio Projects That Help Junior Developers Stand Out",
+    "description": "Early-career developers will share ideas for stronger portfolio projects, clearer case studies, and better ways to present technical growth to hiring teams.",
+    "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-27T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=11",
+    "tag": "Open Source",
+    "title": "From First Issue to Meaningful Contribution",
+    "description": "A welcoming event for contributors who want to learn how to find approachable issues, communicate with maintainers, and turn first contributions into ongoing involvement.",
+    "group": "open-source-contributors-hub-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-05-30T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=12",
+    "tag": "TypeScript",
+    "title": "TypeScript Patterns That Keep Codebases Calm",
+    "description": "We will dig into practical typing strategies, safer abstractions, and the kind of TypeScript patterns that help teams move quickly without losing clarity.",
+    "group": "illinois-typescript-enthusiasts-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-06-03T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=13",
+    "tag": "Company",
+    "title": "Startup Milestones, Setbacks, and Lessons Learned",
+    "description": "Hear stories about early traction, missed bets, and the decisions that helped a growing company adapt while building toward longer-term goals.",
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-06-07T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=14",
     "tag": "Engineering",
     "title": "Engineering for Sustainability in Real-World Systems",
-    "description": "Explore how engineers are approaching sustainability through smarter systems, better design decisions, and practical innovations that reduce environmental impact.",
+    "description": "Explore how engineers are approaching sustainability through smarter systems, efficient defaults, and practical design decisions that reduce waste without slowing product teams down.",
     "group": "blono-devs-bloomington-il",
     "meeting_location": "Online"
   },
   {
-    "starts_at": "2026-05-08T19:00:00Z",
+    "starts_at": "2026-06-11T18:30:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=6",
-    "tag": "Product",
-    "title": "Recent Product Updates and the Thinking Behind Them",
-    "description": "Join other product-minded builders for a walkthrough of recent updates, feature improvements, and the thinking behind changes designed to improve day-to-day workflows.",
+    "img": "https://picsum.photos/800/450?random=15",
+    "tag": "Cloud",
+    "title": "Right-Sizing Infrastructure Without Guesswork",
+    "description": "A practical conversation on observability, cost signals, and how to make better infrastructure sizing decisions before overprovisioning becomes the default.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-06-15T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=16",
+    "tag": "UX",
+    "title": "Turning User Research Into Better Interface Decisions",
+    "description": "A UX-focused event on turning interviews, feedback, and behavioral clues into more intuitive interface decisions and stronger product experiences.",
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-06-20T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=17",
+    "tag": "Performance",
+    "title": "Where React Apps Slow Down and What to Fix First",
+    "description": "This session focuses on bottlenecks in modern React apps, how to spot them early, and what kinds of fixes give the best performance return for the effort.",
     "group": "central-illinois-react-normal-il-61761",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-06-25T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=18",
+    "tag": "Architecture",
+    "title": "Full Stack Architecture Choices That Age Well",
+    "description": "Join fellow builders for a conversation on APIs, databases, frontend boundaries, and the architecture decisions that continue to pay off as products evolve.",
+    "group": "midwest-full-stack-collective-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-01T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=19",
+    "tag": "Data",
+    "title": "Using Data to Improve Retention and Customer Success",
+    "description": "Learn how analytics, experimentation, and product feedback loops can improve customer outcomes while helping teams make clearer and faster decisions.",
+    "group": "data-and-ai-central-il-normal-il",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-09T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=20",
+    "tag": "Systems",
+    "title": "Designing APIs That Stay Useful as Products Expand",
+    "description": "A backend engineering event on API evolution, compatibility, and how to design service contracts that remain workable as product scope keeps growing.",
+    "group": "backend-engineering-guild-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-14T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=21",
+    "tag": "Leadership",
+    "title": "Mentorship Habits That Actually Help People Grow",
+    "description": "We will talk about mentoring in technical teams, giving useful guidance, and building support systems that help newer teammates grow with confidence.",
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-18T17:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=22",
+    "tag": "Collaboration",
+    "title": "Healthy Open Source Collaboration at Scale",
+    "description": "A session about review culture, contributor onboarding, and the project habits that make open source communities healthier and easier to join.",
+    "group": "open-source-contributors-hub-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-26T17:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=23",
+    "tag": "Career",
+    "title": "Interview Stories, Resume Signals, and Hiring Patterns",
+    "description": "Junior developers will compare interview experiences, resume strategies, and the signals that seem to matter most when teams are evaluating early-career candidates.",
+    "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-08-02T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=24",
+    "tag": "Type Safety",
+    "title": "Type-Driven Refactors for Safer Releases",
+    "description": "A TypeScript-centered discussion on using stronger typing, better tooling, and deliberate refactors to make releases safer as codebases become more complex.",
+    "group": "illinois-typescript-enthusiasts-online",
     "meeting_location": "Online"
   }
 ]

@@ -22,5 +22,53 @@
     {
         "email": "trentirvin875@gmail.com",
         "password": "password6"
+    },
+    {
+        "email": "erin@example.com",
+        "password": "password7"
+    },
+    {
+        "email": "frank@example.com",
+        "password": "password8"
+    },
+    {
+        "email": "grace@example.com",
+        "password": "password9"
+    },
+    {
+        "email": "henry@example.com",
+        "password": "password10"
+    },
+    {
+        "email": "ivy@example.com",
+        "password": "password11"
+    },
+    {
+        "email": "jack@example.com",
+        "password": "password12"
+    },
+    {
+        "email": "karen@example.com",
+        "password": "password13"
+    },
+    {
+        "email": "leo@example.com",
+        "password": "password14"
+    },
+    {
+        "email": "mia@example.com",
+        "password": "password15"
+    },
+    {
+        "email": "nora@example.com",
+        "password": "password16"
+    },
+    {
+        "email": "owen@example.com",
+        "password": "password17"
+    },
+    {
+        "email": "paige@example.com",
+        "password": "password18"
     }
 ]
