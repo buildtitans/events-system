@@ -4,7 +4,7 @@ import { Roboto } from "next/font/google";
 import { buildMetaData } from "../lib/meta/metadata";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import "./globals.css";
-import ClientShell from "@/src/components/shell/clientShell";
+import ClientShell from "@/src/client/components/shell/clientShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

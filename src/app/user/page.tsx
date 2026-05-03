@@ -1,6 +1,6 @@
 "use client";
-import HydrateUserAccountPage from "@/src/components/hydration/HydrateUserAccountPage";
-import UserAccount from "@/src/components/pages/userAccountPage";
+import HydrateUserAccountPage from "@/src/client/components/hydration/HydrateUserAccountPage";
+import UserAccount from "@/src/client/components/pages/userAccountPage";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { JSX } from "react";

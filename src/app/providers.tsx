@@ -4,8 +4,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { StyledEngineProvider } from "@mui/material/styles";
 import { ReduxProvider } from '@/src/lib/store';
 import type { PropsWithChildren } from 'react';
-import SessionHydrator from '../components/hydration/sessionHydrator';
-import ClientComponentsShell from '../components/shell/ClientComponentsShell';
+import SessionHydrator from '@/src/client/components/hydration/sessionHydrator';
+import ClientComponentsShell from '@/src/client/components/shell/ClientComponentsShell';
 
 const theme = createTheme({
     palette: {

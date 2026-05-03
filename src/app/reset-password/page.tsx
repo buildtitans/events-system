@@ -1,6 +1,6 @@
 "use client";
-import ResetPasswordForm from "@/src/components/sections/forms/auth/resetPasswordForm";
 import { useSearchParams } from "next/navigation";
+import ResetPasswordForm from "@/src/client/components/sections/forms/auth/resetPasswordForm";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
