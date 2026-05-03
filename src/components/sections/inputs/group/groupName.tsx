@@ -1,5 +1,5 @@
 "use client";
-import type { CreateNewGroupHook } from "@/src/lib/hooks/insert/useCreateNewGroup";
+import type { CreateNewGroupHook } from "@/src/lib/types/hooks/types";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import { JSX } from "react";
@@ -9,17 +9,17 @@ import {
 } from "@/src/styles/sx/createGroupDrawer";
 
 type GroupNameFieldProps = {
-    handleGroupName: CreateNewGroupHook["handleGroupName"],
+    getInput: CreateNewGroupHook["getInput"],
 }
 
 export default function GroupNameField({
-    handleGroupName,
+    getInput,
 }: GroupNameFieldProps): JSX.Element {
 
     return (
         <FormControl fullWidth sx={createGroupFieldControlSx}>
             <TextField
-                onChange={(e) => handleGroupName(e)}
+                onChange={(e) => getInput(e, "name")}
                 id="group-name"
                 label="Group Name"
                 variant="outlined"

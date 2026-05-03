@@ -8,8 +8,8 @@ import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
 import { useForm, Controller } from 'react-hook-form';
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
-import type { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
-import LocationInput from "../inputs/event/locationInput";
+import type { NewEventType } from "@/src/lib/types/hooks/types";
+import EventLocationInput from "../inputs/event/eventLocationInput";
 import {
     createEventDrawerFormSx,
     createEventFieldControlSx,
@@ -20,11 +20,10 @@ import {
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
     const { control } = useForm<NewEventType>()
     const {
-        handleDescription,
         handleStartsAt,
         schedule,
-        handleTitle,
         handleLocation,
+        getInput,
         isSubmittable,
     } = useCreateEvent(group_id);
 
@@ -42,7 +41,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     render={() => (
                             <FormControl fullWidth sx={createEventFieldControlSx}>
                                 <TextField
-                                    onChange={(e) => handleTitle(e)}
+                                    onChange={(e) => getInput(e, "title")}
                                     label="Title"
                                     fullWidth
                                     autoFocus
@@ -58,7 +57,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     render={() => (
                         <FormControl fullWidth sx={createEventFieldControlSx}>
                             <TextField
-                                onChange={(e) => handleDescription(e)}
+                                 onChange={(e) => getInput(e, "description")}
                                 label="Description"
                                 fullWidth
                                 sx={createEventTextFieldSx}
@@ -68,7 +67,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                     )}
                 />
 
-                <LocationInput 
+                <EventLocationInput 
                 control={control}  
                 handleLocation={handleLocation}
                 searchKind={"street"}

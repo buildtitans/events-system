@@ -2,10 +2,10 @@
 import type { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
 import { Controller } from "react-hook-form";
-import type { NewEventType } from "@/src/lib/hooks/insert/useCreateEvent";
+import type { NewEventType } from "@/src/lib/types/hooks/types";
 import type { Control } from "react-hook-form";
 import { createEventFieldControlSx } from "@/src/styles/sx/createEventDrawer";
-import LocationAutoComplete from "./locationAutoComplete";
+import LocationAutoComplete from "@/src/components/sections/inputs/shared/locationAutoComplete";
 
 type LocationInputProps = {
   control: Control<NewEventType>;
@@ -13,7 +13,7 @@ type LocationInputProps = {
   searchKind: "city" | "street"
 };
 
-export default function LocationInput({
+export default function EventLocationInput({
   control,
   handleLocation,
   searchKind

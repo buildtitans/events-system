@@ -1,31 +1,37 @@
 "use client";
-import type { CreateNewGroupHook } from "@/src/lib/hooks/insert/useCreateNewGroup";
+import type { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import { JSX } from "react";
+import { Controller } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import {
-    createGroupFieldControlSx,
-    createGroupTextFieldSx,
-} from "@/src/styles/sx/createGroupDrawer";
+  createEventFieldControlSx,
+} from "@/src/styles/sx/createEventDrawer";
+import { NewGroupInputType } from "@/src/lib/types/hooks/types";
+import LocationAutoComplete from "@/src/components/sections/inputs/shared/locationAutoComplete";
 
-type GroupLocationFieldProps = {
-    handleGroupLocation: CreateNewGroupHook["handleGroupLocation"],
-}
+type LocationInputProps = {
+  control: Control<NewGroupInputType>;
+  handleLocation: (input: string) => void;
+};
 
-export default function GroupLocationField({ handleGroupLocation }: GroupLocationFieldProps): JSX.Element {
+export default function GroupLocationField({
+  control,
+  handleLocation,
+}: LocationInputProps): JSX.Element {
 
-
-    return (
-        <FormControl fullWidth sx={createGroupFieldControlSx}>
-            <TextField
-                onChange={(e) => handleGroupLocation(e)}
-                id="group-location"
-                label="Location"
-                variant="outlined"
-                fullWidth
-                sx={createGroupTextFieldSx}
-            />
+  return (
+    <Controller
+      name="location"
+      control={control}
+      render={() => (
+        <FormControl fullWidth sx={createEventFieldControlSx}>
+          <LocationAutoComplete 
+          handleLocation={handleLocation}
+          searchKind={"city"}
+          />
         </FormControl>
-
-    )
+      )}
+    />
+  );
 }
+
