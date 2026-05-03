@@ -9,6 +9,7 @@ import type {
 
 const createDomainStateFallback = (): DomainStateType => ({
   events: [],
+  activeEvents: [],
   groups: [],
   categories: [],
   groupNameDictionary: {},
@@ -23,6 +24,7 @@ async function syncDomains(): Promise<SyncDomainsResult> {
 async function runSync(): Promise<SyncResults> {
   const map = {
     events: trpcClient.events.allEventsLayout.mutate(),
+    activeEvents: trpcClient.events.allActiveEventsLayout.mutate(),
     groups: trpcClient.groups.list.mutate(),
     categories: trpcClient.categories.getAllCategories.mutate(),
     groupNameDictionary: trpcClient.groups.nameLookup.mutate(),
@@ -51,6 +53,10 @@ function handleResults(results: SyncResults): SyncDomainsResult {
     status: "fulfilled",
     data: {
       events: results.events.status === "fulfilled" ? results.events.value : [],
+      activeEvents:
+        results.activeEvents.status === "fulfilled"
+          ? results.activeEvents.value
+          : [],
       groups: results.groups.status === "fulfilled" ? results.groups.value : [],
       categories:
         results.categories.status === "fulfilled"

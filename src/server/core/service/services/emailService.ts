@@ -1,27 +1,13 @@
 import { Resend } from "resend";
 import type { CreateEmailOptions } from "resend";
-import { getEnv } from "../../lib/init/getEnv";
-
-function getResetUrl(): string {
-  if (process.env.NODE_ENV === "production") {
-    return getEnv("pwResetUrl");
-  } else {
-    return getEnv("devPwResetUrl");
-  }
-}
-
-function getResendKey(): string {
-  if (process.env.NODE_ENV === "production") {
-    return getEnv("resendProdKey");
-  } else {
-    return getEnv("resendDevKey");
-  }
-}
+import { getResendKey, getResetUrl } from "../../lib/init/getModeEnv";
 
 export class EmailService {
   private readonly resend: Resend;
+  private readonly resendKey = getResendKey();
+  private readonly baseResetUrl = getResetUrl();
   constructor() {
-    this.resend = new Resend(getResendKey());
+    this.resend = new Resend(this.resendKey);
   }
 
   async sendEmail(token: string, email: string) {
@@ -37,7 +23,7 @@ export class EmailService {
   }
 
   private constructUrl(token: string) {
-    const url = new URL(getResetUrl());
+    const url = new URL(this.baseResetUrl);
     url.searchParams.set("token", token);
     return url.toString();
   }

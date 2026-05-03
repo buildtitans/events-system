@@ -7,7 +7,7 @@
       "es2022"
     ],
     "types": ["node", "jest"],
-    "declaration": true,
+    "noEmit": true,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

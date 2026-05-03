@@ -23,6 +23,10 @@ export const eventsRouter = router({
     return await ctx.services.api.domains.events.getAllEventsLayout();
   }),
 
+  allActiveEventsLayout: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.events.getAllActiveEventsLayout();
+  }),
+
   newEvent: protectedProcedure
     .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {

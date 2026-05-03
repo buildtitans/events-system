@@ -16,6 +16,7 @@ export type NameSlugDescriptionLookup = Record<
 
 type DomainStateType = {
   events: EventsPages;
+  activeEvents: EventsPages;
   groups: GroupsSchemaType;
   categories: CategoriesSchemaType;
   groupNameDictionary: NameSlugDescriptionLookup;

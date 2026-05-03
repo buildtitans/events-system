@@ -32,6 +32,12 @@ export class EventService {
     return this.layout.compileLayout(events);
   }
 
+  async getAllActiveEventsLayout() {
+    const events = await this.getAllEvents();
+    const activeEvents = this.filterActiveEvents(events);
+    return this.layout.compileLayout(activeEvents);
+  }
+
   async getAllEvents(): Promise<EventsArraySchemaType> {
     return await this.db.events.getEvents();
   }
@@ -110,6 +116,20 @@ export class EventService {
     const eventsByGroup = this.hashEventsByGroup(events);
 
     return this.mapSoonestEvents(eventsByGroup);
+  }
+
+  private filterActiveEvents(events: EventSchemaType[]) {
+    const activeEvents: EventSchemaType[] = [];
+
+    for (const event of events) {
+      const startsAt = new Date(event.starts_at).getTime();
+      const now = Date.now();
+
+      if (startsAt > now) {
+        activeEvents.push(event);
+      }
+    }
+    return activeEvents;
   }
 
   private filterCurrentAndFutureEvents(

@@ -3,6 +3,7 @@ import type { DBClient } from "@/src/server/core/db";
 import {
   dbMock,
   makeAttendanceUpdate,
+  makeEvent,
   makeGroup,
   makeMembership,
 } from "../mockers/mocks";
@@ -86,52 +87,126 @@ describe("CensusHandler.getGroupHeadCount", () => {
 describe("CensusHandler.getPopularEventsIds", () => {
   const getAllAttendanceRecordsInDb = dbMock.eventAttendants
     .getAllAttendanceRecords as jest.Mock;
+  const getEventsInDb = dbMock.events.getEvents as jest.Mock;
 
   let handler: CensusHandler;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
     handler = new CensusHandler(dbMock);
   });
 
-  it("returns event ids that have going or interested attendants", async () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("returns only active event ids that meet the popularity threshold", async () => {
+    getEventsInDb.mockResolvedValue([
+      makeEvent({
+        id: "active-popular",
+        starts_at: "2026-04-08T12:00:00.000Z",
+        starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
+      }),
+      makeEvent({
+        id: "active-not-popular",
+        starts_at: "2026-04-09T12:00:00.000Z",
+        starts_at_ms: new Date("2026-04-09T12:00:00.000Z").getTime(),
+      }),
+      makeEvent({
+        id: "past-even-if-popular",
+        starts_at: "2026-04-01T12:00:00.000Z",
+        starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
+      }),
+    ]);
+
     getAllAttendanceRecordsInDb.mockResolvedValue([
       makeAttendanceUpdate(
         {
-          event_id: "5cf76d94-83c9-46de-90ac-fe4047a00000",
+          event_id: "active-popular",
           user_id: "user-1",
         },
         "going",
       ),
       makeAttendanceUpdate(
         {
-          event_id: "5cf76d94-83c9-46de-90ac-fe4047a00000",
+          event_id: "active-popular",
           user_id: "user-2",
         },
         "interested",
       ),
       makeAttendanceUpdate(
         {
-          event_id: "6cf76d94-83c9-46de-90ac-fe4047a00000",
+          event_id: "active-popular",
           user_id: "user-3",
         },
         "going",
       ),
       makeAttendanceUpdate(
         {
-          event_id: "7cf76d94-83c9-46de-90ac-fe4047a00000",
+          event_id: "active-popular",
           user_id: "user-4",
         },
-        "not_going",
+        "interested",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "active-not-popular",
+          user_id: "user-5",
+        },
+        "going",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "active-not-popular",
+          user_id: "user-6",
+        },
+        "going",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "active-not-popular",
+          user_id: "user-7",
+        },
+        "interested",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "past-even-if-popular",
+          user_id: "user-8",
+        },
+        "going",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "past-even-if-popular",
+          user_id: "user-9",
+        },
+        "going",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "past-even-if-popular",
+          user_id: "user-10",
+        },
+        "interested",
+      ),
+      makeAttendanceUpdate(
+        {
+          event_id: "past-even-if-popular",
+          user_id: "user-11",
+        },
+        "going",
       ),
     ]);
 
     await expect(handler.getPopularEventsIds()).resolves.toEqual([
-      "5cf76d94-83c9-46de-90ac-fe4047a00000",
-      "6cf76d94-83c9-46de-90ac-fe4047a00000",
+      "active-popular",
     ]);
 
     expect(getAllAttendanceRecordsInDb).toHaveBeenCalled();
+    expect(getEventsInDb).toHaveBeenCalled();
   });
 });
 

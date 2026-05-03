@@ -1,0 +1,110 @@
+[
+  {
+    "group": "blono-devs-bloomington-il",
+    "members": [
+      "bob@example.com",
+      "erin@example.com",
+      "grace@example.com",
+      "wil@buildtitans.com"
+    ]
+  },
+  {
+    "group": "central-illinois-react-normal-il-61761",
+    "members": [
+      "carol@example.com",
+      "frank@example.com",
+      "ivy@example.com",
+      "trentirvin875@gmail.com"
+    ]
+  },
+  {
+    "group": "midwest-full-stack-collective-online",
+    "members": [
+      "alice@example.com",
+      "henry@example.com",
+      "mia@example.com",
+      "paige@example.com"
+    ]
+  },
+  {
+    "group": "illinois-typescript-enthusiasts-online",
+    "members": [
+      "dave@example.com",
+      "grace@example.com",
+      "leo@example.com",
+      "owen@example.com"
+    ]
+  },
+  {
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "members": [
+      "alice@example.com",
+      "wil@buildtitans.com",
+      "nora@example.com",
+      "paige@example.com"
+    ]
+  },
+  {
+    "group": "devops-and-cloud-illinois-online",
+    "members": [
+      "frank@example.com",
+      "ivy@example.com",
+      "jack@example.com",
+      "trentirvin875@gmail.com"
+    ]
+  },
+  {
+    "group": "data-and-ai-central-il-normal-il",
+    "members": [
+      "bob@example.com",
+      "leo@example.com",
+      "mia@example.com",
+      "owen@example.com"
+    ]
+  },
+  {
+    "group": "open-source-contributors-hub-online",
+    "members": [
+      "alice@example.com",
+      "karen@example.com",
+      "paige@example.com",
+      "wil@buildtitans.com"
+    ]
+  },
+  {
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "members": [
+      "grace@example.com",
+      "ivy@example.com",
+      "mia@example.com",
+      "nora@example.com"
+    ]
+  },
+  {
+    "group": "junior-dev-career-builders-online",
+    "members": [
+      "bob@example.com",
+      "erin@example.com",
+      "henry@example.com",
+      "paige@example.com"
+    ]
+  },
+  {
+    "group": "backend-engineering-guild-online",
+    "members": [
+      "carol@example.com",
+      "jack@example.com",
+      "leo@example.com",
+      "trentirvin875@gmail.com"
+    ]
+  },
+  {
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "members": [
+      "dave@example.com",
+      "karen@example.com",
+      "mia@example.com",
+      "owen@example.com"
+    ]
+  }
+]
