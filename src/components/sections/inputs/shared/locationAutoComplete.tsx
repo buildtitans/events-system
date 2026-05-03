@@ -5,7 +5,7 @@ import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
 import AddressSuggestionOption from "@/src/components/ui/list/suggestions/addressSuggestion";
-import LocationInputTextField from "./locationInputTextField";
+import LocationInputTextField from "../event/locationInputTextField";
 import { AddressSuggestion } from "@/src/lib/hooks/search/types";
 import {
   createEventAutocompletePaperSx,

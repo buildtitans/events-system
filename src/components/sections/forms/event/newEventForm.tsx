@@ -3,13 +3,13 @@ import type { JSX } from "react";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
-import StartTime from "../inputs/event/startTime";
+import StartTime from "../../inputs/event/startTime";
 import { useCreateEvent } from "@/src/lib/hooks/insert/useCreateEvent";
 import { useForm, Controller } from 'react-hook-form';
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
 import type { NewEventType } from "@/src/lib/types/hooks/types";
-import EventLocationInput from "../inputs/event/eventLocationInput";
+import EventLocationInput from "../../inputs/event/eventLocationInput";
 import {
     createEventDrawerFormSx,
     createEventFieldControlSx,

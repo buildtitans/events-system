@@ -11,7 +11,7 @@ import { ATTENDANCE_OPTIONS } from "@/src/lib/tokens/attentanceStatusTokens";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
-import FadeInOutBox from "../../ui/box/motionboxes/fadeInOutBox";
+import FadeInOutBox from "@/src/components/ui/box/motionboxes/fadeInOutBox";
 import InputLabel from '@mui/material/InputLabel';
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";

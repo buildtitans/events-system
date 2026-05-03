@@ -2,7 +2,7 @@
 import type { JSX } from "react";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import RescheduleEventForm from "../../../sections/forms/rescheduleEventForm";
+import RescheduleEventForm from "@/src/components/sections/forms/event/rescheduleEventForm";
 import {
   GroupSlug,
   NameOfGroup,

@@ -5,9 +5,9 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Email from '@/src/components/sections/inputs/auth/Email';
 import { useValidateSignupCredentials } from '@/src/lib/hooks/auth/useValidateSignupCredentials';
-import ConfirmPassword from '../inputs/auth/ConfirmPassword';
+import ConfirmPassword from '../../inputs/auth/ConfirmPassword';
 import { useSignUp } from '@/src/lib/hooks/auth/useJoin';
-import CreatePassword from '../inputs/auth/CreatePassword';
+import CreatePassword from '../../inputs/auth/CreatePassword';
 import AuthDrawerShell from '@/src/components/ui/drawers/authDrawerShell';
 import {
     authCheckboxLabelSx,

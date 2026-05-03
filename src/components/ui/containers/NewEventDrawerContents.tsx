@@ -1,5 +1,5 @@
 "use client";
-import NewEventForm from "../../sections/forms/newEventForm";
+import NewEventForm from "../../sections/forms/event/newEventForm";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import CreateEventDrawerShell from "../drawers/createEventDrawerShell";

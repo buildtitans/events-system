@@ -1,5 +1,5 @@
 "use client";
-import UpdateViewerAttendanceForm from "../forms/openedEventForm";
+import UpdateViewerAttendanceForm from "../forms/event/openedEventForm";
 import { type JSX } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";

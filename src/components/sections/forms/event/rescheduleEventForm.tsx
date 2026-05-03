@@ -2,12 +2,12 @@
 import { useCancelEvent } from "@/src/lib/hooks/update/useCancelEvent";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
-import { CheckCancelEventButton } from "../../ui/buttons/CheckCancelEventButton";
+import { CheckCancelEventButton } from "@/src/components/ui/buttons/CheckCancelEventButton";
 import { JSX, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
-import ConfirmCancelEventPopover from "../../ui/modals/confirmCancelEventPopover";
+import ConfirmCancelEventPopover from "@/src/components/ui/modals/confirmCancelEventPopover";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Typography from "@mui/material/Typography";
