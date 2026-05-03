@@ -4,8 +4,10 @@ import { getResendKey, getResetUrl } from "../../lib/init/getModeEnv";
 
 export class EmailService {
   private readonly resend: Resend;
+  private readonly resendKey = getResendKey();
+  private readonly baseResetUrl = getResetUrl();
   constructor() {
-    this.resend = new Resend(getResendKey());
+    this.resend = new Resend(this.resendKey);
   }
 
   async sendEmail(token: string, email: string) {
@@ -21,7 +23,7 @@ export class EmailService {
   }
 
   private constructUrl(token: string) {
-    const url = new URL(getResetUrl());
+    const url = new URL(this.baseResetUrl);
     url.searchParams.set("token", token);
     return url.toString();
   }
