@@ -7,4 +7,13 @@ export const geoCodingRouter = router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.integrations.geoApify.suggestAddresses(input);
     }),
+
+  citySearchSuggestions: publicProcedure
+    .input(GeoApifySearchInput)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.integrations.geoApify.suggestAddresses(
+        input,
+        "city",
+      );
+    }),
 });

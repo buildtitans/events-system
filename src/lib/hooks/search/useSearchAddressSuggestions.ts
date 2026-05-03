@@ -13,15 +13,25 @@ import type {
 
 const WAIT_DURATION = 300;
 
+async function searchByKind(searchKind: "city" | "street", query: string) {
+  switch (searchKind) {
+    case "city": {
+      return await trpcClient.addressSearch.citySearchSuggestions.mutate(query);
+    }
+    case "street": {
+      return await trpcClient.addressSearch.addressSuggestions.mutate(query);
+    }
+  }
+}
+
 export const useSearchAddressSuggestions = (
   handleLocation: CreateEventHook["handleLocation"],
+  searchKind: "city" | "street" = "street",
 ): SearchAddressSuggestionsHook => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<AddressSearchState>({
     status: "initial",
   });
-
-  console.log(suggestions);
 
   const timerRef = useRef<number | null>(null);
   const requestIdRef = useRef(0);
@@ -38,8 +48,7 @@ export const useSearchAddressSuggestions = (
     setSuggestions({ status: "pending" });
 
     try {
-      const results =
-        await trpcClient.addressSearch.addressSuggestions.mutate(trimmed);
+      const results = await searchByKind(searchKind, trimmed);
 
       if (requestId !== requestIdRef.current) return;
 

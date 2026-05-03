@@ -1,9 +1,8 @@
 "use client";
 import { JSX } from "react";
 import SelectCategory from "../inputs/group/selectCategory";
-import { useCreateNewGroup } from "@/src/lib/hooks/insert/useCreateNewGroup";
+import { NewGroupInputType, useCreateNewGroup } from "@/src/lib/hooks/insert/useCreateNewGroup";
 import GroupNameField from "../inputs/group/groupName";
-import GroupLocationField from "../inputs/group/groupLocationField";
 import GroupDescriptionField from "../inputs/group/groupDescriptionField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,14 +11,17 @@ import {
     createGroupDrawerFormSx,
     createGroupPrimaryButtonSx,
 } from "@/src/styles/sx/createGroupDrawer";
+import { useForm } from 'react-hook-form';
+import GroupLocation from "../inputs/group/groupLocation";
 
 export default function CreateNewGroupForm(): JSX.Element {
+    const {control } = useForm<NewGroupInputType>();
     const {
         handleGroupCategory,
         handleGroupDescription,
-        handleGroupLocation,
         handleGroupName,
         submitNewGroup,
+        handleLocation,
         isSubmittable,
         newGroup,
     } = useCreateNewGroup();
@@ -32,8 +34,10 @@ export default function CreateNewGroupForm(): JSX.Element {
                 handleGroupName={handleGroupName} />
             <GroupDescriptionField
                 handleGroupDescription={handleGroupDescription} />
-            <GroupLocationField
-                handleGroupLocation={handleGroupLocation} />
+            <GroupLocation 
+            control={control}
+            handleLocation={handleLocation}
+            />
             <SelectCategory
                 handleGroupCategory={handleGroupCategory}
                 chosen={newGroup.category_id}

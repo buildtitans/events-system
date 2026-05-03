@@ -28,6 +28,7 @@ export type CreateNewGroupHook = {
   handleGroupCategory: (category_id: string | null) => void;
   submitNewGroup: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
   isSubmittable: boolean;
+  handleLocation: (input: string) => void;
 };
 
 export type NewGroupInputType = {
@@ -90,6 +91,13 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     setNewGroup((prev: NewGroupInputType) => ({
       ...prev,
       name: value,
+    }));
+  };
+
+  const handleLocation = (input: string) => {
+    setNewGroup((prev: NewGroupInputType) => ({
+      ...prev,
+      meeting_location: input,
     }));
   };
 
@@ -172,6 +180,7 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     handleGroupDescription,
     handleGroupLocation,
     submitNewGroup,
+    handleLocation,
     isSubmittable,
   };
 };

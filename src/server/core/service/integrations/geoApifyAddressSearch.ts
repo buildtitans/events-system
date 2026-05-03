@@ -14,6 +14,15 @@ type AddressSuggestion = {
   street?: string;
 };
 
+type LocationType =
+  | "country"
+  | "state"
+  | "city"
+  | "postcode"
+  | "street"
+  | "amenity"
+  | "locality";
+
 type SuggestAddressesResults = Promise<
   | { status: "success"; data: AddressSuggestion[] }
   | { status: "failed"; message: string }
@@ -22,15 +31,18 @@ type SuggestAddressesResults = Promise<
 export class GeoApifyAddressSearch {
   constructor() {}
 
-  public async suggestAddresses(address: string) {
-    const query = this.formQuery(address);
+  public async suggestAddresses(
+    address: string,
+    locationKind: LocationType = "street",
+  ) {
+    const query = this.formQuery(address, locationKind);
     return await this.queryGeoApify(query);
   }
 
-  private formQuery(address: string) {
+  private formQuery(address: string, locationKind: LocationType = "street") {
     const url = new URL(geoApifyUrl);
     url.searchParams.set("text", address);
-    url.searchParams.set("type", "street");
+    url.searchParams.set("type", locationKind);
     url.searchParams.set("filter", "countrycode:us");
     url.searchParams.set("limit", "10");
     url.searchParams.set("lang", "en");
