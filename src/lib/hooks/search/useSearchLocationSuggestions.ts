@@ -24,7 +24,7 @@ async function searchByKind(searchKind: "city" | "street", query: string) {
   }
 }
 
-export const useSearchAddressSuggestions = (
+export const useSearchLocationSuggestions = (
   handleLocation: CreateEventHook["handleLocation"],
   searchKind: "city" | "street" = "street",
 ): SearchAddressSuggestionsHook => {

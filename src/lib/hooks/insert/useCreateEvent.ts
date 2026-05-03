@@ -16,7 +16,7 @@ import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { useSearchAddressSuggestions } from "../search/useSearchAddressSuggestions";
+import { useSearchAddressSuggestions } from "../search/useSearchLocationSuggestions";
 
 export type NewEventType = {
   title: EventSchemaType["title"];

@@ -71,6 +71,7 @@ export default function NewEventForm({ group_id }: { group_id: string }): JSX.El
                 <LocationInput 
                 control={control}  
                 handleLocation={handleLocation}
+                searchKind={"street"}
                 />
                 
                 <Controller
