@@ -5,7 +5,6 @@ import { ValidateRawAttendants } from "../../../lib/validation/schemaValidators"
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
-import { retryLink } from "@trpc/client";
 dayjs.extend(utc);
 const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
