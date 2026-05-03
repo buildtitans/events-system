@@ -130,6 +130,8 @@ export const dbMock = {
     logOut: jest.fn(),
     getEmailByUserId: jest.fn(),
     getSession: jest.fn(),
+    requestPasswordReset: jest.fn(),
+    resetPassword: jest.fn(),
   },
   categories: {
     getCategories: jest.fn(),

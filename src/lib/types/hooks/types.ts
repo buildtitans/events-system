@@ -19,7 +19,10 @@ import {
   EventAttendantStatusSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
+import {
+  EventSchemaType,
+  UpdateEventArgsSchemaType,
+} from "@/src/schemas/events/eventSchema";
 import React, { type SetStateAction } from "react";
 import type { SyntheticEvent, ChangeEvent } from "react";
 import type {
@@ -55,6 +58,16 @@ export type ValidateSignupCredsHook = {
   email: string;
   errors: InputErrorsType;
   isValidated: boolean;
+};
+
+export type NewEventType = {
+  title: EventSchemaType["title"];
+  description: EventSchemaType["description"];
+  starts_at: string;
+  group_id: EventSchemaType["group_id"];
+  img: EventSchemaType["img"] | null;
+  meeting_location: EventSchemaType["meeting_location"];
+  tag: EventSchemaType["tag"];
 };
 
 export type FilterType = EventDisplayFilter | "initial";
@@ -94,15 +107,32 @@ type CreateEventHook = {
     value: Dayjs | null,
     context: PickerChangeHandlerContext<DateTimeValidationError>,
   ) => void;
-  handleTitle: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => void;
-  handleDescription: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => void;
   handleLocation: (input: string) => void;
   schedule: (e: React.FormEvent<HTMLFormElement>) => void;
   isSubmittable: boolean;
+  getInput: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    field: keyof NewEventType,
+  ) => void;
+};
+
+export type NewGroupInputType = {
+  name: GroupSchemaType["name"];
+  description: GroupSchemaType["description"];
+  location: GroupSchemaType["location"];
+  category_id: GroupSchemaType["category_id"];
+};
+
+export type CreateNewGroupHook = {
+  newGroup: NewGroupInputType;
+  handleGroupCategory: (category_id: string | null) => void;
+  submitNewGroup: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
+  isSubmittable: boolean;
+  handleLocation: (input: string) => void;
+  getInput: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: keyof NewGroupInputType,
+  ) => void;
 };
 
 type ValidateCredentialsHook = {

@@ -2,71 +2,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
+import type {
+  NewGroupInputType,
+  CreateNewGroupHook,
+} from "@/src/lib/types/hooks/types";
 import {
   GroupSchemaType,
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { addGroup } from "../../store/slices/groups/GroupsSlice";
+import { addGroup } from "@/src/lib/store/slices/groups/GroupsSlice";
+import {
+  isNewGroupSubmittable,
+  normalizeNewGroupInput,
+} from "@/src/lib/utils/newGroup/newGroupHelpers";
 import {
   enqueueAlert,
   enqueueDrawer,
   enqueueSnackbar,
-} from "../../store/slices/rendering/RenderingSlice";
-
-export type CreateNewGroupHook = {
-  newGroup: NewGroupInputType;
-  handleGroupName: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  handleGroupDescription: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  handleGroupLocation: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  handleGroupCategory: (category_id: string | null) => void;
-  submitNewGroup: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
-  isSubmittable: boolean;
-};
-
-export type NewGroupInputType = {
-  name: GroupSchemaType["name"];
-  description: GroupSchemaType["description"];
-  location: GroupSchemaType["location"];
-  category_id: GroupSchemaType["category_id"];
-};
-
-function hasNonEmptyText(value: string | null): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
-
-function normalizeOptionalText(value: string | null): string | null {
-  if (!hasNonEmptyText(value)) {
-    return null;
-  }
-
-  return value.trim();
-}
-
-function isNewGroupSubmittable(newGroup: NewGroupInputType): boolean {
-  return (
-    hasNonEmptyText(newGroup.name) && hasNonEmptyText(newGroup.category_id)
-  );
-}
-
-function normalizeNewGroupInput(
-  newGroup: NewGroupInputType,
-): NewGroupInputSchemaType {
-  return {
-    name: newGroup.name.trim(),
-    description: normalizeOptionalText(newGroup.description),
-    location: normalizeOptionalText(newGroup.location),
-    category_id: hasNonEmptyText(newGroup.category_id)
-      ? newGroup.category_id.trim()
-      : null,
-  };
-}
+} from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
@@ -79,45 +33,33 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     category_id: "",
   });
 
+  const setFieldValue = (
+    value: string | null,
+    field: keyof NewGroupInputType,
+  ) => {
+    setNewGroup((prev: NewGroupInputType) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const isSubmittable = useMemo((): boolean => {
     return isNewGroupSubmittable(newGroup);
   }, [newGroup]);
 
-  const handleGroupName = (
+  const getInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    const value = e.target.value;
-    setNewGroup((prev: NewGroupInputType) => ({
-      ...prev,
-      name: value,
-    }));
+    field: keyof NewGroupInputType,
+  ) => {
+    setFieldValue(e.target.value, field);
   };
 
-  const handleGroupDescription = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    const value = e.target.value;
-    setNewGroup((prev: NewGroupInputType) => ({
-      ...prev,
-      description: value,
-    }));
-  };
-
-  const handleGroupLocation = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    const value = e.target.value;
-    setNewGroup((prev: NewGroupInputType) => ({
-      ...prev,
-      location: value,
-    }));
+  const handleLocation = (input: string) => {
+    setFieldValue(input, "location");
   };
 
   const handleGroupCategory = useCallback((category_id: string | null) => {
-    setNewGroup((prev: NewGroupInputType) => ({
-      ...prev,
-      category_id,
-    }));
+    setFieldValue(category_id, "category_id");
   }, []);
 
   async function createGroup(
@@ -127,16 +69,20 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     return result;
   }
 
+  function dispatchGroupResults(created: GroupSchemaType) {
+    dispatch(addGroup(created));
+    dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+    dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
+
+    timerRef.current = window.setTimeout(() => {
+      dispatch(enqueueDrawer(null));
+      timerRef.current = null;
+    }, 400);
+  }
+
   function handleNewGroupResult(created: GroupSchemaType | null): void {
     if (created) {
-      dispatch(addGroup(created));
-      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-      dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
-
-      timerRef.current = window.setTimeout(() => {
-        dispatch(enqueueDrawer(null));
-        timerRef.current = null;
-      }, 400);
+      dispatchGroupResults(created);
     } else {
       dispatch(enqueueSnackbar({ kind: "newGroup", status: "failed" }));
     }
@@ -144,16 +90,13 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
 
   const submitNewGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     if (!isSubmittable) {
       return;
     }
+    dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
 
     const payload = normalizeNewGroupInput(newGroup);
-
-    dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
     const createdGroup = await createGroup(payload);
-
     handleNewGroupResult(createdGroup);
   };
 
@@ -167,11 +110,10 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
 
   return {
     newGroup,
-    handleGroupName,
+    getInput,
     handleGroupCategory,
-    handleGroupDescription,
-    handleGroupLocation,
     submitNewGroup,
+    handleLocation,
     isSubmittable,
   };
 };

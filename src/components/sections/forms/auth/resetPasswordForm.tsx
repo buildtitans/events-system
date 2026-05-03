@@ -1,7 +1,7 @@
 "use client";
 import { useResetPassword } from "@/src/lib/hooks/auth/useResetPassword";
-import Password from "@/src/components/sections/inputs/Password";
-import ConfirmPassword from "@/src/components/sections/inputs/ConfirmPassword";
+import Password from "@/src/components/sections/inputs/auth/Password";
+import ConfirmPassword from "@/src/components/sections/inputs/auth/ConfirmPassword";
 import { RootState } from "@/src/lib/store";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";

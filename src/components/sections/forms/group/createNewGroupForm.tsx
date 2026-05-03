@@ -1,10 +1,10 @@
 "use client";
 import { JSX } from "react";
-import SelectCategory from "../inputs/group/selectCategory";
+import SelectCategory from "@/src/components/sections/inputs/group/selectCategory";
+import { NewGroupInputType } from "@/src/lib/types/hooks/types";
 import { useCreateNewGroup } from "@/src/lib/hooks/insert/useCreateNewGroup";
-import GroupNameField from "../inputs/group/groupName";
-import GroupLocationField from "../inputs/group/groupLocationField";
-import GroupDescriptionField from "../inputs/group/groupDescriptionField";
+import GroupNameField from "@/src/components/sections/inputs/group/groupName";
+import GroupDescriptionField from "@/src/components/sections/inputs/group/groupDescriptionField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CreateGroupDrawerShell from "@/src/components/ui/drawers/createGroupDrawerShell";
@@ -12,14 +12,16 @@ import {
     createGroupDrawerFormSx,
     createGroupPrimaryButtonSx,
 } from "@/src/styles/sx/createGroupDrawer";
+import { useForm } from 'react-hook-form';
+import GroupLocationField from "@/src/components/sections/inputs/group/groupLocationField";
 
 export default function CreateNewGroupForm(): JSX.Element {
+    const {control } = useForm<NewGroupInputType>();
     const {
         handleGroupCategory,
-        handleGroupDescription,
-        handleGroupLocation,
-        handleGroupName,
+        getInput,
         submitNewGroup,
+        handleLocation,
         isSubmittable,
         newGroup,
     } = useCreateNewGroup();
@@ -29,11 +31,13 @@ export default function CreateNewGroupForm(): JSX.Element {
         <CreateGroupDrawerShell>
         <Box sx={createGroupDrawerFormSx}>
             <GroupNameField
-                handleGroupName={handleGroupName} />
+                getInput={getInput} />
             <GroupDescriptionField
-                handleGroupDescription={handleGroupDescription} />
+                getInput={getInput} />
             <GroupLocationField
-                handleGroupLocation={handleGroupLocation} />
+            control={control}
+            handleLocation={handleLocation}
+            />
             <SelectCategory
                 handleGroupCategory={handleGroupCategory}
                 chosen={newGroup.category_id}

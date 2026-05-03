@@ -1,8 +1,8 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { JSX } from "react";
 import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/useValidateSignupCredentials";
-import Password from "../sections/inputs/Password";
-import ConfirmPassword from "../sections/inputs/ConfirmPassword";
+import Password from "../sections/inputs/auth/Password";
+import ConfirmPassword from "../sections/inputs/auth/ConfirmPassword";
 
 
 export default function ResetPasswordReset(): JSX.Element {

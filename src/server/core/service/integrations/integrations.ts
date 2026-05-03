@@ -1,8 +1,9 @@
-import { GeoApifyAddressSearch } from "./geoApifyAddressSearch";
+import { GeoApifySearch } from "@/src/server/core/service/integrations/geoApifySearch";
+import { geoApifyConfig } from "@/src/server/core/lib/init/geoApifyConfig";
 
 export class Integrations {
-  public readonly geoApify: GeoApifyAddressSearch;
+  public readonly geoApify: GeoApifySearch;
   constructor() {
-    this.geoApify = new GeoApifyAddressSearch();
+    this.geoApify = new GeoApifySearch(geoApifyConfig);
   }
 }

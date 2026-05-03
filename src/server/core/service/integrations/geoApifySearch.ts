@@ -1,9 +1,6 @@
-import { getEnv } from "../../lib/init/getEnv";
+import { GeoapifyConfig } from "../../lib/init/geoApifyConfig";
 import { GeoapifyAutocompleteValidator } from "../../lib/validation/schemaValidators";
 import type { GeoapifyAutocompleteJsonResponse } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
-
-const geoApifyKey = getEnv("geoApifyKey");
-const geoApifyUrl = getEnv("geoApifyUrl");
 
 type AddressSuggestion = {
   label: string;
@@ -14,28 +11,45 @@ type AddressSuggestion = {
   street?: string;
 };
 
+type LocationType =
+  | "country"
+  | "state"
+  | "city"
+  | "postcode"
+  | "street"
+  | "amenity"
+  | "locality";
+
 type SuggestAddressesResults = Promise<
   | { status: "success"; data: AddressSuggestion[] }
   | { status: "failed"; message: string }
 >;
 
-export class GeoApifyAddressSearch {
-  constructor() {}
+export class GeoApifySearch {
+  private readonly apiKey: GeoapifyConfig["geoApifyKey"];
+  private readonly geoapifyUrl: GeoapifyConfig["geoApifyUrl"];
+  constructor(private readonly config: GeoapifyConfig) {
+    this.apiKey = this.config.geoApifyKey;
+    this.geoapifyUrl = this.config.geoApifyUrl;
+  }
 
-  public async suggestAddresses(address: string) {
-    const query = this.formQuery(address);
+  public async suggestAddresses(
+    address: string,
+    locationKind: LocationType = "street",
+  ) {
+    const query = this.formQuery(address, locationKind);
     return await this.queryGeoApify(query);
   }
 
-  private formQuery(address: string) {
-    const url = new URL(geoApifyUrl);
+  private formQuery(address: string, locationKind: LocationType = "street") {
+    const url = new URL(this.geoapifyUrl);
     url.searchParams.set("text", address);
-    url.searchParams.set("type", "street");
+    url.searchParams.set("type", locationKind);
     url.searchParams.set("filter", "countrycode:us");
     url.searchParams.set("limit", "10");
     url.searchParams.set("lang", "en");
     url.searchParams.set("format", "json");
-    url.searchParams.set("apiKey", geoApifyKey);
+    url.searchParams.set("apiKey", this.apiKey);
 
     return url.toString();
   }

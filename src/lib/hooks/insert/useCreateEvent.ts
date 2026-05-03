@@ -16,21 +16,8 @@ import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { useSearchAddressSuggestions } from "../search/useSearchAddressSuggestions";
-
-export type NewEventType = {
-  title: EventSchemaType["title"];
-  description: EventSchemaType["description"];
-  starts_at: string;
-  group_id: EventSchemaType["group_id"];
-  img: EventSchemaType["img"] | null;
-  meeting_location: EventSchemaType["meeting_location"];
-  tag: EventSchemaType["tag"];
-};
-
-function getPicDate() {
-  return Date.now();
-}
+import { NewEventType } from "@/src/lib/types/hooks/types";
+import { getPicDate } from "../../utils/dates/getPicDate";
 
 export const useCreateEvent = (
   group_id: EventSchemaType["group_id"],
@@ -59,14 +46,15 @@ export const useCreateEvent = (
     return thisGroup;
   }, [group_id, groups]);
 
-  const handleTitle = (
+  const getInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    field: keyof NewEventType,
   ) => {
-    const val = e.target.value;
+    const value = e.target.value;
 
     setNewEvent((prev: NewEventType) => ({
       ...prev,
-      title: val,
+      [field]: value,
     }));
   };
 
@@ -74,16 +62,6 @@ export const useCreateEvent = (
     setNewEvent((prev: NewEventType) => ({
       ...prev,
       meeting_location: input,
-    }));
-  };
-
-  const handleDescription = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const val = e.target.value;
-    setNewEvent((prev: NewEventType) => ({
-      ...prev,
-      description: val,
     }));
   };
 
@@ -151,10 +129,9 @@ export const useCreateEvent = (
 
   return {
     schedule,
-    handleTitle,
-    handleDescription,
     handleStartsAt,
     handleLocation,
+    getInput,
     isSubmittable,
   };
 };
