@@ -9,16 +9,19 @@ import type {
   GroupNameByGroupID,
 } from "./types";
 import { initializeDomains } from "../rendering/RenderingSlice";
+import { stat } from "fs";
 
 type EventCategoryState = {
   displayed: EventDisplayFilter;
   eventPages: EventsStateType;
+  allEventsPages: EventsStateType;
   currentPage: number;
   nameByGroupId: GroupNameByGroupID;
 };
 
 const initialState: EventCategoryState = {
   displayed: "All Events",
+  allEventsPages: { status: "initial" },
   eventPages: { status: "initial" },
   currentPage: 0,
   nameByGroupId: {},
@@ -74,11 +77,20 @@ export const EventsSlice = createSlice({
           data: result.data.activeEvents,
         };
 
+        state.allEventsPages = {
+          status: "ready",
+          data: result.data.events,
+        };
+
         state.currentPage = 0;
       } else {
         state.eventPages = {
           status: "failed",
-          error: "Failed to retrieve events",
+          error: "Failed to retrieve active events",
+        };
+        state.allEventsPages = {
+          status: "failed",
+          error: "Failed to retrieve all events",
         };
       }
     });

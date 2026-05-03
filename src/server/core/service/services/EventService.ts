@@ -34,7 +34,7 @@ export class EventService {
 
   async getAllActiveEventsLayout() {
     const events = await this.getAllEvents();
-    const activeEvents = this.filterPastEvents(events);
+    const activeEvents = this.filterActiveEvents(events);
     return this.layout.compileLayout(activeEvents);
   }
 
@@ -118,7 +118,7 @@ export class EventService {
     return this.mapSoonestEvents(eventsByGroup);
   }
 
-  private filterPastEvents(events: EventSchemaType[]) {
+  private filterActiveEvents(events: EventSchemaType[]) {
     const activeEvents: EventSchemaType[] = [];
 
     for (const event of events) {

@@ -1,6 +1,3 @@
-import path from "path";
-import { config } from "dotenv";
-config({ path: path.resolve(process.cwd(), ".env") });
 import { buildServer } from "@/src/server/core/main/app";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 

@@ -27,7 +27,7 @@ export class CensusHandler {
     const records = await this.api.eventAttendants.getAllAttendanceRecords();
 
     const events = await this.api.events.getEvents();
-    const activeRecords = this.filterPastEventsFromRecords(events, records);
+    const activeRecords = this.filterActiveRecords(events, records);
 
     return curatePopularEventsIds(activeRecords);
   }
@@ -40,7 +40,7 @@ export class CensusHandler {
     return await this.api.groups.getGroupsByIds(popularGroupIds);
   }
 
-  private filterPastEventsFromRecords(
+  private filterActiveRecords(
     events: EventSchemaType[],
     records: EventAttendantsSchemaType[],
   ) {

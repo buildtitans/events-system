@@ -12,6 +12,82 @@ import {
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
+describe("EventsService.getAllActiveEventsLayout", () => {
+  const getEvents = dbMock.events.getEvents as jest.Mock;
+  let service: EventService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
+    service = new EventService(dbMock, policyMock);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("returns only events scheduled after now", async () => {
+    const pastEvent = makeEvent({
+      id: "past-1",
+      starts_at: "2026-04-01T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
+    });
+    const futureEventOne = makeEvent({
+      id: "future-1",
+      starts_at: "2026-04-08T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
+    });
+    const futureEventTwo = makeEvent({
+      id: "future-2",
+      starts_at: "2026-04-12T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-12T12:00:00.000Z").getTime(),
+    });
+
+    getEvents.mockResolvedValue([pastEvent, futureEventOne, futureEventTwo]);
+
+    await expect(service.getAllActiveEventsLayout()).resolves.toEqual([
+      [
+        {
+          kind: "card",
+          variant: {
+            type: "hero",
+            size: { xs: 12, md: 6 },
+          },
+          event: futureEventOne,
+        },
+        {
+          kind: "card",
+          variant: {
+            type: "hero",
+            size: { xs: 12, md: 6 },
+          },
+          event: futureEventTwo,
+        },
+      ],
+    ]);
+
+    expect(getEvents).toHaveBeenCalled();
+  });
+
+  it("returns an empty layout when every event is in the past or exactly now", async () => {
+    const pastEvent = makeEvent({
+      id: "past-1",
+      starts_at: "2026-04-01T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
+    });
+    const nowEvent = makeEvent({
+      id: "now-1",
+      starts_at: "2026-04-06T00:00:00.000Z",
+      starts_at_ms: new Date("2026-04-06T00:00:00.000Z").getTime(),
+    });
+
+    getEvents.mockResolvedValue([pastEvent, nowEvent]);
+
+    await expect(service.getAllActiveEventsLayout()).resolves.toEqual([]);
+  });
+});
+
 describe("EventsService.getPastEvents", () => {
   const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
   const getPastEventRecords = dbMock.eventAttendants

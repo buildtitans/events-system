@@ -1,22 +1,6 @@
 import { Resend } from "resend";
 import type { CreateEmailOptions } from "resend";
-import { getEnv } from "../../lib/init/getEnv";
-
-function getResetUrl(): string {
-  if (process.env.NODE_ENV === "production") {
-    return getEnv("pwResetUrl");
-  } else {
-    return getEnv("devPwResetUrl");
-  }
-}
-
-function getResendKey(): string {
-  if (process.env.NODE_ENV === "production") {
-    return getEnv("resendProdKey");
-  } else {
-    return getEnv("resendDevKey");
-  }
-}
+import { getResendKey, getResetUrl } from "../../lib/init/getModeEnv";
 
 export class EmailService {
   private readonly resend: Resend;
