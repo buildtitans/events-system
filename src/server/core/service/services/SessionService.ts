@@ -1,16 +1,14 @@
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
-import { EmailService } from "./emailService";
+import { PasswordResetEmailService } from "./passwordResetEmailService";
 
 export class SessionService {
-  private readonly email: EmailService;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
-  ) {
-    this.email = new EmailService();
-  }
+    private readonly emailer: PasswordResetEmailService,
+  ) {}
 
   async login(emailInput: string, passwordInput: string) {
     const { email, password } = validateLoginCredentials(
@@ -51,14 +49,7 @@ export class SessionService {
     return { ok: true };
   }
 
-  async requestPwReset(email: string): Promise<{ ok: true }> {
-    const result = await this.db.auth.requestPasswordReset(email);
-
-    if (!result.token) {
-      return { ok: true };
-    }
-
-    await this.email.sendEmail(result.token, email);
-    return { ok: true };
+  async emailForPwReset(email: string) {
+    return await this.emailer.request(email);
   }
 }

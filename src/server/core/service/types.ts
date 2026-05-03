@@ -43,3 +43,8 @@ export type GroupAction =
   | "manage events"
   | "change membership"
   | "read or receive notifications";
+
+export type PastEventsResults = {
+  history: EventSchemaType[];
+  pastEventsRecords: PastEventAttendanceLookup;
+};

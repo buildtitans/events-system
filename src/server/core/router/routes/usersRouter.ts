@@ -34,7 +34,7 @@ export const usersRouter = router({
   requestPasswordReset: publicProcedure
     .input(UserEmailInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.session.requestPwReset(input);
+      return await ctx.services.api.domains.session.emailForPwReset(input);
     }),
 
   resetUserPassword: publicProcedure

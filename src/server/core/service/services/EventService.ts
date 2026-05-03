@@ -1,30 +1,30 @@
 import {
   EventsArraySchemaType,
-  EventsByGroupIdSchemaType,
   EventSchemaType,
   NewEventInputSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
-import type { EventsByGroupId, UpComingEventsLookup } from "../types";
+import type { UpComingEventsLookup } from "../types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { UpdateEventArgsSchemaType } from "@/src/schemas/events/eventSchema";
-import { EventHydrationHandler } from "../handlers/hydrationHandler";
-import { isPastEvent } from "../../lib/utils/isPastEvent";
+import { EventHydrationHandler } from "../handlers/eventHydrationHandler";
 import { EventLayoutComposer } from "../handlers/eventLayoutComposer";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import { EventTimelineHandler } from "../handlers/eventTimelineHandler";
 
 export class EventService {
   public readonly hydrate: EventHydrationHandler;
   private readonly layout: EventLayoutComposer;
+  private readonly timeline: EventTimelineHandler;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
     this.layout = new EventLayoutComposer();
+    this.timeline = new EventTimelineHandler(this.db);
   }
 
   async getAllEventsLayout(): Promise<PaginatedLayoutSchemaType> {
@@ -34,7 +34,7 @@ export class EventService {
 
   async getAllActiveEventsLayout() {
     const events = await this.getAllEvents();
-    const activeEvents = this.filterActiveEvents(events);
+    const activeEvents = this.timeline.filterActiveEvents(events);
     return this.layout.compileLayout(activeEvents);
   }
 
@@ -47,7 +47,7 @@ export class EventService {
   }
 
   async getGroupHistoryAttendance(ids: string[]) {
-    return await this.hydrate.getAttendantsOfPastEvents(ids);
+    return await this.timeline.getAttendantsOfPastEvents(ids);
   }
 
   async getEventById(event_id: string) {
@@ -97,125 +97,12 @@ export class EventService {
   }
 
   async getPastEvents(group_id: string) {
-    const groupEvents = await this.db.events.getGroupEvents(group_id);
-
-    const ids = groupEvents.map((ev) => ev.id);
-
-    const pastEventsRecords = await this.hydrate.getAttendantsOfPastEvents(ids);
-
-    const history = this.filterCurrentAndFutureEvents(groupEvents);
-
-    return { history, pastEventsRecords };
+    return await this.timeline.getPastEventsForGroup(group_id);
   }
 
   async getNextEventLookupMap(
     ids: GroupSchemaType["id"][],
   ): Promise<UpComingEventsLookup> {
-    const events = await this.db.events.getEventsByGroupIds(ids);
-
-    const eventsByGroup = this.hashEventsByGroup(events);
-
-    return this.mapSoonestEvents(eventsByGroup);
-  }
-
-  private filterActiveEvents(events: EventSchemaType[]) {
-    const activeEvents: EventSchemaType[] = [];
-
-    for (const event of events) {
-      const startsAt = new Date(event.starts_at).getTime();
-      const now = Date.now();
-
-      if (startsAt > now) {
-        activeEvents.push(event);
-      }
-    }
-    return activeEvents;
-  }
-
-  private filterCurrentAndFutureEvents(
-    events: EventSchemaType[],
-  ): EventSchemaType[] {
-    const history: EventSchemaType[] = [];
-
-    for (const event of events) {
-      const scheduledDate = new Date(event.starts_at_ms);
-      if (isPastEvent(scheduledDate)) {
-        history.push(event);
-      }
-    }
-
-    return history;
-  }
-
-  private mapSoonestEvents(
-    eventsByGroup: EventsByGroupId,
-  ): UpComingEventsLookup {
-    const nextEventLookup: UpComingEventsLookup = {};
-
-    const values = Object.values(eventsByGroup);
-
-    for (const arr of values) {
-      const soonest = this.getNextOrMostRecentGroupEvent(arr);
-      nextEventLookup[soonest.group_id] = soonest.starts_at;
-    }
-
-    return nextEventLookup;
-  }
-
-  private hashEventsByGroup(
-    events: EventsArraySchemaType,
-  ): EventsByGroupIdSchemaType {
-    const results: EventsByGroupIdSchemaType = {};
-
-    for (const event of events) {
-      const groupId = event.group_id;
-
-      if (!results[groupId]) {
-        results[groupId] = [];
-      }
-
-      results[groupId].push(event);
-    }
-
-    return EventsByGroupIdSchemaValidator(results);
-  }
-
-  private getNextOrMostRecentGroupEvent(
-    groupEvents: EventsArraySchemaType,
-  ): EventSchemaType {
-    const now = Date.now();
-
-    let nearestFuture: EventSchemaType | null = null;
-    let nearestPast: EventSchemaType | null = null;
-
-    for (const event of groupEvents) {
-      const startsAt = new Date(event.starts_at).getTime();
-
-      if (startsAt >= now) {
-        if (
-          !nearestFuture ||
-          startsAt < new Date(nearestFuture.starts_at).getTime()
-        ) {
-          nearestFuture = event;
-        }
-      } else {
-        if (
-          !nearestPast ||
-          startsAt > new Date(nearestPast.starts_at).getTime()
-        ) {
-          nearestPast = event;
-        }
-      }
-    }
-
-    if (nearestFuture) {
-      return nearestFuture;
-    }
-
-    if (nearestPast) {
-      return nearestPast;
-    }
-
-    throw new Error("Expected at least one event in groupEvents");
+    return await this.timeline.getNextEventMap(ids);
   }
 }

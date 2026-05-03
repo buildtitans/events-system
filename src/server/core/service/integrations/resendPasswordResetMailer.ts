@@ -1,16 +1,18 @@
 import { Resend } from "resend";
 import type { CreateEmailOptions } from "resend";
-import { getResendKey, getResetUrl } from "../../lib/init/getModeEnv";
+import { ResendVariables } from "../../lib/init/resendSecrets";
 
-export class EmailService {
+export class ResendPasswordResetMailer {
+  private readonly baseResetUrl: ResendVariables["resendUrl"];
+  private readonly resendKey: ResendVariables["resendKey"];
   private readonly resend: Resend;
-  private readonly resendKey = getResendKey();
-  private readonly baseResetUrl = getResetUrl();
-  constructor() {
+  constructor(private readonly resendSecrets: ResendVariables) {
+    this.baseResetUrl = this.resendSecrets.resendUrl;
+    this.resendKey = this.resendSecrets.resendKey;
     this.resend = new Resend(this.resendKey);
   }
 
-  async sendEmail(token: string, email: string) {
+  public async sendEmail(token: string, email: string) {
     const url = this.constructUrl(token);
     const { data, error } = await this.resend.emails.send(
       this.resendOptions(url, email),
