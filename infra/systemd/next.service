@@ -1,0 +1,14 @@
+[Unit]
+Description=Next.js application
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/events-system
+EnvironmentFile=/etc/events-system/server.env
+ExecStart=/usr/bin/node /var/www/events-system/next-standalone/server.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

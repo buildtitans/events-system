@@ -7,6 +7,7 @@ $deployRoot = Join-Path $repoRoot ".deploy"
 $stagingDir = Join-Path $deployRoot "staging"
 $artifactsDir = Join-Path $deployRoot "artifacts"
 $latestArtifactFile = Join-Path $deployRoot "latest-artifact.json"
+$emptyMirrorDir = Join-Path $deployRoot ".empty-mirror"
 
 function Copy-ReleaseFile {
   param(
@@ -78,17 +79,33 @@ function Copy-ReleaseDirectory {
   }
 }
 
+function Reset-ReleaseDirectory {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Path
+  )
+
+  New-Item -ItemType Directory -Force -Path $emptyMirrorDir | Out-Null
+
+  if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
+    New-Item -ItemType Directory -Force -Path $Path | Out-Null
+    return
+  }
+
+  & robocopy $emptyMirrorDir $Path /MIR /R:2 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null
+
+  if ($LASTEXITCODE -ge 8) {
+    throw "robocopy failed resetting '$Path' with exit code $LASTEXITCODE."
+  }
+}
+
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 
 if (-not $ArtifactName) {
   $ArtifactName = "events-system-$timestamp.tgz"
 }
 
-if (Test-Path $stagingDir) {
-  Remove-Item -Recurse -Force $stagingDir
-}
-
-New-Item -ItemType Directory -Force -Path $stagingDir | Out-Null
+Reset-ReleaseDirectory -Path $stagingDir
 New-Item -ItemType Directory -Force -Path $artifactsDir | Out-Null
 
 Push-Location $repoRoot
@@ -106,10 +123,14 @@ try {
   $nextSourceDir = Join-Path $repoRoot ".next"
   $nextStandaloneSourceDir = Join-Path $nextSourceDir "standalone"
   $nextStaticSourceDir = Join-Path $nextSourceDir "static"
+  $nextStandaloneSharedNodeModulesSourceDir = Join-Path $nextStandaloneSourceDir "node_modules/.pnpm/node_modules"
   $publicSourceDir = Join-Path $repoRoot "public"
   $nextStandaloneStagingDir = Join-Path $stagingDir "next-standalone"
   $nextStandaloneStaticDir = Join-Path $nextStandaloneStagingDir ".next/static"
   $nextStandalonePublicDir = Join-Path $nextStandaloneStagingDir "public"
+  $nextStandaloneNodeModulesStagingDir = Join-Path $nextStandaloneStagingDir "node_modules"
+  $systemdSourceDir = Join-Path $repoRoot "infra/systemd"
+  $systemdStagingDir = Join-Path $stagingDir "infra/systemd"
 
   # Keep the workspace root package metadata for the existing Fastify install
   # flow, but stage the Next runtime as an explicit standalone bundle.
@@ -124,8 +145,16 @@ try {
     -SourceDir $nextStandaloneSourceDir `
     -DestinationDir $nextStandaloneStagingDir `
     -ExcludeFiles @(".env")
+  # Next's standalone output relies on pnpm junctions inside
+  # `node_modules/.pnpm/node_modules`. Windows packaging flattens those
+  # junctions, so materialize the shared packages at the staged top level
+  # before archiving to keep the runtime self-contained on Linux.
+  Copy-ReleaseDirectory `
+    -SourceDir $nextStandaloneSharedNodeModulesSourceDir `
+    -DestinationDir $nextStandaloneNodeModulesStagingDir
   Copy-ReleaseDirectory -SourceDir $publicSourceDir -DestinationDir $nextStandalonePublicDir
   Copy-ReleaseDirectory -SourceDir $nextStaticSourceDir -DestinationDir $nextStandaloneStaticDir
+  Copy-ReleaseDirectory -SourceDir $systemdSourceDir -DestinationDir $systemdStagingDir
 
   Copy-ReleaseFile `
     -Source (Join-Path $repoRoot "src/server/package.json") `
