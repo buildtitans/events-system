@@ -39,7 +39,25 @@ try {
   Copy-Item next.config.ts $stagingDir
 
   Copy-Item -Recurse public (Join-Path $stagingDir "public")
-  Copy-Item -Recurse .next (Join-Path $stagingDir ".next")
+  $nextSourceDir = Join-Path $repoRoot ".next"
+  $nextStagingDir = Join-Path $stagingDir ".next"
+
+  New-Item -ItemType Directory -Force -Path $nextStagingDir | Out-Null
+
+  $nextEntriesToSkip = @("cache", "dev", "diagnostics", "standalone", "turbopack", "types")
+
+  Get-ChildItem -LiteralPath $nextSourceDir -Force |
+  Where-Object { $nextEntriesToSkip -notcontains $_.Name } |
+  ForEach-Object {
+    Copy-Item -LiteralPath $_.FullName `
+      -Destination (Join-Path $nextStagingDir $_.Name) `
+      -Recurse `
+      -Force
+  }
+
+  if (Test-Path (Join-Path $nextStagingDir "cache")) {
+    Remove-Item -Recurse -Force (Join-Path $nextStagingDir "cache")
+  }
 
   New-Item -ItemType Directory -Force -Path (Join-Path $stagingDir "src") | Out-Null
   New-Item -ItemType Directory -Force -Path (Join-Path $stagingDir "src/server") | Out-Null
