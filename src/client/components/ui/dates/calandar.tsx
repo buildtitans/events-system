@@ -18,7 +18,7 @@ import {
   groupCalendarPickerWrapSx,
   groupCalendarRootSx,
   groupCalendarSurfaceSx,
-} from "@/src/styles/sx/groupCalendar";
+} from "@/src/client/styles/sx/groupCalendar";
 
 type CalandarProps = {
   history: EventsArraySchemaType;

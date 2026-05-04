@@ -2,7 +2,7 @@
 import Alert from '@mui/material/Alert';
 import { JSX, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { fadeInOut } from '@/src/styles/motion/variants';
+import { fadeInOut } from '@/src/client/styles/motion/variants';
 import { AlertProps } from '@mui/material/Alert';
 import { AlertMessagesType } from '@/src/lib/types/tokens/types';
 import { useDispatch } from 'react-redux';

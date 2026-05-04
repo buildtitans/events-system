@@ -8,7 +8,7 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import Box from "@mui/material/Box";
-import { openedEventControlsSectionSx } from "@/src/styles/sx/openedEventDrawer";
+import { openedEventControlsSectionSx } from "@/src/client/styles/sx/openedEventDrawer";
 
 type MembersOnlyAttendanceFormProps = {
   scheduleStatus: EventSchemaType["status"];

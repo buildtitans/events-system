@@ -8,6 +8,76 @@ $stagingDir = Join-Path $deployRoot "staging"
 $artifactsDir = Join-Path $deployRoot "artifacts"
 $latestArtifactFile = Join-Path $deployRoot "latest-artifact.json"
 
+function Copy-ReleaseFile {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Source,
+
+    [Parameter(Mandatory = $true)]
+    [string]$Destination
+  )
+
+  if (-not (Test-Path -LiteralPath $Source)) {
+    throw "Release source path not found: $Source"
+  }
+
+  $destinationParent = Split-Path -Parent $Destination
+  if ($destinationParent) {
+    New-Item -ItemType Directory -Force -Path $destinationParent | Out-Null
+  }
+
+  Copy-Item -LiteralPath $Source -Destination $Destination -Force
+}
+
+function Copy-ReleaseDirectory {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$SourceDir,
+
+    [Parameter(Mandatory = $true)]
+    [string]$DestinationDir,
+
+    [string[]]$ExcludeDirectories = @(),
+
+    [string[]]$ExcludeFiles = @()
+  )
+
+  if (-not (Test-Path -LiteralPath $SourceDir -PathType Container)) {
+    throw "Release source directory not found: $SourceDir"
+  }
+
+  New-Item -ItemType Directory -Force -Path $DestinationDir | Out-Null
+
+  $robocopyArgs = @(
+    $SourceDir,
+    $DestinationDir,
+    "/E",
+    "/R:2",
+    "/W:1",
+    "/NFL",
+    "/NDL",
+    "/NJH",
+    "/NJS",
+    "/NP"
+  )
+
+  if ($ExcludeDirectories.Count -gt 0) {
+    $robocopyArgs += "/XD"
+    $robocopyArgs += $ExcludeDirectories
+  }
+
+  if ($ExcludeFiles.Count -gt 0) {
+    $robocopyArgs += "/XF"
+    $robocopyArgs += $ExcludeFiles
+  }
+
+  & robocopy @robocopyArgs | Out-Null
+
+  if ($LASTEXITCODE -ge 8) {
+    throw "robocopy failed copying '$SourceDir' to '$DestinationDir' with exit code $LASTEXITCODE."
+  }
+}
+
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 
 if (-not $ArtifactName) {
@@ -33,37 +103,36 @@ try {
     throw "pnpm --dir src/server build:fastify failed with exit code $LASTEXITCODE."
   }
 
-  Copy-Item package.json $stagingDir
-  Copy-Item pnpm-lock.yaml $stagingDir
-  Copy-Item pnpm-workspace.yaml $stagingDir
-  Copy-Item next.config.ts $stagingDir
-
-  Copy-Item -Recurse public (Join-Path $stagingDir "public")
   $nextSourceDir = Join-Path $repoRoot ".next"
-  $nextStagingDir = Join-Path $stagingDir ".next"
+  $nextStandaloneSourceDir = Join-Path $nextSourceDir "standalone"
+  $nextStaticSourceDir = Join-Path $nextSourceDir "static"
+  $publicSourceDir = Join-Path $repoRoot "public"
+  $nextStandaloneStagingDir = Join-Path $stagingDir "next-standalone"
+  $nextStandaloneStaticDir = Join-Path $nextStandaloneStagingDir ".next/static"
+  $nextStandalonePublicDir = Join-Path $nextStandaloneStagingDir "public"
 
-  New-Item -ItemType Directory -Force -Path $nextStagingDir | Out-Null
+  # Keep the workspace root package metadata for the existing Fastify install
+  # flow, but stage the Next runtime as an explicit standalone bundle.
+  Copy-ReleaseFile -Source (Join-Path $repoRoot "package.json") -Destination (Join-Path $stagingDir "package.json")
+  Copy-ReleaseFile -Source (Join-Path $repoRoot "pnpm-lock.yaml") -Destination (Join-Path $stagingDir "pnpm-lock.yaml")
+  Copy-ReleaseFile -Source (Join-Path $repoRoot "pnpm-workspace.yaml") -Destination (Join-Path $stagingDir "pnpm-workspace.yaml")
+  Copy-ReleaseFile -Source (Join-Path $repoRoot "next.config.ts") -Destination (Join-Path $stagingDir "next.config.ts")
 
-  $nextEntriesToSkip = @("cache", "dev", "diagnostics", "standalone", "turbopack", "types")
+  # Next's standalone server does not include public assets or .next/static by
+  # default, so stage them alongside the generated runtime explicitly.
+  Copy-ReleaseDirectory `
+    -SourceDir $nextStandaloneSourceDir `
+    -DestinationDir $nextStandaloneStagingDir `
+    -ExcludeFiles @(".env")
+  Copy-ReleaseDirectory -SourceDir $publicSourceDir -DestinationDir $nextStandalonePublicDir
+  Copy-ReleaseDirectory -SourceDir $nextStaticSourceDir -DestinationDir $nextStandaloneStaticDir
 
-  Get-ChildItem -LiteralPath $nextSourceDir -Force |
-  Where-Object { $nextEntriesToSkip -notcontains $_.Name } |
-  ForEach-Object {
-    Copy-Item -LiteralPath $_.FullName `
-      -Destination (Join-Path $nextStagingDir $_.Name) `
-      -Recurse `
-      -Force
-  }
-
-  if (Test-Path (Join-Path $nextStagingDir "cache")) {
-    Remove-Item -Recurse -Force (Join-Path $nextStagingDir "cache")
-  }
-
-  New-Item -ItemType Directory -Force -Path (Join-Path $stagingDir "src") | Out-Null
-  New-Item -ItemType Directory -Force -Path (Join-Path $stagingDir "src/server") | Out-Null
-
-  Copy-Item src/server/package.json (Join-Path $stagingDir "src/server/package.json")
-  Copy-Item -Recurse src/server/dist (Join-Path $stagingDir "src/server/dist")
+  Copy-ReleaseFile `
+    -Source (Join-Path $repoRoot "src/server/package.json") `
+    -Destination (Join-Path $stagingDir "src/server/package.json")
+  Copy-ReleaseDirectory `
+    -SourceDir (Join-Path $repoRoot "src/server/dist") `
+    -DestinationDir (Join-Path $stagingDir "src/server/dist")
 
   $artifactPath = Join-Path $artifactsDir $ArtifactName
 

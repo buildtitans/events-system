@@ -5,7 +5,8 @@ import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import NoGroup from "../../ui/feedback/failure/noGroups";
 import RenderGroupsOrFallback from "./renderGroupsOrFallback";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
-import { Container } from "@mui/material";
+import { Container, Fade } from "@mui/material";
+import FadeIn from "../../ui/box/motionboxes/fadeIn";
 
 type RenderMyGroupsProps = {
   myGroups: MyGroupsState;
@@ -14,32 +15,39 @@ type RenderMyGroupsProps = {
 export default function RenderMyGroups({
   myGroups,
 }: RenderMyGroupsProps): JSX.Element | null {
-
-
   switch (myGroups.status) {
     case "ready": {
       return (
-        <Container>
-<RenderGroupsOrFallback 
-        pages={myGroups.data} 
-        />
-        </Container>
-        
-      )
+        <FadeIn keyValue={"my-groups-or-fallback-container"}>
+          <Container>
+            <RenderGroupsOrFallback pages={myGroups.data} />
+          </Container>
+        </FadeIn>
+      );
     }
 
     case "pending": {
-      <RelativeSpinner />;
+      return (
+        <FadeIn keyValue="pending-fade-wrapper">
+          <RelativeSpinner />;
+        </FadeIn>
+      );
     }
 
     case "n/a": {
-     return <NoGroup />;
+      return (
+        <FadeIn keyValue="na-fade-wrapper">
+          <NoGroup />
+        </FadeIn>
+      )
     }
 
     case "failed": {
-     return (<AsyncFailedFallback 
-      message={myGroups.error}
-      />) 
+      return (
+        <FadeIn keyValue="failed-fallback-fade-wrapper">
+          <AsyncFailedFallback message={myGroups.error} />
+        </FadeIn>
+      )
     }
 
     default: {

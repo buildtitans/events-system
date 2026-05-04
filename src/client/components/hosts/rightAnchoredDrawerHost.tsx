@@ -5,10 +5,10 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { JSX } from "react";
 import { OpenedDrawerContents } from "@/src/client/components/pipelines/drawers/forks/openedDrawerContents";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { openedEventDrawerPaperSx } from "@/src/styles/sx/openedEventDrawer";
-import { authDrawerPaperSx } from "@/src/styles/sx/authDrawer";
-import { createEventDrawerPaperSx } from "@/src/styles/sx/createEventDrawer";
-import { createGroupDrawerPaperSx } from "@/src/styles/sx/createGroupDrawer";
+import { openedEventDrawerPaperSx } from "@/src/client/styles/sx/openedEventDrawer";
+import { authDrawerPaperSx } from "@/src/client/styles/sx/authDrawer";
+import { createEventDrawerPaperSx } from "@/src/client/styles/sx/createEventDrawer";
+import { createGroupDrawerPaperSx } from "@/src/client/styles/sx/createGroupDrawer";
 
 export default function RightAnchoredDrawerHost(): JSX.Element | null {
     const dispatch = useDispatch<AppDispatch>();

@@ -15,7 +15,7 @@ import {
     createEventFieldControlSx,
     createEventPrimaryButtonSx,
     createEventTextFieldSx,
-} from "@/src/styles/sx/createEventDrawer";
+} from "@/src/client/styles/sx/createEventDrawer";
 
 export default function NewEventForm({ group_id }: { group_id: string }): JSX.Element {
     const { control } = useForm<NewEventType>()

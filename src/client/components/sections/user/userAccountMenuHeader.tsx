@@ -6,7 +6,7 @@ import { Box, Stack } from "@mui/material";
 import {
   accountMenuAvatarSx,
   accountMenuHeaderSx,
-} from "@/src/styles/sx/accountMenu";
+} from "@/src/client/styles/sx/accountMenu";
 
 type AccountDetailsHeaderProps = {
   email: string;

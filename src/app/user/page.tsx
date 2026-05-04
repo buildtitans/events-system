@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import { JSX } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { getDesktopSidebarOffsetSx } from "@/src/styles/sx/sidebar";
+import { getDesktopSidebarOffsetSx } from "@/src/client/styles/sx/sidebar";
 
 export default function UserPage(): JSX.Element {
   const sidebar = useSelector((s: RootState) => s.rendering.sidebar);

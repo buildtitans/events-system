@@ -1,13 +1,13 @@
 "use client";
 import Drawer from "@mui/material/Drawer";
 import type { JSX } from "react";
-import { sidebarStyles } from "@/src/styles/sx/sx";
+import { sidebarStyles } from "@/src/client/styles/sx/sx";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { RenderActiveSidebar } from "../../pipelines/drawers/forks/renderActiveSidebar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { getDesktopSidebarWidth } from "@/src/styles/sx/sidebar";
+import { getDesktopSidebarWidth } from "@/src/client/styles/sx/sidebar";
 
 export default function LeftAnchoredSidebar(): JSX.Element | null {
   const theme = useTheme();

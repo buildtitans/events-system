@@ -10,8 +10,8 @@ import Box from "@mui/material/Box";
 import LeftAnchoredSidebar from "@/src/client/components/ui/sidebars/leftAnchoredSidebar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import RenderNavigation from "../pipelines/nav/renderNavigation";
-import { MobileBottomDrawer } from "../ui/drawers/mobileBottomDrawer";
+import RenderNavigation from "../../pipelines/nav/renderNavigation";
+import { MobileBottomDrawer } from "../../ui/drawers/mobileBottomDrawer";
 
 export default function TopNav() {
   const theme = useTheme();

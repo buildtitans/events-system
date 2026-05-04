@@ -14,7 +14,7 @@ import Stack from "@mui/material/Stack";
 import {
   openedEventDrawerInnerSx,
   openedEventDrawerRootSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 type AnonEventDrawerProps = {
   role: GroupMemberSchemaType["role"];

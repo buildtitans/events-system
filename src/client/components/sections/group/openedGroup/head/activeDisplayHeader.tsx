@@ -6,7 +6,7 @@ import {
   groupCalendarEyebrowSx,
   groupCalendarHeaderSx,
   groupCalendarTitleSx,
-} from "@/src/styles/sx/groupCalendar";
+} from "@/src/client/styles/sx/groupCalendar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import type { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";

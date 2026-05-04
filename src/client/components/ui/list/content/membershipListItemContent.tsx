@@ -5,7 +5,7 @@ import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSch
 import {
   membershipBodySx,
   membershipDescriptionSx,
-} from "@/src/styles/sx/membershipListItem";
+} from "@/src/client/styles/sx/membershipListItem";
 
 type MembershipListItemContentProps = {
   membership: UserMembershipSchemaType;

@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { NotFound } from './notFound';
 import type { JSX } from 'react';
 import { motion } from 'framer-motion';
-import { fadeInOut } from '@/src/styles/motion/variants';
+import { fadeInOut } from '@/src/client/styles/motion/variants';
 const MotionBox = motion.create(Box);
 
 export default function NoGroup(): JSX.Element {

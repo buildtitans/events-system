@@ -16,7 +16,7 @@ import EventTitle from "@/src/client/components/ui/stack/openedEvent/contents/ev
 import GroupName from "@/src/client/components/ui/stack/openedEvent/contents/groupName";
 import EventDescription from "@/src/client/components/ui/stack/openedEvent/contents/eventDescription";
 import EventMeta from "@/src/client/components/ui/stack/openedEvent/contents/eventMeta";
-import { openedEventHeroSx } from "@/src/styles/sx/openedEventDrawer";
+import { openedEventHeroSx } from "@/src/client/styles/sx/openedEventDrawer";
 
 type OpenedEventProps = {
   event: EventSchemaType;

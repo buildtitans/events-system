@@ -13,7 +13,7 @@ import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { changeAccountTab } from "@/src/lib/store/slices/user/userSlice";
-import { noGroupsFallbackActionButtonSx, noGroupsFallbackIconSx } from "@/src/styles/sx/noGroupsFallback";
+import { noGroupsFallbackActionButtonSx, noGroupsFallbackIconSx } from "@/src/client/styles/sx/noGroupsFallback";
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 

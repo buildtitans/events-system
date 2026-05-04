@@ -12,7 +12,7 @@ import {
   noGroupHistoryPanelSx,
   noGroupHistoryRootSx,
   noGroupHistoryTitleSx,
-} from "@/src/styles/sx/noGroupHistoryFallback";
+} from "@/src/client/styles/sx/noGroupHistoryFallback";
 
 export default function NoGroupHistory() {
   return (

@@ -19,7 +19,7 @@ import {
   accountMenuSectionLabelSx,
   getAccountMenuIconSx,
   getAccountMenuItemSx,
-} from "@/src/styles/sx/accountMenu";
+} from "@/src/client/styles/sx/accountMenu";
 
 const iconByOption: Record<UserAccountViewType, JSX.Element> = {
   "my groups": <GroupRoundedIcon fontSize="small" />,

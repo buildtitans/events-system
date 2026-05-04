@@ -20,7 +20,7 @@ import {
   footerSurfaceSx,
   footerTitleSx,
   footerTopGridSx,
-} from "@/src/styles/sx/footer";
+} from "@/src/client/styles/sx/footer";
 
 type FooterLinkType = {
   href:

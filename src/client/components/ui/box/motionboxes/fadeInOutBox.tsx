@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { motion } from "framer-motion";
-import { fadeInOut } from "@/src/styles/motion/variants";
+import { fadeInOut } from "@/src/client/styles/motion/variants";
 import React from "react";
 import { SxProps, Theme } from "@mui/material/styles";
 const MotionBox = motion.create(Box);

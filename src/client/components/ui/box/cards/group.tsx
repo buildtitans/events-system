@@ -15,7 +15,7 @@ import {
   getGroupCardMetaWrapSx,
   getGroupCardSurfaceSx,
   getGroupCardTitleSx,
-} from "@/src/styles/sx/groupCard";
+} from "@/src/client/styles/sx/groupCard";
 
 const StyledTypography = styled(Typography)({
   display: "-webkit-box",

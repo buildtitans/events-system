@@ -6,7 +6,7 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import {
   navPrimaryButtonSx,
   navSecondaryButtonSx,
-} from "@/src/styles/sx/nav";
+} from "@/src/client/styles/sx/nav";
 
 export default function RenderMobileAuthButtons({
     userKind, 

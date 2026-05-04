@@ -7,7 +7,7 @@ import UserAccountMenuFooter from "../../sections/user/userAccountMenuFooter";
 import {
   accountMenuPanelSx,
   accountMenuRootSx,
-} from "@/src/styles/sx/accountMenu";
+} from "@/src/client/styles/sx/accountMenu";
 
 export default function UserAccountMenu({ email }: { email: string}): JSX.Element {
 

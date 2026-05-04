@@ -2,7 +2,7 @@
 import type { JSX } from "react";
 import TextField from "@mui/material/TextField";
 import { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
-import { createEventTextFieldSx } from "@/src/styles/sx/createEventDrawer";
+import { createEventTextFieldSx } from "@/src/client/styles/sx/createEventDrawer";
 
 type LocationInputTextFieldProps = {
     params: AutocompleteRenderInputParams 

@@ -34,7 +34,9 @@ export class AppServerBootstrap {
     const services = new AppServerServices({
       appRoot: "/var/www/events-system",
       envFilePath: "/etc/events-system/server.env",
-      nextCommand: "/usr/bin/pnpm --dir /var/www/events-system start",
+      // The release artifact stages the Next production runtime under
+      // `/var/www/events-system/next-standalone`.
+      nextCommand: "/usr/bin/node /var/www/events-system/next-standalone/server.js",
       fastifyCommand:
         "/usr/bin/pnpm --dir /var/www/events-system/src/server start:fastify",
     });

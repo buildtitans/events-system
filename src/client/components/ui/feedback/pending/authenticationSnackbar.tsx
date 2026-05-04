@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { fadeInOut } from "@/src/styles/motion/variants";
+import { fadeInOut } from "@/src/client/styles/motion/variants";
 import Snackbar from "@mui/material/Snackbar";
 import { JSX, useEffect } from "react";
 import type { RequestStatus, SnackbarMessages } from "@/src/lib/types/tokens/types";

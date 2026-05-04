@@ -7,7 +7,7 @@ import {
   dashboardPanelSx,
   dashboardHeaderInnerSx,
   dashboardHeaderDividerSx,
-} from "@/src/styles/sx/dashboardHeader";
+} from "@/src/client/styles/sx/dashboardHeader";
 import type { JSX } from "react";
 import RenderUserAccount from "../../pipelines/user/renderUserAccount";
 import DashboardHeader from "../../ui/headers/dashboardHeader";

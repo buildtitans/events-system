@@ -7,7 +7,7 @@ import {
   openedEventImageMediaSx,
   openedEventImageSkeletonSx,
   openedEventImageWrapSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 export default function OpenedEventImage({ thumbnail }: {
     thumbnail: string | null

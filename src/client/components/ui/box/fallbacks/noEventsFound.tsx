@@ -1,7 +1,7 @@
 import { NotFound } from "@/src/client/components/ui/feedback";
 import Box from "@mui/material/Box";
 import { motion } from 'framer-motion';
-import { fadeInOut } from '@/src/styles/motion/variants';
+import { fadeInOut } from '@/src/client/styles/motion/variants';
 const MotionBox = motion.create(Box);
 
 

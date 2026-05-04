@@ -7,7 +7,7 @@ import {
 } from "@/src/schemas/notifications/notificationsSchema";
 import NotificationListItem from "./notificationListItem";
 import NoPendingNotifications from "../../../../ui/feedback/fallbacks/noPendingNotifications";
-import { navMenuListSx, navMenuPaperSx } from "@/src/styles/sx/nav";
+import { navMenuListSx, navMenuPaperSx } from "@/src/client/styles/sx/nav";
 
 export type NotificationsListProps = {
     anchorEl: null | HTMLElement,

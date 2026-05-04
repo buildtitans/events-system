@@ -19,7 +19,7 @@ import {
   groupSidebarNavSx,
   groupSidebarSectionLabelMap,
   groupSidebarSectionLabelSx,
-} from "@/src/styles/sx/groupSidebar";
+} from "@/src/client/styles/sx/groupSidebar";
 
 const options = [
   {

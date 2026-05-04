@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 import type { Control } from "react-hook-form";
 import {
   createEventFieldControlSx,
-} from "@/src/styles/sx/createEventDrawer";
+} from "@/src/client/styles/sx/createEventDrawer";
 import { NewGroupInputType } from "@/src/lib/types/hooks/types";
 import LocationAutoComplete from "@/src/client/components/sections/inputs/shared/locationAutoComplete";
 

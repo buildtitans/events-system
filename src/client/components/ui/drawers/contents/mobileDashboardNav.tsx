@@ -18,7 +18,7 @@ import {
   mobileBottomDrawerSectionLabelSx,
   mobileBottomDrawerTabLabelSx,
   mobileBottomDrawerTabsSx,
-} from "@/src/styles/sx/mobileBottomDrawer";
+} from "@/src/client/styles/sx/mobileBottomDrawer";
 
 const iconByOption: Record<UserAccountViewType, JSX.Element> = {
   "my groups": <GroupRoundedIcon fontSize="small" />,

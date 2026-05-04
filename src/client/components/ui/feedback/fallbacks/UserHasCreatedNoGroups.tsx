@@ -20,7 +20,7 @@ import {
   noGroupsFallbackPanelSx,
   noGroupsFallbackRootSx,
   noGroupsFallbackTitleSx,
-} from "@/src/styles/sx/noGroupsFallback";
+} from "@/src/client/styles/sx/noGroupsFallback";
 
 
 type DashboardFallbackProps = {

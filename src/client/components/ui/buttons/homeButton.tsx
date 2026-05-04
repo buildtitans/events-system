@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import { clearOpenedGroupSlice } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { navHomeButtonSx } from "@/src/styles/sx/nav";
+import { navHomeButtonSx } from "@/src/client/styles/sx/nav";
 
 export default function HomeButton(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();

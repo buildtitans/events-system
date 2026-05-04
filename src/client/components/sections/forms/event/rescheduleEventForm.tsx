@@ -19,7 +19,7 @@ import {
   openedEventControlsSectionSx,
   openedEventControlsTitleSx,
   openedEventSectionLabelSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 
 type RescheduleEventFormProps = {

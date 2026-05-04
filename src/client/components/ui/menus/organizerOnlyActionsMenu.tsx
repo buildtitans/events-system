@@ -11,7 +11,7 @@ import {
   groupSidebarActionDescriptionSx,
   groupSidebarActionTitleSx,
   groupSidebarPrimaryButtonSx,
-} from "@/src/styles/sx/groupSidebar";
+} from "@/src/client/styles/sx/groupSidebar";
 
 export default function OrganizerOnlyActionsMenu(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();

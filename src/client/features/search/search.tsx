@@ -14,7 +14,7 @@ import {
   navMenuListSx,
   navMenuPaperSx,
   navSearchAutocompleteSx,
-} from "@/src/styles/sx/nav";
+} from "@/src/client/styles/sx/nav";
 
 export function Search(): JSX.Element {
   const mountStatus = useSelector(

@@ -4,7 +4,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import type { UpdateEventArgsSchemaType } from '@/src/schemas/events/eventSchema';
 import {
   openedEventCheckboxLabelSx,
-} from '@/src/styles/sx/openedEventDrawer';
+} from '@/src/client/styles/sx/openedEventDrawer';
 import { Button } from '@mui/material';
 import React from 'react';
 

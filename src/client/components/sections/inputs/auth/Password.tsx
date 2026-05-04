@@ -9,7 +9,7 @@ import {
   authFieldLabelSx,
   authLinkSx,
   authTextFieldSx,
-} from "@/src/styles/sx/authDrawer";
+} from "@/src/client/styles/sx/authDrawer";
 
 type PasswordInputProps = {
   handleClickOpen?: () => void;

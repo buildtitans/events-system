@@ -27,7 +27,7 @@ import {
   confirmModalPrimaryButtonSx,
   confirmModalSecondaryButtonSx,
   confirmModalTitleSx,
-} from "@/src/styles/sx/confirmModal";
+} from "@/src/client/styles/sx/confirmModal";
 
 export default function ConfirmModal({
   activeModal,

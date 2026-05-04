@@ -1,7 +1,7 @@
 "use client";
-import TopNav from "@/src/client/components/global/TopNav";
-import TopLayerHost from "@/src/client/components/layers/topLayerHost";
-import Footer from "@/src/client/components/sections/footer/footer";
+import TopNav from "@/src/client/components/global/nav/TopNav";
+import TopLayerHost from "@/src/client/components/hosts/topLayerHost";
+import Footer from "@/src/client/components/global/footer/footer";
 import { JSX } from "react";
 import { PropsWithChildren } from "react";
 import Container from "@mui/material/Container";

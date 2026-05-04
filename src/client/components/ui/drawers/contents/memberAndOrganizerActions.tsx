@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Stack } from "@mui/material";
-import { openedEventHeroSx } from "@/src/styles/sx/openedEventDrawer";
+import { openedEventHeroSx } from "@/src/client/styles/sx/openedEventDrawer";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {

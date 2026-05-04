@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { RenderEventsLayout } from '@/src/client/components/pipelines/events/renderEventsLayout';
 import { AnimatePresence, motion } from 'framer-motion';
-import { fadeInOut } from '@/src/styles/motion/variants';
+import { fadeInOut } from '@/src/client/styles/motion/variants';
 import { EventsPages } from '@/src/lib/store/slices/events/types';
 const MotionGrid = motion(Grid);
 

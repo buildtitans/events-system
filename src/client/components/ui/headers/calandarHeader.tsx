@@ -6,7 +6,7 @@ import {
   groupCalendarEyebrowSx,
   groupCalendarHeaderSx,
   groupCalendarTitleSx,
-} from "@/src/styles/sx/groupCalendar";
+} from "@/src/client/styles/sx/groupCalendar";
 
 export default 
 function CalandarHeader(): JSX.Element {

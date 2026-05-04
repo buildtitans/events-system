@@ -9,7 +9,7 @@ import {
   mobileBottomDrawerInnerSx,
   mobileBottomDrawerPanelSx,
   mobileBottomDrawerPaperSx,
-} from "@/src/styles/sx/mobileBottomDrawer";
+} from "@/src/client/styles/sx/mobileBottomDrawer";
 
 export function MobileBottomDrawer() {
   const sideBar = useSelector((s: RootState) => s.rendering.sidebar);

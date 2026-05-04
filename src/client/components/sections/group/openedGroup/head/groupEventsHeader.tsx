@@ -6,7 +6,7 @@ import {
   openedGroupHeroEyebrowSx,
   openedGroupHeroHeaderDescriptionSx,
   openedGroupHeroTitleSx,
-} from "@/src/styles/sx/openedGroupHero";
+} from "@/src/client/styles/sx/openedGroupHero";
 
 export default function GroupEventsHeader(
   { groupName }: { groupName: string },

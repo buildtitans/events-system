@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
-import { groupSidebarSkeletonSx } from "@/src/styles/sx/groupSidebar";
+import { groupSidebarSkeletonSx } from "@/src/client/styles/sx/groupSidebar";
 
 export default function SidebarSkeleton() {
   return (

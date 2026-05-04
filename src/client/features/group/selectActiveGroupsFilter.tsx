@@ -14,10 +14,12 @@ import {
   groupsFilterPendingWrapSx,
   groupsFilterRootSx,
   groupsFilterSurfaceSx,
-} from "@/src/styles/sx/groupFilter";
+} from "@/src/client/styles/sx/groupFilter";
+import { useMinTimeVisible } from "@/src/lib/hooks/rendering/useMinTimeVisible";
 
 export default function SelectActiveGroupsFilter(): JSX.Element {
   const status = useSelector((s: RootState) => s.groups.landingGroupsTab.status);
+  const visible = useMinTimeVisible((status === "pending"), 200, 600);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { handleFilterSelect, filter } = useFilterGroups();
@@ -43,7 +45,7 @@ export default function SelectActiveGroupsFilter(): JSX.Element {
         ))}
       </Stack>
 
-      {status === "pending" && (
+      {visible && (
         <Stack sx={groupsFilterPendingWrapSx}>
           <ShimmerText
             pendingMessage={createGroupFilterPendingMessage(filter, options)}

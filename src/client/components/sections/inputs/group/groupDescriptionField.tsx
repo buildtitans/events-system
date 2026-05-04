@@ -6,7 +6,7 @@ import { JSX } from "react";
 import {
     createGroupFieldControlSx,
     createGroupTextFieldSx,
-} from "@/src/styles/sx/createGroupDrawer";
+} from "@/src/client/styles/sx/createGroupDrawer";
 
 type GroupNameFieldProps = {
     getInput: CreateNewGroupHook["getInput"],

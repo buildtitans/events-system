@@ -9,7 +9,7 @@ import {
   getOpenedEventMetaChipSx,
   getOpenedEventMetaIconSx,
   openedEventMetaRowSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 export default function EventMeta({
   startTime,

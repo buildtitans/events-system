@@ -20,7 +20,7 @@ import {
   openedGroupHeroMetaLabelSx,
   openedGroupHeroMetaValueSx,
   openedGroupHeroWideMetaCardSx,
-} from "@/src/styles/sx/openedGroupHero";
+} from "@/src/client/styles/sx/openedGroupHero";
 
 type GroupDescriptionProps = {
   group: GroupSchemaType;

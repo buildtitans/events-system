@@ -19,7 +19,7 @@ import {
   membershipNextEventEyebrowSx,
   membershipNextEventWrapSx,
   membershipPrimaryColumnSx,
-} from "@/src/styles/sx/membershipListItem";
+} from "@/src/client/styles/sx/membershipListItem";
 
 type MembershipListItemProps = {
   membership: UserMembershipSchemaType;

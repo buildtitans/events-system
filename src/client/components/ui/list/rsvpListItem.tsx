@@ -30,7 +30,7 @@ import {
   rsvpPrimaryColumnSx,
   rsvpScheduledChipSx,
   rsvpTopRowSx,
-} from "@/src/styles/sx/rsvpListItem";
+} from "@/src/client/styles/sx/rsvpListItem";
 
 type RsvpListItemProps = {
   rsvp: RsvpSchemaType;

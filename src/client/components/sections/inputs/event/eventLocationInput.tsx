@@ -4,7 +4,7 @@ import FormControl from "@mui/material/FormControl";
 import { Controller } from "react-hook-form";
 import type { NewEventType } from "@/src/lib/types/hooks/types";
 import type { Control } from "react-hook-form";
-import { createEventFieldControlSx } from "@/src/styles/sx/createEventDrawer";
+import { createEventFieldControlSx } from "@/src/client/styles/sx/createEventDrawer";
 import LocationAutoComplete from "@/src/client/components/sections/inputs/shared/locationAutoComplete";
 
 type LocationInputProps = {
