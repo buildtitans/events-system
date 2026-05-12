@@ -99,6 +99,112 @@ function Reset-ReleaseDirectory {
   }
 }
 
+function Get-AvailableLoopbackPort {
+  $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0)
+  $listener.Start()
+
+  try {
+    return ([System.Net.IPEndPoint]$listener.LocalEndpoint).Port
+  }
+  finally {
+    $listener.Stop()
+  }
+}
+
+function Test-StandaloneBundle {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$BundleDir,
+
+    [int]$StartupTimeoutSeconds = 15
+  )
+
+  $serverEntry = Join-Path $BundleDir "server.js"
+  if (-not (Test-Path -LiteralPath $serverEntry -PathType Leaf)) {
+    throw "Standalone bundle smoke test failed: missing server entry at '$serverEntry'."
+  }
+
+  $port = Get-AvailableLoopbackPort
+
+  $processStartInfo = [System.Diagnostics.ProcessStartInfo]::new()
+  $processStartInfo.FileName = "node"
+  $processStartInfo.Arguments = "server.js"
+  $processStartInfo.WorkingDirectory = $BundleDir
+  $processStartInfo.UseShellExecute = $false
+  $processStartInfo.RedirectStandardOutput = $true
+  $processStartInfo.RedirectStandardError = $true
+  $processStartInfo.EnvironmentVariables["PORT"] = [string]$port
+  $processStartInfo.EnvironmentVariables["HOSTNAME"] = "127.0.0.1"
+
+  $process = [System.Diagnostics.Process]::new()
+  $process.StartInfo = $processStartInfo
+
+  $started = $false
+  $healthy = $false
+  $probeUri = "http://127.0.0.1:$port/"
+
+  try {
+    $started = $process.Start()
+    if (-not $started) {
+      throw "Standalone bundle smoke test failed: node process did not start."
+    }
+
+    $deadline = (Get-Date).AddSeconds($StartupTimeoutSeconds)
+    while ((Get-Date) -lt $deadline) {
+      if ($process.HasExited) {
+        break
+      }
+
+      try {
+        $response = Invoke-WebRequest -Uri $probeUri -UseBasicParsing -TimeoutSec 2
+        if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) {
+          $healthy = $true
+          break
+        }
+      }
+      catch {
+        Start-Sleep -Milliseconds 250
+      }
+    }
+
+    if (-not $healthy) {
+      $process.WaitForExit(1000) | Out-Null
+      $stdout = $process.StandardOutput.ReadToEnd().Trim()
+      $stderr = $process.StandardError.ReadToEnd().Trim()
+
+      $reason = if ($process.HasExited) {
+        "node exited with code $($process.ExitCode)"
+      } else {
+        "timed out waiting for a successful response from $probeUri"
+      }
+
+      throw @"
+Standalone bundle smoke test failed: $reason
+
+STDOUT:
+$stdout
+
+STDERR:
+$stderr
+"@
+    }
+
+    Write-Host "Standalone bundle smoke test passed on $probeUri"
+  }
+  finally {
+    if ($started) {
+      if (-not $process.HasExited) {
+        $process.Kill()
+        $process.WaitForExit(5000) | Out-Null
+      } else {
+        $process.WaitForExit() | Out-Null
+      }
+    }
+
+    $process.Dispose()
+  }
+}
+
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 
 if (-not $ArtifactName) {
@@ -155,6 +261,7 @@ try {
   Copy-ReleaseDirectory -SourceDir $publicSourceDir -DestinationDir $nextStandalonePublicDir
   Copy-ReleaseDirectory -SourceDir $nextStaticSourceDir -DestinationDir $nextStandaloneStaticDir
   Copy-ReleaseDirectory -SourceDir $systemdSourceDir -DestinationDir $systemdStagingDir
+  Test-StandaloneBundle -BundleDir $nextStandaloneStagingDir
 
   Copy-ReleaseFile `
     -Source (Join-Path $repoRoot "src/server/package.json") `
