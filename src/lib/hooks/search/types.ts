@@ -60,15 +60,15 @@ export type SearchLookupType =
 
 export type SuggestionType =
   | {
-      kind: "event" | "group";
-      label: EventSchemaType["title"] | GroupSchemaType["name"];
+      kind: "event";
+      label: EventSchemaType["title"];
       event_id: string;
       group_id: string;
       slug: GroupSchemaType["slug"];
     }
   | {
-      kind: "event" | "group";
-      label: EventSchemaType["title"] | GroupSchemaType["name"];
+      kind: "group";
+      label: GroupSchemaType["name"];
       group_id: string;
       slug: GroupSchemaType["slug"];
     };

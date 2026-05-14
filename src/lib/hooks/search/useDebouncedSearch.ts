@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
+import { useHydrateEventDrawerFromRsvp } from "../hydration/useHydrateEventDrawerFromRsvp";
 const WAIT_DURATION = 400;
 
 export const useDebouncedSerach = (): DebouncedSearchHook => {
@@ -27,6 +28,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
     message: null,
     error: null,
   });
+  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
 
   const sendRequest = useCallback(
     async (query: string) => {
@@ -125,18 +127,29 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
       value: SuggestionType | null,
       reason: AutocompleteChangeReason,
     ) => {
-      if (reason === "selectOption" && value?.slug) {
-        setInput(value.label);
-        setSuggestions(() => ({
-          status: "initial",
-          data: [],
-          message: null,
-          error: null,
-        }));
+      if (value) {
+        switch (value.kind) {
+          case "event": {
+            handleOpenEditStatus(value.event_id);
+            return;
+          }
+          case "group": {
+            if (reason === "selectOption") {
+              setInput(value.label);
+              setSuggestions(() => ({
+                status: "initial",
+                data: [],
+                message: null,
+                error: null,
+              }));
 
-        const redirectRoute = `/group/${value.slug}`;
-        router.push(redirectRoute);
-        dispatch(enqueueSidebar("group"));
+              const redirectRoute = `/group/${value.slug}`;
+              router.push(redirectRoute);
+              dispatch(enqueueSidebar("group"));
+              return;
+            }
+          }
+        }
       }
     },
     [router, dispatch],
