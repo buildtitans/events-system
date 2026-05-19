@@ -58,7 +58,8 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     };
 
     const getAllActiveEvents = async (): Promise<void> => {
-      const allActiveEvents = await trpcClient.events.allEventsLayout.mutate();
+      const allActiveEvents =
+        await trpcClient.events.allActiveEventsLayout.mutate();
 
       dispatch(
         populateEvents({

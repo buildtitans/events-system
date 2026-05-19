@@ -9,7 +9,6 @@ import type {
   GroupNameByGroupID,
 } from "./types";
 import { initializeDomains } from "../rendering/RenderingSlice";
-import { stat } from "fs";
 
 type EventCategoryState = {
   displayed: EventDisplayFilter;
