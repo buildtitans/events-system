@@ -23,7 +23,7 @@ import {
   groupSidebarRootSx,
   groupSidebarSectionLabelSx,
   groupSidebarTitleSx,
-} from "@/src/styles/sx/groupSidebar";
+} from "@/src/client/styles/sx/groupSidebar";
 
 type GroupActonsContainerProps = {
   group_id: GroupSchemaType["id"];

@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import {
   mobileNavDrawerPaperSx,
   navSecondaryButtonSx,
-} from "@/src/styles/sx/nav";
+} from "@/src/client/styles/sx/nav";
 
 type MobileMenuDrawerProps = {
   toggleDrawer: (newOpen: boolean) => () => void;

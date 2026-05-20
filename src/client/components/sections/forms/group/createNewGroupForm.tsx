@@ -11,7 +11,7 @@ import CreateGroupDrawerShell from "@/src/client/components/ui/drawers/createGro
 import {
     createGroupDrawerFormSx,
     createGroupPrimaryButtonSx,
-} from "@/src/styles/sx/createGroupDrawer";
+} from "@/src/client/styles/sx/createGroupDrawer";
 import { useForm } from 'react-hook-form';
 import GroupLocationField from "@/src/client/components/sections/inputs/group/groupLocationField";
 

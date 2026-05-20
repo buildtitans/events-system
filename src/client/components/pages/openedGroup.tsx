@@ -5,7 +5,7 @@ import { RootState } from "@/src/lib/store";
 import { RenderOpenedGroup } from "../pipelines/groups/renderOpenedGroup";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { getDesktopSidebarOffsetSx } from "@/src/styles/sx/sidebar";
+import { getDesktopSidebarOffsetSx } from "@/src/client/styles/sx/sidebar";
 
 export default function OpenedGroup(): JSX.Element | null {
   const { group } = useSelector((s: RootState) => s.openGroup);

@@ -15,7 +15,7 @@ import {
   openedEventControlsTitleSx,
   openedEventPrimaryButtonSx,
   openedEventSectionLabelSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 export default function CheckOutGroupButton({ event }: { event: EventSchemaType | null }): JSX.Element | null {
     const path = usePathname();

@@ -17,7 +17,7 @@ import {
   membershipMetaRowSx,
   membershipTitleRowSx,
   membershipTitleSx,
-} from "@/src/styles/sx/membershipListItem";
+} from "@/src/client/styles/sx/membershipListItem";
 
 type MembershipListItemHeaderProps = {
   membership: UserMembershipSchemaType;

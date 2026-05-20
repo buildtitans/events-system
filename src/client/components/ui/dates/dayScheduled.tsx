@@ -8,7 +8,7 @@ import { checkCalandarDay } from "@/src/lib/utils/dates/checkCalandarDay";
 import {
   getGroupCalendarDayBadgeSx,
   getGroupCalendarDaySx,
-} from "@/src/styles/sx/groupCalendar";
+} from "@/src/client/styles/sx/groupCalendar";
 
 export type DayScheduledProps = PickersDayProps & {
   scheduledDateKeys?: CalendarLookup;

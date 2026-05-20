@@ -10,7 +10,7 @@ import {
   groupSidebarActionDescriptionSx,
   groupSidebarActionTitleSx,
   groupSidebarDangerButtonSx,
-} from "@/src/styles/sx/groupSidebar";
+} from "@/src/client/styles/sx/groupSidebar";
 
 type MembersOnlyActionsMenuProps = {
   group_id: GroupMemberSchemaType["group_id"];

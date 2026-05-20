@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import type { JSX } from 'react';
 import { RenderEventsLayout } from '@/src/client/components/pipelines/events/renderEventsLayout';
 import { AnimatePresence, motion } from 'framer-motion';
-import { fadeInOut } from '@/src/styles/motion/variants';
+import { fadeInOut } from '@/src/client/styles/motion/variants';
 import type { EventsPages } from '@/src/lib/store/slices/events/types';
 const MotionGrid = motion(Grid);
 

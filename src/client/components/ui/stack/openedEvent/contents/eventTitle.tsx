@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
   openedEventTitleSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 
 export default function EventTitle({

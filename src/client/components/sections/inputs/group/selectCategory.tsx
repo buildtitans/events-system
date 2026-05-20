@@ -14,7 +14,7 @@ import {
   createGroupMenuPaperSx,
   createGroupSelectLabelSx,
   createGroupSelectSx,
-} from "@/src/styles/sx/createGroupDrawer";
+} from "@/src/client/styles/sx/createGroupDrawer";
 
 type SelectCategoryProps = {
   handleGroupCategory: CreateNewGroupHook["handleGroupCategory"];

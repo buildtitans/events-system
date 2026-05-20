@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import type { JSX } from "react";
-import { accountMenuFooterSx } from "@/src/styles/sx/accountMenu";
+import { accountMenuFooterSx } from "@/src/client/styles/sx/accountMenu";
 
 export default function UserAccountMenuFooter(): JSX.Element {
   return (

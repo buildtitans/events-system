@@ -23,7 +23,7 @@ import {
   openedEventSectionLabelSx,
   openedEventSelectLabelSx,
   openedEventSelectSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 type UpdateViewerAttendanceFormProps = {
     currentStatus: EventAttendantStatusSchemaType,

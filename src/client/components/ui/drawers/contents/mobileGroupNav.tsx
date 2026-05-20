@@ -20,7 +20,7 @@ import {
   mobileBottomDrawerSectionLabelSx,
   mobileBottomDrawerTabLabelSx,
   mobileBottomDrawerTabsSx,
-} from "@/src/styles/sx/mobileBottomDrawer";
+} from "@/src/client/styles/sx/mobileBottomDrawer";
 
 const groupOptions = [
   {

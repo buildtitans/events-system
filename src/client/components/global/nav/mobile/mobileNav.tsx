@@ -13,7 +13,7 @@ import MobileMenuDrawer from "./mobileMenuDrawer";
 import {
   mobileNavIconButtonSx,
   mobileNavSurfaceSx,
-} from "@/src/styles/sx/nav";
+} from "@/src/client/styles/sx/nav";
 
 export default function MobileNav({ 
   openSignupDrawer,

@@ -7,7 +7,7 @@ import {
   openedGroupHeroInnerSx,
   openedGroupHeroPanelSx,
   openedGroupHeroRootSx,
-} from "@/src/styles/sx/openedGroupHero";
+} from "@/src/client/styles/sx/openedGroupHero";
 
 type OpenedGroupHeroProps = {
   group: GroupSchemaType;

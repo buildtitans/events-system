@@ -10,7 +10,7 @@ import { AddressSuggestion } from "@/src/lib/hooks/search/types";
 import {
   createEventAutocompletePaperSx,
   createEventAutocompleteSx,
-} from "@/src/styles/sx/createEventDrawer";
+} from "@/src/client/styles/sx/createEventDrawer";
 
 type LocationAutoCompleteProps = {
   handleLocation: (input: string) => void;

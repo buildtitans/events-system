@@ -3,7 +3,7 @@ import NavActions, { NavActionsProps } from "../toolbar/navActions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Box from "@mui/material/Box";
-import { navSurfaceSx } from "@/src/styles/sx/nav";
+import { navSurfaceSx } from "@/src/client/styles/sx/nav";
 
 export type NavProps = Pick<NavActionsProps, "openSignupDrawer" | "showSignoutModal">;
 

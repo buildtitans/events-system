@@ -11,7 +11,7 @@ import {
   openedEventPopoverActionsSx,
   openedEventPopoverPaperSx,
   openedEventPopoverTitleSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 type ConfirmCancelEventPopoverProps = {
     anchorEl: HTMLElement | null;

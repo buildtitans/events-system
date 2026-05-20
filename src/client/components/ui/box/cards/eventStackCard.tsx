@@ -5,7 +5,7 @@ import {
   StyledCard,
   StyledCardContent,
   StyledTypography,
-} from "@/src/styles/styledComponents/styledCard";
+} from "@/src/client/styles/styledComponents/styledCard";
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import { EventCardProps } from "./eventHeroCard";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -19,7 +19,7 @@ import {
   eventCardGroupLabelSx,
   eventCardRootSx,
   eventCardTitleSx,
-} from "@/src/styles/sx/eventCard";
+} from "@/src/client/styles/sx/eventCard";
 
 type EventStackCardProps = {
   handleBlur: EventCardProps["handleBlur"];

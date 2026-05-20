@@ -14,7 +14,7 @@ import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import {
   openedEventGroupLinkSx,
   openedEventGroupNameSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 type GroupNameProps = {
   slug: GroupSlug;

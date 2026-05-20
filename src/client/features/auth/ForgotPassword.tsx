@@ -18,7 +18,7 @@ import {
     authDialogTitleSx,
     authPrimaryButtonSx,
     authSecondaryButtonSx,
-} from '@/src/styles/sx/authDrawer';
+} from '@/src/client/styles/sx/authDrawer';
 
 interface ForgotPasswordProps {
     open: boolean;

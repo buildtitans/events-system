@@ -27,6 +27,7 @@
     "@mui/x-date-pickers": "^8.26.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@sinclair/typebox": "0.33.9",
+    "@swc/helpers": "0.5.15",
     "@trpc/client": "^11.8.1",
     "@trpc/next": "^11.8.1",
     "@trpc/react-query": "^11.8.1",
@@ -41,6 +42,7 @@
     "react-hook-form": "^7.71.1",
     "react-redux": "^9.2.0",
     "slugify": "^1.6.6",
+    "styled-jsx": "5.1.6",
     "superjson": "^2.2.6"
   },
   "devDependencies": {

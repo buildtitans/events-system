@@ -4,7 +4,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { JSX } from 'react';
 import { AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
-import { navSearchInputSx } from '@/src/styles/sx/nav';
+import { navSearchInputSx } from '@/src/client/styles/sx/nav';
 
 type SearchBarProps = {
     params: AutocompleteRenderInputParams

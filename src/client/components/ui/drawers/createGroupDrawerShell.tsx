@@ -8,7 +8,7 @@ import {
   createGroupDrawerHeaderSx,
   createGroupDrawerRootSx,
   createGroupDrawerTitleSx,
-} from "@/src/styles/sx/createGroupDrawer";
+} from "@/src/client/styles/sx/createGroupDrawer";
 
 export default function CreateGroupDrawerShell({
   children,

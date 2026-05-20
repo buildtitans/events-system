@@ -5,7 +5,7 @@ import FadeInOutBox from "@/src/client/components/ui/box/motionboxes/fadeInOutBo
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AnimatePresence } from "framer-motion";
 import GroupEventsHeader from "./groupEventsHeader";
-import { openedGroupHeroHeaderWrapSx } from "@/src/styles/sx/openedGroupHero";
+import { openedGroupHeroHeaderWrapSx } from "@/src/client/styles/sx/openedGroupHero";
 
 type GroupHeadSectionProps = {
   groupName: GroupSchemaType["name"];

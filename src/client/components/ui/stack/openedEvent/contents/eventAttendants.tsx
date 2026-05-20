@@ -10,7 +10,7 @@ import {
   openedEventAttendancePrimarySx,
   openedEventAttendanceSecondarySx,
   openedEventSectionLabelSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 export default function EventAttendants({
   numAttendants,

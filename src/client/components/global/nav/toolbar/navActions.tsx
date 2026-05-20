@@ -12,7 +12,7 @@ import {
   navActionsGroupSx,
   navPrimaryButtonSx,
   navSecondaryButtonSx,
-} from "@/src/styles/sx/nav";
+} from "@/src/client/styles/sx/nav";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardButton from "./dashboardButton";
 

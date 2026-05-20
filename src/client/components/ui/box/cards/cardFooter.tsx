@@ -12,7 +12,7 @@ import {
   eventCardFooterSx,
   eventCardFooterTextSx,
   getEventCardFooterIconSx,
-} from "@/src/styles/sx/eventCard";
+} from "@/src/client/styles/sx/eventCard";
 
 type CardFooterProps = {
   location?: EventSchemaType["meeting_location"] | GroupSchemaType["location"];

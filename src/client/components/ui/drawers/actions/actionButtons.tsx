@@ -10,7 +10,7 @@ import {
   openedEventActionRailSx,
   openedEventActionsLabelSx,
   openedEventActionsSectionSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 
 type ActionButtonsProps = {
   setOpenAction: Dispatch<SetStateAction<EventDrawerFormState>>;

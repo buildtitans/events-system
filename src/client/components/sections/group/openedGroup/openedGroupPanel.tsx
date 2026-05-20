@@ -3,7 +3,7 @@ import { Box, Container, Stack } from "@mui/material";
 import {
   openedGroupHeroPanelSx,
   openedGroupHeroRootSx,
-} from "@/src/styles/sx/openedGroupHero";
+} from "@/src/client/styles/sx/openedGroupHero";
 import OpenedGroupHero from "./head/openedGroupHero";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import RenderCurrentView from "@/src/client/components/pipelines/groups/renderCurrentView";

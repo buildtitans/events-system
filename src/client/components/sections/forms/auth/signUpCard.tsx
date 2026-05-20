@@ -14,7 +14,7 @@ import {
     authCheckboxSx,
     authDrawerFormSx,
     authPrimaryButtonSx,
-} from '@/src/styles/sx/authDrawer';
+} from '@/src/client/styles/sx/authDrawer';
 
 export default function SignUpCard() {
     const { 

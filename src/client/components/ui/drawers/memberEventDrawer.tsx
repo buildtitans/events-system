@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/material";
 import {
   openedEventDrawerInnerSx,
   openedEventDrawerRootSx,
-} from "@/src/styles/sx/openedEventDrawer";
+} from "@/src/client/styles/sx/openedEventDrawer";
 import { PropsWithChildren } from "react";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";

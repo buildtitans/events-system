@@ -8,7 +8,7 @@ import {
   StyledCard,
   StyledCardContent,
   StyledTypography,
-} from "@/src/styles/styledComponents/styledCard";
+} from "@/src/client/styles/styledComponents/styledCard";
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import type { JSX } from "react";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -24,7 +24,7 @@ import {
   eventCardMediaWrapSx,
   eventCardRootSx,
   eventCardTitleSx,
-} from "@/src/styles/sx/eventCard";
+} from "@/src/client/styles/sx/eventCard";
 
 export type MobileEventCard = 12;
 

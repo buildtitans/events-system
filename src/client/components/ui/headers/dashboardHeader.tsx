@@ -1,5 +1,5 @@
 import { UserAccountViewType } from "@/src/lib/store/slices/user/types";
-import { Box, Typography, Button, Stack, Divider } from "@mui/material";
+import { Box, Typography, Button, Stack, Divider, Fade } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { type JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +16,7 @@ import {
   dashboardHeaderRootSx,
   dashboardHeaderTitleSx,
   dashboardHeaderTitleWrapSx,
-} from "@/src/styles/sx/dashboardHeader";
+} from "@/src/client/styles/sx/dashboardHeader";
 
 type DashboardHeaderContent = {
   description: string;
@@ -63,7 +63,8 @@ export default function DashboardHeader(): JSX.Element {
             justifyContent="space-between"
             gap={{ xs: 2.5, md: 3 }}
           >
-            <Box sx={dashboardHeaderTitleWrapSx}>
+            <Fade key={view} in={true} timeout={300}>
+<Box sx={dashboardHeaderTitleWrapSx}>
               <Typography variant="overline" sx={dashboardHeaderEyebrowSx}>
                 {content.eyebrow}
               </Typography>
@@ -74,8 +75,10 @@ export default function DashboardHeader(): JSX.Element {
                 {content.description}
               </Typography>
             </Box>
-            {view === "my groups" && (
-              <Box sx={dashboardHeaderActionWrapSx}>
+            </Fade>
+            
+            <Fade in={view === "my groups"} key={"my-groups-fade-wrapper"}  timeout={300}>
+<Box sx={dashboardHeaderActionWrapSx}>
                 <Button
                   suppressHydrationWarning={true}
                   onClick={() => dispatch(enqueueDrawer("new group"))}
@@ -87,7 +90,7 @@ export default function DashboardHeader(): JSX.Element {
                   Create Group
                 </Button>
               </Box>
-            )}
+            </Fade>
           </Stack>
   );
 }

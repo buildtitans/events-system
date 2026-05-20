@@ -5,7 +5,7 @@ import {
   createEventSuggestionChipSx,
   createEventSuggestionRowSx,
   createEventSuggestionTextSx,
-} from "@/src/styles/sx/createEventDrawer";
+} from "@/src/client/styles/sx/createEventDrawer";
 
 type AddressSuggestionProps = {
   option: AddressSuggestion;

@@ -1,5 +1,5 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { CategoryMap } from "@/src/components/sections/group/groupsPages";
+import type { CategoryMap } from "@/src/client/components/sections/group/groupsPages";
 
 function getCategoryName(
   category_id: GroupSchemaType["category_id"],

@@ -17,7 +17,7 @@ import {
     authCheckboxSx,
     authDrawerFormSx,
     authPrimaryButtonSx,
-} from '@/src/styles/sx/authDrawer';
+} from '@/src/client/styles/sx/authDrawer';
 
 type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
     handleSubmit: UseLoginHook["handleSubmit"]

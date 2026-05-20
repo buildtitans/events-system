@@ -26,7 +26,7 @@ export const EventsPipeline = (events: EventsStateType): JSX.Element => {
       );
 
     case "failed":
-      return <AsyncFailedFallback message={events.error} />;
+      return <AsyncFailedFallback message={events.error} key={"fallback"} />;
 
     case "n/a":
       return <NoScheduledEvents key={"no-scheduled-events"} />;

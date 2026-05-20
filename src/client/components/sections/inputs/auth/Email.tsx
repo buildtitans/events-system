@@ -6,7 +6,7 @@ import {
     authFieldControlSx,
     authFieldLabelSx,
     authTextFieldSx,
-} from "@/src/styles/sx/authDrawer";
+} from "@/src/client/styles/sx/authDrawer";
 
 type EmailInputProps = {
     emailErrorMessage: string,

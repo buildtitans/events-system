@@ -8,7 +8,7 @@ import {
   authDrawerHeaderSx,
   authDrawerRootSx,
   authDrawerTitleSx,
-} from "@/src/styles/sx/authDrawer";
+} from "@/src/client/styles/sx/authDrawer";
 
 type AuthDrawerShellProps = PropsWithChildren<{
   eyebrow: string;

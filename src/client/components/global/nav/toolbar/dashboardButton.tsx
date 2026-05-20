@@ -2,7 +2,7 @@
 import { type JSX } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
-import { navPrimaryButtonSx } from "@/src/styles/sx/nav";
+import { navPrimaryButtonSx } from "@/src/client/styles/sx/nav";
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 

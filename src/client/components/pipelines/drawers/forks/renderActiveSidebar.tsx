@@ -5,6 +5,7 @@ import { RenderGroupSidebar } from "../interfaces/renderGroupSidebar";
 import RenderUserAccountMenu from "./renderUserAccountMenu";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderActiveSidebarProps = {
     sidebar: ActiveSidebar,
@@ -33,7 +34,7 @@ export function RenderActiveSidebar({
         }
 
         default: {
-            return null;
+            return assertNever(sidebar)
         }
     }
 }

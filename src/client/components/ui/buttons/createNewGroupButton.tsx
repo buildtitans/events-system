@@ -1,5 +1,5 @@
 "use client";
-import { noGroupsFallbackActionButtonSx } from "@/src/styles/sx/noGroupsFallback";
+import { noGroupsFallbackActionButtonSx } from "@/src/client/styles/sx/noGroupsFallback";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { Button } from "@mui/material";

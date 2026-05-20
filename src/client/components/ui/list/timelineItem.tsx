@@ -28,7 +28,7 @@ import {
   groupHistoryTitleSx,
   groupHistoryTitleWrapSx,
   groupHistoryTopRowSx,
-} from "@/src/styles/sx/groupHistoryListItem";
+} from "@/src/client/styles/sx/groupHistoryListItem";
 
 type TimelineItemProps = {
   historyLog: EventSchemaType;

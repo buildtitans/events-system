@@ -34,6 +34,8 @@ $commands = @(
   "cd /var/www/events-system",
   "pnpm install --prod --frozen-lockfile",
   "/usr/local/bin/refresh-events-system-env.sh",
+  "install -D -m 644 /var/www/events-system/infra/systemd/next.service /etc/systemd/system/next.service",
+  "systemd-analyze verify /etc/systemd/system/next.service",
   "systemctl daemon-reload",
   "systemctl enable next",
   "systemctl enable fastify",

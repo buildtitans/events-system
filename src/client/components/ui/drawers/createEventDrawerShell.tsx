@@ -13,7 +13,7 @@ import {
   createEventDrawerHeaderSx,
   createEventDrawerRootSx,
   createEventDrawerTitleSx,
-} from "@/src/styles/sx/createEventDrawer";
+} from "@/src/client/styles/sx/createEventDrawer";
 
 type CreateEventDrawerShellProps = PropsWithChildren<{
   groupName: string;
