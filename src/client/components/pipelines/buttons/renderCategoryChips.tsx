@@ -5,26 +5,24 @@ import type { EventCategoriesProps } from "@/src/client/features/events/categori
 import { JSX } from "react";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
-type ChipRendererProps = { rest: EventCategoriesProps, status: DomainStatus}
+type ChipRendererProps = { rest: EventCategoriesProps; status: DomainStatus };
 
-export const RenderCategoryChips = ({ status, rest }:ChipRendererProps): JSX.Element | null => {
-
-    switch(status) {
-        case "idle": {
-            return (
-                <EventCategories 
-                {...rest}
-                />
-            )
-        }
-        case "pending": 
-        case "failed":
-        case "warning":
-        case "initial": {
-            return null
-        }
-        default: {
-            return assertNever(status)
-        }
+export const RenderCategoryChips = ({
+  status,
+  rest,
+}: ChipRendererProps): JSX.Element | null => {
+  switch (status) {
+    case "idle": {
+      return <EventCategories {...rest} />;
     }
-}
+    case "pending":
+    case "failed":
+    case "warning":
+    case "initial": {
+      return null;
+    }
+    default: {
+      return assertNever(status);
+    }
+  }
+};

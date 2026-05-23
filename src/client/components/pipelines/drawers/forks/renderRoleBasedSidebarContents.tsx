@@ -17,7 +17,7 @@ export const RenderRoleBasedSidebarContents= ({
 
   switch (role) {
     case "organizer":
-      return <OrganizerOnlyActionsMenu />;
+      return <OrganizerOnlyActionsMenu group_id={group_id}/>;
 
     case "anonymous":
       return <JoinGroupButton group_id={group_id} />;

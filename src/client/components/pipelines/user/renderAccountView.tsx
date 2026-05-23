@@ -3,7 +3,7 @@ import type { RootState } from "@/src/lib/store";
 import { useSelector } from "react-redux";
 import RenderMemberships from "./renderMemberships";
 import RenderRsvps from "./renderRsvps";
-import RenderMyGroups from "../groups/renderMyGroups";
+import RenderMyGroups from "./renderMyGroups";
 import { JSX } from "react";
 
 export default function RenderAccountView(): JSX.Element | null {

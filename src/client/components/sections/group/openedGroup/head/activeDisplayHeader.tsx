@@ -30,13 +30,18 @@ const displayHeaders = {
   overview: {
     title: "Overview",
     header: "Community Snapshot",
-    caption: "See the group’s details, who runs it, and what activity is coming up.",
+    caption: "See the group's details, who runs it, and what activity is coming up.",
   },
   "group history": {
     title: "History",
     header: "Past Activity",
     caption: "Review previously held events and how many people attended each one.",
   },
+  archives: {
+    title: "Archives",
+    header: "Cancelled Events",
+    caption: "Browse cancelled events for review, coordination with group members, or rescheduling."
+  }
 } satisfies CurrentDisplayedHeader;
 
 

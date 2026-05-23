@@ -1,10 +1,10 @@
 "use client";
-import EventsLayout from "../../sections/events/eventsLayout";
+import EventsLayout from "@/src/client/components/sections/events/eventsLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import React, { JSX } from "react";
-import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
-import OpenedGroupFallback from "../../ui/feedback/fallbacks/groupFallback";
+import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner"
+import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
 
 export const RenderEventsForGroup = (): JSX.Element => {
   const events = useSelector((s: RootState) => s.openGroup.events);

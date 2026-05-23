@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
 import { useTheme } from "@mui/material/styles";
-import OpenedGroupPanel from "@/src/client/components/sections/group/openedGroup/openedGroupPanel";
+import OpenedGroupPanel from "@/src/client/components/sections/group/openedGroup/displays/openedGroupPanel";
 
 type ViewGroupSectionProps = {
   group: GroupSchemaType;

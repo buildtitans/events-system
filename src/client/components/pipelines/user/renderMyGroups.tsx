@@ -3,9 +3,9 @@ import type { JSX } from "react";
 import type { MyGroupsState } from "@/src/lib/store/slices/user/types";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import NoGroup from "../../ui/feedback/failure/noGroups";
-import RenderGroupsOrFallback from "./renderGroupsOrFallback";
+import RenderGroupsOrFallback from "../groups/status/renderGroupsOrFallback";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
-import { Container, Fade } from "@mui/material";
+import Container from "@mui/material/Container";
 import FadeIn from "../../ui/box/motionboxes/fadeIn";
 
 type RenderMyGroupsProps = {

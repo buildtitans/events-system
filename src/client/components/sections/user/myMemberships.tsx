@@ -3,7 +3,7 @@ import { type JSX } from "react";
 import type { RootState } from "@/src/lib/store";
 import Container from "@mui/material/Container";
 import { useSelector } from "react-redux";
-import MembershipListItem from "../../ui/list/membership";
+import MembershipListItem from "@/src/client/components/ui/list/memberships/membership"
 import List from "@mui/material/List";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { useRouter } from "next/navigation";

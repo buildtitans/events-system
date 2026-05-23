@@ -89,7 +89,8 @@ export class EventService {
 
   async getGroupEventsLayout(group_id: string) {
     const groupEvents = await this.db.events.getGroupEvents(group_id);
-    return this.layout.compileLayout(groupEvents);
+    const events = this.timeline.filterActiveEvents(groupEvents);
+    return this.layout.compileLayout(events);
   }
 
   async getGroupEvents(group_id: string) {
@@ -98,6 +99,15 @@ export class EventService {
 
   async getPastEvents(group_id: string) {
     return await this.timeline.getPastEventsForGroup(group_id);
+  }
+
+  async getArchivedEvents(
+    user_id: string | null | undefined,
+    group_id: string,
+  ): Promise<EventSchemaType[]> {
+    const userId = this.policy.requireAuthenticated(user_id);
+    await this.policy.requireCanCreateEvent(userId, group_id);
+    return await this.timeline.getArchivedGroupEvents(group_id);
   }
 
   async getNextEventLookupMap(

@@ -43,7 +43,6 @@ import {
   EmailSchemaType,
   TokenAndPasswordSchemaType,
 } from "@/src/schemas/auth/loginCredentialsSchema";
-import { SearchSchema } from "../../../../schemas/search/searchSchema";
 
 export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
   NewEventInputSchemaValidator,

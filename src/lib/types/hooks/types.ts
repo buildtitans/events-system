@@ -30,9 +30,6 @@ import type {
   AutocompleteChangeReason,
 } from "@mui/material/useAutocomplete";
 import type {
-  AddressSearchState,
-  AddressSuggestion,
-  AddressSuggestionsState,
   AutoCompleteOptions,
   SuggestionOptions,
   SuggestionType,

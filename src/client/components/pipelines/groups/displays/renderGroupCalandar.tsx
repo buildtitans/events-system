@@ -1,9 +1,9 @@
 "use client"
 import type { JSX } from "react";
 import type { FlattenedGroupEventsState } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import Calandar from "../../ui/dates/calandar";
-import NoScheduledEvents from "../../ui/feedback/info/suggestScheduleEvent";
-import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
+import Calandar from "../../../ui/dates/calandar";
+import NoScheduledEvents from "../../../ui/feedback/info/suggestScheduleEvent";
+import { RelativeSpinner } from "../../../ui/feedback/pending/spinner";
 
 type RenderGroupCalandarProps = {
     flattenedGroupEvents: FlattenedGroupEventsState

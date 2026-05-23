@@ -15,10 +15,12 @@ import {
 } from "@/src/client/styles/sx/noGroupHistoryFallback";
 
 type OpenedGroupFallbackProps = {
-    eyeBrow: "History" | "Events" | "Overview",
-    fallbackTitle: 'No events held yet' | 'No events have been scheduled',
-    fallbackDescripton: 'This group has not hosted any completed events yet, so there is no activity history to show here.' | "This group has not scheduled any events yet, so there are no events to RSVP to right now.",
-    fallbackCaption: "If you want to get in touch with the organizer, their email is listed above."
+    eyeBrow: "History" | "Events" | "Overview" | "Archives",
+    fallbackTitle: 'No events held yet' | 'No events have been scheduled' | "No events archived",
+    fallbackDescripton: 'This group has not hosted any completed events yet, so there is no activity history to show here.' 
+    | "This group has not scheduled any events yet, so there are no events to RSVP to right now."
+    | "This group has not cancelled any events yet, so there are no archives to show right now. Whenever you do choose to cancel an event, you can find them here to view or reschedule.",
+    fallbackCaption: "If you want to get in touch with the organizer, their email is listed above." | "Once an event is past the date scheduled when it was created, you can no longer rescind cancellation."
 
 }
 

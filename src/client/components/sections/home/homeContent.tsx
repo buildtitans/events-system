@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import { EventsPipeline } from '../../pipelines/events/eventsPipeline';
 import { RenderEventPagination } from '../../pipelines/buttons/renderEventPagination';
-import LandingPageGroupSection from '../group/landingPageGroupSection';
+import LandingPageGroupSection from '../group/containers/landingPageGroupSection';
 import { Stack } from '@mui/material';
 
 export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Element {

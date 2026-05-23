@@ -1,13 +1,12 @@
 "use client";
 
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import GroupsPagesContainer from "../../sections/group/groupsPages";
-import DashboardFallback from "../../ui/feedback/fallbacks/dashboardFallback";
-import CreateNewGroupButton from "../../ui/buttons/createNewGroupButton";
+import GroupsPagesContainer from "../../../sections/group/containers/groupsPages";
+import DashboardFallback from "../../../ui/feedback/fallbacks/dashboardFallback";
+import CreateNewGroupButton from "../../../ui/buttons/createNewGroupButton";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import { noGroupsFallbackIconSx } from "@/src/client/styles/sx/noGroupsFallback";
-import { Fade } from "@mui/material";
-import FadeIn from "../../ui/box/motionboxes/fadeIn";
+import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 
 type RenderGroupsOrFallbackProps = {
   pages: GroupsSchemaType[];

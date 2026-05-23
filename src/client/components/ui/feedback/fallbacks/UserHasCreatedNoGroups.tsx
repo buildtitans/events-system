@@ -23,15 +23,6 @@ import {
 } from "@/src/client/styles/sx/noGroupsFallback";
 
 
-type DashboardFallbackProps = {
-    eyeBrow: 'Workspace',
-    fallbackTitle: 'No groups created yet' | 'Nothing joined yet' | 'No commitments yet',
-    fallbackBody: string,
-    action?: React.ReactNode,
-    actionCaption?: string;
-}
-
-
 export default function UserHasCreatedNoGroups(): JSX.Element {
     const dispatch = useDispatch<AppDispatch>();
 

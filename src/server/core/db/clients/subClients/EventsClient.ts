@@ -33,6 +33,17 @@ export class EventsClient {
     return this.formatRawEvents(raw);
   }
 
+  async getCancelledGroupEvents(group_id: string): Promise<EventSchemaType[]> {
+    const raw = await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("group_id", "=", group_id)
+      .where("status", "=", "cancelled")
+      .execute();
+
+    return this.formatRawEvents(raw);
+  }
+
   async searchEventByTitle(
     query: SearchSchemaType,
   ): Promise<EventsArraySchemaType> {

@@ -1,23 +1,33 @@
 import type { JSX } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import type { AppDispatch } from "@/src/lib/store";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import {
   groupSidebarActionCardSx,
   groupSidebarActionDescriptionSx,
   groupSidebarActionTitleSx,
   groupSidebarPrimaryButtonSx,
 } from "@/src/client/styles/sx/groupSidebar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import ArchiveIcon from '@mui/icons-material/Archive';
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { useHydrateGroupArchives } from "@/src/lib/hooks/hydration/useHydrateGroupArchives";
 
-export default function OrganizerOnlyActionsMenu(): JSX.Element {
+export default function OrganizerOnlyActionsMenu({ group_id }: { group_id: GroupSchemaType["id"]}): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
+  const { hydrateArchivedEvents } = useHydrateGroupArchives(group_id);
 
   const handleOpenDrawer = () => {
     dispatch(enqueueDrawer("create event drawer"));
+  };
+
+  const handleDisplayArchives = async () => {
+  dispatch(displaySection("archives"))
+   await hydrateArchivedEvents()
   };
 
   return (
@@ -32,6 +42,13 @@ export default function OrganizerOnlyActionsMenu(): JSX.Element {
         sx={groupSidebarPrimaryButtonSx}
       >
         Create Event
+      </Button>
+      <Button
+        onClick={handleDisplayArchives}
+        startIcon={<ArchiveIcon />}
+        sx={groupSidebarPrimaryButtonSx}
+      >
+        Archived Events
       </Button>
     </Box>
   );

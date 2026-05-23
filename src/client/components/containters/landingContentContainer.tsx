@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 
 type LandingContentContainerProps = PropsWithChildren<{ isMobile: boolean}>;
 
-export default function LandingContentContainer({ children, isMobile }: LandingContentContainerProps) {
+export default function LandingContentContainer({ children }: LandingContentContainerProps) {
 
     return (
         <Container disableGutters>

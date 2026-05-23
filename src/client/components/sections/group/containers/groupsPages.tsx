@@ -3,7 +3,7 @@ import type { JSX } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Fade from "@mui/material/Fade";
-import GroupsPaginaton from "../../ui/box/pagination/groupsPagination";
+import GroupsPaginaton from "../../../ui/box/pagination/groupsPagination";
 import { GroupsPage } from "./groupsPage";
 import { useGroupPages } from "@/src/lib/hooks/rendering/useGroupPages";
 import { useRouter } from "next/navigation";

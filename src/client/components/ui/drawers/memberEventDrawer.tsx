@@ -30,7 +30,6 @@ export default function MemberEventDrawer({
     numInterested,
     name,
     slug,
-  children,
 }: MemberEventDrawerProps) {
   return (
     <Box sx={openedEventDrawerRootSx}>

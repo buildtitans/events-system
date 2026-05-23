@@ -2,7 +2,7 @@
 import type { JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import GroupsPagesContainer from "@/src/client/components/sections/group/groupsPages";
+import GroupsPagesContainer from "@/src/client/components/sections/group/containers/groupsPages";
 import { chunkGroupsIntoPages } from '@/src/lib/utils/helpers/chunk/chunkGroupsIntoPages';
 import { useMemo } from 'react';
 

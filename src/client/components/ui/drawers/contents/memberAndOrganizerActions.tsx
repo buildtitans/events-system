@@ -32,27 +32,29 @@ type ButtonAction = { kind: EventDrawerFormState; label: string };
 
 export type ButtonActions = Array<ButtonAction>;
 
-export function createActions(role: GroupMemberSchemaType["role"], isCurrent: boolean): ButtonActions {
+export function createActions(
+  role: GroupMemberSchemaType["role"],
+  isCurrent: boolean,
+): ButtonActions {
   if (role === "member") {
     return [
       { label: "Event Details", kind: "details" },
-      { label: "RSVP Update", kind: "attendance form" }
+      { label: "RSVP Update", kind: "attendance form" },
     ];
-  } else if ((role === "organizer") && isCurrent) {
+  } else if (role === "organizer" && isCurrent) {
     return [
       { label: "Event Details", kind: "details" },
       { label: "RSVP Update", kind: "attendance form" },
 
       { label: "Event Status", kind: "schedule change" },
     ];
-  } else if(role === "organizer" && (!isCurrent)) {
+  } else if (role === "organizer" && !isCurrent) {
     return [
-      
       { label: "Event Details", kind: "details" },
       { label: "RSVP Update", kind: "attendance form" },
     ];
-  } else { 
-    return []
+  } else {
+    return [];
   }
 }
 
@@ -79,22 +81,22 @@ export default function MemberAndOrganizerActions({
           name={name}
           slug={slug}
         />
-      <ActionButtons
-        actions={actions}
-        currentAction={openSection}
-        setOpenAction={setOpenSection}
-      />
-        
+        <ActionButtons
+          actions={actions}
+          currentAction={openSection}
+          setOpenAction={setOpenSection}
+          eventStatus={event.status}
+        />
       </Stack>
       <RenderOpenEventFormSection
-          role={role}
-          event={event}
-          numAttendants={numAttendants}
-          numInterested={numInterested}
-          name={name}
-          slug={slug}
-          state={openSection}
-        />
+        role={role}
+        event={event}
+        numAttendants={numAttendants}
+        numInterested={numInterested}
+        name={name}
+        slug={slug}
+        state={openSection}
+      />
     </React.Fragment>
   );
 }
