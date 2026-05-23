@@ -89,11 +89,13 @@ describe("EventsService.getAllActiveEventsLayout", () => {
 });
 
 describe("EventService.getArchivedEvents", () => {
-  const getArchivedEvents = dbMock.events.getCancelledGroupEvents as jest.Mock;
+  const getCancelledGroupEvents = dbMock.events
+    .getCancelledGroupEvents as jest.Mock;
+
   let service: EventService;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     service = new EventService(dbMock, policyMock);
   });
 
@@ -107,9 +109,27 @@ describe("EventService.getArchivedEvents", () => {
     await expect(
       service.getArchivedEvents(undefined, crypto.randomUUID()),
     ).rejects.toThrow("401");
+
+    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
   });
 
-  expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+  it("throws an error if the user's role is not 'organizer'", async () => {
+    authenticateAs();
+    (policyMock.requireCanCreateEvent as jest.Mock).mockImplementation(() => {
+      throw new Error("403");
+    });
+
+    await expect(
+      service.getArchivedEvents("user-1", "group-2"),
+    ).rejects.toThrow("403");
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
+    expect(policyMock.requireCanCreateEvent).toHaveBeenCalledWith(
+      "user-1",
+      "group-2",
+    );
+    expect(getCancelledGroupEvents).not.toHaveBeenCalled();
+  });
 });
 
 describe("EventsService.getPastEvents", () => {
