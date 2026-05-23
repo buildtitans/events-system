@@ -3,7 +3,7 @@ import type { JSX } from "react";
 import type { RootState } from "@/src/lib/store";
 import { shallowEqual, useSelector } from "react-redux";
 import SidebarSkeleton from "@/src/client/components/ui/skeletons/sidebarSkeleton";
-import UserAccountSidebarMenu from "@/src/client/components/ui/menus/userAccountSidebarMenu";
+import UserAccountSidebarMenu from "@/src/client/components/ui/menus/dashboard/userAccountSidebarMenu";
 
 
 export function RenderUserAccountSidebar(): JSX.Element {

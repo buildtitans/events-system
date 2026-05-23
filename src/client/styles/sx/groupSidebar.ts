@@ -233,6 +233,29 @@ const groupSidebarPrimaryButtonSx = {
   },
 };
 
+const groupSidebarSecondaryButtonSx = {
+  minWidth: "fit-content",
+  minHeight: 40,
+  px: 1.5,
+  borderRadius: 999,
+  border: "1px solid rgba(124, 198, 255, 0.2)",
+  background: "rgba(124, 198, 255, 0.06)",
+  color: "#d9ebff",
+  textTransform: "uppercase",
+  letterSpacing: "0.04em",
+  fontWeight: 800,
+  textWrap: "nowrap",
+  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+  "& .MuiButton-startIcon": {
+    color: "#9fd0ff",
+  },
+  "&:hover": {
+    background: "rgba(124, 198, 255, 0.12)",
+    borderColor: "rgba(124, 198, 255, 0.32)",
+    boxShadow: "0 10px 24px rgba(92, 167, 255, 0.14)",
+  },
+};
+
 const groupSidebarDangerButtonSx = {
   minWidth: "fit-content",
   minHeight: 40,
@@ -291,6 +314,7 @@ export {
   groupSidebarNavSx,
   groupSidebarPanelSx,
   groupSidebarPrimaryButtonSx,
+  groupSidebarSecondaryButtonSx,
   groupSidebarRootSx,
   groupSidebarRoleLabelMap,
   groupSidebarSectionLabelMap,

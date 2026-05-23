@@ -8,6 +8,7 @@ import {
   groupSidebarActionDescriptionSx,
   groupSidebarActionTitleSx,
   groupSidebarPrimaryButtonSx,
+  groupSidebarSecondaryButtonSx,
 } from "@/src/client/styles/sx/groupSidebar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -46,9 +47,9 @@ export default function OrganizerOnlyActionsMenu({ group_id }: { group_id: Group
       <Button
         onClick={handleDisplayArchives}
         startIcon={<ArchiveIcon />}
-        sx={groupSidebarPrimaryButtonSx}
+        sx={groupSidebarSecondaryButtonSx}
       >
-        Archived Events
+        View Archives
       </Button>
     </Box>
   );

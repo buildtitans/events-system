@@ -88,6 +88,30 @@ describe("EventsService.getAllActiveEventsLayout", () => {
   });
 });
 
+describe("EventService.getArchivedEvents", () => {
+  const getArchivedEvents = dbMock.events.getCancelledGroupEvents as jest.Mock;
+  let service: EventService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    service = new EventService(dbMock, policyMock);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("throws an error if the user's role is not authenticated", async () => {
+    unauthenticated();
+
+    await expect(
+      service.getArchivedEvents(undefined, crypto.randomUUID()),
+    ).rejects.toThrow("401");
+  });
+
+  expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+});
+
 describe("EventsService.getPastEvents", () => {
   const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
   const getPastEventRecords = dbMock.eventAttendants
