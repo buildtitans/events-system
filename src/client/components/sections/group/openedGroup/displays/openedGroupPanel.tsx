@@ -1,6 +1,6 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderCurrentView";
+import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderGroupDisplay";
 import {
   openedGroupHeroPanelSx,
   openedGroupHeroRootSx,
@@ -42,7 +42,9 @@ export default function OpenedGroupPanel({
               justifyContent={"start"}
             >
               <ActiveDisplayHeader />
+              <Box minHeight={'50dvh'}>
               <RenderGroupDisplay isMobile={isMobile} view={displayed} />
+              </Box>
             </Stack>
           </Container>
         </Box>

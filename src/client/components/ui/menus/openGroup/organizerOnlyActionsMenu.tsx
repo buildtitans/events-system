@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import ArchiveIcon from '@mui/icons-material/Archive';
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { useHydrateGroupArchives } from "@/src/lib/hooks/hydration/useHydrateGroupArchives";
+import { useHydrateGroupArchives } from "@/src/lib/hooks/hydration/group/useHydrateGroupArchives";
 
 export default function OrganizerOnlyActionsMenu({ group_id }: { group_id: GroupSchemaType["id"]}): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();

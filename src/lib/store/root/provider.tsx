@@ -1,9 +1,9 @@
 "use client";
 import { Provider } from "react-redux";
-import { makeStore } from "./store";
+import { makeStore } from "@/src/lib/store/root/store";
 import { useEffect, useState } from "react";
-import { initializeDomains } from "../slices/rendering/RenderingSlice";
-import { useInitializeDomains } from "../../hooks/hydration/useInitializeDomains";
+import { initializeDomains } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { useInitializeDomains } from "@/src/lib/hooks/hydration/domains/useInitializeDomains";
 
 type Props = {
   children: React.ReactNode;

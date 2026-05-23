@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
-import { useHydrateEventDrawerFromRsvp } from "../hydration/useHydrateEventDrawerFromRsvp";
+import { useHydrateEventDrawerFromRsvp } from "../hydration/event/useHydrateEventDrawerFromRsvp";
 const WAIT_DURATION = 400;
 
 export const useDebouncedSerach = (): DebouncedSearchHook => {

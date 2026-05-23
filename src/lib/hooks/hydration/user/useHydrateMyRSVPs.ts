@@ -1,16 +1,16 @@
 "use client";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { AppDispatch } from "@/src/lib/store";
 import {
   getParticipations,
   getNextGroupEventLookup,
-} from "../../store/slices/user/userSlice";
+} from "@/src/lib/store/slices/user/userSlice";
 import {
   NextGroupEventLookupMapType,
   ParticipationsStatePayload,
-} from "../../store/slices/user/types";
-import { syncUserParticipations } from "../../store/sync/syncUserParticipations";
+} from "@/src/lib/store/slices/user/types";
+import { syncUserParticipations } from "@/src/lib/store/sync/syncUserParticipations";
 
 type TrpcResults = {
   participations: ParticipationsStatePayload;

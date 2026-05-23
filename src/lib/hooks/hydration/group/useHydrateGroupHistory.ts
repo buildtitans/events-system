@@ -2,11 +2,11 @@
 import { useEffect } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+import { AppDispatch, RootState } from "@/src/lib/store";
 import {
   getGroupHistory,
   getPastEventsAttendanceRecords,
-} from "../../store/slices/groups/OpenedGroupSlice";
+} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 
 function sortByDate(events: EventsArraySchemaType): EventsArraySchemaType {

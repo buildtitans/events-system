@@ -4,7 +4,7 @@ import type { RootState } from "@/src/lib/store";
 import RenderEventDrawerContents from "./renderEventDrawer";
 import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
-import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/useHydrateEventDrawer";
+import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawer";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {

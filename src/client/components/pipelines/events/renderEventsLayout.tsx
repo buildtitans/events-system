@@ -4,7 +4,7 @@ import { EventStackSlot } from "@/src/client/components/ui/box/slots/eventStackS
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import {  useSelector } from "react-redux";
 import {  RootState } from "@/src/lib/store";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
+import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
 
 type RenderEventsLayoutProps = {
     slots: LayoutSlotSchemaType[],

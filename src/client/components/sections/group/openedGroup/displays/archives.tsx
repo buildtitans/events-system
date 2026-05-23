@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { createArchivedEventHeadcount } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
+import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
 import { useCallback } from "react";
 
 
