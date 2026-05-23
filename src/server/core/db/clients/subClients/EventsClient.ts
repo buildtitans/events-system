@@ -51,6 +51,7 @@ export class EventsClient {
       .selectFrom("events")
       .selectAll()
       .where("title", "ilike", `%${query}%`)
+      .where("status", "=", "scheduled")
       .execute();
 
     return this.formatRawEvents(raw);
