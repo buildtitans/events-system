@@ -152,7 +152,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
         }
       }
     },
-    [router, dispatch],
+    [router, dispatch, handleOpenEditStatus],
   );
 
   return {

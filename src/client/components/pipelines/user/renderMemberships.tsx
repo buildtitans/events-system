@@ -14,7 +14,6 @@ import { AppDispatch } from "@/src/lib/store";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { noGroupsFallbackIconSx } from "@/src/client/styles/sx/noGroupsFallback";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
-import Fade from "@mui/material/Fade";
 import FadeIn from "../../ui/box/motionboxes/fadeIn";
 
 export default function RenderMemberships({

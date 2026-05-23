@@ -1,6 +1,6 @@
 "use client";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
-import UserAccountMenu from "@/src/client/components/ui/menus/userAccountMenu";
+import UserAccountMenu from "@/src/client/components/ui/menus/dashboard/userAccountMenu";
 import SidebarSkeleton from "@/src/client/components/ui/skeletons/sidebarSkeleton";
 import type { UserEmailState } from "@/src/lib/store/slices/user/types";
 import { JSX } from "react";

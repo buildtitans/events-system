@@ -1,13 +1,15 @@
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { Box, Container, Stack } from "@mui/material";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderCurrentView";
 import {
   openedGroupHeroPanelSx,
   openedGroupHeroRootSx,
 } from "@/src/client/styles/sx/openedGroupHero";
-import OpenedGroupHero from "./head/openedGroupHero";
-import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import RenderCurrentView from "@/src/client/components/pipelines/groups/renderCurrentView";
-import ActiveDisplayHeader from "./head/activeDisplayHeader";
+import OpenedGroupHero from "@/src/client/components/sections/group/openedGroup/head/openedGroupHero"
+import ActiveDisplayHeader from "../head/activeDisplayHeader";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Container from "@mui/material/Container";
 
 type OpenedGroupContentProps = {
   group: GroupSchemaType;
@@ -40,7 +42,7 @@ export default function OpenedGroupPanel({
               justifyContent={"start"}
             >
               <ActiveDisplayHeader />
-              <RenderCurrentView isMobile={isMobile} view={displayed} />
+              <RenderGroupDisplay isMobile={isMobile} view={displayed} />
             </Stack>
           </Container>
         </Box>

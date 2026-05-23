@@ -3,8 +3,6 @@ import Box from "@mui/material/Box";
 import type { JSX } from "react";
 import { CategoryChips } from "@/src/client/features/events/categoryChips";
 import { LandingHeader } from "@/src/client/components/ui/headers/landingHeader";
-import Container from "@mui/material/Container";
-import HomeContent from "../home/homeContent";
 
 export default function HomeHeadSection({
   isMobile,

@@ -1,8 +1,8 @@
 import JoinGroupButton from "@/src/client/components/ui/buttons/joinGroupButton";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { JSX } from "react";
-import OrganizerOnlyActionsMenu from "@/src/client/components/ui/menus/organizerOnlyActionsMenu";
-import MembersOnlyActionMenu from "@/src/client/components/ui/menus/membersOnlyActionMenu";
+import OrganizerOnlyActionsMenu from "@/src/client/components/ui/menus/openGroup/organizerOnlyActionsMenu";
+import MembersOnlyActionMenu from "@/src/client/components/ui/menus/openedEvent/membersOnlyActionMenu";
 
 type RenderSidebarContentsProps = {
   role: GroupMemberSchemaType["role"],
@@ -17,7 +17,7 @@ export const RenderRoleBasedSidebarContents= ({
 
   switch (role) {
     case "organizer":
-      return <OrganizerOnlyActionsMenu />;
+      return <OrganizerOnlyActionsMenu group_id={group_id}/>;
 
     case "anonymous":
       return <JoinGroupButton group_id={group_id} />;

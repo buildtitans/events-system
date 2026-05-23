@@ -6,9 +6,9 @@ import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroup
 import Spinner, {
   RelativeSpinner,
 } from "@/src/client/components/ui/feedback/pending/spinner";
-import HistoryTimeline from "../../sections/group/openedGroup/displays/groupHistory";
-import NoGroupHistory from "../../ui/feedback/fallbacks/noGroupHIstory";
-import OpenedGroupFallback from "../../ui/feedback/fallbacks/groupFallback";
+import HistoryTimeline from "../../../sections/group/openedGroup/displays/groupHistory";
+import NoGroupHistory from "../../../ui/feedback/fallbacks/noGroupHIstory";
+import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
 
 type RenderGroupHistoryProps = {
   isMobile: boolean;

@@ -14,7 +14,7 @@ type CheckCancelEventButtonProps = {
     currentStatus: UpdateEventArgsSchemaType["status"]
 }
 
-export const CheckCancelEventButton = ({ handleCancelClick, newStatus, currentStatus }: CheckCancelEventButtonProps) => {
+export const CheckCancelEventButton = ({ handleCancelClick, currentStatus }: CheckCancelEventButtonProps) => {
     
 
     return (

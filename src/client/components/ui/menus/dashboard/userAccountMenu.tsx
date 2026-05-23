@@ -1,9 +1,9 @@
 "use client";
 import type { JSX } from "react";
 import Box from "@mui/material/Box";
-import AccountDetailsHeader from "../../sections/user/userAccountMenuHeader";
+import AccountDetailsHeader from "../../../sections/user/userAccountMenuHeader";
 import DesktopDashboardMenuButtons from "./desktopDashboardMenuButtons";
-import UserAccountMenuFooter from "../../sections/user/userAccountMenuFooter";
+import UserAccountMenuFooter from "../../../sections/user/userAccountMenuFooter";
 import {
   accountMenuPanelSx,
   accountMenuRootSx,

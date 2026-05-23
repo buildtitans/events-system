@@ -36,51 +36,56 @@ export const useSearchLocationSuggestions = (
   const timerRef = useRef<number | null>(null);
   const requestIdRef = useRef(0);
 
-  const sendRequest = async (value: string) => {
-    const requestId = ++requestIdRef.current;
-    const trimmed = value.trim();
+  const sendRequest = useCallback(
+    (value: string) => {
+      return async () => {
+        const requestId = ++requestIdRef.current;
+        const trimmed = value.trim();
 
-    if (!trimmed) {
-      setSuggestions({ status: "initial" });
-      return;
-    }
+        if (!trimmed) {
+          setSuggestions({ status: "initial" });
+          return;
+        }
 
-    setSuggestions({ status: "pending" });
+        setSuggestions({ status: "pending" });
 
-    try {
-      const results = await searchByKind(searchKind, trimmed);
+        try {
+          const results = await searchByKind(searchKind, trimmed);
 
-      if (requestId !== requestIdRef.current) return;
+          if (requestId !== requestIdRef.current) return;
 
-      if (results.status === "failed") {
-        setSuggestions({
-          status: "failed",
-          error: results.message,
-        });
-        return;
-      }
+          if (results.status === "failed") {
+            setSuggestions({
+              status: "failed",
+              error: results.message,
+            });
+            return;
+          }
 
-      if (results.data.length === 0) {
-        setSuggestions({
-          status: "n/a",
-          message: "No suggestions found",
-        });
-        return;
-      }
+          if (results.data.length === 0) {
+            setSuggestions({
+              status: "n/a",
+              message: "No suggestions found",
+            });
+            return;
+          }
 
-      setSuggestions({
-        status: "ready",
-        data: results.data,
-      });
-    } catch (err) {
-      if (requestId !== requestIdRef.current) return;
+          setSuggestions({
+            status: "ready",
+            data: results.data,
+          });
+        } catch (err) {
+          if (requestId !== requestIdRef.current) return;
 
-      setSuggestions({
-        status: "failed",
-        error: err instanceof Error ? err.message : String(err),
-      });
-    }
-  };
+          setSuggestions({
+            status: "failed",
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+      };
+    },
+    [searchKind],
+  );
 
   const debounce = useCallback(
     async (query: string) => {
@@ -153,3 +158,49 @@ export const useSearchLocationSuggestions = (
     onInputChange,
   };
 };
+
+//  const sendRequest = async (value: string) => {
+//    const requestId = ++requestIdRef.current;
+//    const trimmed = value.trim();
+//
+//    if (!trimmed) {
+//      setSuggestions({ status: "initial" });
+//      return;
+//    }
+//
+//    setSuggestions({ status: "pending" });
+//
+//    try {
+//      const results = await searchByKind(searchKind, trimmed);
+//
+//      if (requestId !== requestIdRef.current) return;
+//
+//      if (results.status === "failed") {
+//        setSuggestions({
+//          status: "failed",
+//          error: results.message,
+//        });
+//        return;
+//      }
+//
+//      if (results.data.length === 0) {
+//        setSuggestions({
+//          status: "n/a",
+//          message: "No suggestions found",
+//        });
+//        return;
+//      }
+//
+//      setSuggestions({
+//        status: "ready",
+//        data: results.data,
+//      });
+//    } catch (err) {
+//      if (requestId !== requestIdRef.current) return;
+//
+//      setSuggestions({
+//        status: "failed",
+//        error: err instanceof Error ? err.message : String(err),
+//      });
+//    }
+//  };

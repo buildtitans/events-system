@@ -2,22 +2,17 @@ import { SessionService } from "@/src/server/core/service/services/SessionServic
 import {
   dbMock,
   policyMock,
+  emailServiceMock,
 } from "@/src/server/core/service/tests/mockers/mocks";
-
-type EmailerMock = {
-  request: jest.Mock;
-};
 
 describe("SessionService.login", () => {
   const loginInDb = dbMock.auth.login as jest.Mock;
-  let emailerMock: EmailerMock;
 
   let service: SessionService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    emailerMock = { request: jest.fn() };
-    service = new SessionService(dbMock, policyMock, emailerMock as any);
+    service = new SessionService(dbMock, policyMock, emailServiceMock);
   });
 
   it("trims and lowercases the email before logging in", async () => {
@@ -49,14 +44,12 @@ describe("SessionService.login", () => {
 
 describe("SessionService.logout", () => {
   const logOutInDb = dbMock.auth.logOut as jest.Mock;
-  let emailerMock: EmailerMock;
 
   let service: SessionService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    emailerMock = { request: jest.fn() };
-    service = new SessionService(dbMock, policyMock, emailerMock as any);
+    service = new SessionService(dbMock, policyMock, emailServiceMock);
   });
 
   it("throws when no token is provided", async () => {
@@ -83,14 +76,12 @@ describe("SessionService.logout", () => {
 
 describe("SessionService.recoverSession", () => {
   const getSessionInDb = dbMock.auth.getSession as jest.Mock;
-  let emailerMock: EmailerMock;
 
   let service: SessionService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    emailerMock = { request: jest.fn() };
-    service = new SessionService(dbMock, policyMock, emailerMock as any);
+    service = new SessionService(dbMock, policyMock, emailServiceMock);
   });
 
   it("throws when no token is provided", async () => {
@@ -125,14 +116,12 @@ describe("SessionService.recoverSession", () => {
 
 describe("SessionService.resetPassword", () => {
   const resetPasswordInDb = dbMock.auth.resetPassword as jest.Mock;
-  let emailerMock: EmailerMock;
 
   let service: SessionService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    emailerMock = { request: jest.fn() };
-    service = new SessionService(dbMock, policyMock, emailerMock as any);
+    service = new SessionService(dbMock, policyMock, emailServiceMock);
   });
 
   it("returns ok true when the password reset succeeds", async () => {
@@ -158,23 +147,24 @@ describe("SessionService.resetPassword", () => {
 });
 
 describe("SessionService.emailForPwReset", () => {
-  let emailerMock: EmailerMock;
-
+  let emailerMock = emailServiceMock.request as jest.Mock;
   let service: SessionService;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    emailerMock = { request: jest.fn() };
-    service = new SessionService(dbMock, policyMock, emailerMock as any);
+    emailerMock = emailServiceMock.request as jest.Mock;
+    service = new SessionService(dbMock, policyMock, emailServiceMock);
   });
 
   it("delegates the password reset request to the injected emailer", async () => {
-    emailerMock.request.mockResolvedValue({ ok: true });
+    emailerMock.mockResolvedValue({ ok: true });
 
-    await expect(service.emailForPwReset("alice@example.com")).resolves.toEqual({
-      ok: true,
-    });
+    await expect(service.emailForPwReset("alice@example.com")).resolves.toEqual(
+      {
+        ok: true,
+      },
+    );
 
-    expect(emailerMock.request).toHaveBeenCalledWith("alice@example.com");
+    expect(emailerMock).toHaveBeenCalledWith("alice@example.com");
   });
 });

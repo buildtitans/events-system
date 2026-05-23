@@ -1,6 +1,6 @@
 "use client";
 import List from "@mui/material/List";
-import TimelineItem from "@/src/client/components/ui/list/timelineItem";
+import TimelineItem from "@/src/client/components/ui/list/history/timelineItem";
 import Container from "@mui/material/Container";
 import {
   EventsArraySchemaType,

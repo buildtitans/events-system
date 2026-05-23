@@ -23,5 +23,5 @@ export const useDetectActiveSession = () => {
     return () => {
       dispatch(changeAccountTab("my groups"));
     };
-  }, []);
+  }, [dispatch]);
 };

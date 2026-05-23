@@ -2,7 +2,7 @@
 import SelectActiveGroupsFilter from "@/src/client/features/group/selectActiveGroupsFilter";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import RenderLandingGroupsTab from "../../pipelines/groups/renderLandingGroupsTab";
+import RenderLandingGroupsTab from "../../../pipelines/groups/status/renderLandingGroupsTab";
 import { JSX, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";

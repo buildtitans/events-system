@@ -27,16 +27,6 @@ export const eventsRouter = router({
     return await ctx.services.api.domains.events.getAllActiveEventsLayout();
   }),
 
-  newEvent: protectedProcedure
-    .input(NewEventInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      return ctx.services.api.domains.events.createEvent(
-        input,
-        input.group_id,
-        ctx.req.user?.id,
-      );
-    }),
-
   groupEventsLayout: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
@@ -53,17 +43,6 @@ export const eventsRouter = router({
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.getPastEvents(input);
-    }),
-
-  updateEventStatus: protectedProcedure
-    .input(
-      typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.updateEventStatus(
-        ctx.req.user?.id,
-        input,
-      );
     }),
 
   eventsById: publicProcedure
@@ -95,5 +74,35 @@ export const eventsRouter = router({
     .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.searchEvents(input);
+    }),
+
+  getArchivedGroupEvents: protectedProcedure
+    .input(groupIdInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.getArchivedEvents(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  updateEventStatus: protectedProcedure
+    .input(
+      typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.updateEventStatus(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  newEvent: protectedProcedure
+    .input(NewEventInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.services.api.domains.events.createEvent(
+        input,
+        input.group_id,
+        ctx.req.user?.id,
+      );
     }),
 });

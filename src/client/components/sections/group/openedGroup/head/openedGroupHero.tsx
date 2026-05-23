@@ -1,12 +1,10 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { Box, Divider, Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import GroupHeadSecton from "./groupHeadSection";
 import GroupDescription from "./groupDescription";
 import {
   openedGroupHeroDividerSx,
   openedGroupHeroInnerSx,
-  openedGroupHeroPanelSx,
-  openedGroupHeroRootSx,
 } from "@/src/client/styles/sx/openedGroupHero";
 
 type OpenedGroupHeroProps = {

@@ -60,6 +60,10 @@ export class EventTimelineHandler {
     return lookup;
   }
 
+  async getArchivedGroupEvents(group_id: string): Promise<EventSchemaType[]> {
+    return await this.db.events.getCancelledGroupEvents(group_id);
+  }
+
   async getNextEventMap(
     ids: GroupSchemaType["id"][],
   ): Promise<UpComingEventsLookup> {
@@ -90,7 +94,7 @@ export class EventTimelineHandler {
       const startsAt = new Date(event.starts_at).getTime();
       const now = Date.now();
 
-      if (startsAt > now) {
+      if (startsAt > now && event.status === "scheduled") {
         activeEvents.push(event);
       }
     }

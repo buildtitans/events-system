@@ -18,6 +18,7 @@ import {
   EVENT_ID_2,
   EVENT_ID_3,
 } from "@/src/server/core/service/tests/mockers/mockValues";
+import { PasswordResetEmailService } from "../../services/passwordResetEmailService";
 
 export const groups = [
   makeGroup({ id: GROUP_ID_1, name: "new group 1" }),
@@ -78,6 +79,10 @@ export const dtoMemberships: UserMembershipSchemaType[] = [
     member_count: 7,
   }),
 ];
+
+export const emailServiceMock = {
+  request: jest.fn(),
+} as unknown as PasswordResetEmailService;
 
 export const policyMock = {
   requireAuthenticated: jest.fn(),

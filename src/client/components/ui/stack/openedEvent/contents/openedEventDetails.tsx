@@ -22,8 +22,6 @@ export default function OpenedEventDetails({
   event,
   numAttendants,
   numInterested,
-  name,
-  slug,
 }: OpenedEventDetailsProps): JSX.Element {
   const isCurrent = isFutureOrNow(new Date(event.starts_at));
 

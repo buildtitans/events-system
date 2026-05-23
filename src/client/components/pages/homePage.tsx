@@ -1,7 +1,7 @@
 "use client";
 import type { JSX } from "react";
 import HomeContent from "@/src/client/components/sections/home/homeContent";
-import HomeHeadSection from "../sections/headers/homeHeadSection";
+import HomeHeadSection from "../sections/home/homeHeadSection";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";

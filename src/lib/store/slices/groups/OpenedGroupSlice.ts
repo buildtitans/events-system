@@ -5,6 +5,7 @@ import { LoadingStatus } from "@/src/lib/types/tokens/types";
 import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 
 export type GroupHydrated =
   | { status: "idle" }
@@ -34,7 +35,11 @@ export type GroupHistoryType =
   | { status: "ready"; data: EventsArraySchemaType }
   | { status: "failed"; error: string };
 
-export type CurrentDisplay = "overview" | "events" | "group history";
+export type CurrentDisplay =
+  | "overview"
+  | "events"
+  | "group history"
+  | "archives";
 
 type InitialState = {
   group: GroupHydrated;
@@ -43,6 +48,7 @@ type InitialState = {
   currPage: number;
   activeSection: CurrentDisplay;
   history: GroupHistoryType;
+  archives: GroupArchivesState;
   numMembers: number;
   organizerEmail: string;
   flattenedEvents: FlattenedGroupEventsState;
@@ -56,6 +62,7 @@ const initialState: InitialState = {
   group: { status: "idle" },
   events: { status: "initial" },
   history: { status: "initial" },
+  archives: { status: "initial" },
   syncStatus: "idle",
   currPage: 0,
   activeSection: "overview",
@@ -100,6 +107,12 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.history = action.payload;
     },
+    populateGroupArchives: (
+      state: InitialState,
+      action: PayloadAction<GroupArchivesState>,
+    ) => {
+      state.archives = action.payload;
+    },
     getEmailOfGroupOrganizer: (
       state: InitialState,
       action: PayloadAction<string>,
@@ -134,6 +147,7 @@ export const {
   groupEventsStatus,
   displaySection,
   getGroupHistory,
+  populateGroupArchives,
   clearOpenedGroupSlice,
   getNumMembers,
   getEmailOfGroupOrganizer,
