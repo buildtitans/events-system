@@ -120,6 +120,7 @@ export const dbMock = {
     getEventsByIds: jest.fn(),
     updateEventStatus: jest.fn(),
     createNewEvent: jest.fn(),
+    getCancelledGroupEvents: jest.fn(),
   },
   groups: {
     getGroups: jest.fn(),
