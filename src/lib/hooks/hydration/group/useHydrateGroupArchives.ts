@@ -1,7 +1,10 @@
 import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
-import { populateGroupArchives } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import {
+  getArchivesAttendanceRecords,
+  populateGroupArchives,
+} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { useCallback } from "react";
 
@@ -11,10 +14,10 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
   const hydrateArchivedEvents = useCallback(async () => {
     dispatch(populateGroupArchives({ status: "pending" }));
     try {
-      const result =
+      const { archives, archivedAttendanceRecords } =
         await trpcClient.events.getArchivedGroupEvents.mutate(group_id);
 
-      if (result.length === 0) {
+      if (archives.length === 0) {
         dispatch(
           populateGroupArchives({
             status: "n/a",
@@ -24,7 +27,8 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
         return;
       }
 
-      dispatch(populateGroupArchives({ status: "ready", data: result }));
+      dispatch(populateGroupArchives({ status: "ready", data: archives }));
+      dispatch(getArchivesAttendanceRecords(archivedAttendanceRecords));
     } catch (err) {
       console.error(err);
       dispatch(

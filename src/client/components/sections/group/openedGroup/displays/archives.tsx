@@ -25,7 +25,7 @@ export default function Archives({
   const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
   const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
   const archivedRecords = useSelector(
-    (s: RootState) => s.openGroup.attendanceHistoryLookup,
+    (s: RootState) => s.openGroup.archivesAttendance,
   );
 
   const openArchivedEvent = useCallback(async (event_id: EventSchemaType["id"]) => {
