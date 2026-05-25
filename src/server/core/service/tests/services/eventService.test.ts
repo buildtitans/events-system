@@ -91,6 +91,8 @@ describe("EventsService.getAllActiveEventsLayout", () => {
 describe("EventService.getArchivedEvents", () => {
   const getCancelledGroupEvents = dbMock.events
     .getCancelledGroupEvents as jest.Mock;
+  const getPastEventRecords = dbMock.eventAttendants
+    .getPastEventRecords as jest.Mock;
 
   let service: EventService;
 
@@ -110,7 +112,7 @@ describe("EventService.getArchivedEvents", () => {
       service.getArchivedEvents(undefined, crypto.randomUUID()),
     ).rejects.toThrow("401");
 
-    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireCanCreateEvent).not.toHaveBeenCalled();
   });
 
   it("throws an error if the user's role is not 'organizer'", async () => {
@@ -129,6 +131,61 @@ describe("EventService.getArchivedEvents", () => {
       "group-2",
     );
     expect(getCancelledGroupEvents).not.toHaveBeenCalled();
+  });
+
+  it("returns archived events and their attendance lookup", async () => {
+    authenticateAs();
+    const archivedEvent = makeEvent({
+      id: "archived-1",
+      group_id: "group-1",
+      status: "cancelled",
+      starts_at: "2026-04-08T12:00:00.000Z",
+      starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
+    });
+
+    getCancelledGroupEvents.mockResolvedValue([archivedEvent]);
+    getPastEventRecords.mockResolvedValue([
+      makeAttendanceUpdate(
+        { event_id: "archived-1", user_id: "user-1" },
+        "going",
+      ),
+      makeAttendanceUpdate(
+        { event_id: "archived-1", user_id: "user-2" },
+        "going",
+      ),
+    ]);
+
+    await expect(
+      service.getArchivedEvents("user-1", "group-1"),
+    ).resolves.toEqual({
+      archives: [archivedEvent],
+      archivedAttendanceRecords: {
+        "archived-1": 2,
+      },
+    });
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
+    expect(policyMock.requireCanCreateEvent).toHaveBeenCalledWith(
+      "user-1",
+      "group-1",
+    );
+    expect(getCancelledGroupEvents).toHaveBeenCalledWith("group-1");
+    expect(getPastEventRecords).toHaveBeenCalledWith(["archived-1"]);
+  });
+
+  it("returns an empty archive payload when no archived events exist", async () => {
+    authenticateAs();
+    getCancelledGroupEvents.mockResolvedValue([]);
+
+    await expect(
+      service.getArchivedEvents("user-1", "group-1"),
+    ).resolves.toEqual({
+      archives: [],
+      archivedAttendanceRecords: {},
+    });
+
+    expect(getCancelledGroupEvents).toHaveBeenCalledWith("group-1");
+    expect(getPastEventRecords).not.toHaveBeenCalled();
   });
 });
 

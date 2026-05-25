@@ -12,12 +12,12 @@ export function createAttendanceMessage(attended: number): string {
 
 export function createArchivedEventHeadcount(markedAttending: number): string {
   if (markedAttending === 0) {
-    return "Nobody RSVP'd";
+    return "Nobody was marked going";
   }
 
   if (markedAttending === 1) {
-    `${markedAttending} Person RSVP'd`;
+    return `${markedAttending} Person was going`;
   }
 
-  return `${markedAttending} People RSVP'd`;
+  return `${markedAttending} People were going`;
 }
