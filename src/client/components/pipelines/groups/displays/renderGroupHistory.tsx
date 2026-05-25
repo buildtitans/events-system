@@ -2,7 +2,7 @@
 import type { JSX } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/useHydrateGroupHistory";
+import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/group/useHydrateGroupHistory";
 import Spinner, {
   RelativeSpinner,
 } from "@/src/client/components/ui/feedback/pending/spinner";

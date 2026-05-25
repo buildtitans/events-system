@@ -3,7 +3,7 @@ import { JSX } from "react";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import Container from "@mui/material/Container";
 import List from "@mui/material/List";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
+import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
 import RsvpListItem from "../../ui/list/rsvps/rsvpListItem";
 import { useRouter } from "next/navigation";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";

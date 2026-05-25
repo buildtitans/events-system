@@ -3,7 +3,7 @@ import { JSX } from "react";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import Badge from "@mui/material/Badge";
 import dayjs from "dayjs";
-import { CalendarLookup } from "@/src/lib/hooks/hydration/useHydrateCalandar";
+import { CalendarLookup } from "@/src/lib/hooks/hydration/group/useHydrateCalandar";
 import { checkCalandarDay } from "@/src/lib/utils/dates/checkCalandarDay";
 import {
   getGroupCalendarDayBadgeSx,

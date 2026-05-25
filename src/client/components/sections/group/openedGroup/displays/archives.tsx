@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { createArchivedEventHeadcount } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/useHydrateEventDrawerFromRsvp";
+import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
 import { useCallback } from "react";
 
 
@@ -25,7 +25,7 @@ export default function Archives({
   const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
   const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
   const archivedRecords = useSelector(
-    (s: RootState) => s.openGroup.attendanceHistoryLookup,
+    (s: RootState) => s.openGroup.archivesAttendance,
   );
 
   const openArchivedEvent = useCallback(async (event_id: EventSchemaType["id"]) => {

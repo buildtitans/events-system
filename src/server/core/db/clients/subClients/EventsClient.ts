@@ -167,6 +167,7 @@ export class EventsClient {
       .selectFrom("events")
       .selectAll()
       .where("group_id", "=", group_id)
+      .where("status", "=", "scheduled")
       .orderBy("created_at")
       .execute();
     return raw;

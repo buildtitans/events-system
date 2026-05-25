@@ -13,6 +13,7 @@ import {
 import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
 import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "../../../../schemas/events/eventAttendantsSchema";
+import { ReturnType } from "@sinclair/typebox";
 
 export class EventTimelineHandler {
   constructor(private readonly db: DBClient) {}
@@ -60,8 +61,27 @@ export class EventTimelineHandler {
     return lookup;
   }
 
-  async getArchivedGroupEvents(group_id: string): Promise<EventSchemaType[]> {
-    return await this.db.events.getCancelledGroupEvents(group_id);
+  async getArchivedGroupEvents(group_id: string): Promise<{
+    archives: EventSchemaType[];
+    archivedAttendanceRecords: PastEventAttendanceLookup;
+  }> {
+    let archives: EventSchemaType[];
+    let archivedAttendanceRecords: PastEventAttendanceLookup;
+    archives = await this.db.events.getCancelledGroupEvents(group_id);
+    const ids = archives.map((ev) => ev.id);
+
+    if (ids.length === 0) {
+      archives = [];
+      archivedAttendanceRecords = {};
+      return { archives, archivedAttendanceRecords };
+    }
+
+    archivedAttendanceRecords = await this.getAttendantsOfPastEvents(ids);
+
+    return {
+      archives,
+      archivedAttendanceRecords,
+    };
   }
 
   async getNextEventMap(

@@ -18,3 +18,12 @@ export function RelativeSpinner() {
         </Box>
     )
 }
+
+export function GroupPanelSpinner() {
+
+    return (
+        <Box sx={{ position: 'relative', height: 'auto', width: 'auto',  }}>
+            <CircularProgress />
+        </Box>
+    )
+}

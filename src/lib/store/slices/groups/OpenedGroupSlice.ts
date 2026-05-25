@@ -56,6 +56,7 @@ type InitialState = {
     EventAttendantsSchemaType["event_id"],
     number
   >;
+  archivesAttendance: Record<EventAttendantsSchemaType["event_id"], number>;
 };
 
 const initialState: InitialState = {
@@ -70,6 +71,7 @@ const initialState: InitialState = {
   organizerEmail: "N/A",
   flattenedEvents: { status: "initial" },
   attendanceHistoryLookup: {},
+  archivesAttendance: {},
 };
 
 const OpenedGroupSlice = createSlice({
@@ -136,6 +138,14 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.attendanceHistoryLookup = action.payload;
     },
+    getArchivesAttendanceRecords: (
+      state: InitialState,
+      action: PayloadAction<
+        Record<EventAttendantsSchemaType["event_id"], number>
+      >,
+    ) => {
+      state.archivesAttendance = action.payload;
+    },
 
     clearOpenedGroupSlice: () => initialState,
   },
@@ -153,6 +163,7 @@ export const {
   getEmailOfGroupOrganizer,
   getFlattenedGroupEvents,
   getPastEventsAttendanceRecords,
+  getArchivesAttendanceRecords,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

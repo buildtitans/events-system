@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { syncOpenedGroup } from "@/src/lib/store/sync/syncOpenedGroup";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventsPages } from "@/src/lib/store/slices/events/types";
-import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/useRefreshGroupEvents";
+import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/group/useRefreshGroupEvents";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/ViewerSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";

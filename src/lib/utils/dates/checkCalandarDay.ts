@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { CalendarLookup } from "@/src/lib/hooks/hydration/useHydrateCalandar";
+import { CalendarLookup } from "@/src/lib/hooks/hydration/group/useHydrateCalandar";
 
 type CheckDayArgs = {
   scheduledDateKeys?: CalendarLookup;

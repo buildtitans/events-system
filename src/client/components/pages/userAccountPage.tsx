@@ -1,7 +1,7 @@
 "use client";
 import { JSX } from "react";
 import Stack from "@mui/material/Stack";
-import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/useHydrateMyRSVPs";
+import { useHydrateMyRsvps } from "@/src/lib/hooks/hydration/user/useHydrateMyRSVPs";
 import DashboardPanel from "../sections/user/dashboardPanel";
 import { useDetectActiveSession } from "@/src/lib/hooks/auth/useDetectActiveSession";
 

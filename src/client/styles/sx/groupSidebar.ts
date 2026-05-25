@@ -285,13 +285,16 @@ const groupSidebarSkeletonSx = {
   pb: 1,
 };
 
-const groupSidebarRoleLabelMap: Record<GroupMemberSchemaType["role"], string> = {
-  organizer: "Organizer",
-  member: "Member",
-  anonymous: "Guest",
-};
+const groupSidebarRoleLabelMap: Record<GroupMemberSchemaType["role"], string> =
+  {
+    organizer: "Organizer",
+    member: "Member",
+    anonymous: "Guest",
+  };
 
-const groupSidebarSectionLabelMap: Record<CurrentDisplay, string> = {
+type GeneralDisplay = "overview" | "events" | "group history";
+
+const groupSidebarSectionLabelMap: Record<GeneralDisplay, string> = {
   overview: "Overview",
   events: "Events",
   "group history": "History",

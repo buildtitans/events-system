@@ -1,8 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../../store";
-import { populateNewNotifications } from "../../store/slices/notifications/notificationSlice";
+import type { RootState, AppDispatch } from "@/src/lib/store";
+import { populateNewNotifications } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 export const useHydrateNotifications = () => {

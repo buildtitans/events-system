@@ -9,34 +9,6 @@ import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
 import RenderArchives from "../displays/renderArchives";
 
-type RenderCurrentViewProps = {
-  view: CurrentDisplay;
-  isMobile: boolean;
-};
-
-export default function RenderCurrentView({
-  view,
-  isMobile,
-}: RenderCurrentViewProps): JSX.Element {
-  switch (view) {
-    case "overview": {
-      return <GroupCalandar />;
-    }
-
-    case "group history": {
-      return <RenderGroupHistory isMobile={isMobile} />;
-    }
-
-    case "events": {
-      <RenderEventsForGroup />;
-    }
-
-    default: {
-      return <RenderEventsForGroup />;
-    }
-  }
-}
-
 type RenderGroupDisplayProps = {
   view: OpenedGroupSection;
   isMobile: boolean;

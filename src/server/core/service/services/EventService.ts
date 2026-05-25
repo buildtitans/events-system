@@ -3,7 +3,7 @@ import {
   EventSchemaType,
   NewEventInputSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import type { UpComingEventsLookup } from "../types";
+import type { PastEventAttendanceLookup, UpComingEventsLookup } from "../types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
@@ -104,7 +104,10 @@ export class EventService {
   async getArchivedEvents(
     user_id: string | null | undefined,
     group_id: string,
-  ): Promise<EventSchemaType[]> {
+  ): Promise<{
+    archives: EventSchemaType[];
+    archivedAttendanceRecords: PastEventAttendanceLookup;
+  }> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireCanCreateEvent(userId, group_id);
     return await this.timeline.getArchivedGroupEvents(group_id);

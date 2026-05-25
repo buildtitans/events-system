@@ -10,7 +10,7 @@ import {
   getNumAttendants,
   getNumInterested,
   getUserAttendanceStatus,
-} from "../../store/slices/events/EventDrawerSlice";
+} from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
