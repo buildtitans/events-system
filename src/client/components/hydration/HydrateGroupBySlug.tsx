@@ -18,6 +18,7 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { getCurrentRole } from "@/src/lib/store/slices/viewer/ViewerSlice";
 import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { useRefreshArchives } from "@/src/lib/hooks/hydration/group/useRefreshArchives";
 
 export default function HydrateGroupBySlug({
   slug,
@@ -27,6 +28,7 @@ export default function HydrateGroupBySlug({
   const userKind = useSelector((s: RootState) => s.auth.userKind);
   const dispatch = useDispatch<AppDispatch>();
   useRefreshGroupEvents();
+  useRefreshArchives();
 
   useEffect(() => {
     const handleSyncGroupOpened = (group: GroupSchemaType) => {

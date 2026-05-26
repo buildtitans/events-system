@@ -16,18 +16,25 @@ export const useRefreshGroupEvents = () => {
     const executeGroupEventsRefresh = async () => {
       const refreshed = await syncEventsForGroup(group.data.id);
 
-      if (refreshed !== null) {
+      if (refreshed !== null && refreshed.length > 0) {
         dispatch(
           getGroupEvents({
             status: "ready",
             data: refreshed,
           }),
         );
-      } else {
+      } else if (refreshed?.length === 0) {
         dispatch(
           getGroupEvents({
             status: "warning",
             message: "No events have been scheduled for this group",
+          }),
+        );
+      } else {
+        dispatch(
+          getGroupEvents({
+            status: "failed",
+            error: "Error hydrating events for opened group",
           }),
         );
       }
