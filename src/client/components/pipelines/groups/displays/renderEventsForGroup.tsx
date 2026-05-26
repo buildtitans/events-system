@@ -7,6 +7,7 @@ import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spi
 import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export const RenderEventsForGroup = (): JSX.Element => {
   const events = useSelector((s: RootState) => s.openGroup.events);
@@ -51,5 +52,11 @@ export const RenderEventsForGroup = (): JSX.Element => {
     case "pending": {
       return <RelativeSpinner />;
     }
+
+    default: {
+      return assertNever(events);
+    }
   }
+
+
 };
