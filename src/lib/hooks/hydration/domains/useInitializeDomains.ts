@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import type { SyncDomainsResult } from "../../types/server/types";
 import { syncDomains } from "@/src/lib/store/sync/syncDomains";
+import type { SyncDomainsResult } from "@/src/lib/types/server/types";
 
 type InitializeDomainsHook = {
   domains: SyncDomainsResult | null;

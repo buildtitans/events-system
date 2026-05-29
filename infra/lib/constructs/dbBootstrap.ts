@@ -34,6 +34,9 @@ export class DbBootstrap extends Construct {
       "Allow Postgres from EC2 app server",
     );
 
+    //TODO: look into changing the SubnetType
+    // ex) subnetType:ec2.SubnetType.PUBLIC →  subnetType: ec2.SubnetType.PRIVATE_ISOLATED
+
     this.database = new rds.DatabaseInstance(this, "EventsSystemDb", {
       vpc,
       vpcSubnets: {
