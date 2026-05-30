@@ -44,5 +44,5 @@ export const useRefreshArchives = () => {
     };
 
     void executeRefreshArchives();
-  }, [events.status, group.status, archives.status]);
+  }, [events.status, group, archives.status, dispatch]);
 };

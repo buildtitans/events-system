@@ -38,7 +38,7 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
         }),
       );
     }
-  }, [group_id]);
+  }, [group_id, dispatch]);
 
   return { hydrateArchivedEvents };
 };

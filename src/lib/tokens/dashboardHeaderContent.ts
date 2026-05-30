@@ -28,9 +28,4 @@ export const dashboardHeaderContent: Record<
     description:
       "Track the events you have saved and revisit your upcoming schedule.",
   },
-  settings: {
-    eyebrow: "Account",
-    title: "Settings",
-    description: "Review the preferences and details tied to your account.",
-  },
 };

@@ -91,9 +91,11 @@ export default function RenderMemberships({
       );
     }
     case "n/a": {
-      <FadeIn keyValue={"na-fallback-fade-wrapper"}>
-        <AsyncFailedFallback message={participations.message} />
-      </FadeIn>;
+      return (
+        <FadeIn keyValue={"na-fallback-fade-wrapper"}>
+          <AsyncFailedFallback message={participations.message} />
+        </FadeIn>
+      );
     }
 
     case "initial": {

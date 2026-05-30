@@ -1,5 +1,4 @@
 "use client";
-import { NoEventsFound } from "../../ui/box/fallbacks/noEventsFound";
 import EventsLayout from "@/src/client/components/sections/events/eventsLayout";
 import { JSX } from "react";
 import { EventsStateType } from "@/src/lib/store/slices/events/types";

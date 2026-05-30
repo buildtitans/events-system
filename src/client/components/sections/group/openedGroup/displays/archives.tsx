@@ -12,7 +12,6 @@ import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent
 import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
 import { useCallback } from "react";
 
-
 type HistoryTimelineProps = {
   archivedEvents: EventsArraySchemaType;
   isMobile: boolean;
@@ -28,9 +27,12 @@ export default function Archives({
     (s: RootState) => s.openGroup.archivesAttendance,
   );
 
-  const openArchivedEvent = useCallback(async (event_id: EventSchemaType["id"]) => {
+  const openArchivedEvent = useCallback(
+    async (event_id: EventSchemaType["id"]) => {
       await handleOpenEditStatus(event_id);
-  }, []);
+    },
+    [handleOpenEditStatus],
+  );
 
   return (
     <Container
@@ -60,7 +62,9 @@ export default function Archives({
               archivedEvent={archive}
               key={archive.id}
               rsvpStatus={attendance[archive.id]}
-              attendanceRecord={createArchivedEventHeadcount(numberMarkedAttending)}
+              attendanceRecord={createArchivedEventHeadcount(
+                numberMarkedAttending,
+              )}
               openArchivedEvent={openArchivedEvent}
             />
           );

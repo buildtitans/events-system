@@ -19,7 +19,7 @@ export default function OpenedGroup(): JSX.Element | null {
     return () => {
       dispatch(clearOpenedGroupSlice());
     }
-  }, [])
+  }, [dispatch])
 
   return (
     <Container
