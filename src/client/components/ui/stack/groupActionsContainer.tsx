@@ -1,7 +1,6 @@
 "use client";
 import { JSX } from "react";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { SidebarActionsPipeline } from "@/src/client/components/pipelines/drawers/interfaces/sidebarActionsPipeline";
 import LocalGroupNav from "./localGroupNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
@@ -11,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
+import { RenderRoleBasedSidebarContents } from "../../pipelines/drawers/forks/renderRoleBasedSidebarContents";
 import {
   getGroupSidebarMetaChipSx,
   getGroupSidebarMetaIconSx,
@@ -78,7 +78,7 @@ export default function GroupActonsContainer({
         <Box sx={groupSidebarActionsSx}>
           <Typography sx={groupSidebarSectionLabelSx}>Actions</Typography>
           <Box sx={{ px: 0.75, pt: 0.75 }}>
-            <SidebarActionsPipeline group_id={group_id} role={role} />
+            <RenderRoleBasedSidebarContents role={role} group_id={group_id} />
           </Box>
         </Box>
       </Box>

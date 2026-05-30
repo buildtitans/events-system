@@ -12,14 +12,15 @@ export const RenderCategoryChips = ({
   rest,
 }: ChipRendererProps): JSX.Element | null => {
   switch (status) {
-    case "idle": {
-      return <EventCategories {...rest} />;
-    }
+    
     case "pending":
     case "failed":
     case "warning":
     case "initial": {
       return null;
+    }
+    case "idle": {
+      return <EventCategories {...rest} />;
     }
     default: {
       return assertNever(status);

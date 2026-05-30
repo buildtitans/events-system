@@ -3,6 +3,7 @@ import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asy
 import UserAccountMenu from "@/src/client/components/ui/menus/dashboard/userAccountMenu";
 import SidebarSkeleton from "@/src/client/components/ui/skeletons/sidebarSkeleton";
 import type { UserEmailState } from "@/src/lib/store/slices/user/types";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { JSX } from "react";
 
 export default function RenderUserAccountMenu({
@@ -27,8 +28,12 @@ export default function RenderUserAccountMenu({
             <AsyncFailedFallback message={email.message} />
         )
     }
-    default: {
+
+    case "initial": {
       return null;
+    }
+    default: {
+      return assertNever(email)
     }
   }
 }

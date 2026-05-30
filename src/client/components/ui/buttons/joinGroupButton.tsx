@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -14,27 +14,27 @@ import {
 } from "@/src/client/styles/sx/groupSidebar";
 
 type JoinGroupButtonProps = {
-    group_id: GroupSchemaType["id"],
-}
+  group_id: GroupSchemaType["id"];
+};
 
 export default function JoinGroupButton({
-    group_id,
+  group_id,
 }: JoinGroupButtonProps): JSX.Element | null {
-    const { handleClick } = useJoinGroup();
+  const { handleClick } = useJoinGroup();
 
-    return (
-      <Box sx={groupSidebarActionCardSx}>
-        <Typography sx={groupSidebarActionTitleSx}>Become a Member</Typography>
-        <Typography sx={groupSidebarActionDescriptionSx}>
-          Join this group to RSVP to events and keep up with new activity.
-        </Typography>
-        <Button
-          onClick={() => handleClick(group_id)}
-          startIcon={<HowToRegRoundedIcon />}
-          sx={groupSidebarPrimaryButtonSx}
-        >
-          Join Group
-        </Button>
-      </Box>
-    );
+  return (
+    <Box sx={groupSidebarActionCardSx}>
+      <Typography sx={groupSidebarActionTitleSx}>Become a Member</Typography>
+      <Typography sx={groupSidebarActionDescriptionSx}>
+        Join this group to RSVP to events and keep up with new activity.
+      </Typography>
+      <Button
+        onClick={() => handleClick(group_id)}
+        startIcon={<HowToRegRoundedIcon />}
+        sx={groupSidebarPrimaryButtonSx}
+      >
+        Join Group
+      </Button>
+    </Box>
+  );
 }

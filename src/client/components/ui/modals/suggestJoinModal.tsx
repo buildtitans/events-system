@@ -8,16 +8,13 @@ import Backdrop from "@mui/material/Backdrop";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
-import { trpcClient } from "@/src/trpc/trpcClient";
-import { logout } from "@/src/lib/store/slices/auth/AuthSlice";
+import type { AppDispatch } from "@/src/lib/store";
 import {
-  enqueueSnackbar,
+  enqueueDrawer,
   showModal,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { AuthenticationSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import HowToRegRoundedIcon from "@mui/icons-material/HowToRegRounded";
 import {
   confirmModalActionsSx,
   confirmModalBackdropSx,
@@ -29,37 +26,27 @@ import {
   confirmModalTitleSx,
 } from "@/src/client/styles/sx/confirmModal";
 
-export default function ConfirmModal({
+export default function SuggestJoinModal({
   activeModal,
 }: {
   activeModal: ActiveModal;
 }) {
   const dispatch = useDispatch<AppDispatch>();
-  const open = activeModal === "confirm signout";
+  const open = activeModal === "suggest join";
 
-  async function handleLogoutResponse(
-    success: AuthenticationSchemaType["success"],
-  ) {
-    dispatch(logout());
-    dispatch(
-      enqueueSnackbar({
-        kind: "logout",
-        status: success ? "success" : "failed",
-      }),
-    );
-    
+  const closeModal = () => {
     dispatch(showModal(null));
-  }
-  const handleSignout = async (): Promise<void> => {
-    dispatch(enqueueSnackbar({ kind: "logout", status: "pending" }));
-    const res = await trpcClient.auth.signout.mutate();
-    await handleLogoutResponse(res ? true : false);
+  };
+
+  const openSignupDrawer = () => {
+    dispatch(showModal(null));
+    dispatch(enqueueDrawer("sign up drawer"));
   };
 
   return (
     <Modal
       open={open}
-      onClose={() => dispatch(showModal(null))}
+      onClose={closeModal}
       component={"section"}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
@@ -74,38 +61,42 @@ export default function ConfirmModal({
         <Box sx={confirmModalPaperSx}>
           <Stack spacing={2}>
             <Typography component="span" sx={confirmModalEyebrowSx}>
-              Account
+              Membership
             </Typography>
             <Typography
-              id="transition-modal-title"
+              id="suggest-join-modal-title"
               component="h2"
               sx={confirmModalTitleSx}
             >
-              Sign out?
+              Sign up to join
             </Typography>
-            <Typography component="p" sx={confirmModalBodySx}>
-              You&apos;ll need to sign in again to access your dashboard,
-              memberships, and organizer tools.
+            <Typography
+              id="suggest-join-modal-description"
+              component="p"
+              sx={confirmModalBodySx}
+            >
+              Create an account to become a member, RSVP to this group&apos;s
+              events, and keep up with new activity.
             </Typography>
           </Stack>
           <Box sx={confirmModalActionsSx}>
             <Button
-              onClick={() => dispatch(showModal(null))}
+              onClick={closeModal}
               type="button"
               variant="outlined"
               startIcon={<CloseRoundedIcon />}
               sx={confirmModalSecondaryButtonSx}
             >
-              Stay signed in
+              Maybe later
             </Button>
             <Button
-              onClick={handleSignout}
+              onClick={openSignupDrawer}
               type="button"
               variant="contained"
-              startIcon={<LogoutRoundedIcon />}
+              startIcon={<HowToRegRoundedIcon />}
               sx={confirmModalPrimaryButtonSx}
             >
-              Sign out
+              Sign up
             </Button>
           </Box>
         </Box>

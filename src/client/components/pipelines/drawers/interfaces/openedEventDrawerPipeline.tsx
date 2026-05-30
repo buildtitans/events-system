@@ -6,6 +6,7 @@ import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawer";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
   useHydrateEventDrawer();
@@ -36,8 +37,13 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
       return <DrawerSpinner />;
     }
 
+    case "initial":
+    case "n/a": {
+      return null;
+    }
+
     default: {
-      return <DrawerSpinner />;
+      return assertNever(openedEvent);
     }
   }
 }

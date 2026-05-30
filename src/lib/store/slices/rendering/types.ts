@@ -14,6 +14,7 @@ export type ActiveModal =
   | "confirm cancel"
   | "confirm signout"
   | "confirm leave group"
+  | "suggest join"
   | null;
 
 export type ActiveDrawer =

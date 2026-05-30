@@ -1,7 +1,10 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../store";
-import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
+import {
+  enqueueSnackbar,
+  showModal,
+} from "../../store/slices/rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useEffect, useRef } from "react";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
@@ -10,6 +13,7 @@ import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
 
 const useJoinGroup = (): JoinGroupHook => {
+  const userKind = useSelector((s: RootState) => s.auth.userKind);
   const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
   const dispatch = useDispatch<AppDispatch>();
   const timerRef = useRef<number | null>(null);
@@ -35,6 +39,12 @@ const useJoinGroup = (): JoinGroupHook => {
 
   const handleClick = async (group_id: GroupSchemaType["id"]) => {
     if (snackbar.status !== "idle") return;
+
+    if (userKind === "anonymous") {
+      dispatch(showModal("suggest join"));
+      return;
+    }
+
     dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "pending" }));
     const result = await joinGroup(group_id);
     handleResult(result);
