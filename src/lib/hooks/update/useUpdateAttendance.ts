@@ -15,6 +15,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { getUserAttendanceStatus } from "../../store/slices/events/EventDrawerSlice";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
@@ -66,7 +67,7 @@ export const useUpdateAttendance = (
 
       handleResult(result);
     } catch (err) {
-      console.error(err);
+      logCaughtError("hooks/useUpdateAttendance.handleSubmit", err);
     }
   };
 

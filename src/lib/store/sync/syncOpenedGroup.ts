@@ -3,6 +3,7 @@ import type { EventsPages } from "../slices/events/types";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 export type SyncOpenGroupPayload = {
   group: GroupSchemaType | null;
@@ -54,7 +55,7 @@ export async function syncOpenedGroup(
       allGroupEvents,
     };
   } catch (err) {
-    console.error(err);
+    logCaughtError("syncOpenedGroup() failed", err);
     return {
       group: null,
       events: [],
