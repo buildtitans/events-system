@@ -36,7 +36,6 @@ export default function RenderGroupHistory({
       fallbackCaption={"If you want to get in touch with the organizer, their email is listed above."}
       />;
     }
-
     default: {
       <NoGroupHistory />;
     }

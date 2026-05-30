@@ -5,6 +5,7 @@ import RenderMemberships from "./renderMemberships";
 import RenderRsvps from "./renderRsvps";
 import RenderMyGroups from "./renderMyGroups";
 import { JSX } from "react";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export default function RenderAccountView(): JSX.Element | null {
   const view = useSelector((s: RootState) => s.user.view);
@@ -23,7 +24,7 @@ export default function RenderAccountView(): JSX.Element | null {
     }
 
     default: {
-      return null;
+      return assertNever(view);
     }
   }
 }

@@ -7,6 +7,7 @@ import {
   navPrimaryButtonSx,
   navSecondaryButtonSx,
 } from "@/src/client/styles/sx/nav";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export default function RenderMobileAuthButtons({
     userKind, 
@@ -91,6 +92,10 @@ export default function RenderMobileAuthButtons({
           </Button>
         </Stack>
       );
+    }
+
+    default: {
+      return assertNever(userKind);
     }
   }
 }

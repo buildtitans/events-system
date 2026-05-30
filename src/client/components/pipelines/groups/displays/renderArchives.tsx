@@ -2,12 +2,13 @@
 import type { JSX } from "react";
 import type { RootState } from "@/src/lib/store";
 import { useSelector } from "react-redux";
-import Spinner, { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
+import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
 import OpenedGroupFallback from "@/src/client/components/ui/feedback/fallbacks/groupFallback";
 import FadeIn from "@/src/client/components/ui/box/motionboxes/fadeIn";
 import Archives from "@/src/client/components/sections/group/openedGroup/displays/archives";
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderGroupHistoryProps = {
   isMobile: boolean;
@@ -21,16 +22,16 @@ export default function RenderArchives({
   switch (archive.status) {
     case "initial":
     case "pending": {
-        return (
+      return (
         <FadeIn keyValue="spinner-fade-in-box">
           <Stack
-          alignItems={"center"}
-          justifyContent={"center"}
-          minHeight={"50dvh"}
-          sx={{
-            height: "100%",
-            width: "100%",
-          }}
+            alignItems={"center"}
+            justifyContent={"center"}
+            minHeight={"50dvh"}
+            sx={{
+              height: "100%",
+              width: "100%",
+            }}
           >
             <RelativeSpinner />
           </Stack>
@@ -38,7 +39,6 @@ export default function RenderArchives({
       );
     }
     case "ready": {
-
       return (
         <FadeIn keyValue="archives-fade-in-box">
           <Archives archivedEvents={archive.data} isMobile={isMobile} />
@@ -49,7 +49,7 @@ export default function RenderArchives({
       return <AsyncFailedFallback />;
     }
 
-    default: {
+    case "n/a": {
       return (
         <OpenedGroupFallback
           eyeBrow={"Archives"}
@@ -62,6 +62,10 @@ export default function RenderArchives({
           }
         />
       );
+    }
+
+    default: {
+      assertNever(archive);
     }
   }
 }

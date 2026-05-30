@@ -4,12 +4,13 @@ import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
 import { JSX } from "react";
 import FadeIn from "../../ui/box/motionboxes/fadeIn";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderRsvpsProps = { participations: PariticpationsState };
 
 export default function RenderRsvps({
   participations,
-}: RenderRsvpsProps): JSX.Element {
+}: RenderRsvpsProps): JSX.Element | null{
   switch (participations.status) {
     case "pending": {
       return (
@@ -41,12 +42,12 @@ export default function RenderRsvps({
       )
     }
 
+    case "initial": {
+      return null;
+    }
+
     default: {
-      return (
-         <FadeIn  keyValue={"default-rsvps-fade-wrapper"}>
-            <SimpleBackdrop />;
-        </FadeIn>
-      )
+      return assertNever(participations);
     }
   }
 }

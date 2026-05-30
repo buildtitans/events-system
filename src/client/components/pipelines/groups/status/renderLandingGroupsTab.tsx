@@ -5,8 +5,9 @@ import { useSelector } from "react-redux";
 import { RelativeSpinner } from "../../../ui/feedback/pending/spinner";
 import GroupsPagesContainer from "../../../sections/group/containers/groupsPages";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
-export default function RenderLandingGroupsTab(): JSX.Element {
+export default function RenderLandingGroupsTab(): JSX.Element | null{
 const landingGroupsTab = useSelector((s: RootState) => s.groups.landingGroupsTab);
 
 switch(landingGroupsTab.status) {
@@ -21,8 +22,15 @@ switch(landingGroupsTab.status) {
         return <AsyncFailedFallback message={landingGroupsTab.error} />
     }
 
+    case "n/a": {
+        return <AsyncFailedFallback message={landingGroupsTab.message} />
+    }
+    case "initial": {
+        return null;
+    }
+
     default: {
-        return <RelativeSpinner />
+        return assertNever(landingGroupsTab);
     }
 }
     

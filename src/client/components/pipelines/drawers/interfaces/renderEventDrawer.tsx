@@ -11,6 +11,7 @@ import {
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import MemberEventDrawer from "@/src/client/components/ui/drawers/memberEventDrawer";
 import AnonEventDrawer from "@/src/client/components/ui/drawers/anonEventDrawer";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderEventDrawerContentsProps = {
   role: GroupMemberSchemaType["role"];
@@ -69,7 +70,8 @@ export default function RenderEventDrawerContents({
           {isCurrent && <RescheduleEventForm event={event} />}
         </MemberEventDrawer>
       );
-    default: {
+
+    case "anonymous": {
       return (
         <AnonEventDrawer
           role={role}
@@ -80,6 +82,9 @@ export default function RenderEventDrawerContents({
           slug={slug}
         />
       );
+    }
+    default: {
+      return assertNever(role);
     }
   }
 }

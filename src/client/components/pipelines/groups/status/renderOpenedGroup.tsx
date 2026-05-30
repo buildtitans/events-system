@@ -5,6 +5,7 @@ import type { GroupHydrated } from "@/src/lib/store/slices/groups/OpenedGroupSli
 import Container from "@mui/material/Container";
 import SimpleBackdrop from "../../../ui/feedback/pending/backdrop";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderOpenedGroupProps = {
   group: GroupHydrated;
@@ -35,5 +36,9 @@ export function RenderOpenedGroup({
       return <AsyncFailedFallback message={group.error} />;
     case "ready":
       return <ViewGroupSection key="opened-group" group={group.data} />;
+
+      default: {
+        assertNever(group);
+      }
   }
 }

@@ -4,7 +4,7 @@ import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSch
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
 
-type UserAccountViewType = "memberships" | "rsvps" | "my groups" | "settings";
+type UserAccountViewType = "memberships" | "rsvps" | "my groups";
 
 export type UserEmailState = AsyncState<string, "No email found">;
 

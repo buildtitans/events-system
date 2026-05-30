@@ -3,20 +3,22 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import SidebarSkeleton from "../../../ui/skeletons/sidebarSkeleton";
 import GroupActonsContainer from "../../../ui/stack/groupActionsContainer";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export function RenderGroupSidebar() {
   const group = useSelector((s: RootState) => s.openGroup.group);
 
   switch (group.status) {
+   case "failed": 
+   case "idle": return null;
     case "pending": {
       return <SidebarSkeleton />;
     }
-
     case "ready": {
       return <GroupActonsContainer group_id={group.data.id} />;
     }
     default: {
-      return null;
+      return assertNever(group)
     }
   }
 }

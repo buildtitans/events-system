@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { RelativeSpinner } from "../../ui/feedback/pending/spinner";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export const EventsPipeline = (events: EventsStateType): JSX.Element => {
   const currentPage = useSelector((s: RootState) => s.events.currentPage);
@@ -32,7 +33,7 @@ export const EventsPipeline = (events: EventsStateType): JSX.Element => {
       return <NoScheduledEvents key={"no-scheduled-events"} />;
 
     default: {
-      return <NoEventsFound key={"default-fallback"} />;
+      return assertNever(events);
     }
   }
 };

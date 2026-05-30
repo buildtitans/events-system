@@ -1,13 +1,12 @@
 "use client";
 import { RenderEventsForGroup } from "../displays/renderEventsForGroup";
 import { JSX } from "react";
-import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import RenderGroupHistory from "../displays/renderGroupHistory";
 import GroupCalandar from "@/src/client/features/group/groupCalandar";
 import type { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
-import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
 import RenderArchives from "../displays/renderArchives";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderGroupDisplayProps = {
   view: OpenedGroupSection;
@@ -49,11 +48,7 @@ export function RenderGroupDisplay({
     }
 
     default: {
-      return (
-        <FadeIn keyValue="default-fade-in">
-          <AsyncFailedFallback />
-        </FadeIn>
-      );
+      return assertNever(view);
     }
   }
 }

@@ -18,7 +18,20 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
     useSelector((s: RootState) => s.eventDrawer, shallowEqual);
 
   switch (openedEvent.status) {
-    case "ready":
+    case "initial":
+    case "n/a": {
+      return null;
+    }
+
+    case "failed": {
+      return <AsyncFailedFallback message={openedEvent.error} />;
+    }
+
+    case "pending": {
+      return <DrawerSpinner />;
+    }
+
+    case "ready": {
       return (
         <RenderEventDrawerContents
           role={drawerViewerRole}
@@ -29,17 +42,6 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
           slug={groupSlug}
         />
       );
-
-    case "failed":
-      return <AsyncFailedFallback message={openedEvent.error} />;
-
-    case "pending": {
-      return <DrawerSpinner />;
-    }
-
-    case "initial":
-    case "n/a": {
-      return null;
     }
 
     default: {

@@ -7,6 +7,7 @@ import RenderGroupsOrFallback from "../groups/status/renderGroupsOrFallback";
 import AsyncFailedFallback from "../../ui/feedback/failure/asyncFailedFallback";
 import Container from "@mui/material/Container";
 import FadeIn from "../../ui/box/motionboxes/fadeIn";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderMyGroupsProps = {
   myGroups: MyGroupsState;
@@ -50,8 +51,12 @@ export default function RenderMyGroups({
       )
     }
 
-    default: {
+    case "initial": {
       return null;
+    }
+
+    default: {
+      return assertNever(myGroups)
     }
   }
 }

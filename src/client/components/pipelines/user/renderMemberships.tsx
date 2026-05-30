@@ -15,12 +15,13 @@ import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice"
 import { noGroupsFallbackIconSx } from "@/src/client/styles/sx/noGroupsFallback";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import FadeIn from "../../ui/box/motionboxes/fadeIn";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export default function RenderMemberships({
   participations,
 }: {
   participations: PariticpationsState;
-}): JSX.Element {
+}): JSX.Element | null {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -95,12 +96,12 @@ export default function RenderMemberships({
       </FadeIn>;
     }
 
+    case "initial": {
+      return null;
+    }
+
     default: {
-      return (
-        <FadeIn keyValue={"default-case-backdrop-fade-wrapper"}>
-          <SimpleBackdrop />
-        </FadeIn>
-      );
+      return assertNever(participations);
     }
   }
 }
