@@ -1,5 +1,9 @@
+import * as path from "path";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { AppServerServices } from "./appServerServices";
+import { appServerAssetPath } from "../config/appServerAssets";
+import { appConfig } from "../config/appConfig";
+import { renderTemplateFile } from "../config/renderTemplate";
 
 type AppServerBootstrapDeps = {
   dbHost: string;
@@ -12,150 +16,39 @@ type AppServerBootstrapDeps = {
 };
 
 export class AppServerBootstrap {
-  private readonly dbHost: string;
-  private readonly dbPort: string;
-  private readonly dbName: string;
-  private readonly dbUser: string;
-  private readonly dbSecretArn: string;
-  private readonly cookieSecretArn: string;
-  private readonly appRuntimeConfigArn: string;
-
-  constructor(deps: AppServerBootstrapDeps) {
-    this.dbHost = deps.dbHost;
-    this.dbPort = deps.dbPort;
-    this.dbName = deps.dbName;
-    this.dbUser = deps.dbUser;
-    this.dbSecretArn = deps.dbSecretArn;
-    this.cookieSecretArn = deps.cookieSecretArn;
-    this.appRuntimeConfigArn = deps.appRuntimeConfigArn;
-  }
+  constructor(private readonly deps: AppServerBootstrapDeps) {}
 
   public buildInit(): ec2.CloudFormationInit {
     const services = new AppServerServices({
-      appRoot: "/var/www/events-system",
-      envFilePath: "/etc/events-system/server.env",
-      nextCommand:
-        "/usr/bin/node /var/www/events-system/next-standalone/server.js",
-      fastifyCommand:
-        "/usr/bin/pnpm --dir /var/www/events-system/src/server start:fastify",
+      appRoot: APP_ROOT,
+      envFilePath: SERVER_ENV_FILE,
+      nextCommand: `${NODE_BIN} ${APP_ROOT}/next-standalone/server.js`,
+      fastifyCommand: `${PNPM_BIN} --dir ${APP_ROOT}/src/server start:fastify`,
     });
 
     return ec2.CloudFormationInit.fromElements(
-      ec2.InitCommand.shellCommand("dnf update -y", {
-        key: "00-system-update",
-      }),
-      ec2.InitCommand.shellCommand(
+      initCommand("00-system-update", "dnf update -y"),
+      initCommand(
+        "01-install-node-repo",
         "curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -",
-        {
-          key: "01-install-node-repo",
-        },
       ),
-      ec2.InitCommand.shellCommand("dnf install -y nodejs jq awscli", {
-        key: "02-install-runtime-tools",
-      }),
-      ec2.InitCommand.shellCommand("npm install -g pnpm", {
-        key: "03-install-pnpm",
-      }),
-      ec2.InitCommand.shellCommand("mkdir -p /var/www/events-system", {
-        key: "04-create-app-dir",
-      }),
-      ec2.InitCommand.shellCommand("mkdir -p /etc/events-system", {
-        key: "05-create-config-dir",
-      }),
-      ec2.InitCommand.shellCommand("dnf install -y nginx", {
-        key: "06-install-nginx",
-      }),
+      initCommand("02-install-runtime-tools", "dnf install -y nodejs jq awscli"),
+      initCommand("03-install-pnpm", "npm install -g pnpm"),
+      initCommand("04-create-app-dir", `mkdir -p ${APP_ROOT}`),
+      initCommand("05-create-config-dir", `mkdir -p ${SERVER_CONFIG_DIR}`),
+      initCommand("06-install-nginx", "dnf install -y nginx"),
       ec2.InitFile.fromString(
-        "/usr/local/bin/refresh-events-system-env.sh",
-        [
-          "#!/usr/bin/env bash",
-          "set -euo pipefail",
-          "",
-          `DB_SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.dbSecretArn} --query SecretString --output text)`,
-          `COOKIE_SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.cookieSecretArn} --query SecretString --output text)`,
-          `APP_RUNTIME_JSON=$(aws secretsmanager get-secret-value --secret-id ${this.appRuntimeConfigArn} --query SecretString --output text)`,
-          "",
-          'PGPASSWORD=$(echo "$DB_SECRET_JSON" | jq -er .password)',
-          'COOKIES_SECRET=$(echo "$COOKIE_SECRET_JSON" | jq -er .secret)',
-          'RESEND_API_KEY=$(echo "$APP_RUNTIME_JSON" | jq -er .RESEND_API_KEY)',
-          'GEOAPIFY_API_KEY=$(echo "$APP_RUNTIME_JSON" | jq -er .GEOAPIFY_API_KEY)',
-          'GEOAPIFY_REQ_BASE_URL=$(echo "$APP_RUNTIME_JSON" | jq -er .GEOAPIFY_REQ_BASE_URL)',
-          'PROD_PW_RESET_URL=$(echo "$APP_RUNTIME_JSON" | jq -er .PROD_PW_RESET_URL)',
-          "",
-          "TMP_FILE=$(mktemp)",
-          'cat > "$TMP_FILE" <<EOF',
-          `PGHOST=${this.dbHost}`,
-          `PGPORT=${this.dbPort}`,
-          `PGDATABASE=${this.dbName}`,
-          `PGUSER=${this.dbUser}`,
-          "GEOAPIFY_API_KEY=$GEOAPIFY_API_KEY",
-          "GEOAPIFY_REQ_BASE_URL=$GEOAPIFY_REQ_BASE_URL",
-          "PROD_PW_RESET_URL=$PROD_PW_RESET_URL",
-          "RESEND_API_KEY=$RESEND_API_KEY",
-          "PGMAX=10",
-          "PROD_FASTIFY_HOST=127.0.0.1",
-          "PROD_FASTIFY_PORT=3001",
-          "NODE_ENV=production",
-          "PGPASSWORD=$PGPASSWORD",
-          "COOKIES_SECRET=$COOKIES_SECRET",
-          "EOF",
-          'install -o root -g root -m 600 "$TMP_FILE" /etc/events-system/server.env',
-          'rm -f "$TMP_FILE"',
-          "",
-        ].join("\n"),
-        {
-          mode: "000700",
-          owner: "root",
-          group: "root",
-        },
+        REFRESH_ENV_SCRIPT,
+        this.renderRefreshEnvScript(),
+        executableRootFile,
       ),
-      ec2.InitCommand.shellCommand(
-        "/usr/local/bin/refresh-events-system-env.sh",
-        {
-          key: "07-refresh-server-env",
-        },
+      initCommand("07-refresh-server-env", REFRESH_ENV_SCRIPT),
+      ec2.InitFile.fromFileInline(
+        NGINX_CONFIG_FILE,
+        appServerAssetPath("events-system.nginx.conf"),
+        readableRootFile,
       ),
-      ec2.InitFile.fromString(
-        "/etc/nginx/conf.d/events-system.conf",
-        [
-          "map $http_x_forwarded_proto $forwarded_proto {",
-          "    default $http_x_forwarded_proto;",
-          '    ""      $scheme;',
-          "}",
-          "",
-          "server {",
-          "    listen 80;",
-          "    server_name _;",
-          "",
-          "    location /api/trpc {",
-          "        proxy_pass http://127.0.0.1:3001;",
-          "        proxy_http_version 1.1;",
-          "        proxy_set_header Host $host;",
-          "        proxy_set_header X-Real-IP $remote_addr;",
-          "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "        proxy_set_header X-Forwarded-Proto $forwarded_proto;",
-          "    }",
-          "",
-          "    location / {",
-          "        proxy_pass http://127.0.0.1:3000;",
-          "        proxy_http_version 1.1;",
-          "        proxy_set_header Host $host;",
-          "        proxy_set_header X-Real-IP $remote_addr;",
-          "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "        proxy_set_header X-Forwarded-Proto $forwarded_proto;",
-          "    }",
-          "}",
-          "",
-        ].join("\n"),
-        {
-          mode: "000644",
-          owner: "root",
-          group: "root",
-        },
-      ),
-      ec2.InitCommand.shellCommand("nginx -t", {
-        key: "08-validate-nginx",
-      }),
+      initCommand("08-validate-nginx", "nginx -t"),
       ec2.InitService.enable("nginx", {
         serviceManager: ec2.ServiceManager.SYSTEMD,
         enabled: true,
@@ -163,9 +56,49 @@ export class AppServerBootstrap {
       }),
       ...services.buildInitElements(),
       ec2.InitFile.fromString(
-        "/var/www/events-system/BOOTSTRAPPED.txt",
+        `${APP_ROOT}/BOOTSTRAPPED.txt`,
         "CloudFormationInit ran successfully\n",
       ),
     );
   }
+
+  private renderRefreshEnvScript(): string {
+    return renderTemplateFile(
+      appServerAssetPath("refresh-events-system-env.sh.tpl"),
+      {
+        APP_RUNTIME_CONFIG_ARN: this.deps.appRuntimeConfigArn,
+        COOKIE_SECRET_ARN: this.deps.cookieSecretArn,
+        DB_HOST: this.deps.dbHost,
+        DB_NAME: this.deps.dbName,
+        DB_PORT: this.deps.dbPort,
+        DB_SECRET_ARN: this.deps.dbSecretArn,
+        DB_USER: this.deps.dbUser,
+        SERVER_ENV_FILE,
+      },
+    );
+  }
+}
+
+const APP_ROOT = appConfig.paths.appRoot;
+const SERVER_ENV_FILE = appConfig.paths.serverEnvFile;
+const SERVER_CONFIG_DIR = path.posix.dirname(SERVER_ENV_FILE);
+const REFRESH_ENV_SCRIPT = "/usr/local/bin/refresh-events-system-env.sh";
+const NGINX_CONFIG_FILE = "/etc/nginx/conf.d/events-system.conf";
+const NODE_BIN = "/usr/bin/node";
+const PNPM_BIN = "/usr/bin/pnpm";
+
+const executableRootFile: ec2.InitFileOptions = {
+  mode: "000700",
+  owner: "root",
+  group: "root",
+};
+
+const readableRootFile: ec2.InitFileOptions = {
+  mode: "000644",
+  owner: "root",
+  group: "root",
+};
+
+function initCommand(key: string, command: string): ec2.InitCommand {
+  return ec2.InitCommand.shellCommand(command, { key });
 }

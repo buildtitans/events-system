@@ -1,6 +1,7 @@
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+import { appConfig } from "../config/appConfig";
 
 type AppSecretsProps = {
   instanceRole: iam.IRole;
@@ -28,7 +29,7 @@ export class AppSecrets extends Construct {
     this.appRuntimeConfig = secretsmanager.Secret.fromSecretNameV2(
       this,
       "AppRuntimeConfig",
-      "events-system/app/runtime",
+      appConfig.secrets.appRuntimeConfigName,
     );
 
     this.cookieSecret.grantRead(instanceRole);

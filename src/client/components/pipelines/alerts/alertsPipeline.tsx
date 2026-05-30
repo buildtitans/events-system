@@ -1,18 +1,31 @@
 import { AlertResult } from "@/src/client/components/ui/feedback/alerts/Alerts";
 import { createAlertMessages } from "@/src/lib/utils/helpers/messages/createAlertMessages";
 import { AlertType } from "@/src/lib/store/slices/rendering/types";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 const alertsPipeline = (alert: AlertType) => {
-    if ((alert.action === null) || (alert.kind === null)) return null;
 
-    return (
-        <AlertResult
+    switch(alert.kind) {
+        case "error":
+        case "success": {
+            return (
+                <AlertResult
             key={"alert"}
             severity={alert.kind}
             variant="filled"
             message={createAlertMessages(alert)}
         />
-    )
+            )
+        };
+
+        case null: {
+            return null;
+        }
+
+        default: {
+            return assertNever(alert.kind)
+        }
+    }
 };
 
 export { alertsPipeline };

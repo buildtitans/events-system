@@ -6,10 +6,11 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as route53 from "aws-cdk-lib/aws-route53";
+import { AppServer } from "../constructs/appServer";
 import { AppEdge } from "../constructs/appEdge";
-import { AppServerBootstrap } from "../constructs/appServerBootstrap";
 import { AppSecrets } from "../constructs/appSecrets";
 import { DbBootstrap } from "../constructs/dbBootstrap";
+import { appConfig } from "../config/appConfig";
 
 config({ path: path.resolve(process.cwd(), ".env") });
 
@@ -17,7 +18,7 @@ export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const hostedZone = this.createHostedZone("events-system.dev");
+    const hostedZone = this.createHostedZone(appConfig.domainName);
     const vpc = this.lookupVpc();
     const instanceRole = this.createInstanceRole();
     const webSecurityGroup = this.createWebSecurityGroup(vpc);
@@ -33,21 +34,32 @@ export class InfraStack extends Stack {
       vpc,
       webSecurityGroup,
       instanceRole,
+      databaseName: appConfig.database.name,
+      databaseUser: appConfig.database.user,
     });
 
-    const instance = this.createWebInstance(
+    const appServer = new AppServer(this, "AppServer", {
       vpc,
-      instanceRole,
-      webSecurityGroup,
-      db,
-      appSecrets,
-    );
+      role: instanceRole,
+      securityGroup: webSecurityGroup,
+      db: {
+        host: db.database.instanceEndpoint.hostname,
+        port: db.database.instanceEndpoint.port.toString(),
+        name: db.databaseName,
+        user: db.databaseUser,
+        secretArn: db.secret.secretArn,
+      },
+      secrets: {
+        cookieSecretArn: appSecrets.cookieSecret.secretArn,
+        appRuntimeConfigArn: appSecrets.appRuntimeConfig.secretArn,
+      },
+    });
 
     const appEdge = new AppEdge(this, "AppEdge", {
       vpc,
       hostedZone,
-      domainName: "events-system.dev",
-      targetInstance: instance,
+      domainName: appConfig.domainName,
+      targetInstance: appServer.instance,
     });
 
     webSecurityGroup.addIngressRule(
@@ -56,8 +68,8 @@ export class InfraStack extends Stack {
       "Allow ALB to reach nginx on the web instance",
     );
 
-    Tags.of(instance).add("Name", "events-system-webserver");
-    this.addInstanceOutputs(instance, releaseBucket, hostedZone);
+    Tags.of(appServer.instance).add("Name", appConfig.webServer.nameTag);
+    this.addInstanceOutputs(appServer.instance, releaseBucket, hostedZone);
   }
 
   private createHostedZone(domainName: string): route53.PublicHostedZone {
@@ -98,36 +110,6 @@ export class InfraStack extends Stack {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       encryption: s3.BucketEncryption.S3_MANAGED,
       enforceSSL: true,
-    });
-  }
-
-  private createWebInstance(
-    vpc: ec2.IVpc,
-    role: iam.Role,
-    securityGroup: ec2.SecurityGroup,
-    db: DbBootstrap,
-    appSecrets: AppSecrets,
-  ): ec2.Instance {
-    const bootstrap = new AppServerBootstrap({
-      dbHost: db.database.instanceEndpoint.hostname,
-      dbName: db.databaseName,
-      dbPort: db.database.instanceEndpoint.port.toString(),
-      dbUser: db.databaseUser,
-      dbSecretArn: db.secret.secretArn,
-      cookieSecretArn: appSecrets.cookieSecret.secretArn,
-      appRuntimeConfigArn: appSecrets.appRuntimeConfig.secretArn,
-    });
-
-    return new ec2.Instance(this, "ES-Webserver", {
-      vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
-      role,
-      instanceType: new ec2.InstanceType("t3.large"),
-      machineImage: ec2.MachineImage.latestAmazonLinux2023(),
-      securityGroup,
-      init: bootstrap.buildInit(),
     });
   }
 

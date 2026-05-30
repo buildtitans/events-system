@@ -9,19 +9,25 @@ type DbBootstrapProps = {
   vpc: ec2.IVpc;
   webSecurityGroup: ec2.ISecurityGroup;
   instanceRole: iam.IRole;
+  databaseName: string;
+  databaseUser: string;
 };
 
 export class DbBootstrap extends Construct {
   public readonly securityGroup: ec2.SecurityGroup;
   public readonly database: rds.DatabaseInstance;
   public readonly secret: secretsmanager.ISecret;
-  public readonly databaseName = "events_system_db";
-  public readonly databaseUser = "events_system_user";
+  public readonly databaseName: string;
+  public readonly databaseUser: string;
 
   constructor(scope: Construct, id: string, props: DbBootstrapProps) {
     super(scope, id);
 
-    const { vpc, webSecurityGroup, instanceRole } = props;
+    const { vpc, webSecurityGroup, instanceRole, databaseName, databaseUser } =
+      props;
+
+    this.databaseName = databaseName;
+    this.databaseUser = databaseUser;
 
     this.securityGroup = new ec2.SecurityGroup(this, "EventsDb-SG", {
       vpc,
