@@ -22,6 +22,16 @@ export type AddressSearchState = AsyncState<
   "No suggestions found"
 >;
 
+export type SearchResults =
+  | {
+      status: "success";
+      data: AddressSuggestion[];
+    }
+  | {
+      status: "failed";
+      message: string;
+    };
+
 export type SearchAddressSuggestionsHook = {
   suggestions: AddressSearchState;
   onInputChange: (

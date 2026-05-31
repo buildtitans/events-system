@@ -14,24 +14,28 @@ export type SyncOpenGroupPayload = {
   allGroupEvents: EventSchemaType[];
 };
 
+function createEmptyOpenGroupPayload(): SyncOpenGroupPayload {
+  return {
+    group: null,
+    events: [],
+    role: "anonymous",
+    numMembers: 0,
+    organizerEmail: "",
+    allGroupEvents: [],
+  };
+}
+
 export async function syncOpenedGroup(
   slug: GroupSchemaType["slug"],
 ): Promise<SyncOpenGroupPayload> {
   try {
     const group = await trpcClient.groups.groupBySlug.mutate(slug);
 
-    const role = await trpcClient.groupMembers.getViewerRole.mutate(group.id);
-
     if (!group) {
-      return {
-        group: null,
-        events: [],
-        role: "anonymous",
-        numMembers: 0,
-        organizerEmail: "",
-        allGroupEvents: [],
-      };
+      return createEmptyOpenGroupPayload();
     }
+
+    const role = await trpcClient.groupMembers.getViewerRole.mutate(group.id);
 
     const events =
       (await trpcClient.events.groupEventsLayout.mutate(group.id)) ?? [];
@@ -44,7 +48,7 @@ export async function syncOpenedGroup(
       await trpcClient.events.getFlattenedGroupEvents.mutate(group.id);
 
     const { email } =
-      await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group?.id);
+      await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group.id);
 
     return {
       group,
@@ -55,14 +59,7 @@ export async function syncOpenedGroup(
       allGroupEvents,
     };
   } catch (err) {
-    logCaughtError("syncOpenedGroup() failed", err);
-    return {
-      group: null,
-      events: [],
-      role: "anonymous",
-      numMembers: 0,
-      organizerEmail: "",
-      allGroupEvents: [],
-    };
+    logCaughtError("sync/syncOpenedGroup", err);
+    return createEmptyOpenGroupPayload();
   }
 }

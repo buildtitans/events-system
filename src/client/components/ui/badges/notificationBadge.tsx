@@ -6,7 +6,7 @@ import { navBadgeSx, navIconButtonSx } from "@/src/client/styles/sx/nav";
 
 type BadgeProps = {
   badgeContent: number;
-  handleClick: (event: React.MouseEvent<HTMLElement>) => Promise<void>;
+  handleClick: (event: React.MouseEvent<HTMLElement>) => void;
 };
 
 export default function NotificationBadge({

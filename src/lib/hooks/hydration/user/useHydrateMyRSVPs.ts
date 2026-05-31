@@ -11,6 +11,7 @@ import {
   ParticipationsStatePayload,
 } from "@/src/lib/store/slices/user/types";
 import { syncUserParticipations } from "@/src/lib/store/sync/syncUserParticipations";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 type TrpcResults = {
   participations: ParticipationsStatePayload;
@@ -53,7 +54,7 @@ export const useHydrateMyRsvps = () => {
 
         handleParticipationsResults(results);
       } catch (err) {
-        console.error(err);
+        logCaughtError("hook/useHydrateMyRsvps.executeHydrateRsvps", err);
         handleFailure();
       }
     };
