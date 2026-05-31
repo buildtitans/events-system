@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { syncDomains } from "@/src/lib/store/sync/syncDomains";
 import type { SyncDomainsResult } from "@/src/lib/types/server/types";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 type InitializeDomainsHook = {
   domains: SyncDomainsResult | null;
@@ -12,8 +13,12 @@ export const useInitializeDomains = (): InitializeDomainsHook => {
 
   useEffect(() => {
     async function executeHydrateDomains() {
-      const result = await syncDomains();
-      setDomains(result);
+      try {
+        const result = await syncDomains();
+        setDomains(result);
+      } catch (err) {
+        logCaughtError("hook/useInitializeDomains.executeHydrateDomains", err);
+      }
     }
 
     void executeHydrateDomains();

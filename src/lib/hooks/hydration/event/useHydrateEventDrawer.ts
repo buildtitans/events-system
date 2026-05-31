@@ -14,6 +14,7 @@ import {
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 export const useHydrateEventDrawer = () => {
   const drawerActive = useSelector((s: RootState) => s.rendering.drawer);
@@ -56,7 +57,10 @@ export const useHydrateEventDrawer = () => {
           role,
         );
       } catch (err) {
-        console.error("Failed to hydrate event drawer", err);
+        logCaughtError(
+          "hook/useHydrateEventDrawer.executeHydrateEventDrawer",
+          err,
+        );
         dispatch(
           fillEventDrawer({ status: "failed", error: "Event not found" }),
         );

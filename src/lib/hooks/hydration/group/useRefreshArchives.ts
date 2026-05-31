@@ -6,6 +6,7 @@ import {
   populateGroupArchives,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 export const useRefreshArchives = () => {
   const group = useSelector((s: RootState) => s.openGroup.group);
@@ -38,7 +39,7 @@ export const useRefreshArchives = () => {
         dispatch(populateGroupArchives({ status: "ready", data: archives }));
         dispatch(getArchivesAttendanceRecords(archivedAttendanceRecords));
       } catch (err) {
-        console.error(err);
+        logCaughtError("hook/useRefreshArchives.executeRefreshArchives", err);
         dispatch(populateGroupArchives({ status: "failed", error: `${err}` }));
       }
     };

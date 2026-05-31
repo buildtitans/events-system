@@ -1,16 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { SyntheticEvent } from "react";
 import type {
   AddressSuggestion,
   AddressSearchState,
   SearchAddressSuggestionsHook,
-} from "./types";
-import { CreateEventHook } from "../../types/hooks/types";
+} from "@/src/lib/hooks/search/types";
+import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import type {
   AutocompleteChangeReason,
   AutocompleteInputChangeReason,
 } from "@mui/material/useAutocomplete";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
-import { searchByAddressKind } from "../../utils/helpers/search/searchByAddressKind";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { searchByAddressKind } from "@/src/lib/utils/helpers/search/searchByAddressKind";
 
 const WAIT_DURATION = 300;
 
@@ -91,7 +92,7 @@ export const useSearchLocationSuggestions = (
 
   const onInputChange = useCallback(
     (
-      _event: React.SyntheticEvent,
+      _event: SyntheticEvent,
       value: string,
       reason: AutocompleteInputChangeReason,
     ) => {
@@ -116,7 +117,7 @@ export const useSearchLocationSuggestions = (
 
   const selectAddressOption = useCallback(
     (
-      _event: React.SyntheticEvent,
+      _event: SyntheticEvent,
       value: AddressSuggestion | null,
       reason: AutocompleteChangeReason,
     ) => {
