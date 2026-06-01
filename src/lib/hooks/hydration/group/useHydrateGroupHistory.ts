@@ -8,8 +8,9 @@ import {
   getPastEventsAttendanceRecords,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
-export const useHydrateGroupHisory = () => {
+export const useHydrateGroupHistory = () => {
   const openedGroup = useSelector((s: RootState) => s.openGroup.group);
   const groupHistoryStatus = useSelector(
     (s: RootState) => s.openGroup.history.status,
@@ -35,13 +36,16 @@ export const useHydrateGroupHisory = () => {
         } else {
           dispatch(
             getGroupHistory({
-              status: "failed",
-              error: "failed to get group history",
+              status: "n/a",
+              message: "No history to display",
             }),
           );
         }
       } catch (err) {
-        console.error(err);
+        logCaughtError(
+          "hook/useHydrateGroupHistory.executeHydrateGroupHistory",
+          err,
+        );
         dispatch(
           getGroupHistory({
             status: "failed",

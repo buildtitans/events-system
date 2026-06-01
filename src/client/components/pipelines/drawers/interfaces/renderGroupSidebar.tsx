@@ -10,12 +10,15 @@ export function RenderGroupSidebar() {
 
   switch (group.status) {
    case "failed": 
-   case "idle": return null;
+   case "initial": return null;
     case "pending": {
       return <SidebarSkeleton />;
     }
     case "ready": {
       return <GroupActonsContainer group_id={group.data.id} />;
+    }
+    case "n/a": {
+      return null;
     }
     default: {
       return assertNever(group)

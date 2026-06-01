@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import React, { JSX } from "react";
 import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
-import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
-import FadeIn from "../../../ui/box/motionboxes/fadeIn";
-import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
+import OpenedGroupFallback from "@/src/client/components/ui/feedback/fallbacks/groupFallback";
+import FadeIn from "@/src/client/components/ui/box/motionboxes/fadeIn";
+import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export const RenderEventsForGroup = (): JSX.Element => {
@@ -21,7 +21,7 @@ export const RenderEventsForGroup = (): JSX.Element => {
       );
     }
 
-    case "warning": {
+    case "n/a": {
       return (
         <OpenedGroupFallback
         />
@@ -43,10 +43,12 @@ export const RenderEventsForGroup = (): JSX.Element => {
     case "pending": {
       return <RelativeSpinner />;
     }
+    
 
     default: {
       return assertNever(events);
     }
+
   }
 
 

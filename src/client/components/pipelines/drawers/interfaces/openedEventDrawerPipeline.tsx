@@ -5,8 +5,7 @@ import RenderEventDrawerContents from "./renderEventDrawer";
 import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawer";
-import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
-import { assertNever } from "@/src/lib/utils/assert/assertNever";
+import { AsyncStateRenderer } from "../../asyncRenderer";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
   useHydrateEventDrawer();
@@ -17,35 +16,18 @@ export default function OpenedEventDrawerPipeline(): JSX.Element | null {
   const { numberAttending, numberInterested, groupName, groupSlug } =
     useSelector((s: RootState) => s.eventDrawer, shallowEqual);
 
-  switch (openedEvent.status) {
-    case "initial":
-    case "n/a": {
-      return null;
-    }
-
-    case "failed": {
-      return <AsyncFailedFallback message={openedEvent.error} />;
-    }
-
-    case "pending": {
-      return <DrawerSpinner />;
-    }
-
-    case "ready": {
-      return (
+  return (
+    <AsyncStateRenderer state={openedEvent} pending={() => (<DrawerSpinner />)}>
+      {(event) => (
         <RenderEventDrawerContents
           role={drawerViewerRole}
-          event={openedEvent.data}
+          event={event}
           numAttendants={numberAttending}
           numInterested={numberInterested}
           name={groupName}
           slug={groupSlug}
         />
-      );
-    }
-
-    default: {
-      return assertNever(openedEvent);
-    }
-  }
+      )}
+    </AsyncStateRenderer>
+  )
 }

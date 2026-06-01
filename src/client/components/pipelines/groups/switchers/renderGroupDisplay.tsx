@@ -1,16 +1,16 @@
 "use client";
 import { RenderEventsForGroup } from "../displays/renderEventsForGroup";
 import { JSX } from "react";
-import RenderGroupHistory from "../displays/renderGroupHistory";
 import GroupCalandar from "@/src/client/features/group/groupCalandar";
 import type { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { AsyncStateRenderer } from "../../asyncRenderer";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
 import Archives from "../../../sections/group/openedGroup/displays/archives";
+import HistoryTimeline from "../../../sections/group/openedGroup/displays/groupHistory";
 
 type RenderGroupDisplayProps = {
   view: OpenedGroupSection;
@@ -21,7 +21,7 @@ export function RenderGroupDisplay({
   view,
   isMobile,
 }: RenderGroupDisplayProps): JSX.Element {
-  const archives = useSelector((s: RootState) => s.openGroup.archives);
+  const {archives, history} = useSelector((s: RootState) => s.openGroup, shallowEqual);
 
   switch (view) {
     case "overview": {
@@ -40,9 +40,11 @@ export function RenderGroupDisplay({
     }
     case "group history": {
       return (
-        <FadeIn keyValue="group-history-fade-in">
-          <RenderGroupHistory displayed={view} isMobile={isMobile} />
-        </FadeIn>
+        <AsyncStateRenderer state={history} empty={() => (<OpenedGroupFallback />)}>
+          {(history) => (
+            <HistoryTimeline history={history} isMobile={isMobile}/>
+          )}
+        </AsyncStateRenderer>
       );
     }
     case "archives": {

@@ -38,7 +38,7 @@ export const useRefreshGroupEvents = () => {
     const dispatchEmptyEvents = () => {
       dispatch(
         getGroupEvents({
-          status: "warning",
+          status: "n/a",
           message: "No events have been scheduled for this group",
         }),
       );

@@ -1,16 +1,16 @@
 "use client"
 import { type JSX } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
-import { EventsPipeline } from '../../pipelines/events/eventsPipeline';
-import { RenderEventPagination } from '../../pipelines/buttons/renderEventPagination';
 import LandingPageGroupSection from '../group/containers/landingPageGroupSection';
 import { Stack } from '@mui/material';
+import { AsyncStateRenderer } from '../../pipelines/asyncRenderer';
+import { PaginateEvents } from '../../ui/box/pagination/paginateEvents';
+import AsyncFailedFallback from '../../ui/feedback/failure/asyncFailedFallback';
+import EventsLayout from '../events/eventsLayout';
 
 export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Element {
-    const events = useSelector((s: RootState) => s.events.eventPages);
-    const initialLoadStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
-    const pages = events.status === "ready" ? events.data.length : 0;
+    const {eventPages,currentPage  } = useSelector((s: RootState) => s.events, shallowEqual);
 
     return (
         <Stack
@@ -29,11 +29,16 @@ export default function HomeContent({ isMobile }: {isMobile: boolean}): JSX.Elem
             justifyContent={"start"}
             direction={"row"}
             >
-            {EventsPipeline(events)}
+            <AsyncStateRenderer state={eventPages} empty={() => (<AsyncFailedFallback />) }>
+            {(state) => (
+              <EventsLayout eventsPages={state} currentPage={currentPage}/>  
+            )}
+            </AsyncStateRenderer>
             </Stack>
-            
 
-            {isMobile && RenderEventPagination(events.status, initialLoadStatus, pages)}
+            {isMobile && <AsyncStateRenderer state={eventPages} pending={() => null}>
+                {() => <PaginateEvents />}
+                </AsyncStateRenderer>}
 
             <LandingPageGroupSection />
 

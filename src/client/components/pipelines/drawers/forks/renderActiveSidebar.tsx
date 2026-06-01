@@ -8,33 +8,29 @@ import { RootState } from "@/src/lib/store";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderActiveSidebarProps = {
-    sidebar: ActiveSidebar,
-}
+  sidebar: ActiveSidebar;
+};
 
 export function RenderActiveSidebar({
-    sidebar,
+  sidebar,
 }: RenderActiveSidebarProps): JSX.Element | null {
-    const email = useSelector((s: RootState) => s.user.email);
+  const email = useSelector((s: RootState) => s.user.email);
 
-    switch(sidebar) {
-        case "group": {
-            return (
-                <RenderGroupSidebar />
-            )
-        }
-
-        case "user": {
-           return (<RenderUserAccountMenu 
-           email={email}
-           />)
-        }
-
-        case null: {
-            return null;
-        }
-
-        default: {
-            return assertNever(sidebar)
-        }
+  switch (sidebar) {
+    case "group": {
+      return <RenderGroupSidebar />;
     }
+
+    case "user": {
+      return <RenderUserAccountMenu email={email} />;
+    }
+
+    case null: {
+      return null;
+    }
+
+    default: {
+      return assertNever(sidebar);
+    }
+  }
 }

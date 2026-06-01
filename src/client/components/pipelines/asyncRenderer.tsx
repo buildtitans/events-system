@@ -1,4 +1,4 @@
-import type { ReactNode, JSX } from "react";
+import { type ReactNode, type JSX, Fragment } from "react";
 import type { AsyncState } from "@/src/lib/types/state/types";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
@@ -11,10 +11,9 @@ type AsyncStateRendererProps<
 > = {
   state: AsyncState<T, EmptyMessage>;
   children: (data: T) => ReactNode;
-  empty: (message: EmptyMessage) => ReactNode;
+  empty?: (message: EmptyMessage) => ReactNode;
+  pending?: () => ReactNode;
   initial?: () => ReactNode;
-  failed?: (error: string) => ReactNode;
-
 };
 
 export function AsyncStateRenderer<
@@ -24,18 +23,33 @@ export function AsyncStateRenderer<
   state,
   children,
   empty,
+  initial,
+  pending,
 }: AsyncStateRendererProps<T, EmptyMessage>): JSX.Element | null {
   switch (state.status) {
     case "initial": {
-      return null;
+      return <Fragment>{initial?.() ?? null}</Fragment>;
     }
     case "n/a": {
+      if (!empty) return null;
+
       return (
         <FadeIn keyValue="async-empty-fade-in">{empty(state.message)}</FadeIn>
       );
     }
     case "pending": {
-      return <RelativeSpinner />;
+      if (!pending) {
+        return (
+          <FadeIn keyValue="async-pending-fade-in">
+            <RelativeSpinner />
+          </FadeIn>
+        );
+      }
+
+      const pendingNode = pending();
+      if (pendingNode == null) return null;
+
+      return <FadeIn keyValue="async-pending-fade-in">{pendingNode}</FadeIn>;
     }
 
     case "ready": {

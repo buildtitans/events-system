@@ -7,33 +7,21 @@ import { AsyncState } from "@/src/lib/types/state/types";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 
-export type GroupHydrated =
-  | { status: "idle" }
-  | { status: "pending" }
-  | { status: "failed"; error: "Group hydration error" }
-  | { status: "ready"; data: GroupSchemaType };
+export type GroupHydrated = AsyncState<GroupSchemaType>;
 
-export type HydratedEventsForOpenedGroup =
-  | { status: "initial" }
-  | { status: "pending" }
-  | { status: "refreshing" }
-  | {
-      status: "warning";
-      message: "No events have been scheduled for this group";
-    }
-  | { status: "failed"; error: "Error hydrating events for opened group" }
-  | { status: "ready"; data: EventsPages };
+type EventsOfGroup =
+  | AsyncState<EventsPages, "No events have been scheduled for this group">
+  | { status: "refreshing" };
 
 export type FlattenedGroupEventsState = AsyncState<
   EventsArraySchemaType,
   "No Events held for this group"
 >;
 
-export type GroupHistoryType =
-  | { status: "initial" }
-  | { status: "pending" }
-  | { status: "ready"; data: EventsArraySchemaType }
-  | { status: "failed"; error: string };
+export type GroupHistoryType = AsyncState<
+  EventsArraySchemaType,
+  "No history to display"
+>;
 
 export type CurrentDisplay =
   | "overview"
@@ -43,7 +31,7 @@ export type CurrentDisplay =
 
 type InitialState = {
   group: GroupHydrated;
-  events: HydratedEventsForOpenedGroup;
+  events: EventsOfGroup;
   syncStatus: LoadingStatus;
   currPage: number;
   activeSection: CurrentDisplay;
@@ -60,8 +48,8 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  group: { status: "idle" },
-  events: { status: "initial" },
+  group: { status: "initial" },
+  events: { status: "refreshing" },
   history: { status: "initial" },
   archives: { status: "initial" },
   syncStatus: "idle",
@@ -80,7 +68,7 @@ const OpenedGroupSlice = createSlice({
   reducers: {
     getGroupEvents: (
       state: InitialState,
-      action: PayloadAction<HydratedEventsForOpenedGroup>,
+      action: PayloadAction<EventsOfGroup>,
     ) => {
       state.events = action.payload;
     },
