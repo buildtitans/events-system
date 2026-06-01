@@ -3,7 +3,7 @@ import type { AsyncState } from "@/src/lib/types/state/types";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
-import FadeIn from "../ui/box/motionboxes/fadeIn";
+import FadeIn from "../../ui/box/motionboxes/fadeIn";
 
 type AsyncStateRendererProps<
   T,
@@ -53,7 +53,7 @@ export function AsyncStateRenderer<
     }
 
     case "ready": {
-      return <FadeIn keyValue="async-fade-in">{children(state.data)}</FadeIn>;
+      return <Fragment>{children(state.data)}</Fragment>;
     }
     case "failed": {
       return (

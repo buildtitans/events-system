@@ -5,7 +5,7 @@ import GroupCalandar from "@/src/client/features/group/groupCalandar";
 import type { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
-import { AsyncStateRenderer } from "../../asyncRenderer";
+import { AsyncStateRenderer } from "../../async/asyncStateRenderer";
 import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";

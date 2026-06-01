@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { getDesktopSidebarOffsetSx } from "@/src/client/styles/sx/sidebar";
 import { clearOpenedGroupSlice } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import { AsyncStateRenderer } from "../pipelines/asyncRenderer";
+import { AsyncStateRenderer } from "../pipelines/async/asyncStateRenderer";
 import ViewGroupSection from "../sections/group/openedGroup/viewGroupSection";
 import SimpleBackdrop from "../ui/feedback/pending/backdrop";
 

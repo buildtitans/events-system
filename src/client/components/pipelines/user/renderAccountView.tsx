@@ -3,7 +3,7 @@ import type { RootState } from "@/src/lib/store";
 import { useSelector } from "react-redux";
 import { JSX } from "react";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
-import { AsyncStateRenderer } from "../asyncRenderer";
+import { AsyncStateRenderer } from "../async/asyncStateRenderer";
 import DashboardFallback from "../../ui/feedback/fallbacks/dashboardFallback";
 import MyRsvps from "../../sections/user/myRsvps";
 import MyMemberships from "../../sections/user/myMemberships";

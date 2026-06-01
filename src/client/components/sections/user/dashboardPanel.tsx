@@ -10,7 +10,7 @@ import {
 } from "@/src/client/styles/sx/dashboardHeader";
 import type { JSX } from "react";
 import DashboardHeader from "../../ui/headers/dashboardHeader";
-import { AsyncStateRenderer } from "../../pipelines/asyncRenderer";
+import { AsyncStateRenderer } from "../../pipelines/async/asyncStateRenderer";
 import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
 import AccountDetails from "./accountDetails";
 

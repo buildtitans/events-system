@@ -6,7 +6,7 @@ import { JSX, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import { changeDisplayedGroupFilter } from "@/src/lib/store/slices/groups/GroupsSlice";
-import { AsyncStateRenderer } from "../../../pipelines/asyncRenderer";
+import { AsyncStateRenderer } from "../../../pipelines/async/asyncStateRenderer";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
 import GroupsPagesContainer from "./groupsPages";
 

@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '@/src/lib/store';
 import LandingPageGroupSection from '../group/containers/landingPageGroupSection';
 import { Stack } from '@mui/material';
-import { AsyncStateRenderer } from '../../pipelines/asyncRenderer';
+import { AsyncStateRenderer } from '../../pipelines/async/asyncStateRenderer';
 import { PaginateEvents } from '../../ui/box/pagination/paginateEvents';
 import AsyncFailedFallback from '../../ui/feedback/failure/asyncFailedFallback';
 import EventsLayout from '../events/eventsLayout';

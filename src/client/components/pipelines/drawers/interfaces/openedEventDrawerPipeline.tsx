@@ -5,7 +5,7 @@ import RenderEventDrawerContents from "./renderEventDrawer";
 import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
 import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawer";
-import { AsyncStateRenderer } from "../../asyncRenderer";
+import { AsyncStateRenderer } from "../../async/asyncStateRenderer";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
   useHydrateEventDrawer();

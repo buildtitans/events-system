@@ -4,7 +4,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
-import { AsyncStateRenderer } from "../../pipelines/asyncRenderer";
+import { AsyncStateRenderer } from "../../pipelines/async/asyncStateRenderer";
 import { PaginateEvents } from "../box/pagination/paginateEvents";
 
 const metaPillSx = {
