@@ -52,14 +52,6 @@ export default function RenderArchives({
     case "n/a": {
       return (
         <OpenedGroupFallback
-          eyeBrow={"Archives"}
-          fallbackTitle={"No events archived"}
-          fallbackDescripton={
-            "This group has not cancelled any events yet, so there are no archives to show right now. Whenever you do choose to cancel an event, you can find them here to view or reschedule."
-          }
-          fallbackCaption={
-            "Once an event is past the date scheduled when it was created, you can no longer rescind cancellation."
-          }
         />
       );
     }

@@ -15,6 +15,7 @@ type RenderGroupCalandarProps = {
 export const RenderGroupCalandar = ({
   flattenedGroupEvents,
 }: RenderGroupCalandarProps): JSX.Element => {
+
   switch (flattenedGroupEvents.status) {
     case "ready": {
       return (
@@ -34,10 +35,6 @@ export const RenderGroupCalandar = ({
       return (
         <FadeIn keyValue="n/a-fade-in">
           <OpenedGroupFallback
-            eyeBrow="Overview"
-            fallbackTitle="No events have been scheduled"
-            fallbackDescripton="This group has not scheduled any events yet, so there are no events to RSVP to right now."
-            fallbackCaption="If you want to get in touch with the organizer, their email is listed above."
           />
         </FadeIn>
       );

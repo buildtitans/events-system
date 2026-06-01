@@ -13,23 +13,16 @@ import {
   noGroupHistoryRootSx,
   noGroupHistoryTitleSx,
 } from "@/src/client/styles/sx/noGroupHistoryFallback";
+import { RootState } from "@/src/lib/store";
+import { useSelector } from "react-redux";
+import { groupFallbackCopy } from "./groupFallbackCopy";
 
-type OpenedGroupFallbackProps = {
-    eyeBrow: "History" | "Events" | "Overview" | "Archives",
-    fallbackTitle: 'No events held yet' | 'No events have been scheduled' | "No events archived",
-    fallbackDescripton: 'This group has not hosted any completed events yet, so there is no activity history to show here.' 
-    | "This group has not scheduled any events yet, so there are no events to RSVP to right now."
-    | "This group has not cancelled any events yet, so there are no archives to show right now. Whenever you do choose to cancel an event, you can find them here to view or reschedule.",
-    fallbackCaption: "If you want to get in touch with the organizer, their email is listed above." | "Once an event is past the date scheduled when it was created, you can no longer rescind cancellation."
+export default function OpenedGroupFallback() {
+  const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
 
-}
+  const { eyeBrow, fallbackTitle, fallbackDescription, fallbackCaption } =
+    groupFallbackCopy[displayed];
 
-export default function OpenedGroupFallback({
-eyeBrow,
-fallbackTitle,
-fallbackDescripton,
-fallbackCaption
-}: OpenedGroupFallbackProps) {
   return (
     <FadeInOutBox>
       <Box sx={noGroupHistoryRootSx}>
@@ -52,7 +45,7 @@ fallbackCaption
           </Typography>
 
           <Typography variant="body1" sx={noGroupHistoryDescriptionSx}>
-            {fallbackDescripton}
+            {fallbackDescription}
           </Typography>
 
           <Typography variant="body2" sx={noGroupHistoryHintSx}>

@@ -9,9 +9,11 @@ import Spinner, {
 import HistoryTimeline from "../../../sections/group/openedGroup/displays/groupHistory";
 import NoGroupHistory from "../../../ui/feedback/fallbacks/noGroupHIstory";
 import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
+import { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
 
 type RenderGroupHistoryProps = {
   isMobile: boolean;
+  displayed: OpenedGroupSection
 };
 
 export default function RenderGroupHistory({
@@ -30,10 +32,6 @@ export default function RenderGroupHistory({
     }
     case "failed": {
       return <OpenedGroupFallback 
-      eyeBrow={"History"}
-      fallbackTitle={"No events held yet"}
-      fallbackDescripton={"This group has not hosted any completed events yet, so there is no activity history to show here."}
-      fallbackCaption={"If you want to get in touch with the organizer, their email is listed above."}
       />;
     }
     default: {
