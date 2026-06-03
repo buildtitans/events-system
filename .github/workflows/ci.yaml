@@ -74,7 +74,7 @@ jobs:
         run: pnpm lint
 
       - name: Test
-        run: pnpm test -- --runInBand
+        run: pnpm test --runInBand
 
       - name: Build Next app
         run: pnpm build
