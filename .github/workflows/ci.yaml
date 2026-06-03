@@ -21,6 +21,7 @@ jobs:
     name: App
     runs-on: ubuntu-latest
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       CI: true
       NEXT_TELEMETRY_DISABLED: 1
       NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
@@ -75,6 +76,14 @@ jobs:
 
       - name: Test
         run: pnpm test --runInBand
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: warn
 
       - name: Build Next app
         run: pnpm build
