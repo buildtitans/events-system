@@ -3,10 +3,10 @@ name: CI
 on:
   pull_request:
     branches:
-      - main
+      - ci-cd
   push:
     branches:
-      - main
+      - ci-cd
   workflow_dispatch:
 
 permissions:
