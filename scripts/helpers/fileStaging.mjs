@@ -2,6 +2,8 @@ import { copyFile, cp, mkdir, readdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+const dereferenceSymlinks = process.platform === "win32";
+
 export function isInside(parent, target) {
   const relative = path.relative(parent, target);
   return (
@@ -62,7 +64,7 @@ async function copyRequiredDirectory({
 
   await cp(source, destination, {
     recursive: true,
-    dereference: true,
+    dereference: dereferenceSymlinks,
     force: true,
     filter: (sourcePath) => {
       if (excludeEnvFiles && isEnvFile(sourcePath)) {
