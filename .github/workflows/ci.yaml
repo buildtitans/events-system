@@ -88,4 +88,7 @@ jobs:
         run: pnpm build
 
       - name: Build Fastify server
-        run: pnpm --dir src/server build:fastify
+        run: pnpm build:fastify
+
+      - name: Package release artifact
+        run: pnpm release:package
