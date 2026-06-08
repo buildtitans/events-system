@@ -1,64 +1,35 @@
 "use client";
-import { useMemo, useState } from "react";
-import * as React from "react";
+import { Fragment } from "react";
 import Box from "@mui/material/Box";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/src/lib/store";
-import NotificationsList, { NotificationsListProps } from "./notificationsList";
+import NotificationsList from "./notificationsList";
 import NotificationBadge from "../../../../ui/badges/notificationBadge";
-import { markSeen } from "@/src/lib/store/slices/notifications/notificationSlice";
-import { syncSeenNotifications } from "@/src/lib/store/sync/syncNotifications";
+import { useNotificationsMenu } from "@/src/lib/hooks/update/useNotificationsMenu";
 
 export default function Notifications() {
-  const notifications = useSelector(
-    (s: RootState) => s.notifications.notifications,
-  );
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const dispatch = useDispatch<AppDispatch>();
-  const notifs = useMemo(() => {
-    if (notifications.status === "ready") {
-      return notifications.data.new.length;
-    }
-    return 0;
-  }, [notifications]);
-
-  const handleOpen = async (
-    e: React.MouseEvent<HTMLElement>,
-  ): Promise<void> => {
-    setAnchorEl(e.currentTarget);
-    if (notifications.status === "ready" && (notifs > 0)) {
-      await syncSeenNotifications(notifications.data.new);
-    }
-  };
-
-  const handleClose = (): void => {
-    setAnchorEl(null);
-    dispatch(markSeen());
-  };
-
-  const props: NotificationsListProps = {
-    open: open,
-    anchorEl: anchorEl,
-    handleClose: handleClose,
-  };
+  const { notifications, newNotifications, props, handleOpen } =
+    useNotificationsMenu();
 
   return (
-    <React.Fragment>
-      <Box sx={{ 
-        display: "flex", 
-        alignItems: "center", 
-        textAlign: "center", 
-        zIndex: 1500
-        }}>
-        <NotificationBadge badgeContent={notifs} handleClick={handleOpen} />
+    <Fragment>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          zIndex: 1500,
+        }}
+      >
+        <NotificationBadge
+          badgeContent={newNotifications.length}
+          handleClick={handleOpen}
+        />
       </Box>
       {notifications.status === "ready" && (
         <NotificationsList
           props={props}
-          notifications={notifications.data.new}
+          notifications={newNotifications}
         />
       )}
-    </React.Fragment>
+    </Fragment>
   );
 }

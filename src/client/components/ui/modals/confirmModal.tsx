@@ -35,6 +35,7 @@ export default function ConfirmModal({
   activeModal: ActiveModal;
 }) {
   const dispatch = useDispatch<AppDispatch>();
+  const open = activeModal === "confirm signout";
 
   async function handleLogoutResponse(
     success: AuthenticationSchemaType["success"],
@@ -57,7 +58,7 @@ export default function ConfirmModal({
 
   return (
     <Modal
-      open={activeModal !== null}
+      open={open}
       onClose={() => dispatch(showModal(null))}
       component={"section"}
       closeAfterTransition
@@ -69,7 +70,7 @@ export default function ConfirmModal({
         },
       }}
     >
-      <Fade in={activeModal !== null}>
+      <Fade in={open}>
         <Box sx={confirmModalPaperSx}>
           <Stack spacing={2}>
             <Typography component="span" sx={confirmModalEyebrowSx}>

@@ -13,7 +13,6 @@ import {
 import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
 import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "../../../../schemas/events/eventAttendantsSchema";
-import { ReturnType } from "@sinclair/typebox";
 
 export class EventTimelineHandler {
   constructor(private readonly db: DBClient) {}

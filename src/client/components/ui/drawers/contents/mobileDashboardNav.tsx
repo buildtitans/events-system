@@ -24,7 +24,6 @@ const iconByOption: Record<UserAccountViewType, JSX.Element> = {
   "my groups": <GroupRoundedIcon fontSize="small" />,
   memberships: <Diversity3RoundedIcon fontSize="small" />,
   rsvps: <EventAvailableRoundedIcon fontSize="small" />,
-  settings: <GroupRoundedIcon fontSize="small" />,
 };
 
 export default function MobileDashboardNav() {

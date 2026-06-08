@@ -4,15 +4,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import React, { JSX } from "react";
 import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
-import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
-import FadeIn from "../../../ui/box/motionboxes/fadeIn";
-import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
+import OpenedGroupFallback from "@/src/client/components/ui/feedback/fallbacks/groupFallback";
+import FadeIn from "@/src/client/components/ui/box/motionboxes/fadeIn";
+import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export const RenderEventsForGroup = (): JSX.Element => {
   const events = useSelector((s: RootState) => s.openGroup.events);
   const page = useSelector((s: RootState) => s.openGroup.currPage);
-
   switch (events.status) {
     case "ready": {
       return (
@@ -22,17 +21,9 @@ export const RenderEventsForGroup = (): JSX.Element => {
       );
     }
 
-    case "warning": {
+    case "n/a": {
       return (
         <OpenedGroupFallback
-          eyeBrow={"Events"}
-          fallbackTitle={"No events have been scheduled"}
-          fallbackDescripton={
-            "This group has not scheduled any events yet, so there are no events to RSVP to right now."
-          }
-          fallbackCaption={
-            "If you want to get in touch with the organizer, their email is listed above."
-          }
         />
       );
     }
@@ -52,10 +43,12 @@ export const RenderEventsForGroup = (): JSX.Element => {
     case "pending": {
       return <RelativeSpinner />;
     }
+    
 
     default: {
       return assertNever(events);
     }
+
   }
 
 

@@ -2,13 +2,16 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/src/lib/store";
 import ConfirmModal from "../ui/modals/confirmModal";
-import { JSX } from "react";
+import SuggestJoinModal from "../ui/modals/suggestJoinModal";
+import type { JSX } from "react";
 
 export default function ModalHost(): JSX.Element | null {
-const activeModal = useSelector((s: RootState) => s.rendering.modal);
+  const activeModal = useSelector((s: RootState) => s.rendering.modal);
 
-    return (
-        <ConfirmModal activeModal={activeModal} />
-    )
-
+  return (
+    <>
+      <ConfirmModal activeModal={activeModal} />
+      <SuggestJoinModal activeModal={activeModal} />
+    </>
+  );
 }

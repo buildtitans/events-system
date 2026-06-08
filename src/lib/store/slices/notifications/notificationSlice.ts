@@ -1,31 +1,12 @@
-import { AsyncState } from "@/src/lib/types/state/types";
-import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-type NewAndSeenNotifications = {
-  seen: NotificationSchemaArrayType;
-  new: NotificationSchemaArrayType;
-};
-
-export type NotificationState =
-  | { status: "idle" }
-  | { status: "pending" }
-  | { status: "ready"; data: NewAndSeenNotifications }
-  | { status: "error"; error: string };
-
-export type NotificationStateType = AsyncState<
-  NewAndSeenNotifications,
-  "No notifications to show"
->;
+import type { NotificationState, ReadyNotificationState } from "./types";
 
 type InitialState = {
   notifications: NotificationState;
 };
 
-type ReadyNotificationState = Extract<NotificationState, { status: "ready" }>;
-
 const initialState: InitialState = {
-  notifications: { status: "idle" },
+  notifications: { status: "initial" },
 };
 
 export const NotificationSlice = createSlice({

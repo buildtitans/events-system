@@ -3,6 +3,7 @@ import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSch
 import type { JSX } from "react";
 import OrganizerOnlyActionsMenu from "@/src/client/components/ui/menus/openGroup/organizerOnlyActionsMenu";
 import MembersOnlyActionMenu from "@/src/client/components/ui/menus/openedEvent/membersOnlyActionMenu";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderSidebarContentsProps = {
   role: GroupMemberSchemaType["role"],
@@ -13,7 +14,7 @@ export const RenderRoleBasedSidebarContents= ({
   role,
   group_id
 }: RenderSidebarContentsProps
-): JSX.Element | null => {
+): JSX.Element => {
 
   switch (role) {
     case "organizer":
@@ -26,7 +27,7 @@ export const RenderRoleBasedSidebarContents= ({
       return <MembersOnlyActionMenu group_id={group_id} />;
 
     default: {
-      return null;
+      return assertNever(role);
     }
   }
 };

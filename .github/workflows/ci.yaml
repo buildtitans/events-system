@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - ci-cd
+  push:
+    branches:
+      - ci-cd
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: App
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      CI: true
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
+      NEXT_PUBLIC_PROD_API_URL: /api/trpc
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create CI env files
+        run: |
+          cat > .env <<'EOF'
+          PGHOST=127.0.0.1
+          PGPORT=5432
+          PGDATABASE=events_ci
+          PGUSER=events_ci
+          PGPASSWORD=events_ci
+          PGMAX=10
+          COOKIES_SECRET=ci-cookie-secret
+          DEV_CLIENT_URL=http://localhost:3000
+          PROD_FASTIFY_HOST=127.0.0.1
+          PROD_FASTIFY_PORT=3001
+          DEV_PW_RESET_URL=http://localhost:3000/reset-password
+          PROD_PW_RESET_URL=https://events-system.dev/reset-password
+          RESEND_API_KEY=ci_resend_key
+          RESEND_DEV_API_KEY=ci_resend_dev_key
+          GEOAPIFY_API_KEY=ci_geoapify_key
+          GEOAPIFY_REQ_BASE_URL=https://api.geoapify.com/v1/geocode/autocomplete
+          NEXT_PUBLIC_DEV_API_URL=http://localhost:3001/api/trpc
+          NEXT_PUBLIC_PROD_API_URL=/api/trpc
+          EOF
+          cp .env src/server/.env
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test --runInBand
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: warn
+
+      - name: Build Next app
+        run: pnpm build
+
+      - name: Build Fastify server
+        run: pnpm build:fastify
+
+      - name: Package release artifact
+        run: pnpm release:package

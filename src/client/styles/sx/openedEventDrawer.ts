@@ -433,6 +433,7 @@ const openedEventPopoverActionsSx = {
 const openedEventSpinnerSx = {
   position: "relative",
   minHeight: "100%",
+  height: "100dvh",
   width: "100%",
   display: "flex",
   justifyContent: "center",

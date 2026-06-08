@@ -5,6 +5,12 @@
 
 import type { Config } from "jest";
 
+const generatedPathIgnorePatterns = [
+  "<rootDir>[\\\\/]\\.deploy[\\\\/]",
+  "<rootDir>[\\\\/]\\.next[\\\\/]",
+  "<rootDir>[\\\\/]node_modules[\\\\/]",
+];
+
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -31,6 +37,7 @@ const config: Config = {
   // coveragePathIgnorePatterns: [
   //   "\\\\node_modules\\\\"
   // ],
+  coveragePathIgnorePatterns: generatedPathIgnorePatterns,
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
@@ -98,6 +105,7 @@ const config: Config = {
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: generatedPathIgnorePatterns,
 
   // Activates notifications for test results
   // notify: false,
@@ -170,6 +178,7 @@ const config: Config = {
   // testPathIgnorePatterns: [
   //   "\\\\node_modules\\\\"
   // ],
+  testPathIgnorePatterns: generatedPathIgnorePatterns,
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

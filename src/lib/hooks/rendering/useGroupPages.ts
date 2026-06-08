@@ -3,25 +3,11 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { useMemo } from "react";
 import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
-
-export type CategoryMap = Map<string, string>;
-
-function seedCategoryMap(categories: CategoriesSchemaType): CategoryMap {
-  const map: CategoryMap = new Map();
-  categories.forEach((category) => {
-    map.set(category.id, category.name);
-  });
-  return map;
-}
-
-function getNumColumns(pagelength: number): number {
-  if (pagelength > 1) {
-    return 2;
-  } else {
-    return 1;
-  }
-}
+import { getNumColumns } from "../../utils/rendering/getNumColumns";
+import {
+  seedCategoryMap,
+  type CategoryMap,
+} from "../../utils/rendering/seedCategoryMap";
 
 const useGroupPages = (groupsPages: GroupsSchemaType[]) => {
   const categories = useSelector((s: RootState) => s.categories.categories);

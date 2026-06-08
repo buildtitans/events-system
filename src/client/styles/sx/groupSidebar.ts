@@ -1,4 +1,3 @@
-import type { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 const groupSidebarRootSx = {

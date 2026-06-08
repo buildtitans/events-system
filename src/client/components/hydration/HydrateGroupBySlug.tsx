@@ -52,7 +52,7 @@ export default function HydrateGroupBySlug({
       }
       dispatch(
         getGroupEvents({
-          status: "warning",
+          status: "n/a",
           message: "No events have been scheduled for this group",
         }),
       );
@@ -80,6 +80,12 @@ export default function HydrateGroupBySlug({
       handleSyncGroupOpened(group);
       handleSyncEventsOfGroup(events);
       dispatch(getCurrentRole(role));
+
+      if(allGroupEvents.length === 0) {
+        dispatch(getFlattenedGroupEvents({ status: "n/a", message: "No Events held for this group"}));
+        return;
+      }
+
       dispatch(getFlattenedGroupEvents({ status: "ready", data: allGroupEvents}));
     };
 

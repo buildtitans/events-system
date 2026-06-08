@@ -1,6 +1,7 @@
 import Container from "@mui/material/Container";
 import DesktopNav, { NavProps } from "../../global/nav/desktop/desktopNav";
 import MobileNav from "../../global/nav/mobile/mobileNav";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderNavigationProps = {
   isMobile: boolean;
@@ -21,7 +22,7 @@ export default function RenderNavigation({
       );
     }
 
-    default: {
+    case false: {
       return (
         <Container
           disableGutters
@@ -39,6 +40,10 @@ export default function RenderNavigation({
           />
         </Container>
       );
+    }
+
+    default: {
+      return assertNever(isMobile);
     }
   }
 }

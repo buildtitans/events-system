@@ -7,21 +7,10 @@ import {
   getGroupHistory,
   getPastEventsAttendanceRecords,
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
-import { EventsArraySchemaType } from "@/src/schemas/events/eventSchema";
+import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
-function sortByDate(events: EventsArraySchemaType): EventsArraySchemaType {
-  const sorted = events.sort((a, b) => {
-    const curr = new Date(a.starts_at);
-
-    const next = new Date(b.starts_at);
-
-    return next.getTime() - curr.getTime();
-  });
-
-  return sorted;
-}
-
-export const useHydrateGroupHisory = () => {
+export const useHydrateGroupHistory = () => {
   const openedGroup = useSelector((s: RootState) => s.openGroup.group);
   const groupHistoryStatus = useSelector(
     (s: RootState) => s.openGroup.history.status,
@@ -47,13 +36,16 @@ export const useHydrateGroupHisory = () => {
         } else {
           dispatch(
             getGroupHistory({
-              status: "failed",
-              error: "failed to get group history",
+              status: "n/a",
+              message: "No history to display",
             }),
           );
         }
       } catch (err) {
-        console.error(err);
+        logCaughtError(
+          "hook/useHydrateGroupHistory.executeHydrateGroupHistory",
+          err,
+        );
         dispatch(
           getGroupHistory({
             status: "failed",

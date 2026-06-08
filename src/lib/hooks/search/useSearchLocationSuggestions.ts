@@ -1,28 +1,19 @@
-import { trpcClient } from "@/src/trpc/trpcClient";
-import React, { useCallback, useRef, useState } from "react";
-import {
-  type AddressSuggestion,
-  type AddressSearchState,
-  type SearchAddressSuggestionsHook,
-} from "./types";
-import { CreateEventHook } from "../../types/hooks/types";
+import type { SyntheticEvent } from "react";
+import type {
+  AddressSuggestion,
+  AddressSearchState,
+  SearchAddressSuggestionsHook,
+} from "@/src/lib/hooks/search/types";
+import type { CreateEventHook } from "@/src/lib/types/hooks/types";
 import type {
   AutocompleteChangeReason,
   AutocompleteInputChangeReason,
 } from "@mui/material/useAutocomplete";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { searchByAddressKind } from "@/src/lib/utils/helpers/search/searchByAddressKind";
 
 const WAIT_DURATION = 300;
-
-async function searchByKind(searchKind: "city" | "street", query: string) {
-  switch (searchKind) {
-    case "city": {
-      return await trpcClient.addressSearch.citySearchSuggestions.mutate(query);
-    }
-    case "street": {
-      return await trpcClient.addressSearch.addressSuggestions.mutate(query);
-    }
-  }
-}
 
 export const useSearchLocationSuggestions = (
   handleLocation: CreateEventHook["handleLocation"],
@@ -37,58 +28,56 @@ export const useSearchLocationSuggestions = (
   const requestIdRef = useRef(0);
 
   const sendRequest = useCallback(
-    (value: string) => {
-      return async () => {
-        const requestId = ++requestIdRef.current;
-        const trimmed = value.trim();
+    async (value: string) => {
+      const requestId = ++requestIdRef.current;
+      const trimmed = value.trim();
 
-        if (!trimmed) {
-          setSuggestions({ status: "initial" });
+      if (!trimmed) {
+        setSuggestions({ status: "initial" });
+        return;
+      }
+
+      setSuggestions({ status: "pending" });
+
+      try {
+        const results = await searchByAddressKind(searchKind, trimmed);
+        if (requestId !== requestIdRef.current) return;
+
+        if (results.status === "failed") {
+          setSuggestions({
+            status: "failed",
+            error: results.message,
+          });
           return;
         }
 
-        setSuggestions({ status: "pending" });
-
-        try {
-          const results = await searchByKind(searchKind, trimmed);
-
-          if (requestId !== requestIdRef.current) return;
-
-          if (results.status === "failed") {
-            setSuggestions({
-              status: "failed",
-              error: results.message,
-            });
-            return;
-          }
-
-          if (results.data.length === 0) {
-            setSuggestions({
-              status: "n/a",
-              message: "No suggestions found",
-            });
-            return;
-          }
-
+        if (results.data.length === 0) {
           setSuggestions({
-            status: "ready",
-            data: results.data,
+            status: "n/a",
+            message: "No suggestions found",
           });
-        } catch (err) {
-          if (requestId !== requestIdRef.current) return;
-
-          setSuggestions({
-            status: "failed",
-            error: err instanceof Error ? err.message : String(err),
-          });
+          return;
         }
-      };
+
+        setSuggestions({
+          status: "ready",
+          data: results.data,
+        });
+      } catch (err) {
+        if (requestId !== requestIdRef.current) return;
+
+        logCaughtError("hook/useSearchLocationSuggestions.sendRequest", err);
+        setSuggestions({
+          status: "failed",
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
     },
     [searchKind],
   );
 
   const debounce = useCallback(
-    async (query: string) => {
+    (query: string) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -103,7 +92,7 @@ export const useSearchLocationSuggestions = (
 
   const onInputChange = useCallback(
     (
-      _event: React.SyntheticEvent,
+      _event: SyntheticEvent,
       value: string,
       reason: AutocompleteInputChangeReason,
     ) => {
@@ -120,10 +109,7 @@ export const useSearchLocationSuggestions = (
           clearTimeout(timerRef.current);
           timerRef.current = null;
         }
-        setSuggestions((prev: AddressSearchState) => ({
-          ...prev,
-          status: "initial",
-        }));
+        setSuggestions({ status: "initial" });
       }
     },
     [debounce, handleLocation],
@@ -131,7 +117,7 @@ export const useSearchLocationSuggestions = (
 
   const selectAddressOption = useCallback(
     (
-      _event: React.SyntheticEvent,
+      _event: SyntheticEvent,
       value: AddressSuggestion | null,
       reason: AutocompleteChangeReason,
     ) => {
@@ -150,6 +136,14 @@ export const useSearchLocationSuggestions = (
     setSuggestions({ status: "initial" });
   };
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   return {
     suggestions,
     query,
@@ -158,49 +152,3 @@ export const useSearchLocationSuggestions = (
     onInputChange,
   };
 };
-
-//  const sendRequest = async (value: string) => {
-//    const requestId = ++requestIdRef.current;
-//    const trimmed = value.trim();
-//
-//    if (!trimmed) {
-//      setSuggestions({ status: "initial" });
-//      return;
-//    }
-//
-//    setSuggestions({ status: "pending" });
-//
-//    try {
-//      const results = await searchByKind(searchKind, trimmed);
-//
-//      if (requestId !== requestIdRef.current) return;
-//
-//      if (results.status === "failed") {
-//        setSuggestions({
-//          status: "failed",
-//          error: results.message,
-//        });
-//        return;
-//      }
-//
-//      if (results.data.length === 0) {
-//        setSuggestions({
-//          status: "n/a",
-//          message: "No suggestions found",
-//        });
-//        return;
-//      }
-//
-//      setSuggestions({
-//        status: "ready",
-//        data: results.data,
-//      });
-//    } catch (err) {
-//      if (requestId !== requestIdRef.current) return;
-//
-//      setSuggestions({
-//        status: "failed",
-//        error: err instanceof Error ? err.message : String(err),
-//      });
-//    }
-//  };

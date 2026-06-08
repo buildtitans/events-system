@@ -3,8 +3,9 @@ import { Box } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useSelector } from "react-redux";
-import { RenderEventPagination } from "@/src/client/components/pipelines/buttons/renderEventPagination";
 import type { RootState } from "@/src/lib/store";
+import { AsyncStateRenderer } from "../../pipelines/async/asyncStateRenderer";
+import { PaginateEvents } from "../box/pagination/paginateEvents";
 
 const metaPillSx = {
   display: "inline-flex",
@@ -22,7 +23,9 @@ const metaPillSx = {
 function LandingHeader({ isMobile }: { isMobile: boolean }) {
   const displayed = useSelector((s: RootState) => s.events.displayed);
   const eventPages = useSelector((s: RootState) => s.events.eventPages);
-  const mountStatus = useSelector((s: RootState) => s.rendering.initialLoadStatus);
+  const mountStatus = useSelector(
+    (s: RootState) => s.rendering.initialLoadStatus,
+  );
 
   const pages = eventPages.status === "ready" ? eventPages.data.length : 0;
   const totalEvents =
@@ -39,13 +42,23 @@ function LandingHeader({ isMobile }: { isMobile: boolean }) {
         }, 0)
       : 0;
 
+  const paginationBttons = () => {
+    if ((pages < 1) || (mountStatus !== "idle")) return null;
+
+   return (
+    <AsyncStateRenderer
+      state={eventPages}
+      pending={() => null}
+    >
+      {() => <PaginateEvents />}
+    </AsyncStateRenderer>
+  )};
+
   const headerSummary =
     totalEvents > 0
       ? `${totalEvents} event${totalEvents === 1 ? "" : "s"} ready to explore`
       : "Fresh picks are on the way";
-  const pagination = !isMobile
-    ? RenderEventPagination(eventPages.status, mountStatus, pages)
-    : null;
+  const pagination = !isMobile ? paginationBttons() : null;
 
   return (
     <Stack
@@ -99,7 +112,13 @@ function LandingHeader({ isMobile }: { isMobile: boolean }) {
           Browse talks, workshops, and meetups happening online and near you.
         </Typography>
 
-        <Stack direction="row" useFlexGap flexWrap="wrap" gap={1.25} sx={{ mt: 2.25 }}>
+        <Stack
+          direction="row"
+          useFlexGap
+          flexWrap="wrap"
+          gap={1.25}
+          sx={{ mt: 2.25 }}
+        >
           <Box sx={metaPillSx}>
             <Typography
               variant="caption"
@@ -117,7 +136,10 @@ function LandingHeader({ isMobile }: { isMobile: boolean }) {
           </Box>
 
           <Box sx={metaPillSx}>
-            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.88)" }}>
+            <Typography
+              variant="body2"
+              sx={{ color: "rgba(255, 255, 255, 0.88)" }}
+            >
               {headerSummary}
             </Typography>
           </Box>

@@ -10,6 +10,7 @@ import {
 import OpenedEventDetails from "@/src/client/components/ui/stack/openedEvent/contents/openedEventDetails";
 import RescheduleEventForm from "@/src/client/components/sections/forms/event/rescheduleEventForm";
 import type { EventDrawerFormState } from "@/src/client/components/ui/drawers/contents/memberAndOrganizerActions";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 
 type RenderOpenEventFormProps = {
@@ -50,6 +51,10 @@ export function RenderOpenEventFormSection({
     }
     case "schedule change": {
      return (<RescheduleEventForm event={event} />);
+    }
+
+    default: {
+      assertNever(state);
     }
   }
 }

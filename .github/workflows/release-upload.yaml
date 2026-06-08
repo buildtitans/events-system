@@ -1,0 +1,136 @@
+name: Release Upload
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: release-upload-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    name: Build, Package, and Upload
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      CI: true
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
+      NEXT_PUBLIC_PROD_API_URL: /api/trpc
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate release environment
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          BT_INFRA_RELEASE_BUCKET_NAME: ${{ vars.BT_INFRA_RELEASE_BUCKET_NAME }}
+        run: |
+          missing=0
+
+          for name in AWS_REGION AWS_ROLE_TO_ASSUME BT_INFRA_RELEASE_BUCKET_NAME; do
+            if [ -z "${!name}" ]; then
+              echo "${name} is required in the prod environment."
+              missing=1
+            fi
+          done
+
+          exit "$missing"
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create CI env files
+        run: |
+          cat > .env <<'EOF'
+          PGHOST=127.0.0.1
+          PGPORT=5432
+          PGDATABASE=events_ci
+          PGUSER=events_ci
+          PGPASSWORD=events_ci
+          PGMAX=10
+          COOKIES_SECRET=ci-cookie-secret
+          DEV_CLIENT_URL=http://localhost:3000
+          PROD_FASTIFY_HOST=127.0.0.1
+          PROD_FASTIFY_PORT=3001
+          DEV_PW_RESET_URL=http://localhost:3000/reset-password
+          PROD_PW_RESET_URL=https://events-system.dev/reset-password
+          RESEND_API_KEY=ci_resend_key
+          RESEND_DEV_API_KEY=ci_resend_dev_key
+          GEOAPIFY_API_KEY=ci_geoapify_key
+          GEOAPIFY_REQ_BASE_URL=https://api.geoapify.com/v1/geocode/autocomplete
+          NEXT_PUBLIC_DEV_API_URL=http://localhost:3001/api/trpc
+          NEXT_PUBLIC_PROD_API_URL=/api/trpc
+          EOF
+          cp .env src/server/.env
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test --runInBand
+
+      - name: Build Next app
+        run: pnpm build
+
+      - name: Build Fastify server
+        run: pnpm build:fastify
+
+      - name: Package release artifact
+        id: package
+        run: pnpm release:package
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload release artifact
+        env:
+          ARTIFACT_KEY: ${{ steps.package.outputs.artifact_key }}
+          ARTIFACT_PATH: ${{ steps.package.outputs.artifact_path }}
+          RELEASE_BUCKET: ${{ vars.BT_INFRA_RELEASE_BUCKET_NAME }}
+        run: |
+          for name in ARTIFACT_KEY ARTIFACT_PATH RELEASE_BUCKET; do
+            if [ -z "${!name}" ]; then
+              echo "${name} is required."
+              exit 1
+            fi
+          done
+
+          if [ ! -f "$ARTIFACT_PATH" ]; then
+            echo "Artifact file does not exist: $ARTIFACT_PATH"
+            exit 1
+          fi
+
+          case "$ARTIFACT_KEY" in
+            events-system/releases/*.tgz) ;;
+            *)
+              echo "Artifact key must be under events-system/releases/ and end with .tgz."
+              echo "Actual artifact key: $ARTIFACT_KEY"
+              exit 1
+              ;;
+          esac
+
+          aws s3 cp "$ARTIFACT_PATH" "s3://${RELEASE_BUCKET}/${ARTIFACT_KEY}"
+          echo "Uploaded artifact key: ${ARTIFACT_KEY}"

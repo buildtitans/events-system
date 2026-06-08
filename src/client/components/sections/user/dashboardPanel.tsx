@@ -9,26 +9,27 @@ import {
   dashboardHeaderDividerSx,
 } from "@/src/client/styles/sx/dashboardHeader";
 import type { JSX } from "react";
-import RenderUserAccount from "../../pipelines/user/renderUserAccount";
 import DashboardHeader from "../../ui/headers/dashboardHeader";
+import { AsyncStateRenderer } from "../../pipelines/async/asyncStateRenderer";
+import SimpleBackdrop from "../../ui/feedback/pending/backdrop";
+import AccountDetails from "./accountDetails";
 
 export default function DashboardPanel(): JSX.Element {
   const email = useSelector((s: RootState) => s.user.email);
 
   return (
-    <Container
-    component={"section"}
-    >
-<Box sx={dashboardRootSx}>
-      <Box sx={dashboardPanelSx}>
-        <Box sx={dashboardHeaderInnerSx}>
-          <DashboardHeader />
-        <Divider sx={dashboardHeaderDividerSx} />
+    <Container component={"section"}>
+      <Box sx={dashboardRootSx}>
+        <Box sx={dashboardPanelSx}>
+          <Box sx={dashboardHeaderInnerSx}>
+            <DashboardHeader />
+            <Divider sx={dashboardHeaderDividerSx} />
+          </Box>
+          <AsyncStateRenderer state={email} pending={() => <SimpleBackdrop />}>
+            {(state) => <AccountDetails email={state} />}
+          </AsyncStateRenderer>
         </Box>
-        <RenderUserAccount email={email} />
       </Box>
-    </Box>
     </Container>
-    
   );
 }

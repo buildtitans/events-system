@@ -1,6 +1,8 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
+import type { EventsPages } from "@/src/lib/store/slices/events/types";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
   getFlattenedGroupEvents,
   getGroupEvents,
@@ -8,6 +10,7 @@ import {
 import { useEffect } from "react";
 import { syncEventsForGroup } from "@/src/lib/store/sync/syncEventsForGroup";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 export const useRefreshGroupEvents = () => {
   const groupEvents = useSelector((s: RootState) => s.openGroup.events);
@@ -17,48 +20,74 @@ export const useRefreshGroupEvents = () => {
   useEffect(() => {
     if (group.status !== "ready" || groupEvents.status !== "refreshing") return;
 
+    const dispatchSuccess = ({
+      refreshedEventsLayout,
+      flattenedEvents,
+    }: {
+      refreshedEventsLayout: EventsPages;
+      flattenedEvents: EventSchemaType[];
+    }) => {
+      dispatch(
+        getGroupEvents({ status: "ready", data: refreshedEventsLayout }),
+      );
+      dispatch(
+        getFlattenedGroupEvents({ status: "ready", data: flattenedEvents }),
+      );
+    };
+
+    const dispatchEmptyEvents = () => {
+      dispatch(
+        getGroupEvents({
+          status: "n/a",
+          message: "No events have been scheduled for this group",
+        }),
+      );
+
+      dispatch(
+        getFlattenedGroupEvents({
+          status: "n/a",
+          message: "No Events held for this group",
+        }),
+      );
+    };
+
+    const dispatchRefreshFailed = () => {
+      dispatch(
+        getGroupEvents({
+          status: "failed",
+          error: "Error hydrating events for opened group",
+        }),
+      );
+
+      dispatch(
+        getFlattenedGroupEvents({
+          status: "failed",
+          error: "Error hydrating schedule for opened group",
+        }),
+      );
+    };
+
     const executeGroupEventsRefresh = async () => {
       dispatch(getFlattenedGroupEvents({ status: "pending" }));
 
-      const refreshed = await syncEventsForGroup(group.data.id);
-      const flattened = await trpcClient.events.getFlattenedGroupEvents.mutate(
-        group.data.id,
-      );
+      try {
+        const refreshedEventsLayout = await syncEventsForGroup(group.data.id);
+        const flattenedEvents =
+          await trpcClient.events.getFlattenedGroupEvents.mutate(group.data.id);
 
-      if (refreshed !== null && refreshed.length > 0) {
-        dispatch(
-          getGroupEvents({
-            status: "ready",
-            data: refreshed,
-          }),
+        if (refreshedEventsLayout.length > 0) {
+          dispatchSuccess({ refreshedEventsLayout, flattenedEvents });
+          return;
+        }
+
+        dispatchEmptyEvents();
+      } catch (err) {
+        logCaughtError(
+          "hook/useRefreshGroupEvents.executeGroupEventsRefresh",
+          err,
         );
-        dispatch(getFlattenedGroupEvents({ status: "ready", data: flattened }));
-      } else if (refreshed?.length === 0) {
-        dispatch(
-          getGroupEvents({
-            status: "warning",
-            message: "No events have been scheduled for this group",
-          }),
-        );
-        dispatch(
-          getFlattenedGroupEvents({
-            status: "n/a",
-            message: "No Events held for this group",
-          }),
-        );
-      } else {
-        dispatch(
-          getGroupEvents({
-            status: "failed",
-            error: "Error hydrating events for opened group",
-          }),
-        );
-        dispatch(
-          getFlattenedGroupEvents({
-            status: "failed",
-            error: "Error hydrating schedule for opened group",
-          }),
-        );
+
+        dispatchRefreshFailed();
       }
     };
 

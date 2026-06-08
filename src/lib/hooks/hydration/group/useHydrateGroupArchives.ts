@@ -7,6 +7,7 @@ import {
 } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { useCallback } from "react";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,7 +31,7 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
       dispatch(populateGroupArchives({ status: "ready", data: archives }));
       dispatch(getArchivesAttendanceRecords(archivedAttendanceRecords));
     } catch (err) {
-      console.error(err);
+      logCaughtError("hook/useHydrateGroupArchives.hydrateArchivedEvents", err);
       dispatch(
         populateGroupArchives({
           status: "failed",
@@ -38,7 +39,7 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
         }),
       );
     }
-  }, [group_id]);
+  }, [group_id, dispatch]);
 
   return { hydrateArchivedEvents };
 };

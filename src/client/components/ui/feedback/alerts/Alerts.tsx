@@ -1,53 +1,59 @@
 "use client";
-import Alert from '@mui/material/Alert';
-import { JSX, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { fadeInOut } from '@/src/client/styles/motion/variants';
-import { AlertProps } from '@mui/material/Alert';
-import { AlertMessagesType } from '@/src/lib/types/tokens/types';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/src/lib/store';
-import { enqueueAlert } from '@/src/lib/store/slices/rendering/RenderingSlice';
-const MotionSuccessAlert = motion.create(Alert);
+import Alert from "@mui/material/Alert";
+import { JSX, useEffect } from "react";
+import { motion } from "framer-motion";
+import { fadeInOut } from "@/src/client/styles/motion/variants";
+import { AlertProps } from "@mui/material/Alert";
+import { AlertMessagesType } from "@/src/lib/types/tokens/types";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/src/lib/store";
+import { enqueueAlert } from "@/src/lib/store/slices/rendering/RenderingSlice";
+const MotionAlert = motion.create(Alert);
 
 type AlertResultProperties = {
-    variant: AlertProps["variant"],
-    severity: AlertProps["severity"],
-    message: AlertMessagesType["message"] | null
-}
+  variant: AlertProps["variant"];
+  severity: AlertProps["severity"];
+  message: AlertMessagesType["message"] | null;
+};
 
-export function AlertResult({ variant, severity, message }: AlertResultProperties): JSX.Element {
-    const dispatch = useDispatch<AppDispatch>();
+export function AlertResult({
+  variant,
+  severity,
+  message,
+}: AlertResultProperties): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        const timer = window.setTimeout(() => {
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      dispatch(
+        enqueueAlert({
+          action: null,
+          kind: null,
+        }),
+      );
+    }, 4000);
 
-            dispatch(enqueueAlert(
-                {
-                    action: null,
-                    kind: null,
-                }
-            ));
-        }, 4000);
+    return () => clearTimeout(timer);
+  }, [dispatch]);
 
-        return () => clearTimeout(timer);
-    }, [dispatch]);
-
-    return (
-        <MotionSuccessAlert
-            key="alert"
-            variants={fadeInOut}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            sx={{
-                position: 'fixed',
-                bottom: 20,
-                right: 400,
-                left: 400,
-                zIndex: 1500
-            }} variant={variant} severity={severity}>
-            {message}
-        </MotionSuccessAlert>
-    )
+  return (
+    <MotionAlert
+      key="alert"
+      variants={fadeInOut}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      sx={{
+        position: "fixed",
+        bottom: 20,
+        right: 400,
+        left: 400,
+        zIndex: 1500,
+      }}
+      variant={variant}
+      severity={severity}
+    >
+      {message}
+    </MotionAlert>
+  );
 }

@@ -99,9 +99,7 @@ export class EventsClient {
     return this.formatRawEvents(raw);
   }
 
-  async getEvent(
-    event_id: EventSchemaType["id"],
-  ): Promise<EventSchemaType | null> {
+  async getEvent(event_id: EventSchemaType["id"]): Promise<EventSchemaType> {
     const raw = await this.db
       .selectFrom("events")
       .selectAll()

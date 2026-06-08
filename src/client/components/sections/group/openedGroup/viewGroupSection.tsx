@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useHydrateGroupHisory } from "@/src/lib/hooks/hydration/group/useHydrateGroupHistory";
+import { useHydrateGroupHistory } from "@/src/lib/hooks/hydration/group/useHydrateGroupHistory";
 import { useTheme } from "@mui/material/styles";
 import OpenedGroupPanel from "@/src/client/components/sections/group/openedGroup/displays/openedGroupPanel";
 
@@ -20,7 +20,7 @@ export default function ViewGroupSection({
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
-  useHydrateGroupHisory();
+  useHydrateGroupHistory();
 
   return (
       <Stack
