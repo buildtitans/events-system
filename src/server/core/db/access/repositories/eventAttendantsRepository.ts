@@ -15,7 +15,7 @@ import type {
 } from "../types/types";
 dayjs.extend(utc);
 
-export class EventAttendantsClient {
+export class EventAttendantsRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getUserRsvpStatusToEvent(

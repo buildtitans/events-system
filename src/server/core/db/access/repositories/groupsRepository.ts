@@ -11,7 +11,7 @@ import {
 } from "@/src/server/core/lib/validation/schemaValidators";
 import { slugify } from "@/src/server/core/lib/utils/slugify";
 
-export class GroupsClient {
+export class GroupsRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getGroups(): Promise<GroupsSchemaType> {

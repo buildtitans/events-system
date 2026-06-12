@@ -1,5 +1,5 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import type { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
+import type { NotificationCreationProcedure } from "../../db/access/types/types";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 

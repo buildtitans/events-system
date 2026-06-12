@@ -6,7 +6,7 @@ import {
 import type { Categories, DB } from "../../types/db";
 import type { Selectable } from "kysely";
 
-export class CategoriesClient {
+export class CategoriesRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getCategories(): Promise<CategoriesSchemaType> {

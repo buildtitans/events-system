@@ -84,7 +84,7 @@ These handlers exist to isolate focused orchestration, transformation, and reque
 
 Contains the authorization layer:
 
-- `Authorization` exposes application-facing guard methods like `requireAuthenticated`, `requireToken`, `requireCanCreateEvent`, `requireCanManageGroup`, and `requireCanChangeMembership`
+- `Authorization` exposes application-facing guard methods like `requireAuthenticated`, `requireToken`, `requireOrganizer`, `requireIsGroupMember`, and `requireCanChangeMembership`
 - `RoleBasedAccessHandler` resolves a user's role in a group and maps that role to allowed actions
 
 ### `tests/`
@@ -199,7 +199,7 @@ Some of the important rules enforced here include:
 
 - authentication is required before mutating RSVP state
 - authentication is required before reading viewer-specific membership or RSVP data
-- only organizers can create or manage events
+- only organizers can create, update, cancel, and archive events, and create group notifications
 - only group members or group organizer can RSVP or change RSVP status to an event
 - membership changes are gated by role-aware permission checks
 - user-facing membership and RSVP data is shaped into DTOs before leaving the service layer

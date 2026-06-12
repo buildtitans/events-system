@@ -1,4 +1,4 @@
-import { DBClient } from "@/src/server/core/db/clients/dbClient";
+import { DBClient } from "../../db/access/client/dbClient";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { Authorization } from "../auth/authorization";

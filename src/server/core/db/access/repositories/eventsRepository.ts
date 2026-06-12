@@ -13,7 +13,7 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);
 
-export class EventsClient {
+export class EventsRepository {
   constructor(private readonly db: Kysely<DB>) {
     this.db = db;
   }

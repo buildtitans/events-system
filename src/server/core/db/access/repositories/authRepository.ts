@@ -13,7 +13,7 @@ import type {
 import crypto from "crypto";
 import argon2 from "argon2";
 
-export class AuthClient {
+export class AuthRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async authenticate(
