@@ -20,7 +20,7 @@ export class Authorization {
     return token;
   }
 
-  async requireCanManageGroup(userId: string, groupId: string): Promise<void> {
+  async requireOrganizer(userId: string, groupId: string): Promise<void> {
     const permitted = await this.auth.can(userId, groupId, "manage group");
 
     if (!permitted) {

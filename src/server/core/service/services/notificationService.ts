@@ -26,7 +26,7 @@ export class NotificationService {
     user_id: string | undefined | null,
   ): Promise<NotificationCreationProcedure> {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireCanManageGroup(userId, notification.group_id);
+    await this.policy.requireOrganizer(userId, notification.group_id);
 
     const memberIds = await this.db.groupMembers.getMemberIds(
       notification.group_id,

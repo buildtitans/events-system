@@ -13,7 +13,7 @@ describe("NotificationService.createNotification", () => {
   const addNewNotificationsInDb = dbMock.notifications
     .addNewNotifications as jest.Mock;
   const getMemberIdsInDb = dbMock.groupMembers.getMemberIds as jest.Mock;
-  const requireCanManageGroup = policyMock.requireCanManageGroup as jest.Mock;
+  const requireOrganizer = policyMock.requireOrganizer as jest.Mock;
 
   const memberIds = ["00000000-83c9-46de-90ac-fe4047a00000"];
 
@@ -41,14 +41,14 @@ describe("NotificationService.createNotification", () => {
     ).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
-    expect(requireCanManageGroup).not.toHaveBeenCalled();
+    expect(requireOrganizer).not.toHaveBeenCalled();
     expect(getMemberIdsInDb).not.toHaveBeenCalled();
     expect(addNewNotificationsInDb).not.toHaveBeenCalled();
   });
 
   it("throws a 403 error when the authenticated user cannot manage the group", async () => {
     authenticateAs();
-    requireCanManageGroup.mockImplementation(() => {
+    requireOrganizer.mockImplementation(() => {
       throw new Error("403");
     });
 
@@ -57,7 +57,7 @@ describe("NotificationService.createNotification", () => {
     ).rejects.toThrow("403");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(requireCanManageGroup).toHaveBeenCalledWith(
+    expect(requireOrganizer).toHaveBeenCalledWith(
       "user-1",
       newNotification.group_id,
     );
@@ -67,7 +67,7 @@ describe("NotificationService.createNotification", () => {
 
   it("creates a new notification for members of the group when the user is authenticated and authorized", async () => {
     authenticateAs();
-    requireCanManageGroup.mockResolvedValue(undefined);
+    requireOrganizer.mockResolvedValue(undefined);
 
     getMemberIdsInDb.mockResolvedValue(memberIds);
 
@@ -80,7 +80,7 @@ describe("NotificationService.createNotification", () => {
     ).resolves.toMatchObject(notificationResponse);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(requireCanManageGroup).toHaveBeenCalledWith(
+    expect(requireOrganizer).toHaveBeenCalledWith(
       "user-1",
       newNotification.group_id,
     );

@@ -112,12 +112,12 @@ describe("EventService.getArchivedEvents", () => {
       service.getArchivedEvents(undefined, crypto.randomUUID()),
     ).rejects.toThrow("401");
 
-    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
   });
 
   it("throws an error if the user's role is not 'organizer'", async () => {
     authenticateAs();
-    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(() => {
+    (policyMock.requireOrganizer as jest.Mock).mockImplementation(() => {
       throw new Error("403");
     });
 
@@ -126,7 +126,7 @@ describe("EventService.getArchivedEvents", () => {
     ).rejects.toThrow("403");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(
       "user-1",
       "group-2",
     );
@@ -165,7 +165,7 @@ describe("EventService.getArchivedEvents", () => {
     });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(
       "user-1",
       "group-1",
     );
@@ -427,13 +427,13 @@ describe("EventsService.updateEventStatus", () => {
       "401",
     );
 
-    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
     expect(updateEventStatusInDb).not.toHaveBeenCalled();
   });
 
   it("throws a 403 status error when the user is not authorized to manage the group", async () => {
     authenticateAs();
-    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(() => {
+    (policyMock.requireOrganizer as jest.Mock).mockImplementation(() => {
       throw new Error("403");
     });
 
@@ -441,15 +441,13 @@ describe("EventsService.updateEventStatus", () => {
       service.updateEventStatus("user-1", eventUpdate),
     ).rejects.toThrow("403");
 
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalled();
+    expect(policyMock.requireOrganizer).toHaveBeenCalled();
     expect(updateEventStatusInDb).not.toHaveBeenCalled();
   });
 
   it("updates the event status", async () => {
     authenticateAs();
-    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(
-      () => {},
-    );
+    (policyMock.requireOrganizer as jest.Mock).mockImplementation(() => {});
     updateEventStatusInDb.mockResolvedValue({ status: eventUpdate.status });
 
     await expect(
@@ -457,7 +455,7 @@ describe("EventsService.updateEventStatus", () => {
     ).resolves.toEqual({ status: eventUpdate.status });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(
       "user-1",
       "group-1",
     );
@@ -496,13 +494,13 @@ describe("EventService.createEvent", () => {
     ).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
-    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
     expect(createNewEventInDb).not.toHaveBeenCalled();
   });
 
   it("throws a 403 error when the user is not allowed to create an event for the group", async () => {
     authenticateAs();
-    (policyMock.requireCanManageGroup as jest.Mock).mockImplementation(() => {
+    (policyMock.requireOrganizer as jest.Mock).mockImplementation(() => {
       throw new Error("403");
     });
 
@@ -510,18 +508,13 @@ describe("EventService.createEvent", () => {
       service.createEvent(createEventInput, groupId, "user-1"),
     ).rejects.toThrow("403");
 
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
-      "user-1",
-      groupId,
-    );
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
     expect(createNewEventInDb).not.toHaveBeenCalled();
   });
 
   it("creates an event when the user is authenticated and authorized", async () => {
     authenticateAs();
-    (policyMock.requireCanManageGroup as jest.Mock).mockResolvedValue(
-      undefined,
-    );
+    (policyMock.requireOrganizer as jest.Mock).mockResolvedValue(undefined);
 
     const createdEvent = makeEvent({
       group_id: groupId,
@@ -533,10 +526,7 @@ describe("EventService.createEvent", () => {
       service.createEvent(createEventInput, groupId, "user-1"),
     ).resolves.toEqual(createdEvent);
 
-    expect(policyMock.requireCanManageGroup).toHaveBeenCalledWith(
-      "user-1",
-      groupId,
-    );
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
     expect(createNewEventInDb).toHaveBeenCalledWith(createEventInput);
   });
 });
