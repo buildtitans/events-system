@@ -33,11 +33,11 @@ describe("RoleBasedAccessHandler.can", () => {
     );
   });
 
-  it("allows organizers to manage events", async () => {
+  it("allows organizers to manage group", async () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "manage events"),
+      handler.can("user-1", "group-1", "manage group"),
     ).resolves.toBe(true);
   });
 
@@ -49,11 +49,11 @@ describe("RoleBasedAccessHandler.can", () => {
     ).resolves.toBe(false);
   });
 
-  it("does not allow members to manage events", async () => {
+  it("does not allow members to manage group", async () => {
     getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
-      handler.can("user-1", "group-1", "manage events"),
+      handler.can("user-1", "group-1", "manage group"),
     ).resolves.toBe(false);
   });
 

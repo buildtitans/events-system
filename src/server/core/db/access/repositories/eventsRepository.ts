@@ -13,18 +13,13 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 dayjs.extend(utc);
 
-export class EventsClient {
+export class EventsRepository {
   constructor(private readonly db: Kysely<DB>) {
     this.db = db;
   }
 
   async getEvents(): Promise<EventsArraySchemaType> {
     const raw = await this.getRawEvents();
-
-    console.log({
-      EventSchema: this.formatRawEvents(raw),
-    });
-
     return this.formatRawEvents(raw);
   }
 
@@ -39,6 +34,7 @@ export class EventsClient {
       .selectAll()
       .where("group_id", "=", group_id)
       .where("status", "=", "cancelled")
+      .orderBy("starts_at", "asc")
       .execute();
 
     return this.formatRawEvents(raw);
@@ -72,6 +68,7 @@ export class EventsClient {
       .selectFrom("events")
       .selectAll()
       .where("group_id", "=", group_id)
+      .orderBy("starts_at", "asc")
       .execute();
 
     return this.formatRawEvents(raw);
@@ -145,7 +142,7 @@ export class EventsClient {
       .selectFrom("events")
       .selectAll()
       .where("status", "=", "scheduled")
-      .orderBy("created_at", "desc")
+      .orderBy("starts_at", "asc")
       .execute();
   }
 
@@ -155,18 +152,19 @@ export class EventsClient {
       .selectAll()
       .where("id", "in", ids)
       .where("status", "=", "scheduled")
+      .orderBy("starts_at", "desc")
       .execute();
   }
 
   private async getRawEventsFromGroup(
     group_id: Selectable<Events>["group_id"],
-  ): Promise<Selectable<Events>[] | undefined> {
+  ): Promise<Selectable<Events>[]> {
     const raw = await this.db
       .selectFrom("events")
       .selectAll()
       .where("group_id", "=", group_id)
       .where("status", "=", "scheduled")
-      .orderBy("created_at")
+      .orderBy("starts_at", "asc")
       .execute();
     return raw;
   }

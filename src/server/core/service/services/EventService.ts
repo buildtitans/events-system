@@ -70,7 +70,7 @@ export class EventService {
     eventUpdate: UpdateEventArgsSchemaType,
   ) {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireCanManageGroup(userId, eventUpdate.group_id);
+    await this.policy.requireOrganizer(userId, eventUpdate.group_id);
 
     return await this.db.events.updateEventStatus(eventUpdate);
   }
@@ -82,7 +82,7 @@ export class EventService {
   ): Promise<EventSchemaType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    await this.policy.requireCanCreateEvent(userId, group_id);
+    await this.policy.requireOrganizer(userId, group_id);
 
     return await this.db.events.createNewEvent(newEvent);
   }
@@ -109,7 +109,7 @@ export class EventService {
     archivedAttendanceRecords: PastEventAttendanceLookup;
   }> {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireCanCreateEvent(userId, group_id);
+    await this.policy.requireOrganizer(userId, group_id);
     return await this.timeline.getArchivedGroupEvents(group_id);
   }
 

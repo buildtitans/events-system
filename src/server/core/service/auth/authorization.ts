@@ -20,15 +20,7 @@ export class Authorization {
     return token;
   }
 
-  async requireCanCreateEvent(userId: string, groupId: string): Promise<void> {
-    const permitted = await this.auth.can(userId, groupId, "manage events");
-
-    if (!permitted) {
-      throw new TRPCResolverError(403, "Permission to create an event denied");
-    }
-  }
-
-  async requireCanManageGroup(userId: string, groupId: string): Promise<void> {
+  async requireOrganizer(userId: string, groupId: string): Promise<void> {
     const permitted = await this.auth.can(userId, groupId, "manage group");
 
     if (!permitted) {

@@ -37,7 +37,7 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
     ).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalled();
-    expect(policyMock.requireCanManageGroup).not.toHaveBeenCalled();
+    expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
     expect(createNewGroupInDb).not.toHaveBeenCalled();
   });
 

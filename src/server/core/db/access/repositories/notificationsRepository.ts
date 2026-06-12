@@ -7,9 +7,9 @@ import {
   NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
 import { NotificationSchemaArrayValidator } from "../../../lib/validation/schemaValidators";
-import { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
+import { NotificationCreationProcedure } from "../types/types";
 
-export class NotificationsClient {
+export class NotificationsRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async markOpenedNotifications({
@@ -92,6 +92,8 @@ export class NotificationsClient {
       .selectAll()
       .where("user_id", "=", user_id)
       .where("status", "=", "new")
+      .orderBy("created_at", "desc")
+      .limit(10)
       .execute();
   }
 

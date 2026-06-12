@@ -88,6 +88,11 @@ const ValidateEventSearchQuery = createValidator(
   "EventSearchSchema",
 );
 
+const AttendanceStatusValidator = createValidator(
+  EventAttendantStatusSchema,
+  "EventAttendantStatusSchema",
+);
+
 const eventValidator = createValidator(EventSchema, "EventSchema");
 
 const eventsValidator = createValidator(EventsArraySchema, "EventsArraySchema");
@@ -196,4 +201,5 @@ export {
   eventValidator,
   ValidateEventSearchQuery,
   ValidateGroupId,
+  AttendanceStatusValidator,
 };

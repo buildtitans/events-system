@@ -19,7 +19,7 @@ const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
 type InsertableMember = Pick<GroupMemberSchemaType, "group_id" | "user_id">;
 
-export class GroupMembersClient {
+export class GroupMembersRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async getViewerMemberships(

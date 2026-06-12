@@ -1,24 +1,27 @@
 import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { ValidateRawAttendants } from "../../../lib/validation/schemaValidators";
+import {
+  AttendanceStatusValidator,
+  ValidateRawAttendants,
+} from "../../../lib/validation/schemaValidators";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { ISO_FORMAT } from "../../../lib/tokens/isoFormats";
+import type {
+  SelectedAttendant,
+  PrivateUserAttendanceUpdate,
+} from "../types/types";
 dayjs.extend(utc);
-const ISO_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
-type SelectedAttendant = Selectable<EventAttendants>;
-
-type PrivateUserAttendanceUpdate = Pick<
-  EventAttendantsSchemaType,
-  "event_id" | "user_id"
->;
-
-export class EventAttendantsClient {
+export class EventAttendantsRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
-  async getUserRsvpStatusToEvent(user_id: string, event_id: string) {
+  async getUserRsvpStatusToEvent(
+    user_id: string,
+    event_id: string,
+  ): Promise<EventAttendantsSchemaType["status"]> {
     const result = await this.db
       .selectFrom("event_attendants")
       .select("status")
@@ -26,7 +29,7 @@ export class EventAttendantsClient {
       .where("event_id", "=", event_id)
       .executeTakeFirst();
 
-    return result?.status ?? "not_going";
+    return this.parseRsvpStatusResult(result?.status ?? "not_going");
   }
 
   async getAllAttendanceRecords() {
@@ -124,7 +127,7 @@ export class EventAttendantsClient {
       .executeTakeFirstOrThrow();
   }
 
-  parseRawAttendants(
+  private parseRawAttendants(
     raw: Selectable<EventAttendants>[],
   ): EventAttendantsSchemaType[] {
     return raw.map((row) => {
@@ -144,7 +147,7 @@ export class EventAttendantsClient {
     });
   }
 
-  parseRawAttendant(
+  private parseRawAttendant(
     row: Selectable<EventAttendants>,
   ): EventAttendantsSchemaType {
     const created_at = dayjs(row.created_at).utc().format(ISO_FORMAT);
@@ -160,5 +163,11 @@ export class EventAttendantsClient {
       created_at,
       updated_at,
     });
+  }
+
+  private parseRsvpStatusResult(
+    status: unknown,
+  ): EventAttendantsSchemaType["status"] {
+    return AttendanceStatusValidator(status);
   }
 }

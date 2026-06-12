@@ -1,6 +1,6 @@
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { RBACType } from "../db/clients/types/types";
+import { RBACType } from "../db/access/types/types";
 import type { AttendanceDictionaryType } from "../lib/utils/mapAttendanceDictionary";
 
 export type RBACAction =
@@ -8,7 +8,8 @@ export type RBACAction =
   | "cancel event"
   | "update event"
   | "leave group"
-  | "join group";
+  | "join group"
+  | "rsvp";
 
 export type RBACMethods = {
   can: (

@@ -1,5 +1,5 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import type { NotificationCreationProcedure } from "@/src/server/core/db/clients/types/types";
+import type { NotificationCreationProcedure } from "../../db/access/types/types";
 import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 
@@ -26,7 +26,7 @@ export class NotificationService {
     user_id: string | undefined | null,
   ): Promise<NotificationCreationProcedure> {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireCanManageGroup(userId, notification.group_id);
+    await this.policy.requireOrganizer(userId, notification.group_id);
 
     const memberIds = await this.db.groupMembers.getMemberIds(
       notification.group_id,

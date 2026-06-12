@@ -1,14 +1,15 @@
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import type { NotificationCreationProcedure } from "@/src/server/core/db/access/types/types";
+import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { Authorization } from "@/src/server/core/service/auth/authorization";
-import { DBClient } from "../../../db";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import { NotificationCreationProcedure } from "../../../db/clients/types/types";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
-import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { DBClient } from "@/src/server/core/db/access/client/dbClient";
 import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import { PasswordResetEmailService } from "@/src/server/core/service/services/passwordResetEmailService";
 import {
   USER_ID,
   GROUP_ID_1,
@@ -18,7 +19,6 @@ import {
   EVENT_ID_2,
   EVENT_ID_3,
 } from "@/src/server/core/service/tests/mockers/mockValues";
-import { PasswordResetEmailService } from "../../services/passwordResetEmailService";
 
 export const groups = [
   makeGroup({ id: GROUP_ID_1, name: "new group 1" }),
@@ -87,8 +87,7 @@ export const emailServiceMock = {
 export const policyMock = {
   requireAuthenticated: jest.fn(),
   requireToken: jest.fn(),
-  requireCanManageGroup: jest.fn(),
-  requireCanCreateEvent: jest.fn(),
+  requireOrganizer: jest.fn(),
   requireCanChangeMembership: jest.fn(),
   requireIsGroupMember: jest.fn(),
 } as unknown as Authorization;
