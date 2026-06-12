@@ -88,7 +88,6 @@ export const policyMock = {
   requireAuthenticated: jest.fn(),
   requireToken: jest.fn(),
   requireCanManageGroup: jest.fn(),
-  requireCanCreateEvent: jest.fn(),
   requireCanChangeMembership: jest.fn(),
   requireIsGroupMember: jest.fn(),
 } as unknown as Authorization;

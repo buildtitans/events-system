@@ -92,6 +92,8 @@ export class NotificationsClient {
       .selectAll()
       .where("user_id", "=", user_id)
       .where("status", "=", "new")
+      .orderBy("created_at", "desc")
+      .limit(10)
       .execute();
   }
 

@@ -44,6 +44,12 @@ export type GroupAction =
   | "change membership"
   | "read or receive notifications";
 
+export type Roles = "organizer" | "member" | "anonymous";
+export type Permissions = Record<
+  GroupMemberSchemaType["role"],
+  Array<GroupAction>
+>;
+
 export type PastEventsResults = {
   history: EventSchemaType[];
   pastEventsRecords: PastEventAttendanceLookup;

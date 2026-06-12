@@ -4,6 +4,16 @@ import type {
 } from "@/src/schemas/auth/userSchema";
 import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
+import { EventAttendants } from "../../types/db";
+import { Selectable } from "kysely";
+
+export type SelectedAttendant = Selectable<EventAttendants>;
+
+export type PrivateUserAttendanceUpdate = Pick<
+  EventAttendantsSchemaType,
+  "event_id" | "user_id"
+>;
 
 type StoredSession = {
   id: string;

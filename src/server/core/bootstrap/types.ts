@@ -8,7 +8,8 @@ export type RBACAction =
   | "cancel event"
   | "update event"
   | "leave group"
-  | "join group";
+  | "join group"
+  | "rsvp";
 
 export type RBACMethods = {
   can: (
