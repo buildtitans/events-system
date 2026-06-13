@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { createArchivedEventHeadcount } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
+import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import { useCallback } from "react";
 
 type HistoryTimelineProps = {
@@ -21,7 +21,7 @@ export default function Archives({
   archivedEvents,
   isMobile,
 }: HistoryTimelineProps) {
-  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
+  const { handleOpenEditStatus } = useSelectEvent();
   const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
   const archivedRecords = useSelector(
     (s: RootState) => s.openGroup.archivesAttendance,

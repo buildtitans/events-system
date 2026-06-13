@@ -3,7 +3,7 @@ import { JSX } from "react";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import Container from "@mui/material/Container";
 import List from "@mui/material/List";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
+import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import RsvpListItem from "../../ui/list/rsvps/rsvpListItem";
 import { useRouter } from "next/navigation";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -22,7 +22,7 @@ type MyRsvpsProps = {
 
 export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
   const router = useRouter();
-  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
+  const { handleOpenEditStatus } = useSelectEvent();
 
   const handleNavigateToGroup = (slug: RsvpSchemaType["group_slug"]) => {
     const path = `/group/${slug}`;

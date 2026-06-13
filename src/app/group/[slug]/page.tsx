@@ -1,23 +1,22 @@
 import HydrateGroupBySlug from "@/src/client/components/hydration/HydrateGroupBySlug";
 import OpenedGroup from "@/src/client/components/pages/openedGroup";
-import { type JSX } from "react";
+import React, { type JSX } from "react";
 
-export default async function GroupOpen(
-    { params }: {
-        params: Promise<{
-            slug: string
-        }>
-    }): Promise<JSX.Element> {
-    const { slug } = await params;
-
-    return (
-        <>
-            <HydrateGroupBySlug
-                slug={slug}
-            />
-            <OpenedGroup
-            />
-        </>
-
-    );
+type GroupOpenParams = {
+  params: Promise<{
+    slug: string;
+  }>;
 };
+
+export default async function GroupOpen({
+  params,
+}: GroupOpenParams): Promise<JSX.Element> {
+  const { slug } = await params;
+
+  return (
+    <React.Fragment>
+      <HydrateGroupBySlug slug={slug} />
+      <OpenedGroup />
+    </React.Fragment>
+  );
+}

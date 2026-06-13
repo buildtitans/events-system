@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
-import { useHydrateEventDrawerFromRsvp } from "../hydration/event/useHydrateEventDrawerFromRsvp";
+import { useSelectEvent } from "../hydration/event/useSelectEvent";
 const WAIT_DURATION = 400;
 
 export const useDebouncedSerach = (): DebouncedSearchHook => {
@@ -28,7 +28,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
     message: null,
     error: null,
   });
-  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
+  const { handleOpenEditStatus } = useSelectEvent();
 
   const sendRequest = useCallback(
     async (query: string) => {

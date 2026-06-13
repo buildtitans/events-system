@@ -4,11 +4,9 @@ import type { RootState } from "@/src/lib/store";
 import RenderEventDrawerContents from "./renderEventDrawer";
 import DrawerSpinner from "../../../ui/feedback/pending/drawerSpinner";
 import { JSX } from "react";
-import { useHydrateEventDrawer } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawer";
 import { AsyncStateRenderer } from "../../async/asyncStateRenderer";
 
 export default function OpenedEventDrawerPipeline(): JSX.Element | null {
-  useHydrateEventDrawer();
   const openedEvent = useSelector((s: RootState) => s.eventDrawer.event);
   const drawerViewerRole = useSelector(
     (s: RootState) => s.eventDrawer.drawerViewerRole,
