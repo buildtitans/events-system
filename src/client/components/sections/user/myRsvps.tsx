@@ -3,7 +3,7 @@ import { JSX } from "react";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import Container from "@mui/material/Container";
 import List from "@mui/material/List";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
+import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import RsvpListItem from "../../ui/list/rsvps/rsvpListItem";
 import { useRouter } from "next/navigation";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -22,7 +22,7 @@ type MyRsvpsProps = {
 
 export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
   const router = useRouter();
-  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
+  const { handleOpenEvent } = useSelectEvent();
 
   const handleNavigateToGroup = (slug: RsvpSchemaType["group_slug"]) => {
     const path = `/group/${slug}`;
@@ -34,7 +34,7 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
       <RenderRsvpsOrFallback
         rsvps={rsvps}
         handleNavigateToGroup={handleNavigateToGroup}
-        handleOpenEditStatus={handleOpenEditStatus}
+        handleOpenEvent={handleOpenEvent}
       />
     </Container>
   );
@@ -42,14 +42,14 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
 
 type RenderRsvpsOrFallbackProps = {
   rsvps: RsvpSchemaType[];
-  handleOpenEditStatus: (event_id: EventSchemaType["id"]) => Promise<void>;
+  handleOpenEvent: (event_id: EventSchemaType["id"]) => Promise<void>;
   handleNavigateToGroup: (slug: RsvpSchemaType["group_slug"]) => void;
 };
 
 function RenderRsvpsOrFallback({
   rsvps,
   handleNavigateToGroup,
-  handleOpenEditStatus,
+  handleOpenEvent,
 }: RenderRsvpsOrFallbackProps) {
   const action = () => {
     return (
@@ -89,7 +89,7 @@ function RenderRsvpsOrFallback({
         <RsvpListItem
           key={rsvp.event_id}
           rsvp={rsvp}
-          handleOpenEditStatus={handleOpenEditStatus}
+          handleOpenEvent={handleOpenEvent}
           handleNavigateToGroup={handleNavigateToGroup}
         />
       ))}

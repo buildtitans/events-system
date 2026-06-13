@@ -34,13 +34,13 @@ import {
 
 type RsvpListItemProps = {
   rsvp: RsvpSchemaType;
-  handleOpenEditStatus: (event_id: EventSchemaType["id"]) => Promise<void>;
+  handleOpenEvent: (event_id: EventSchemaType["id"]) => Promise<void>;
   handleNavigateToGroup: (slug: RsvpSchemaType["group_slug"]) => void;
 };
 
 export default function RsvpListItem({
   rsvp,
-  handleOpenEditStatus,
+  handleOpenEvent,
   handleNavigateToGroup,
 }: RsvpListItemProps): JSX.Element {
   const attendanceLabel = formatAttendanceStatus(rsvp.attendance_status);
@@ -106,7 +106,7 @@ export default function RsvpListItem({
             />
             <IconButton
               aria-label="Edit RSVP status"
-              onClick={() => handleOpenEditStatus(rsvp.event_id)}
+              onClick={() => handleOpenEvent(rsvp.event_id)}
               sx={rsvpEditButtonSx}
             >
               <EditIcon fontSize="small" />

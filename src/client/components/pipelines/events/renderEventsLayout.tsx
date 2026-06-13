@@ -6,7 +6,7 @@ import { EventStackSlot } from "@/src/client/components/ui/box/slots/eventStackS
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import { useHydrateEventDrawerFromRsvp } from "@/src/lib/hooks/hydration/event/useHydrateEventDrawerFromRsvp";
+import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 type RenderEventsLayoutProps = {
@@ -25,7 +25,7 @@ function RenderEventsLayout({
   const groupNameLookup = useSelector(
     (s: RootState) => s.groups.groupNameLookup,
   );
-  const { handleOpenEditStatus } = useHydrateEventDrawerFromRsvp();
+  const { handleOpenEvent } = useSelectEvent();
 
   return slots.map((slot, i: number) => {
     switch (slot.kind) {
@@ -40,7 +40,7 @@ function RenderEventsLayout({
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}
-            handleOpenEvent={handleOpenEditStatus}
+            handleOpenEvent={handleOpenEvent}
           />
         );
       }
@@ -54,7 +54,7 @@ function RenderEventsLayout({
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}
-            handleOpenEvent={handleOpenEditStatus}
+            handleOpenEvent={handleOpenEvent}
           />
         );
       }
