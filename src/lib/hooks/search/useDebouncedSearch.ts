@@ -28,7 +28,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
     message: null,
     error: null,
   });
-  const { handleOpenEditStatus } = useSelectEvent();
+  const { handleOpenEvent } = useSelectEvent();
 
   const sendRequest = useCallback(
     async (query: string) => {
@@ -130,7 +130,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
       if (value) {
         switch (value.kind) {
           case "event": {
-            handleOpenEditStatus(value.event_id);
+            handleOpenEvent(value.event_id);
             return;
           }
           case "group": {
@@ -152,7 +152,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
         }
       }
     },
-    [router, dispatch, handleOpenEditStatus],
+    [router, dispatch, handleOpenEvent],
   );
 
   return {

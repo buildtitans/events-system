@@ -40,7 +40,7 @@ export const useSelectEvent = () => {
     dispatch(getNumInterested({ status: "ready", data: numInterested }));
   };
 
-  const handleOpenEditStatus = async (event_id: RsvpSchemaType["event_id"]) => {
+  const handleOpenEvent = async (event_id: RsvpSchemaType["event_id"]) => {
     dispatch(enqueueDrawer("event drawer"));
 
     dispatch(fillEventDrawer({ status: "pending" }));
@@ -65,15 +65,12 @@ export const useSelectEvent = () => {
 
       if (name) dispatch(getGroupName({ status: "ready", data: name }));
     } catch (err) {
-      logCaughtError(
-        "hook/useHydrateEventDrawerFromRsvp.handleOpenEditStatus",
-        err,
-      );
+      logCaughtError("hook/useSelectEvent.handleOpenEvent", err);
       dispatch(fillEventDrawer({ status: "failed", error: "Event not found" }));
     }
   };
 
   return {
-    handleOpenEditStatus,
+    handleOpenEvent,
   };
 };

@@ -25,7 +25,7 @@ function RenderEventsLayout({
   const groupNameLookup = useSelector(
     (s: RootState) => s.groups.groupNameLookup,
   );
-  const { handleOpenEditStatus } = useSelectEvent();
+  const { handleOpenEvent } = useSelectEvent();
 
   return slots.map((slot, i: number) => {
     switch (slot.kind) {
@@ -40,7 +40,7 @@ function RenderEventsLayout({
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}
-            handleOpenEvent={handleOpenEditStatus}
+            handleOpenEvent={handleOpenEvent}
           />
         );
       }
@@ -54,7 +54,7 @@ function RenderEventsLayout({
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}
-            handleOpenEvent={handleOpenEditStatus}
+            handleOpenEvent={handleOpenEvent}
           />
         );
       }
