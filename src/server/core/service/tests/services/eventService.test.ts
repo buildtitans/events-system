@@ -12,7 +12,7 @@ import {
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
-describe("EventsService.getAllActiveEventsLayout", () => {
+describe("EventService.layout.active", () => {
   const getEvents = dbMock.events.getEvents as jest.Mock;
   let service: EventService;
 
@@ -46,7 +46,7 @@ describe("EventsService.getAllActiveEventsLayout", () => {
 
     getEvents.mockResolvedValue([pastEvent, futureEventOne, futureEventTwo]);
 
-    await expect(service.getAllActiveEventsLayout()).resolves.toEqual([
+    await expect(service.layout.active()).resolves.toEqual([
       [
         {
           kind: "card",
@@ -84,11 +84,11 @@ describe("EventsService.getAllActiveEventsLayout", () => {
 
     getEvents.mockResolvedValue([pastEvent, nowEvent]);
 
-    await expect(service.getAllActiveEventsLayout()).resolves.toEqual([]);
+    await expect(service.layout.active()).resolves.toEqual([]);
   });
 });
 
-describe("EventService.getArchivedEvents", () => {
+describe("EventService.timeline.getArchivedGroupEvents", () => {
   const getCancelledGroupEvents = dbMock.events
     .getCancelledGroupEvents as jest.Mock;
   const getPastEventRecords = dbMock.eventAttendants
@@ -109,7 +109,7 @@ describe("EventService.getArchivedEvents", () => {
     unauthenticated();
 
     await expect(
-      service.getArchivedEvents(undefined, crypto.randomUUID()),
+      service.timeline.getArchivedGroupEvents(undefined, crypto.randomUUID()),
     ).rejects.toThrow("401");
 
     expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
@@ -122,7 +122,7 @@ describe("EventService.getArchivedEvents", () => {
     });
 
     await expect(
-      service.getArchivedEvents("user-1", "group-2"),
+      service.timeline.getArchivedGroupEvents("user-1", "group-2"),
     ).rejects.toThrow("403");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
@@ -156,7 +156,7 @@ describe("EventService.getArchivedEvents", () => {
     ]);
 
     await expect(
-      service.getArchivedEvents("user-1", "group-1"),
+      service.timeline.getArchivedGroupEvents("user-1", "group-1"),
     ).resolves.toEqual({
       archives: [archivedEvent],
       archivedAttendanceRecords: {
@@ -178,7 +178,7 @@ describe("EventService.getArchivedEvents", () => {
     getCancelledGroupEvents.mockResolvedValue([]);
 
     await expect(
-      service.getArchivedEvents("user-1", "group-1"),
+      service.timeline.getArchivedGroupEvents("user-1", "group-1"),
     ).resolves.toEqual({
       archives: [],
       archivedAttendanceRecords: {},
@@ -189,7 +189,7 @@ describe("EventService.getArchivedEvents", () => {
   });
 });
 
-describe("EventsService.getPastEvents", () => {
+describe("EventService.timeline.getPastEventsForGroup", () => {
   const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
   const getPastEventRecords = dbMock.eventAttendants
     .getPastEventRecords as jest.Mock;
@@ -231,7 +231,7 @@ describe("EventsService.getPastEvents", () => {
       ),
     ]);
 
-    const result = await service.getPastEvents("group-1");
+    const result = await service.timeline.getPastEventsForGroup("group-1");
 
     expect(result).toEqual({
       history: [pastEvent],
@@ -257,7 +257,7 @@ describe("EventsService.getPastEvents", () => {
 
     getPastEventRecords.mockResolvedValue([]);
 
-    const result = await service.getPastEvents("group-1");
+    const result = await service.timeline.getPastEventsForGroup("group-1");
 
     expect(result).toEqual({
       history: [],
@@ -289,7 +289,7 @@ describe("EventsService.getPastEvents", () => {
       makeAttendanceUpdate({ event_id: "past-2", user_id: "user-3" }, "going"),
     ]);
 
-    const result = await service.getPastEvents("group-1");
+    const result = await service.timeline.getPastEventsForGroup("group-1");
 
     expect(result).toEqual({
       history: [olderPastEvent, recentPastEvent],
@@ -302,7 +302,7 @@ describe("EventsService.getPastEvents", () => {
   });
 });
 
-describe("EventsService.getNextEventLookupMap", () => {
+describe("EventService.timeline.getNextEventMap", () => {
   const getEventsByGroupIds = dbMock.events.getEventsByGroupIds as jest.Mock;
   let service: EventService;
 
@@ -320,7 +320,7 @@ describe("EventsService.getNextEventLookupMap", () => {
   it("returns an empty lookup when no events are found", async () => {
     getEventsByGroupIds.mockResolvedValue([]);
 
-    const result = await service.getNextEventLookupMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap(["group-1"]);
 
     expect(result).toEqual({});
     expect(getEventsByGroupIds).toHaveBeenCalledWith(["group-1"]);
@@ -348,7 +348,7 @@ describe("EventsService.getNextEventLookupMap", () => {
       }),
     ]);
 
-    const result = await service.getNextEventLookupMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap(["group-1"]);
 
     expect(result).toEqual({
       "group-1": "2026-04-05T12:00:00.000Z",
@@ -371,7 +371,7 @@ describe("EventsService.getNextEventLookupMap", () => {
       }),
     ]);
 
-    const result = await service.getNextEventLookupMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap(["group-1"]);
 
     expect(result).toEqual({
       "group-1": "2026-03-30T12:00:00.000Z",
@@ -394,7 +394,10 @@ describe("EventsService.getNextEventLookupMap", () => {
       }),
     ]);
 
-    const result = await service.getNextEventLookupMap(["group-1", "group-2"]);
+    const result = await service.timeline.getNextEventMap([
+      "group-1",
+      "group-2",
+    ]);
 
     expect(result).toEqual({
       "group-1": "2026-04-08T12:00:00.000Z",
@@ -403,7 +406,7 @@ describe("EventsService.getNextEventLookupMap", () => {
   });
 });
 
-describe("EventsService.updateEventStatus", () => {
+describe("EventService.lifecycle.updateEventStatus", () => {
   const updateEventStatusInDb = dbMock.events.updateEventStatus as jest.Mock;
 
   let service: EventService;
@@ -423,9 +426,9 @@ describe("EventsService.updateEventStatus", () => {
   it("throws a 401 status error when the user is not authenticated", async () => {
     unauthenticated();
 
-    await expect(service.updateEventStatus(null, eventUpdate)).rejects.toThrow(
-      "401",
-    );
+    await expect(
+      service.lifecycle.updateEventStatus(null, eventUpdate),
+    ).rejects.toThrow("401");
 
     expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
     expect(updateEventStatusInDb).not.toHaveBeenCalled();
@@ -438,7 +441,7 @@ describe("EventsService.updateEventStatus", () => {
     });
 
     await expect(
-      service.updateEventStatus("user-1", eventUpdate),
+      service.lifecycle.updateEventStatus("user-1", eventUpdate),
     ).rejects.toThrow("403");
 
     expect(policyMock.requireOrganizer).toHaveBeenCalled();
@@ -451,7 +454,7 @@ describe("EventsService.updateEventStatus", () => {
     updateEventStatusInDb.mockResolvedValue({ status: eventUpdate.status });
 
     await expect(
-      service.updateEventStatus("user-1", eventUpdate),
+      service.lifecycle.updateEventStatus("user-1", eventUpdate),
     ).resolves.toEqual({ status: eventUpdate.status });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
@@ -463,7 +466,7 @@ describe("EventsService.updateEventStatus", () => {
   });
 });
 
-describe("EventService.createEvent", () => {
+describe("EventService.lifecycle.createEvent", () => {
   const createNewEventInDb = dbMock.events.createNewEvent as jest.Mock;
 
   let service: EventService;
@@ -490,7 +493,7 @@ describe("EventService.createEvent", () => {
     unauthenticated();
 
     await expect(
-      service.createEvent(createEventInput, groupId, undefined),
+      service.lifecycle.createEvent(createEventInput, groupId, undefined),
     ).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
@@ -505,7 +508,7 @@ describe("EventService.createEvent", () => {
     });
 
     await expect(
-      service.createEvent(createEventInput, groupId, "user-1"),
+      service.lifecycle.createEvent(createEventInput, groupId, "user-1"),
     ).rejects.toThrow("403");
 
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
@@ -523,7 +526,7 @@ describe("EventService.createEvent", () => {
     createNewEventInDb.mockResolvedValue(createdEvent);
 
     await expect(
-      service.createEvent(createEventInput, groupId, "user-1"),
+      service.lifecycle.createEvent(createEventInput, groupId, "user-1"),
     ).resolves.toEqual(createdEvent);
 
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);

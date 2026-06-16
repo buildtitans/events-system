@@ -13,9 +13,13 @@ import {
 import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
 import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "../../../../schemas/events/eventAttendantsSchema";
+import { Authorization } from "../auth/authorization";
 
 export class EventTimelineHandler {
-  constructor(private readonly db: DBClient) {}
+  constructor(
+    private readonly db: DBClient,
+    private readonly policy: Authorization,
+  ) {}
 
   async getPastEventsForGroup(group_id: string): Promise<PastEventsResults> {
     const groupEvents = await this.db.events.getGroupEvents(group_id);
@@ -60,10 +64,16 @@ export class EventTimelineHandler {
     return lookup;
   }
 
-  async getArchivedGroupEvents(group_id: string): Promise<{
+  async getArchivedGroupEvents(
+    user_id: string | null | undefined,
+    group_id: string,
+  ): Promise<{
     archives: EventSchemaType[];
     archivedAttendanceRecords: PastEventAttendanceLookup;
   }> {
+    const userId = this.policy.requireAuthenticated(user_id);
+    await this.policy.requireOrganizer(userId, group_id);
+
     let archives: EventSchemaType[];
     let archivedAttendanceRecords: PastEventAttendanceLookup;
     archives = await this.db.events.getCancelledGroupEvents(group_id);
@@ -104,20 +114,6 @@ export class EventTimelineHandler {
     }
 
     return history;
-  }
-
-  public filterActiveEvents(events: EventSchemaType[]) {
-    const activeEvents: EventSchemaType[] = [];
-
-    for (const event of events) {
-      const startsAt = new Date(event.starts_at).getTime();
-      const now = Date.now();
-
-      if (startsAt > now && event.status === "scheduled") {
-        activeEvents.push(event);
-      }
-    }
-    return activeEvents;
   }
 
   private mapSoonestEvents(

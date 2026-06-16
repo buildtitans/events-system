@@ -7,7 +7,8 @@ import {
   LayoutSlotSchemaType,
   PaginatedLayoutSchemaType,
 } from "@/src/schemas/events/layoutSlotSchema";
-import { CardDesignation, CardType, LayoutSlot } from "../../lib/types";
+import { LayoutSlot } from "../../lib/types";
+import { cardSizingConfig } from "../../lib/config/cardSizingConfig";
 
 export class EventLayoutComposer {
   constructor() {}
@@ -76,7 +77,7 @@ export class EventLayoutComposer {
     }
 
     if (index === 2 || index === 5) {
-      const cardSize = this.getCardSizing("thumbnail");
+      const cardSize = cardSizingConfig["thumbnail"];
       return {
         kind: "card",
         variant: {
@@ -90,24 +91,8 @@ export class EventLayoutComposer {
       kind: "card",
       variant: {
         type: "hero",
-        size: this.getCardSizing("hero"),
+        size: cardSizingConfig["hero"],
       },
     };
-  }
-
-  private getCardSizing(type: CardType): CardDesignation["size"] {
-    switch (type) {
-      case "hero":
-        return {
-          md: 6,
-          xs: 12,
-        };
-
-      default:
-        return {
-          md: 4,
-          xs: 12,
-        };
-    }
   }
 }
