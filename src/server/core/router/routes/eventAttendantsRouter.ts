@@ -12,7 +12,9 @@ export const eventAttendantsRouter = router({
   getAttendants: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.getEventAttendants(input);
+      return await ctx.services.api.domains.events.query.getEventAttendants(
+        input,
+      );
     }),
 
   getNumberAttendingEvent: publicProcedure

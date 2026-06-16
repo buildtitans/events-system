@@ -44,7 +44,9 @@ export const groupsRouter = router({
   getNextGroupEventLookup: publicProcedure
     .input(typeboxInputV2<GroupIdArraySchema>(GroupIdArraySchema))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.getNextEventLookupMap(input);
+      return await ctx.services.api.domains.events.timeline.getNextEventMap(
+        input,
+      );
     }),
 
   popularGroups: publicProcedure.mutation(async ({ ctx }) => {
