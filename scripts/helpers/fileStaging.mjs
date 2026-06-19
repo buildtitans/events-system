@@ -1,8 +1,63 @@
-import { copyFile, cp, mkdir, readdir, rm } from "node:fs/promises";
+import {
+  chmod,
+  copyFile,
+  cp,
+  mkdir,
+  readdir,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-const dereferenceSymlinks = process.platform === "win32";
+const RELEASE_MANIFEST = {
+  schemaVersion: 1,
+  appName: "events-system",
+  runtime: {
+    platform: "linux",
+    architecture: "x64",
+    nodeMajorVersion: 24,
+  },
+};
+
+const LAUNCHERS = {
+  "start-next": `#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "\${BASH_SOURCE[0]}")" && pwd)"
+APP_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+cd "$APP_ROOT/next-standalone"
+exec /usr/bin/node server.js
+`,
+  "start-fastify": `#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "\${BASH_SOURCE[0]}")" && pwd)"
+APP_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+cd "$APP_ROOT/src/server"
+exec /usr/bin/node dist/src/server/index.js
+`,
+  "db-migrate": `#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "\${BASH_SOURCE[0]}")" && pwd)"
+APP_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+cd "$APP_ROOT/src/server"
+exec /usr/bin/node dist/src/server/core/db/migrations/migrate.js
+`,
+  "db-seed": `#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "\${BASH_SOURCE[0]}")" && pwd)"
+APP_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+cd "$APP_ROOT/src/server"
+exec /usr/bin/node dist/src/server/core/db/seeds/scripts/seedDB.js
+`,
+};
 
 export function isInside(parent, target) {
   const relative = path.relative(parent, target);
@@ -64,7 +119,7 @@ async function copyRequiredDirectory({
 
   await cp(source, destination, {
     recursive: true,
-    dereference: dereferenceSymlinks,
+    dereference: true,
     force: true,
     filter: (sourcePath) => {
       if (excludeEnvFiles && isEnvFile(sourcePath)) {
@@ -73,6 +128,24 @@ async function copyRequiredDirectory({
 
       return true;
     },
+  });
+}
+
+async function copyExternalDirectory({
+  source,
+  stagingRoot,
+  destinationRelativePath,
+}) {
+  if (!existsSync(source)) {
+    throw new Error(`Missing required release input: ${source}`);
+  }
+
+  const destination = path.join(stagingRoot, destinationRelativePath);
+  await mkdir(path.dirname(destination), { recursive: true });
+  await cp(source, destination, {
+    recursive: true,
+    dereference: true,
+    force: true,
   });
 }
 
@@ -96,22 +169,42 @@ async function findEnvFiles({ stagingRoot, directory }) {
   return matches;
 }
 
-export async function stageReleaseFiles({ repoRoot, deployRoot, stagingRoot }) {
+async function writeReleaseContract(stagingRoot) {
+  await writeFile(
+    path.join(stagingRoot, ".bt-infra-release.json"),
+    `${JSON.stringify(RELEASE_MANIFEST, null, 2)}\n`,
+  );
+
+  const binRoot = path.join(stagingRoot, "bin");
+  await mkdir(binRoot, { recursive: true });
+
+  for (const [name, contents] of Object.entries(LAUNCHERS)) {
+    const launcherPath = path.join(binRoot, name);
+    await writeFile(launcherPath, contents, { mode: 0o755 });
+    await chmod(launcherPath, 0o755);
+  }
+}
+
+export async function stageReleaseFiles({
+  repoRoot,
+  deployRoot,
+  stagingRoot,
+  serverRuntimeRoot,
+}) {
   requirePath(repoRoot, ".next/standalone/server.js");
   requirePath(repoRoot, ".next/static");
   requirePath(repoRoot, "public");
   requirePath(repoRoot, "src/server/dist/src/server/index.js");
+  requirePath(
+    repoRoot,
+    "src/server/dist/src/server/core/db/migrations/migrate.js",
+  );
+  requirePath(
+    repoRoot,
+    "src/server/dist/src/server/core/db/seeds/scripts/seedDB.js",
+  );
 
   await resetDirectory({ deployRoot, target: stagingRoot });
-
-  await copyRequiredFile({ repoRoot, stagingRoot, relativePath: "package.json" });
-  await copyRequiredFile({ repoRoot, stagingRoot, relativePath: "pnpm-lock.yaml" });
-  await copyRequiredFile({
-    repoRoot,
-    stagingRoot,
-    relativePath: "pnpm-workspace.yaml",
-  });
-  await copyRequiredFile({ repoRoot, stagingRoot, relativePath: "next.config.ts" });
 
   await copyRequiredDirectory({
     repoRoot,
@@ -144,6 +237,13 @@ export async function stageReleaseFiles({ repoRoot, deployRoot, stagingRoot }) {
     sourceRelativePath: "src/server/dist",
     destinationRelativePath: "src/server/dist",
   });
+  await copyExternalDirectory({
+    source: path.join(serverRuntimeRoot, "node_modules"),
+    stagingRoot,
+    destinationRelativePath: "src/server/node_modules",
+  });
+
+  await writeReleaseContract(stagingRoot);
 
   const leakedEnvFiles = await findEnvFiles({
     stagingRoot,

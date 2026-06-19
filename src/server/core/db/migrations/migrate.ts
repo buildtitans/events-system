@@ -1,10 +1,10 @@
 import * as path from "path";
 import { promises as fs } from "fs";
-import { Migrator, FileMigrationProvider } from "kysely";
+import { Migrator, FileMigrationProvider } from "kysely/migration";
 import { db } from "@/src/server/core/db";
 
 async function migrateToLatest() {
-  console.log("************** migrate.ts starting… *****************");
+  console.log("************** migrate.ts starting... *****************");
 
   const migrator = new Migrator({
     db,

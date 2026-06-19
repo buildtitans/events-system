@@ -1,4 +1,4 @@
-name: Release Upload
+name: Release
 
 on:
   workflow_dispatch:
@@ -7,15 +7,25 @@ permissions:
   contents: read
   id-token: write
 
+defaults:
+  run:
+    shell: bash
+
 concurrency:
-  group: release-upload-${{ github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  upload:
-    name: Build, Package, and Upload
+  build-and-package:
+    name: Build and Package
     runs-on: ubuntu-latest
-    environment: prod
+    container:
+      image: public.ecr.aws/amazonlinux/amazonlinux:2023
+    permissions:
+      contents: read
+    outputs:
+      artifact_name: ${{ steps.package.outputs.artifact_name }}
+      artifact_key: ${{ steps.package.outputs.artifact_key }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       CI: true
@@ -24,25 +34,19 @@ jobs:
       NEXT_PUBLIC_PROD_API_URL: /api/trpc
 
     steps:
+      - name: Prepare Amazon Linux build environment
+        run: |
+          dnf install -y \
+            gcc-c++ \
+            git \
+            gzip \
+            make \
+            python3 \
+            tar
+          dnf clean all
+
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Validate release environment
-        env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
-          BT_INFRA_RELEASE_BUCKET_NAME: ${{ vars.BT_INFRA_RELEASE_BUCKET_NAME }}
-        run: |
-          missing=0
-
-          for name in AWS_REGION AWS_ROLE_TO_ASSUME BT_INFRA_RELEASE_BUCKET_NAME; do
-            if [ -z "${!name}" ]; then
-              echo "${name} is required in the prod environment."
-              missing=1
-            fi
-          done
-
-          exit "$missing"
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -52,12 +56,15 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level high
 
       - name: Create CI env files
         run: |
@@ -86,6 +93,11 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Type check
+        run: |
+          pnpm exec tsc --noEmit
+          pnpm --dir src/server exec tsc --noEmit -p tsconfig.json
+
       - name: Test
         run: pnpm test --runInBand
 
@@ -99,6 +111,49 @@ jobs:
         id: package
         run: pnpm release:package
 
+      - name: Transfer release artifact to upload job
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ steps.package.outputs.artifact_name }}
+          path: ${{ steps.package.outputs.artifact_path }}
+          if-no-files-found: error
+          retention-days: 1
+
+  upload:
+    name: Upload
+    needs: build-and-package
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      artifact_key: ${{ steps.upload.outputs.artifact_key }}
+
+    steps:
+      - name: Validate release environment
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          BT_INFRA_RELEASE_BUCKET_NAME: ${{ vars.BT_INFRA_RELEASE_BUCKET_NAME }}
+        run: |
+          missing=0
+
+          for name in AWS_REGION AWS_ROLE_TO_ASSUME BT_INFRA_RELEASE_BUCKET_NAME; do
+            if [ -z "${!name}" ]; then
+              echo "${name} is required in the prod environment."
+              missing=1
+            fi
+          done
+
+          exit "$missing"
+
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-${{ needs.build-and-package.outputs.artifact_name }}
+          path: .deploy/artifacts
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -106,9 +161,10 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Upload release artifact
+        id: upload
         env:
-          ARTIFACT_KEY: ${{ steps.package.outputs.artifact_key }}
-          ARTIFACT_PATH: ${{ steps.package.outputs.artifact_path }}
+          ARTIFACT_KEY: ${{ needs.build-and-package.outputs.artifact_key }}
+          ARTIFACT_PATH: .deploy/artifacts/${{ needs.build-and-package.outputs.artifact_name }}
           RELEASE_BUCKET: ${{ vars.BT_INFRA_RELEASE_BUCKET_NAME }}
         run: |
           for name in ARTIFACT_KEY ARTIFACT_PATH RELEASE_BUCKET; do
@@ -133,4 +189,16 @@ jobs:
           esac
 
           aws s3 cp "$ARTIFACT_PATH" "s3://${RELEASE_BUCKET}/${ARTIFACT_KEY}"
+          echo "artifact_key=${ARTIFACT_KEY}" >> "$GITHUB_OUTPUT"
           echo "Uploaded artifact key: ${ARTIFACT_KEY}"
+
+  deploy-prod:
+    name: Deploy through BT-Infra
+    needs: upload
+    permissions:
+      contents: read
+      id-token: write
+    uses: buildtitans/BT-Infra/.github/workflows/deploy-release.yaml@main
+    with:
+      app_name: events-system
+      artifact_key: ${{ needs.upload.outputs.artifact_key }}
