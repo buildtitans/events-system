@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -20,6 +24,8 @@ jobs:
   app:
     name: App
     runs-on: ubuntu-latest
+    container:
+      image: public.ecr.aws/amazonlinux/amazonlinux:2023
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       CI: true
@@ -28,6 +34,17 @@ jobs:
       NEXT_PUBLIC_PROD_API_URL: /api/trpc
 
     steps:
+      - name: Prepare Amazon Linux build environment
+        run: |
+          dnf install -y \
+            gcc-c++ \
+            git \
+            gzip \
+            make \
+            python3 \
+            tar
+          dnf clean all
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -39,12 +56,15 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level high
 
       - name: Create CI env files
         run: |
@@ -72,6 +92,11 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Type check
+        run: |
+          pnpm exec tsc --noEmit
+          pnpm --dir src/server exec tsc --noEmit -p tsconfig.json
 
       - name: Test
         run: pnpm test --runInBand

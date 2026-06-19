@@ -49,6 +49,27 @@ function getShortSha({ repoRoot, env }) {
   return "local";
 }
 
+export function getSourceDateEpoch({ repoRoot, env }) {
+  if (env.SOURCE_DATE_EPOCH) {
+    if (!/^\d+$/.test(env.SOURCE_DATE_EPOCH)) {
+      throw new Error("SOURCE_DATE_EPOCH must be an integer Unix timestamp");
+    }
+
+    return env.SOURCE_DATE_EPOCH;
+  }
+
+  const result = spawnSync("git", ["show", "-s", "--format=%ct", "HEAD"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+
+  if (result.status === 0 && /^\d+$/.test(result.stdout.trim())) {
+    return result.stdout.trim();
+  }
+
+  return "0";
+}
+
 export function createArtifactDescriptor({
   appName,
   releasePrefix,
