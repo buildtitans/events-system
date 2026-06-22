@@ -1,242 +1,502 @@
 [
   {
-    "starts_at": "2026-02-10T20:00:00Z",
+    "starts_at": "2026-06-16T18:00:00Z",
     "status": "scheduled",
     "img": "https://picsum.photos/800/450?random=1",
-    "tag": "DevOps",
-    "title": "Sustainable AI Infrastructure for Practical Teams",
-    "description": "Join us for a discussion on the environmental cost of AI systems, efficient infrastructure choices, and the tradeoffs teams face when balancing speed, cost, and sustainability.",
-    "group": "devops-and-cloud-illinois-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-03-04T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=2",
     "tag": "Engineering",
-    "title": "Modern Dev Tools That Actually Improve Team Workflow",
-    "description": "A conversation for engineers about modern tooling, build pipelines, and the kinds of practical workflow upgrades that genuinely help teams ship faster.",
+    "title": "Summer Software Builders Kickoff",
+    "description": "Start the season with local developers sharing what they are building, the technical problems they are exploring, and the skills they hope to sharpen over the next few months.",
     "group": "blono-devs-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-08T19:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=3",
-    "tag": "Product",
-    "title": "What Makes a Feature Worth Building?",
-    "description": "Explore how thoughtful product decisions, user feedback, and business goals come together when teams decide which features deserve to make the roadmap.",
-    "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-04-22T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=4",
-    "tag": "Design",
-    "title": "Design Trends Worth Paying Attention To in 2026",
-    "description": "Frontend developers and designers will look at emerging interface patterns, visual trends, and the decisions that help digital products stay useful and current.",
-    "group": "uiux-and-frontend-design-lab-normal-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-05T19:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=5",
-    "tag": "Frontend",
-    "title": "React State Patterns for Growing Products",
-    "description": "A hands-on discussion about organizing state, managing complexity, and keeping React applications maintainable as features and team size continue to grow.",
-    "group": "central-illinois-react-normal-il-61761",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-09T18:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=6",
-    "tag": "Software Solutions",
-    "title": "Small Software Changes That Save Teams Big Time",
-    "description": "We will look at practical improvements to internal tools, release workflows, and engineering habits that create a surprisingly large productivity payoff over time.",
-    "group": "midwest-full-stack-collective-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-12T19:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=7",
-    "tag": "AI Research",
-    "title": "Behind the Stack: How Modern ML Platforms Are Built",
-    "description": "Take a closer look at the infrastructure, experimentation loops, and system design choices behind modern machine learning platforms and applied AI products.",
-    "group": "data-and-ai-central-il-normal-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-16T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=8",
-    "tag": "Backend",
-    "title": "Choosing the Right Data Boundaries in Distributed Systems",
-    "description": "A backend-focused session on service boundaries, persistence decisions, and the tradeoffs that show up when systems become more distributed and interconnected.",
-    "group": "backend-engineering-guild-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-20T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=9",
-    "tag": "Culture",
-    "title": "Building Team Culture That Supports Great Work",
-    "description": "Join us for a conversation on collaboration, mentorship, and the team habits that help people do strong technical work without burning out.",
-    "group": "women-in-tech-bloomington-normal-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-23T17:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=10",
-    "tag": "Career",
-    "title": "Portfolio Projects That Help Junior Developers Stand Out",
-    "description": "Early-career developers will share ideas for stronger portfolio projects, clearer case studies, and better ways to present technical growth to hiring teams.",
-    "group": "junior-dev-career-builders-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-27T18:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=11",
-    "tag": "Open Source",
-    "title": "From First Issue to Meaningful Contribution",
-    "description": "A welcoming event for contributors who want to learn how to find approachable issues, communicate with maintainers, and turn first contributions into ongoing involvement.",
-    "group": "open-source-contributors-hub-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-05-30T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=12",
-    "tag": "TypeScript",
-    "title": "TypeScript Patterns That Keep Codebases Calm",
-    "description": "We will dig into practical typing strategies, safer abstractions, and the kind of TypeScript patterns that help teams move quickly without losing clarity.",
-    "group": "illinois-typescript-enthusiasts-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-06-03T19:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=13",
-    "tag": "Company",
-    "title": "Startup Milestones, Setbacks, and Lessons Learned",
-    "description": "Hear stories about early traction, missed bets, and the decisions that helped a growing company adapt while building toward longer-term goals.",
-    "group": "bloomington-normal-startup-circle-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-06-07T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=14",
-    "tag": "Engineering",
-    "title": "Engineering for Sustainability in Real-World Systems",
-    "description": "Explore how engineers are approaching sustainability through smarter systems, efficient defaults, and practical design decisions that reduce waste without slowing product teams down.",
-    "group": "blono-devs-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-06-11T18:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=15",
-    "tag": "Cloud",
-    "title": "Right-Sizing Infrastructure Without Guesswork",
-    "description": "A practical conversation on observability, cost signals, and how to make better infrastructure sizing decisions before overprovisioning becomes the default.",
-    "group": "devops-and-cloud-illinois-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-06-15T18:00:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=16",
-    "tag": "UX",
-    "title": "Turning User Research Into Better Interface Decisions",
-    "description": "A UX-focused event on turning interviews, feedback, and behavioral clues into more intuitive interface decisions and stronger product experiences.",
-    "group": "uiux-and-frontend-design-lab-normal-il",
-    "meeting_location": "Online"
+    "meeting_location": "Bloomington Public Library"
   },
   {
     "starts_at": "2026-06-20T19:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=17",
-    "tag": "Performance",
-    "title": "Where React Apps Slow Down and What to Fix First",
-    "description": "This session focuses on bottlenecks in modern React apps, how to spot them early, and what kinds of fixes give the best performance return for the effort.",
+    "img": "https://picsum.photos/800/450?random=2",
+    "tag": "React",
+    "title": "React Server Components in Practice",
+    "description": "Walk through practical patterns for deciding what belongs on the server, what stays interactive on the client, and how those choices affect performance and maintainability.",
     "group": "central-illinois-react-normal-il-61761",
-    "meeting_location": "Online"
+    "meeting_location": "Normal Public Library"
   },
   {
     "starts_at": "2026-06-25T18:30:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=18",
+    "img": "https://picsum.photos/800/450?random=3",
     "tag": "Architecture",
-    "title": "Full Stack Architecture Choices That Age Well",
-    "description": "Join fellow builders for a conversation on APIs, databases, frontend boundaries, and the architecture decisions that continue to pay off as products evolve.",
+    "title": "Designing a Full Stack Feature from End to End",
+    "description": "Follow one product feature from interface design through API boundaries, persistence, testing, and deployment while discussing the tradeoffs made at each layer.",
     "group": "midwest-full-stack-collective-online",
     "meeting_location": "Online"
   },
   {
-    "starts_at": "2026-07-01T19:00:00Z",
+    "starts_at": "2026-06-30T18:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=19",
-    "tag": "Data",
-    "title": "Using Data to Improve Retention and Customer Success",
-    "description": "Learn how analytics, experimentation, and product feedback loops can improve customer outcomes while helping teams make clearer and faster decisions.",
+    "img": "https://picsum.photos/800/450?random=4",
+    "tag": "TypeScript",
+    "title": "TypeScript APIs That Explain Themselves",
+    "description": "Explore discriminated unions, branded values, and focused utility types that make application contracts easier to understand without turning the type system into a puzzle.",
+    "group": "illinois-typescript-enthusiasts-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-03T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=5",
+    "tag": "Startups",
+    "title": "Finding the Smallest Useful Version of an Idea",
+    "description": "Founders and builders will practice reducing ambitious concepts into focused experiments that can reveal genuine customer interest before a team commits months of work.",
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-07-08T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=6",
+    "tag": "Cloud",
+    "title": "Cloud Cost Signals Every Team Should Watch",
+    "description": "Learn how to connect infrastructure spending with application behavior using practical dashboards, budgets, and ownership habits that teams can maintain over time.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-12T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=7",
+    "tag": "Machine Learning",
+    "title": "Evaluating AI Features Beyond the Demo",
+    "description": "Discuss repeatable evaluation sets, failure analysis, latency, and cost so that promising AI prototypes can become dependable features for real users.",
     "group": "data-and-ai-central-il-normal-il",
-    "meeting_location": "Online"
+    "meeting_location": "Normal, IL"
   },
   {
-    "starts_at": "2026-07-09T18:00:00Z",
+    "starts_at": "2026-07-16T18:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=20",
-    "tag": "Systems",
-    "title": "Designing APIs That Stay Useful as Products Expand",
-    "description": "A backend engineering event on API evolution, compatibility, and how to design service contracts that remain workable as product scope keeps growing.",
-    "group": "backend-engineering-guild-online",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-07-14T18:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=21",
-    "tag": "Leadership",
-    "title": "Mentorship Habits That Actually Help People Grow",
-    "description": "We will talk about mentoring in technical teams, giving useful guidance, and building support systems that help newer teammates grow with confidence.",
-    "group": "women-in-tech-bloomington-normal-bloomington-il",
-    "meeting_location": "Online"
-  },
-  {
-    "starts_at": "2026-07-18T17:30:00Z",
-    "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=22",
-    "tag": "Collaboration",
-    "title": "Healthy Open Source Collaboration at Scale",
-    "description": "A session about review culture, contributor onboarding, and the project habits that make open source communities healthier and easier to join.",
+    "img": "https://picsum.photos/800/450?random=8",
+    "tag": "Open Source",
+    "title": "Maintainer Office Hours: Issues, Reviews, and Releases",
+    "description": "Bring questions about triage, pull request review, contributor communication, and release planning for a collaborative session with experienced open source maintainers.",
     "group": "open-source-contributors-hub-online",
     "meeting_location": "Online"
   },
   {
-    "starts_at": "2026-07-26T17:00:00Z",
+    "starts_at": "2026-07-21T18:30:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=23",
+    "img": "https://picsum.photos/800/450?random=9",
+    "tag": "Leadership",
+    "title": "Building Influence Without a Management Title",
+    "description": "Explore practical ways to create clarity, support teammates, advocate for good decisions, and grow technical influence from any role on a team.",
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-07-25T17:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=10",
     "tag": "Career",
-    "title": "Interview Stories, Resume Signals, and Hiring Patterns",
-    "description": "Junior developers will compare interview experiences, resume strategies, and the signals that seem to matter most when teams are evaluating early-career candidates.",
+    "title": "Live Portfolio Review for Early-Career Developers",
+    "description": "Volunteers will review project portfolios and offer concrete feedback on storytelling, technical depth, visual presentation, and the details hiring teams tend to notice.",
     "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-07-29T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=11",
+    "tag": "Backend",
+    "title": "Reliable Background Jobs and Queues",
+    "description": "Examine retries, idempotency, scheduling, observability, and failure recovery for background work that must remain trustworthy under real production conditions.",
+    "group": "backend-engineering-guild-online",
     "meeting_location": "Online"
   },
   {
     "starts_at": "2026-08-02T18:00:00Z",
     "status": "scheduled",
-    "img": "https://picsum.photos/800/450?random=24",
+    "img": "https://picsum.photos/800/450?random=12",
+    "tag": "Design Systems",
+    "title": "Design Tokens from Figma to Production",
+    "description": "Connect visual decisions to maintainable frontend code by exploring token naming, theming, component APIs, and collaboration between designers and engineers.",
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-08-06T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=13",
+    "tag": "Testing",
+    "title": "Testing Strategies for Teams That Ship Often",
+    "description": "Compare unit, integration, contract, and browser tests to find a balanced approach that catches meaningful regressions without making every change painfully slow.",
+    "group": "blono-devs-bloomington-il",
+    "meeting_location": "Bloomington Public Library"
+  },
+  {
+    "starts_at": "2026-08-11T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=14",
+    "tag": "Performance",
+    "title": "A Practical React Performance Clinic",
+    "description": "Diagnose representative rendering problems and learn when memoization, state restructuring, code splitting, or simpler component boundaries provide the biggest improvement.",
+    "group": "central-illinois-react-normal-il-61761",
+    "meeting_location": "Normal Public Library"
+  },
+  {
+    "starts_at": "2026-08-15T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=15",
+    "tag": "Web Development",
+    "title": "Authentication Across the Modern Web Stack",
+    "description": "Trace sessions, cookies, authorization, and account recovery across browser, server, and database layers with an emphasis on secure defaults and understandable code.",
+    "group": "midwest-full-stack-collective-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-08-19T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=16",
     "tag": "Type Safety",
-    "title": "Type-Driven Refactors for Safer Releases",
-    "description": "A TypeScript-centered discussion on using stronger typing, better tooling, and deliberate refactors to make releases safer as codebases become more complex.",
+    "title": "Runtime Validation Meets Static Types",
+    "description": "See how teams can keep external data honest by pairing TypeScript with runtime schemas at API, form, configuration, and persistence boundaries.",
     "group": "illinois-typescript-enthusiasts-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-08-23T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=17",
+    "tag": "Product",
+    "title": "Customer Interviews That Change the Roadmap",
+    "description": "Practice asking neutral questions, recognizing recurring pain, and translating interview evidence into product decisions without simply collecting feature requests.",
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-08-27T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=18",
+    "tag": "DevOps",
+    "title": "Making Deployments Boring Again",
+    "description": "Review deployment safeguards, progressive delivery, rollback design, and observability practices that turn releases from stressful events into routine operations.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-09-01T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=19",
+    "tag": "Data",
+    "title": "Data Pipelines You Can Debug at 2 AM",
+    "description": "Explore lineage, validation, replayability, and observability patterns that make production data pipelines easier to understand when something inevitably goes wrong.",
+    "group": "data-and-ai-central-il-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-09-05T17:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=20",
+    "tag": "Community",
+    "title": "Welcoming New Contributors Without Burning Out Maintainers",
+    "description": "Share sustainable approaches to documentation, issue labeling, mentorship, automation, and boundaries that help open source communities welcome people well.",
+    "group": "open-source-contributors-hub-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-09-09T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=21",
+    "tag": "Networking",
+    "title": "Technical Stories and Intentional Networking",
+    "description": "Build confidence introducing your work, describing your impact, and creating professional connections that feel genuine rather than transactional.",
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-09-13T17:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=22",
+    "tag": "Interviews",
+    "title": "Technical Interview Practice Lab",
+    "description": "Work through approachable coding, debugging, and system-thinking exercises in small groups with an emphasis on communication and constructive feedback.",
+    "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-09-17T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=23",
+    "tag": "Databases",
+    "title": "PostgreSQL Indexes Without the Mystery",
+    "description": "Learn how common index types work, how query plans reveal useful clues, and why an index can sometimes cost more than it saves.",
+    "group": "backend-engineering-guild-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-09-21T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=24",
+    "tag": "Accessibility",
+    "title": "Accessible Interfaces Beyond the Checklist",
+    "description": "Use real interaction examples to examine keyboard flow, focus management, content clarity, assistive technology, and accessibility as an ongoing design practice.",
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-09-25T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=25",
+    "tag": "Observability",
+    "title": "Reading Production Systems Through Their Signals",
+    "description": "Bring logs, metrics, traces, and user reports together to form better hypotheses and shorten the path from a vague incident to a useful diagnosis.",
+    "group": "blono-devs-bloomington-il",
+    "meeting_location": "Bloomington Public Library"
+  },
+  {
+    "starts_at": "2026-09-29T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=26",
+    "tag": "Frontend",
+    "title": "Forms That Stay Manageable as Products Grow",
+    "description": "Discuss validation, field state, async behavior, accessibility, and component boundaries for complex React forms that must evolve without becoming fragile.",
+    "group": "central-illinois-react-normal-il-61761",
+    "meeting_location": "Normal Public Library"
+  },
+  {
+    "starts_at": "2026-10-03T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=27",
+    "tag": "Architecture",
+    "title": "Monoliths, Services, and the Cost of Boundaries",
+    "description": "Compare modular monoliths and distributed services through team ownership, deployment, data consistency, and operational complexity rather than architecture fashion.",
+    "group": "midwest-full-stack-collective-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-10-07T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=28",
+    "tag": "Tooling",
+    "title": "Building a Type-Safe Developer Tool",
+    "description": "Explore command parsing, configuration schemas, error design, and packaging while building a small TypeScript tool intended for other developers to use.",
+    "group": "illinois-typescript-enthusiasts-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-10-11T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=29",
+    "tag": "Finance",
+    "title": "Startup Runway and Responsible Growth",
+    "description": "Learn how early-stage teams can reason about runway, hiring, pricing, and growth investments while keeping financial assumptions visible and adaptable.",
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-10-15T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=30",
+    "tag": "Infrastructure",
+    "title": "Infrastructure as Code Review Workshop",
+    "description": "Review realistic infrastructure changes for security, recoverability, naming, ownership, and operational clarity while developing a practical team checklist.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-10-19T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=31",
+    "tag": "AI Research",
+    "title": "Retrieval Systems for Useful AI Answers",
+    "description": "Examine chunking, embedding, retrieval, ranking, citation, and evaluation choices that shape whether an AI assistant can answer from trusted information.",
+    "group": "data-and-ai-central-il-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-10-23T17:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=32",
+    "tag": "Documentation",
+    "title": "Documentation People Can Actually Navigate",
+    "description": "Improve project documentation by organizing around reader goals, adding runnable examples, clarifying contribution paths, and maintaining information as code changes.",
+    "group": "open-source-contributors-hub-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-10-27T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=33",
+    "tag": "Career Growth",
+    "title": "Negotiating Scope, Support, and Compensation",
+    "description": "Prepare for career conversations by gathering evidence, defining priorities, asking clear questions, and understanding the full range of outcomes available.",
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-10-31T17:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=34",
+    "tag": "Debugging",
+    "title": "Debugging Horror Stories and What They Taught Us",
+    "description": "A Halloween-friendly collection of mysterious bugs, misleading symptoms, and practical lessons about staying systematic when software behaves impossibly.",
+    "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-11-04T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=35",
+    "tag": "APIs",
+    "title": "Versioning APIs Without Surprising Consumers",
+    "description": "Discuss compatibility, deprecation, schema evolution, migration support, and communication patterns for APIs that serve multiple clients and teams.",
+    "group": "backend-engineering-guild-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-11-08T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=36",
+    "tag": "UX Research",
+    "title": "Testing a Product Before It Is Fully Built",
+    "description": "Use prototypes, task scenarios, and lightweight interviews to learn where an experience succeeds or fails before implementation becomes expensive to change.",
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-11-12T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=37",
+    "tag": "Security",
+    "title": "Threat Modeling for Everyday Product Teams",
+    "description": "Practice identifying assets, trust boundaries, likely abuse cases, and proportionate mitigations without requiring every engineer to become a security specialist.",
+    "group": "blono-devs-bloomington-il",
+    "meeting_location": "Bloomington Public Library"
+  },
+  {
+    "starts_at": "2026-11-16T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=38",
+    "tag": "React",
+    "title": "State Management Decision Clinic",
+    "description": "Compare local state, context, URL state, server-state libraries, and shared stores by working through realistic product requirements and failure modes.",
+    "group": "central-illinois-react-normal-il-61761",
+    "meeting_location": "Normal Public Library"
+  },
+  {
+    "starts_at": "2026-11-20T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=39",
+    "tag": "Reliability",
+    "title": "Graceful Failure Across the Stack",
+    "description": "Design useful failure behavior across interfaces, APIs, workers, and databases so that partial outages remain understandable and recoverable for users and operators.",
+    "group": "midwest-full-stack-collective-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-11-24T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=40",
+    "tag": "TypeScript",
+    "title": "Refactoring Legacy JavaScript with TypeScript",
+    "description": "Plan an incremental migration that improves confidence early, avoids a risky rewrite, and uses newly discovered type information to guide design improvements.",
+    "group": "illinois-typescript-enthusiasts-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-11-28T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=41",
+    "tag": "Founders",
+    "title": "Founder Lessons from the Year",
+    "description": "Local founders will share the experiments, difficult decisions, unexpected wins, and changed assumptions that shaped their companies throughout 2026.",
+    "group": "bloomington-normal-startup-circle-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-12-02T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=42",
+    "tag": "Operations",
+    "title": "Incident Reviews That Lead to Better Systems",
+    "description": "Learn how blameless review, clear timelines, contributing factors, and owned follow-up work can turn production incidents into durable operational improvements.",
+    "group": "devops-and-cloud-illinois-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-12-05T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=43",
+    "tag": "Data Science",
+    "title": "Communicating Data Findings with Honesty",
+    "description": "Present uncertainty, limitations, context, and actionable conclusions in ways that help decision-makers understand what the data supports and what it does not.",
+    "group": "data-and-ai-central-il-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-12-08T17:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=44",
+    "tag": "Open Source",
+    "title": "Open Source Project Showcase 2026",
+    "description": "Contributors will demonstrate projects they improved this year, explain their contributions, and share what they learned from working in public with distributed teams.",
+    "group": "open-source-contributors-hub-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-12-11T18:30:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=45",
+    "tag": "Mentorship",
+    "title": "Creating a Personal Mentorship Map",
+    "description": "Identify the different kinds of guidance, sponsorship, peer support, and community connection that can help sustain a healthy long-term career.",
+    "group": "women-in-tech-bloomington-normal-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-12-14T17:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=46",
+    "tag": "Career",
+    "title": "Planning Your 2027 Developer Learning Path",
+    "description": "Turn broad ambitions into a realistic learning plan with focused projects, feedback loops, milestones, and enough flexibility to adapt as interests change.",
+    "group": "junior-dev-career-builders-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-12-17T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=47",
+    "tag": "Systems",
+    "title": "Backend Engineering Lessons from 2026",
+    "description": "Reflect on the database, API, reliability, and distributed-systems lessons that mattered this year and the practices worth carrying into future projects.",
+    "group": "backend-engineering-guild-online",
+    "meeting_location": "Online"
+  },
+  {
+    "starts_at": "2026-12-20T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=48",
+    "tag": "Design",
+    "title": "Interface Design Retrospective and Showcase",
+    "description": "Designers and frontend developers will share work from the year, explain the decisions behind it, and reflect on what they would approach differently now.",
+    "group": "uiux-and-frontend-design-lab-normal-il",
+    "meeting_location": "Normal, IL"
+  },
+  {
+    "starts_at": "2026-12-23T18:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=49",
+    "tag": "Community",
+    "title": "Year-End Developer Community Social",
+    "description": "Close out the year with relaxed conversation, project demos, favorite technical discoveries, and new connections across the Bloomington-Normal developer community.",
+    "group": "blono-devs-bloomington-il",
+    "meeting_location": "Bloomington, IL"
+  },
+  {
+    "starts_at": "2026-12-25T19:00:00Z",
+    "status": "scheduled",
+    "img": "https://picsum.photos/800/450?random=50",
+    "tag": "Community",
+    "title": "Holiday Open Source Co-Working Session",
+    "description": "Drop in for a quiet, friendly online session to improve documentation, review a pull request, fix a small issue, or simply spend time building alongside others.",
+    "group": "open-source-contributors-hub-online",
     "meeting_location": "Online"
   }
 ]
