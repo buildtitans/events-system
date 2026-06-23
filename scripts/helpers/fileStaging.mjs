@@ -113,13 +113,14 @@ async function copyRequiredDirectory({
   sourceRelativePath,
   destinationRelativePath,
   excludeEnvFiles = false,
+  dereference = true,
 }) {
   const source = requirePath(repoRoot, sourceRelativePath);
   const destination = path.join(stagingRoot, destinationRelativePath);
 
   await cp(source, destination, {
     recursive: true,
-    dereference: true,
+    dereference,
     force: true,
     filter: (sourcePath) => {
       if (excludeEnvFiles && isEnvFile(sourcePath)) {
@@ -162,7 +163,9 @@ async function findEnvFiles({ stagingRoot, directory }) {
     }
 
     if (entry.isDirectory()) {
-      matches.push(...(await findEnvFiles({ stagingRoot, directory: fullPath })));
+      matches.push(
+        ...(await findEnvFiles({ stagingRoot, directory: fullPath })),
+      );
     }
   }
 
@@ -212,6 +215,7 @@ export async function stageReleaseFiles({
     sourceRelativePath: ".next/standalone",
     destinationRelativePath: "next-standalone",
     excludeEnvFiles: true,
+    dereference: false,
   });
   await copyRequiredDirectory({
     repoRoot,
