@@ -36,6 +36,10 @@ const ENTRY_POINTS = [
   "src/server/dist/src/server/core/db/seeds/scripts/seedDB.js",
 ];
 
+const REQUIRED_FILES = [
+  "next-standalone/node_modules/@next/env/package.json",
+];
+
 const REQUIRED_DIRECTORIES = [
   "next-standalone/.next/static",
   "next-standalone/public",
@@ -283,6 +287,10 @@ export async function validateRelease(root, options = {}) {
   for (const relativePath of ENTRY_POINTS) {
     const entryPath = await requireRegularFile(resolvedRoot, relativePath);
     checkJavaScriptSyntax(entryPath, relativePath);
+  }
+
+  for (const relativePath of REQUIRED_FILES) {
+    await requireRegularFile(resolvedRoot, relativePath);
   }
 
   await requireRegularFile(resolvedRoot, "src/server/package.json");
