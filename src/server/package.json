@@ -17,6 +17,7 @@
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.2.0",
     "@trpc/server": "^11.8.1",
+    "@sinclair/typebox": "0.33.9",
     "argon2": "^0.44.0",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",

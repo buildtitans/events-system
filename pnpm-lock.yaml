@@ -163,6 +163,9 @@ importers:
       '@fastify/cors':
         specifier: ^11.2.0
         version: 11.2.0
+      '@sinclair/typebox':
+        specifier: 0.33.9
+        version: 0.33.9
       '@trpc/server':
         specifier: ^11.8.1
         version: 11.8.1(typescript@5.9.3)
