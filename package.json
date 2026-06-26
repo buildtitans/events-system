@@ -16,7 +16,14 @@
     "test:watch:all": "jest --watchAll",
     "test:verbose": "jest --verbose",
     "test:coverage": "jest --coverage",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
+    "docker:up": "docker compose up --build",
+    "docker:up:detached": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:codegen": "docker compose exec fastify pnpm --filter ./src/server run db:codegen",
+    "docker:seed": "docker compose exec fastify pnpm --filter ./src/server run db:seed",
+    "docker:seed:temp": "docker compose run --rm fastify pnpm --filter ./src/server run db:seed"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

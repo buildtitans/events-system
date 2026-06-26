@@ -1,9 +1,17 @@
 node_modules
+src/server/node_modules
 .next
+.pnpm-store
+.deploy
+coverage
+dist
+src/server/dist
+*.tsbuildinfo
 .git
 .gitignore
 Dockerfile
 docker-compose.yml
+compose.yaml
 .env
 .env.*
 npm-debug.log

@@ -11,7 +11,8 @@
     "db:migrate:prod": "node dist/src/server/core/db/migrations/migrate.js",
     "db:seed": "tsx core/db/seeds/scripts/seedDB.ts",
     "db:seed:prod": "node dist/src/server/core/db/seeds/scripts/seedDB.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "dev:docker": "pnpm run db:migrate && pnpm run dev:fastify"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",

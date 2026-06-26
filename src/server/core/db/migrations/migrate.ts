@@ -1,17 +1,17 @@
 import * as path from "path";
 import { promises as fs } from "fs";
+import { pathToFileURL } from "node:url";
 import { Migrator, FileMigrationProvider } from "kysely/migration";
 import { db } from "@/src/server/core/db";
 
 async function migrateToLatest() {
-  console.log("************** migrate.ts starting... *****************");
-
   const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({
       fs,
       path,
       migrationFolder: __dirname,
+      import: async (filePath) => import(pathToFileURL(filePath).href),
     }),
   });
 
@@ -33,7 +33,11 @@ async function migrateToLatest() {
 async function migrateWithRetry(attempts = 10, delayMs = 2000): Promise<void> {
   for (let i = 0; i < attempts; i++) {
     try {
+      console.log("************** migrate.ts starting... *****************");
       await migrateToLatest();
+      console.log(
+        "************** migrate.ts ran successfully *****************",
+      );
       return;
     } catch (err) {
       const attempt = i + 1;

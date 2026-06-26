@@ -47,7 +47,7 @@ function buildServer() {
 
   if (process.env.NODE_ENV !== "production") {
     app.register(cors, {
-      origin: getEnv("devClientUrl"),
+      origin: getEnv("client_url"),
       credentials: true,
     });
   }

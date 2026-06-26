@@ -2,8 +2,8 @@ import { buildServer } from "@/src/server/core/main/app";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 
 const server = buildServer();
-const prodPort = Number(getEnv("prodFastifyPort"));
-const prodHost = getEnv("prodFastifyHost");
+const prodPort = Number(getEnv("fastifyPort"));
+const prodHost = getEnv("fastifyHost");
 
 server.listen(
   {
