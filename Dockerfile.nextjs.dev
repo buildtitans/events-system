@@ -1,0 +1,20 @@
+FROM node:24-bookworm-slim
+
+WORKDIR /app
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY src/server/package.json ./src/server/package.json
+
+RUN pnpm config set node-linker hoisted && \
+    pnpm config set package-import-method copy && \
+    pnpm install --frozen-lockfile
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["pnpm", "exec", "next", "dev", "--hostname", "0.0.0.0"]

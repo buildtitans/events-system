@@ -1,4 +1,4 @@
-import { getResendKey, getResetUrl } from "./getModeEnv";
+import { getEnv } from "./getEnv";
 
 export type ResendVariables = {
   resendUrl: string;
@@ -6,8 +6,8 @@ export type ResendVariables = {
 };
 
 function getResendVars(): ResendVariables {
-  const resendUrl = getResetUrl();
-  const resendKey = getResendKey();
+  const resendUrl = getEnv("pwResetUrl");
+  const resendKey = getEnv("resendKey");
 
   return { resendUrl, resendKey };
 }

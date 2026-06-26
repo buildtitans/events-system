@@ -1,0 +1,18 @@
+FROM node:24-bookworm-slim
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY src/server/package.json ./src/server/package.json
+
+RUN pnpm config set node-linker hoisted && \
+    pnpm config set package-import-method copy && \
+    pnpm install --frozen-lockfile
+
+COPY src/server ./src/server
+
+EXPOSE 3001
+
+CMD ["pnpm", "--filter", "./src/server", "run", "dev:fastify"]
