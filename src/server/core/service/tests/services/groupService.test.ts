@@ -104,7 +104,7 @@ describe("GroupService.getGroupNameDictionary", () => {
 
     getGroupsInDb.mockResolvedValue(groups);
 
-    await expect(service.getGroupNameDictionary()).resolves.toEqual({
+    await expect(service.query.getGroupNameDictionary()).resolves.toEqual({
       "group-1": {
         name: "Board Game Nights",
         slug: "board-game-nights",
@@ -144,7 +144,7 @@ describe("GroupService.getOrganizerEmail", () => {
       email: "organizer@example.com",
     });
 
-    await expect(service.getOrganizerEmail("group-1")).resolves.toEqual({
+    await expect(service.query.getOrganizerEmail("group-1")).resolves.toEqual({
       email: "organizer@example.com",
     });
 

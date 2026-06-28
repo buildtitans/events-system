@@ -13,11 +13,11 @@ import {
 
 export const groupsRouter = router({
   list: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.groups.getAllGroups();
+    return await ctx.services.api.domains.groups.query.getAllGroups();
   }),
 
   nameLookup: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.groups.getGroupNameDictionary();
+    return await ctx.services.api.domains.groups.query.getGroupNameDictionary();
   }),
 
   createNewGroup: protectedProcedure
@@ -32,13 +32,15 @@ export const groupsRouter = router({
   groupBySlug: publicProcedure
     .input(groupSlugInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.getGroupFromSlug(input);
+      return await ctx.services.api.domains.groups.query.getGroupFromSlug(
+        input,
+      );
     }),
 
   searchGroups: publicProcedure
     .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.searchGroups(input);
+      return await ctx.services.api.domains.groups.query.searchGroups(input);
     }),
 
   getNextGroupEventLookup: publicProcedure
