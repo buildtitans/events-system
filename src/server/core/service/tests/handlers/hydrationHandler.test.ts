@@ -3,6 +3,7 @@ import {
   dbMock,
   makeAttendanceUpdate,
   makeEvent,
+  makeGroup,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventHydrationHandler", () => {
@@ -12,11 +13,14 @@ describe("EventHydrationHandler", () => {
     .getUserRsvpStatusToEvent as jest.Mock;
   const getMembershipRoleInDb = dbMock.groupMembers
     .getMembershipRole as jest.Mock;
+  const getEventMetaData = dbMock.groups.getGroupById as jest.Mock;
 
   const userId = "user-1";
   const eventId = "event-1";
   const groupId = "group-1";
 
+  const group = makeGroup({ id: groupId });
+  const event = makeEvent({ id: eventId, group_id: groupId });
   let handler: EventHydrationHandler;
 
   beforeEach(() => {
@@ -43,14 +47,20 @@ describe("EventHydrationHandler", () => {
         makeEvent({ id: eventId, group_id: groupId }),
       );
       getMembershipRoleInDb.mockResolvedValue("organizer");
+      getEventMetaData.mockResolvedValue(group);
 
       await expect(handler.openedEvent(userId, eventId)).resolves.toEqual({
-        rsvpStatus: "interested",
-        attendants: {
-          going: 2,
-          interested: 1,
+        event,
+        meta: {
+          rsvpStatus: "interested",
+          attendants: {
+            going: 2,
+            interested: 1,
+          },
+          role: "organizer",
+          name: group.name,
+          slug: group.slug,
         },
-        role: "organizer",
       });
 
       expect(getUserRsvpStatusToEventInDb).toHaveBeenCalledWith(
@@ -73,14 +83,20 @@ describe("EventHydrationHandler", () => {
       getEventInDb.mockResolvedValue(
         makeEvent({ id: eventId, group_id: groupId }),
       );
+      getEventMetaData.mockResolvedValue(group);
 
       await expect(handler.openedEvent(undefined, eventId)).resolves.toEqual({
-        rsvpStatus: "not_going",
-        attendants: {
-          going: 1,
-          interested: 1,
+        event,
+        meta: {
+          rsvpStatus: "not_going",
+          attendants: {
+            going: 1,
+            interested: 1,
+          },
+          role: "anonymous",
+          name: group.name,
+          slug: group.slug,
         },
-        role: "anonymous",
       });
 
       expect(getUserRsvpStatusToEventInDb).not.toHaveBeenCalled();

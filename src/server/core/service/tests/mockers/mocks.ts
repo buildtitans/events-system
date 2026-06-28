@@ -127,6 +127,7 @@ export const dbMock = {
     getGroupsByOrganizerId: jest.fn(),
     getGroupBySlug: jest.fn(),
     createGroup: jest.fn(),
+    getGroupById: jest.fn(),
   },
   auth: {
     authenticate: jest.fn(),
