@@ -1,18 +1,45 @@
 import { DBClient } from "../../db";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpStatusSchemaValidator } from "../../lib/validation/schemaValidators";
+import { EventSchemaType } from "../../../../schemas/events/eventSchema";
+import { GroupMemberSchemaType } from "../../../../schemas/groups/groupMembersSchema";
+import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
+
+type HydratedEvent = {
+  event: EventSchemaType;
+  meta: {
+    rsvpStatus: EventAttendantStatusSchemaType;
+    attendants: {
+      going: number;
+      interested: number;
+    };
+    role: GroupMemberSchemaType["role"];
+    name: GroupSchemaType["name"];
+    slug: GroupSchemaType["slug"];
+  };
+};
 
 export class EventHydrationHandler {
   constructor(private readonly db: DBClient) {}
 
-  async openedEvent(user_id: string | undefined | null, event_id: string) {
+  async openedEvent(
+    user_id: string | undefined | null,
+    event_id: string,
+  ): Promise<HydratedEvent> {
+    const event = await this.db.events.getEvent(event_id);
     const rsvpStatus = await this.getEventRsvp(user_id, event_id);
     const attendants = await this.getAttendingAndInterested(event_id);
     const role = await this.getUserRoleInGroup(user_id, event_id);
+    const { name, slug } = await this.getEventMetaData(event);
     return {
-      rsvpStatus,
-      attendants,
-      role,
+      event,
+      meta: {
+        rsvpStatus,
+        attendants,
+        role,
+        name,
+        slug,
+      },
     };
   }
 
@@ -28,6 +55,13 @@ export class EventHydrationHandler {
         event.group_id,
       );
     } else return "anonymous";
+  }
+
+  private async getEventMetaData(
+    event: EventSchemaType,
+  ): Promise<{ name: string; slug: string }> {
+    const { group_id } = event;
+    return await this.db.groups.getGroupById(group_id);
   }
 
   private async getEventRsvp(

@@ -42,6 +42,15 @@ export class GroupsRepository {
     return this.formatRawGroups(raw);
   }
 
+  async getGroupById(group_id: string) {
+    return await this.db
+      .selectFrom("groups")
+      .select(["name", "slug"])
+      .where("id", "=", group_id)
+      .limit(1)
+      .executeTakeFirstOrThrow();
+  }
+
   async getGroupsByOrganizerId(user_id: string) {
     const raw = await this.db
       .selectFrom("groups")
