@@ -39,7 +39,9 @@ const groupMembersRouter = router({
   getGroupMembers: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.getAllGroupMembers(input);
+      return await ctx.services.api.domains.groups.query.getAllGroupMembers(
+        input,
+      );
     }),
 
   viewerMemberships: protectedProcedure.mutation(async ({ ctx }) => {
@@ -51,7 +53,9 @@ const groupMembersRouter = router({
   getGroupOrganizerEmail: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.getOrganizerEmail(input);
+      return await ctx.services.api.domains.groups.query.getOrganizerEmail(
+        input,
+      );
     }),
 });
 
