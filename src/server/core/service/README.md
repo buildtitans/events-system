@@ -23,7 +23,7 @@ At a high level, this layer is responsible for deciding **what should happen** f
 Creates the service entry point attached to tRPC context.
 
 - `api` is a `ContextApi` instance
-- `layout` is a `LayoutFormatter` instance
+- `integrations` is an `Integrations` instance
 
 ### `api/contextApi.ts`
 
@@ -51,7 +51,7 @@ This is the main API routers call through `ctx.services.api.domains`.
 
 ### `services/`
 
-Contains the primary domain services.
+Contains the primary domain service entry points.
 
 Examples:
 
@@ -61,9 +61,15 @@ Examples:
 - `SessionService`
 - `UserService`
 - `NotificationService`
-- `LayoutFormatter`
 
-These classes coordinate workflows, enforce policy, and decide which handlers or DB operations are needed.
+Some service classes still coordinate workflows directly. Others now act mostly as thin domain aggregators that expose focused handler facets.
+
+Examples:
+
+- `EventService` exposes `hydrate`, `query`, `timeline`, `layout`, and `lifecycle`
+- `GroupService` exposes `groupLifecycle`, `memberships`, and `query`
+- `ParticipationsService` exposes `rsvps` and `census`
+- `SessionService`, `UserService`, and `NotificationService` continue to expose direct service methods
 
 ### `handlers/`
 
@@ -71,14 +77,30 @@ Contains narrower pieces of application logic that would make the services noisy
 
 Examples:
 
+- `EventQueryHandler`
+- `EventLifecycleHandler`
+- `EventTimelineHandler`
+- `EventLayoutHandler`
+- `EventLayoutComposer`
 - `GroupLifecycleHandler`
 - `MembershipHandler`
-- `EventHydrationHandler`
+- `GroupQueryHandler`
+- `RsvpHandler`
 - `ParticipationDtoHandler`
 - `CensusHandler`
+- `EventHydrationHandler`
 - `SessionHandler`
 
 These handlers exist to isolate focused orchestration, transformation, and request-specific behavior.
+
+### `integrations/`
+
+Contains service-level adapters for external systems.
+
+Examples:
+
+- `GeoApifySearch` powers address suggestions through `ctx.services.integrations.geoApify`
+- `ResendPasswordResetMailer` sends password reset emails behind `PasswordResetEmailService`
 
 ### `auth/`
 
@@ -105,13 +127,13 @@ The usual request path looks like this:
 
 `router -> service/domain -> handler/auth -> db`
 
-For example, `events.newEvent` in the router eventually calls `EventService.createEvent(...)`, which:
+For example, `events.newEvent` in the router calls `ctx.services.api.domains.events.lifecycle.createEvent(...)`, which:
 
 1. requires an authenticated user
 2. checks whether that user can create an event for the target group
 3. delegates persistence to `db.events.createNewEvent(...)`
 
-Another example is RSVP retrieval in `ParticipationsService.getRsvpdEvents(...)`, which:
+Another example is RSVP retrieval through `ctx.services.api.domains.participations.rsvps.getRsvpdEvents(...)`, which:
 
 1. requires authentication
 2. loads raw attendance records and groups
@@ -152,10 +174,12 @@ They are responsible for:
 
 Examples in this codebase:
 
-- `EventService` handles event creation, event status updates, event lookup logic, and event hydration entry points
-- `GroupService` exposes group reads and delegates lifecycle and membership workflows to handlers
-- `ParticipationsService` handles RSVP updates, membership lookups, attendance lookups, and RSVP shaping
+- `EventService` exposes focused event handlers for query, lifecycle, timeline, layout, and hydration workflows
+- `GroupService` exposes focused group handlers for lifecycle, membership, and query workflows
+- `ParticipationsService` exposes RSVP and census workflows through focused handlers
 - `SessionService` handles login normalization, logout, and session recovery
+- `UserService` handles user creation, account lookup, created groups, and viewer membership shaping
+- `NotificationService` handles notification reads, writes, and seen-state updates
 
 ### Handlers
 
@@ -163,10 +187,17 @@ Handlers pull out focused logic that is still application logic, but narrower th
 
 Examples:
 
+- `EventQueryHandler` handles direct event reads and event search
+- `EventLifecycleHandler` handles event creation and event status changes
+- `EventTimelineHandler` handles past events, archived events, and next-event lookup by group
+- `EventLayoutHandler` loads event sets for layout use cases and delegates layout construction
+- `EventLayoutComposer` converts event lists into validated card/stack layout slots
+- `EventHydrationHandler` assembles drawer-ready event state such as RSVP status, counts, viewer role, and group metadata
 - `GroupLifecycleHandler` creates a group and assigns the organizer membership
 - `MembershipHandler` handles join/leave behavior and role lookup
-- `EventHydrationHandler` assembles drawer-ready event state such as RSVP status, counts, and viewer role
-- `ParticipationDtoHandler` shapes RSVP and membership data for the frontend
+- `GroupQueryHandler` handles group reads, category lookup, group search, member lookup, organizer email lookup, and slug lookup
+- `RsvpHandler` handles RSVP updates, viewer RSVP lookup, attendance dictionaries, and RSVP list shaping
+- `ParticipationDtoHandler` maps event, group, and attendance data into frontend RSVP DTOs
 - `CensusHandler` derives counts and popular event IDs from attendance records
 - `SessionHandler` writes and clears the session cookie on the Fastify request/response pair
 
@@ -179,11 +210,17 @@ Authorization is kept out of the routers and mostly out of the DB layer.
 
 This makes permission checks explicit and easier to test directly.
 
-### Formatting / Layout
+### Event Layout
 
-`LayoutFormatter` is part of the service layer because event layout is treated as application-level formatting rather than a UI-only concern.
+Event layout is part of the service layer because event layout is treated as application-level formatting rather than a UI-only concern.
 
-It:
+`EventLayoutHandler`:
+
+- loads the requested event set
+- filters active events for active/group layout views
+- delegates layout construction to `EventLayoutComposer`
+
+`EventLayoutComposer`:
 
 - paginates event lists
 - converts events into card/stack layout slots
@@ -200,9 +237,8 @@ Some of the important rules enforced here include:
 - authentication is required before mutating RSVP state
 - authentication is required before reading viewer-specific membership or RSVP data
 - only organizers can create, update, cancel, and archive events, and create group notifications
-- only group members or group organizer can RSVP or change RSVP status to an event
 - membership changes are gated by role-aware permission checks
-- user-facing membership and RSVP data is shaped into DTOs before leaving the service layer
+- user-facing membership and RSVP data is shaped before leaving the service layer
 - some methods short-circuit early when no meaningful data exists, such as when a user has no qualifying RSVP records
 - event hydration depends on both viewer state and event context
 
@@ -230,7 +266,7 @@ Examples of direct test coverage in this directory:
 - `SessionService`
 - `UserService`
 - `NotificationService`
-- `LayoutFormatter`
+- `EventLayoutComposer`
 - `MembershipHandler`
 - `EventHydrationHandler`
 - `ParticipationDtoHandler`
