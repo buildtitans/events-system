@@ -16,7 +16,7 @@ export const authRouter = router({
         ctx.session.setCookieHeader(result.session, result.user);
 
         const attendanceDictionary =
-          await ctx.services.api.domains.participations.getAttendanceDictionary(
+          await ctx.services.api.domains.participations.rsvps.getAttendanceDictionary(
             result.user.id,
           );
 

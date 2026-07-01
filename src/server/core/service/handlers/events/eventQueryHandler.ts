@@ -1,10 +1,10 @@
-import { DBClient } from "../../db";
+import { DBClient } from "@/src/server/core/db/access/client/dbClient";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import {
   EventsArraySchemaType,
   EventSchemaType,
-} from "../../../../schemas/events/eventSchema";
-import { EventAttendantsSchemaType } from "../../../../schemas/events/eventAttendantsSchema";
+} from "@/src/schemas/events/eventSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events//eventAttendantsSchema";
 
 export class EventQueryHandler {
   constructor(private readonly db: DBClient) {}

@@ -14,13 +14,13 @@ export const usersRouter = router({
   }),
 
   userMemberships: protectedProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.getMemberships(
+    return await ctx.services.api.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
 
   rsvpsToEvents: protectedProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.getRsvpdEvents(
+    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),

@@ -1,9 +1,9 @@
 import { DBClient } from "@/src/server/core/db";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { AttendantCountType } from "../types";
+import { AttendantCountType } from "../../types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
+import { curatePopularEventsIds } from "../../../lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export class CensusHandler {

@@ -2,9 +2,9 @@ import {
   EventSchemaType,
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
-} from "../../../../schemas/events/eventSchema";
-import { DBClient } from "../../db";
-import { Authorization } from "../auth/authorization";
+} from "@/src/schemas/events/eventSchema";
+import { DBClient } from "@/src/server/core/db/access/client/dbClient";
+import { Authorization } from "@/src/server/core/service/auth/authorization";
 
 export class EventLifecycleHandler {
   constructor(

@@ -4,20 +4,15 @@ import {
   policyMock,
   makeEvent,
   makeAttendanceUpdate,
-  makeMembership,
   rsvps,
   groups,
   events,
-  dtoMemberships,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 import {
   USER_ID,
   EVENT_ID,
-  GROUP_ID_1,
-  GROUP_ID_2,
-  GROUP_ID_3,
   EVENT_ID_1,
   EVENT_ID_2,
   EVENT_ID_3,
@@ -33,10 +28,7 @@ describe("ParticipationsService", () => {
     .getUserAttendanceRecords as jest.Mock;
   const getEvents = dbMock.events.getEvents as jest.Mock;
   const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
-  const getViewerMembershipsInDb = dbMock.groupMembers
-    .getViewerMemberships as jest.Mock;
-  const getMemberCountsByGroupIdsInDb = dbMock.groupMembers
-    .getMemberCountsByGroupIds as jest.Mock;
+
   const getFlattenedEventsByIdsInDb = dbMock.events
     .getFlattenedEventsByIds as jest.Mock;
 
@@ -54,7 +46,7 @@ describe("ParticipationsService", () => {
       unauthenticated();
 
       await expect(
-        service.updateRsvpStatus(null, EVENT_ID, newStatus),
+        service.rsvps.updateRsvpStatus(null, EVENT_ID, newStatus),
       ).rejects.toThrow("401");
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
@@ -72,7 +64,7 @@ describe("ParticipationsService", () => {
       );
 
       await expect(
-        service.updateRsvpStatus(USER_ID, EVENT_ID, newStatus),
+        service.rsvps.updateRsvpStatus(USER_ID, EVENT_ID, newStatus),
       ).resolves.toMatchObject(
         makeAttendanceUpdate(
           { user_id: USER_ID, event_id: EVENT_ID },
@@ -93,7 +85,7 @@ describe("ParticipationsService", () => {
       unauthenticated();
 
       await expect(
-        service.getUserRsvpToEvent(undefined, EVENT_ID),
+        service.rsvps.getUserRsvpToEvent(undefined, EVENT_ID),
       ).rejects.toThrow("401");
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
@@ -106,7 +98,7 @@ describe("ParticipationsService", () => {
       getUserRsvpStatusToEventInDb.mockResolvedValue("going");
 
       await expect(
-        service.getUserRsvpToEvent(USER_ID, EVENT_ID),
+        service.rsvps.getUserRsvpToEvent(USER_ID, EVENT_ID),
       ).resolves.toEqual("going");
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
@@ -136,7 +128,7 @@ describe("ParticipationsService", () => {
       getUserAttendanceRecordsInDb.mockResolvedValue(records);
 
       await expect(
-        service.getAttendanceDictionary(USER_ID),
+        service.rsvps.getAttendanceDictionary(USER_ID),
       ).resolves.toMatchObject({
         [EVENT_ID_1]: "going",
         [EVENT_ID_2]: "interested",
@@ -145,43 +137,6 @@ describe("ParticipationsService", () => {
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
       expect(getUserAttendanceRecordsInDb).toHaveBeenCalledWith(USER_ID);
-    });
-  });
-
-  describe("getMemberships", () => {
-    it("throws a 401 status for a user that is not authenticated", async () => {
-      unauthenticated();
-
-      await expect(service.getMemberships(undefined)).rejects.toThrow("401");
-
-      expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
-      expect(getGroupsInDb).not.toHaveBeenCalled();
-      expect(getViewerMembershipsInDb).not.toHaveBeenCalled();
-    });
-
-    it("returns memberships associated with the authenticated user", async () => {
-      authenticateAs();
-
-      getGroupsInDb.mockResolvedValue(groups);
-
-      getViewerMembershipsInDb.mockResolvedValue([
-        makeMembership({ user_id: USER_ID, group_id: GROUP_ID_1 }),
-        makeMembership({ user_id: USER_ID, group_id: GROUP_ID_2 }),
-        makeMembership({ user_id: USER_ID, group_id: GROUP_ID_3 }),
-      ]);
-
-      getMemberCountsByGroupIdsInDb.mockResolvedValue({
-        [GROUP_ID_1]: 3,
-        [GROUP_ID_2]: 5,
-        [GROUP_ID_3]: 7,
-      });
-
-      await expect(service.getMemberships(USER_ID)).resolves.toEqual(
-        dtoMemberships,
-      );
-
-      expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
-      expect(getViewerMembershipsInDb).toHaveBeenCalledWith(USER_ID);
     });
   });
 
@@ -198,7 +153,7 @@ describe("ParticipationsService", () => {
     it("throws a 401 error when the user is not authenticated", async () => {
       unauthenticated();
 
-      await expect(service.getRsvpdEvents(null)).rejects.toThrow("401");
+      await expect(service.rsvps.getRsvpdEvents(null)).rejects.toThrow("401");
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
       expect(getGroupsInDb).not.toHaveBeenCalled();
@@ -230,7 +185,9 @@ describe("ParticipationsService", () => {
         .mockResolvedValueOnce(events)
         .mockResolvedValueOnce(events);
 
-      await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual(rsvps);
+      await expect(service.rsvps.getRsvpdEvents(USER_ID)).resolves.toEqual(
+        rsvps,
+      );
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
       expect(getGroupsInDb).toHaveBeenCalled();
@@ -253,7 +210,7 @@ describe("ParticipationsService", () => {
 
       getUserAttendanceRecordsInDb.mockResolvedValue([]);
 
-      await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
+      await expect(service.rsvps.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
       expect(getGroupsInDb).not.toHaveBeenCalled();
@@ -283,7 +240,7 @@ describe("ParticipationsService", () => {
 
       getFlattenedEventsByIdsInDb.mockResolvedValueOnce(events);
 
-      await expect(service.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
+      await expect(service.rsvps.getRsvpdEvents(USER_ID)).resolves.toEqual([]);
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
       expect(getGroupsInDb).not.toHaveBeenCalled();

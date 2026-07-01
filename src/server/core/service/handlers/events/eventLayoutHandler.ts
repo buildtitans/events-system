@@ -1,6 +1,6 @@
-import { EventSchemaType } from "../../../../schemas/events/eventSchema";
-import { DBClient } from "../../db";
-import { filterActiveEvents } from "../../lib/utils/filterActiveEvents";
+import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
+import { DBClient } from "../../../db";
+import { filterActiveEvents } from "../../../lib/utils/filterActiveEvents";
 import { EventLayoutComposer } from "./eventLayoutComposer";
 
 export class EventLayoutHandler {

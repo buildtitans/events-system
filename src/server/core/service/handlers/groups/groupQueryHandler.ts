@@ -1,9 +1,9 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { DBClient } from "../../db";
+import { DBClient } from "../../../db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
-import { buildGroupNameLookup } from "../../lib/utils/buildGroupNameLookup";
-import type { NameSlugDescriptionLookup } from "../../lib/utils/buildGroupNameLookup";
+import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
+import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 
 export class GroupQueryHandler {
   constructor(private readonly db: DBClient) {}

@@ -52,6 +52,6 @@ export const groupsRouter = router({
     }),
 
   popularGroups: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.getMostPopularGroups();
+    return await ctx.services.api.domains.participations.census.getPopularGroups();
   }),
 });
