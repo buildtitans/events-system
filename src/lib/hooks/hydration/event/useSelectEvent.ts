@@ -14,27 +14,10 @@ import {
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { useCallback } from "react";
 
 export const useSelectEvent = () => {
   const dispatch = useDispatch<AppDispatch>();
-
-  const handleHydrationResults = (
-    currentUserStatus: EventAttendantsSchemaType["status"],
-    numGoing: number,
-    numInterested: number,
-    role: GroupMemberSchemaType["role"],
-    event: EventSchemaType,
-  ) => {
-    dispatch(fillEventDrawer({ status: "ready", data: event }));
-    dispatch(getDrawerViewerRole(role));
-    dispatch(getUserAttendanceStatus(currentUserStatus));
-    dispatch(getNumAttendants({ status: "ready", data: numGoing }));
-    dispatch(getNumInterested({ status: "ready", data: numInterested }));
-  };
 
   const handleOpenEvent = useCallback(
     async (event_id: RsvpSchemaType["event_id"]) => {
@@ -53,12 +36,12 @@ export const useSelectEvent = () => {
 
         if (name) dispatch(getGroupName({ status: "ready", data: name }));
 
-        handleHydrationResults(
-          rsvpStatus,
-          attendants.going,
-          attendants.interested,
-          role,
-          event,
+        dispatch(fillEventDrawer({ status: "ready", data: event }));
+        dispatch(getDrawerViewerRole(role));
+        dispatch(getUserAttendanceStatus(rsvpStatus));
+        dispatch(getNumAttendants({ status: "ready", data: attendants.going }));
+        dispatch(
+          getNumInterested({ status: "ready", data: attendants.interested }),
         );
       } catch (err) {
         logCaughtError("hook/useSelectEvent.handleOpenEvent", err);
@@ -67,7 +50,7 @@ export const useSelectEvent = () => {
         );
       }
     },
-    [handleHydrationResults, dispatch],
+    [dispatch],
   );
 
   return {

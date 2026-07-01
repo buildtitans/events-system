@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { StoredSession } from "../../db/access/types/types";
+import type { StoredSession } from "../../../db/access/types/types";
 import { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 
 export class SessionHandler {
