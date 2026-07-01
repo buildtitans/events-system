@@ -7,14 +7,15 @@ import { RsvpHandler } from "../handlers/participations/rsvpHandler";
 export class ParticipationsService {
   public readonly census: CensusHandler;
   public readonly rsvps: RsvpHandler;
-  private readonly parse: ParticipationDtoHandler;
-
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
   ) {
     this.census = new CensusHandler(this.db);
-    this.parse = new ParticipationDtoHandler(this.db);
-    this.rsvps = new RsvpHandler(this.db, this.policy, this.parse);
+    this.rsvps = new RsvpHandler(
+      this.db,
+      this.policy,
+      new ParticipationDtoHandler(),
+    );
   }
 }
