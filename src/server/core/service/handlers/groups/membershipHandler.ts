@@ -12,7 +12,7 @@ export class MembershipHandler {
   async addMember(
     user_id: string | undefined,
     group_id: GroupMemberSchemaType["group_id"],
-  ) {
+  ): Promise<GroupMemberSchemaType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireCanChangeMembership(userId, group_id);
@@ -26,7 +26,7 @@ export class MembershipHandler {
   async leaveGroup(
     group_id: GroupSchemaType["id"],
     user_id: string | undefined | null,
-  ) {
+  ): Promise<boolean> {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireCanChangeMembership(userId, group_id);
@@ -37,7 +37,7 @@ export class MembershipHandler {
   async getRoleInGroup(
     user_id: string | undefined,
     group_id: GroupSchemaType["id"],
-  ) {
+  ): Promise<GroupMemberSchemaType["role"]> {
     if (!user_id) return "anonymous";
 
     const role = await this.db.groupMembers.getMembershipRole(

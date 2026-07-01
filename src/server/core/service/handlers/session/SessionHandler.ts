@@ -8,7 +8,7 @@ export class SessionHandler {
     private readonly reply: FastifyReply,
   ) {}
 
-  setCookieHeader(session: StoredSession, user: PublicUserSchemaType) {
+  setCookieHeader(session: StoredSession, user: PublicUserSchemaType): void {
     const token = session.id;
 
     this.reply.setCookie("session", token, {
@@ -26,7 +26,7 @@ export class SessionHandler {
     };
   }
 
-  removeCookieHeader() {
+  removeCookieHeader(): void {
     this.reply.clearCookie("session");
   }
 }

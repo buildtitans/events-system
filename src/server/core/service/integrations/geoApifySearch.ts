@@ -36,12 +36,24 @@ export class GeoApifySearch {
   public async suggestAddresses(
     address: string,
     locationKind: LocationType = "street",
-  ) {
+  ): Promise<
+    | {
+        status: "success";
+        data: AddressSuggestion[];
+      }
+    | {
+        status: "failed";
+        message: string;
+      }
+  > {
     const query = this.formQuery(address, locationKind);
     return await this.queryGeoApify(query);
   }
 
-  private formQuery(address: string, locationKind: LocationType = "street") {
+  private formQuery(
+    address: string,
+    locationKind: LocationType = "street",
+  ): string {
     const url = new URL(this.geoapifyUrl);
     url.searchParams.set("text", address);
     url.searchParams.set("type", locationKind);

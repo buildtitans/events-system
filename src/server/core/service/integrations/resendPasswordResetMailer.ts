@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import type { CreateEmailOptions } from "resend";
+import type { CreateEmailOptions, CreateEmailResponseSuccess } from "resend";
 import { ResendVariables } from "../../lib/init/resendSecrets";
 
 export class ResendPasswordResetMailer {
@@ -12,7 +12,10 @@ export class ResendPasswordResetMailer {
     this.resend = new Resend(this.resendKey);
   }
 
-  public async sendEmail(token: string, email: string) {
+  public async sendEmail(
+    token: string,
+    email: string,
+  ): Promise<CreateEmailResponseSuccess> {
     const url = this.constructUrl(token);
     const { data, error } = await this.resend.emails.send(
       this.resendOptions(url, email),
@@ -41,7 +44,9 @@ export class ResendPasswordResetMailer {
     };
   }
 
-  private getFromAddress() {
+  private getFromAddress():
+    | "Events System <no-reply@events-system.dev>"
+    | "onboarding@resend.dev" {
     if (process.env.NODE_ENV === "production") {
       return "Events System <no-reply@events-system.dev>";
     } else {

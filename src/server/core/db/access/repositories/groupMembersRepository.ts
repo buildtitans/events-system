@@ -96,7 +96,7 @@ export class GroupMembersRepository {
 
   async addNewMember(
     newMember: Pick<GroupMemberSchemaType, "group_id" | "user_id">,
-  ): Promise<GroupMemberSchemaType | null> {
+  ): Promise<GroupMemberSchemaType> {
     const inserted = await this.db
       .insertInto("group_members")
       .values({

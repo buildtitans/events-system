@@ -14,6 +14,7 @@ import {
 } from "../../lib/utils/buildGroupNameLookup";
 import { GroupMembersArraySchemaType } from "../../../../schemas/groups/groupMembersSchema";
 import { UserMembershipSchemaArrayValidator } from "../../lib/validation/schemaValidators";
+import { NewUserResponse } from "../../db/access/types/types";
 
 export class UserService {
   constructor(
@@ -21,7 +22,10 @@ export class UserService {
     private readonly policy: Authorization,
   ) {}
 
-  async createNewUser(emailInput: string, passwordInput: string) {
+  async createNewUser(
+    emailInput: string,
+    passwordInput: string,
+  ): Promise<NewUserResponse> {
     const { email, password } = validateLoginCredentials(
       emailInput,
       passwordInput,

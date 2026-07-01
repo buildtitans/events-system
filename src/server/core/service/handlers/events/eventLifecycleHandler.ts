@@ -15,7 +15,7 @@ export class EventLifecycleHandler {
   async updateEventStatus(
     user_id: string | null | undefined,
     eventUpdate: UpdateEventArgsSchemaType,
-  ) {
+  ): Promise<{ updateStatus: "success" | "failure" }> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, eventUpdate.group_id);
 

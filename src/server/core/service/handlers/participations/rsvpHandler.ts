@@ -6,7 +6,10 @@ import {
   filterUserRsvps,
   StatusLookupType,
 } from "../../../lib/utils/filterRsvps";
-import { mapAttendanceDictionary } from "../../../lib/utils/mapAttendanceDictionary";
+import {
+  AttendanceDictionaryType,
+  mapAttendanceDictionary,
+} from "../../../lib/utils/mapAttendanceDictionary";
 import {
   RsvpSchemaArrayValidator,
   RsvpStatusSchemaValidator,
@@ -25,7 +28,7 @@ export class RsvpHandler {
     user_id: string | undefined | null,
     event_id: string,
     newStatus: EventAttendantsSchemaType["status"],
-  ) {
+  ): Promise<EventAttendantsSchemaType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
     return await this.db.eventAttendants.updateAttendanceStatus(
@@ -37,7 +40,7 @@ export class RsvpHandler {
   public async getUserRsvpToEvent(
     user_id: string | undefined | null,
     event_id: string,
-  ) {
+  ): Promise<EventAttendantsSchemaType["status"]> {
     const userId = this.policy.requireAuthenticated(user_id);
     const result = await this.db.eventAttendants.getUserRsvpStatusToEvent(
       userId,
@@ -56,7 +59,9 @@ export class RsvpHandler {
     return await this.toRsvps(keys, filtered);
   }
 
-  async getAttendanceDictionary(user_id: string | undefined | null) {
+  async getAttendanceDictionary(
+    user_id: string | undefined | null,
+  ): Promise<AttendanceDictionaryType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
     const ids = (await this.db.events.getEvents()).map((event) => event.id);
@@ -88,7 +93,9 @@ export class RsvpHandler {
     return RsvpSchemaArrayValidator(rsvps);
   }
 
-  private async getUserAttendance(userId: string) {
+  private async getUserAttendance(
+    userId: string,
+  ): Promise<EventAttendantsSchemaType[]> {
     const userRecords =
       await this.db.eventAttendants.getUserAttendanceRecords(userId);
 
@@ -106,7 +113,7 @@ export class RsvpHandler {
 
   private async getActiveAttendanceRecords(
     userRecords: EventAttendantsSchemaType[],
-  ) {
+  ): Promise<EventAttendantsSchemaType[]> {
     const ids = userRecords.map((record) => record.event_id);
     const events = await this.db.events.getFlattenedEventsByIds(ids);
     const activeEvents = events.map((event) => {
