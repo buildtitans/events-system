@@ -1,9 +1,9 @@
-import { DBClient } from "../../db";
+import { DBClient } from "@/src/server/core/db/access/client/dbClient";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { RsvpStatusSchemaValidator } from "../../lib/validation/schemaValidators";
-import { EventSchemaType } from "../../../../schemas/events/eventSchema";
-import { GroupMemberSchemaType } from "../../../../schemas/groups/groupMembersSchema";
-import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
+import { RsvpStatusSchemaValidator } from "../../../lib/validation/schemaValidators";
+import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
+import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
+import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
 
 type HydratedEvent = {
   event: EventSchemaType;

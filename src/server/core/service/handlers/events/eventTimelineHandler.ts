@@ -1,19 +1,19 @@
-import { DBClient } from "../../db";
-import type {
+import { DBClient } from "@/src/server/core/db/access/client/dbClient";
+import {
   EventsByGroupIdSchemaType,
   EventSchemaType,
-} from "../../../../schemas/events/eventSchema";
-import { isPastEvent } from "../../lib/utils/isPastEvent";
+} from "@/src/schemas/events/eventSchema";
+import { isPastEvent } from "../../../lib/utils/isPastEvent";
 import {
   EventsByGroupId,
   UpComingEventsLookup,
   PastEventsResults,
   PastEventAttendanceLookup,
-} from "../types";
-import { EventsByGroupIdSchemaValidator } from "../../lib/validation/schemaValidators";
-import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
-import { EventAttendantsSchemaType } from "../../../../schemas/events/eventAttendantsSchema";
-import { Authorization } from "../auth/authorization";
+} from "../../types";
+import { EventsByGroupIdSchemaValidator } from "../../../lib/validation/schemaValidators";
+import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
+import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
+import { Authorization } from "../../auth/authorization";
 
 export class EventTimelineHandler {
   constructor(

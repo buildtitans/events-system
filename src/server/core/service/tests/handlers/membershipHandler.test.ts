@@ -1,4 +1,4 @@
-import { MembershipHandler } from "@/src/server/core/service/handlers/membershipHandler";
+import { MembershipHandler } from "@/src/server/core/service/handlers/groups/membershipHandler";
 import {
   authenticateAs,
   dbMock,
@@ -28,7 +28,9 @@ describe("MembershipHandler", () => {
     it("throws a 401 error when the user is not authenticated", async () => {
       unauthenticated();
 
-      await expect(handler.addMember(undefined, groupId)).rejects.toThrow("401");
+      await expect(handler.addMember(undefined, groupId)).rejects.toThrow(
+        "401",
+      );
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
       expect(policyMock.requireCanChangeMembership).not.toHaveBeenCalled();
@@ -114,7 +116,9 @@ describe("MembershipHandler", () => {
       );
       removeMemberInDb.mockResolvedValue(undefined);
 
-      await expect(handler.leaveGroup(groupId, userId)).resolves.toBeUndefined();
+      await expect(
+        handler.leaveGroup(groupId, userId),
+      ).resolves.toBeUndefined();
 
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(userId);
       expect(policyMock.requireCanChangeMembership).toHaveBeenCalledWith(

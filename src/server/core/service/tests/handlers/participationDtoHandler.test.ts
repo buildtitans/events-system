@@ -1,4 +1,4 @@
-import { ParticipationDtoHandler } from "@/src/server/core/service/handlers/participationDtoHandler";
+import { ParticipationDtoHandler } from "@/src/server/core/service/handlers/participations/participationDtoHandler";
 import {
   dbMock,
   makeEvent,

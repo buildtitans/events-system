@@ -7,8 +7,8 @@ import {
   LayoutSlotSchemaType,
   PaginatedLayoutSchemaType,
 } from "@/src/schemas/events/layoutSlotSchema";
-import { LayoutSlot } from "../../lib/types";
-import { cardSizingConfig } from "../../lib/config/cardSizingConfig";
+import { LayoutSlot } from "../../../lib/types";
+import { cardSizingConfig } from "../../../lib/config/cardSizingConfig";
 
 export class EventLayoutComposer {
   constructor() {}

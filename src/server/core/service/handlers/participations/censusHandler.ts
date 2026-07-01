@@ -1,9 +1,12 @@
 import { DBClient } from "@/src/server/core/db";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { AttendantCountType } from "../types";
+import { AttendantCountType } from "../../types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { curatePopularEventsIds } from "../../lib/utils/curatePopularEventsIds";
+import {
+  curatePopularEventsIds,
+  PopularEventsIds,
+} from "../../../lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export class CensusHandler {
@@ -23,7 +26,7 @@ export class CensusHandler {
     return members.length;
   }
 
-  async getPopularEventsIds() {
+  async getPopularEventsIds(): Promise<PopularEventsIds> {
     const records = await this.api.eventAttendants.getAllAttendanceRecords();
 
     const events = await this.api.events.getEvents();
@@ -32,7 +35,7 @@ export class CensusHandler {
     return curatePopularEventsIds(activeRecords);
   }
 
-  async getPopularGroups() {
+  async getPopularGroups(): Promise<GroupSchemaType[]> {
     const records = await this.api.groupMembers.getAllMembershipRecords();
 
     const popularGroupIds = this.filterPopularGroupIds(records);
@@ -43,7 +46,7 @@ export class CensusHandler {
   private filterActiveRecords(
     events: EventSchemaType[],
     records: EventAttendantsSchemaType[],
-  ) {
+  ): EventAttendantsSchemaType[] {
     const activeEvents: EventSchemaType[] = [];
     const activeRecords: EventAttendantsSchemaType[] = [];
 

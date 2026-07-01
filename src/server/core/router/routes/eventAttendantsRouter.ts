@@ -28,7 +28,7 @@ export const eventAttendantsRouter = router({
   getViewerAttendance: protectedProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.getUserRsvpToEvent(
+      return await ctx.services.api.domains.participations.rsvps.getUserRsvpToEvent(
         ctx.req.user?.id,
         input,
       );
@@ -37,7 +37,7 @@ export const eventAttendantsRouter = router({
   updateViewerAttendance: protectedProcedure
     .input(UpdateAttendanceInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.updateRsvpStatus(
+      return await ctx.services.api.domains.participations.rsvps.updateRsvpStatus(
         ctx.req.user?.id,
         input.event_id,
         input.newStatus,
@@ -49,7 +49,7 @@ export const eventAttendantsRouter = router({
   }),
 
   getUserRsvpdEvents: protectedProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.getRsvpdEvents(
+    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),

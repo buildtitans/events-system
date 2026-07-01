@@ -1,4 +1,4 @@
-import { EventHydrationHandler } from "@/src/server/core/service/handlers/eventHydrationHandler";
+import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
 import {
   dbMock,
   makeAttendanceUpdate,

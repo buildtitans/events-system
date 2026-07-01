@@ -1,4 +1,4 @@
-import { CensusHandler } from "@/src/server/core/service/handlers/censusHandler";
+import { CensusHandler } from "@/src/server/core/service/handlers/participations/censusHandler";
 import type { DBClient } from "@/src/server/core/db";
 import {
   dbMock,

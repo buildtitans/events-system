@@ -1,11 +1,20 @@
 import { UserService } from "@/src/server/core/service/services/userService";
 import {
   dbMock,
+  groups,
   makeGroup,
   policyMock,
   authenticateAs,
   unauthenticated,
+  makeMembership,
+  dtoMemberships,
 } from "@/src/server/core/service/tests/mockers/mocks";
+import {
+  GROUP_ID_1,
+  GROUP_ID_2,
+  GROUP_ID_3,
+  USER_ID,
+} from "../mockers/mockValues";
 
 describe("UserService.createNewUser", () => {
   const signUpInDb = dbMock.auth.signUp as jest.Mock;
@@ -28,6 +37,56 @@ describe("UserService.createNewUser", () => {
       "alice@example.com",
       "password-123",
     );
+  });
+});
+
+describe("getMemberships", () => {
+  let service: UserService;
+
+  const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
+  const getViewerMembershipsInDb = dbMock.groupMembers
+    .getViewerMemberships as jest.Mock;
+  const getMemberCountsByGroupIdsInDb = dbMock.groupMembers
+    .getMemberCountsByGroupIds as jest.Mock;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    service = new UserService(dbMock, policyMock);
+  });
+
+  it("throws a 401 status for a user that is not authenticated", async () => {
+    unauthenticated();
+
+    await expect(service.getMemberships(undefined)).rejects.toThrow("401");
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
+    expect(getGroupsInDb).not.toHaveBeenCalled();
+    expect(getViewerMembershipsInDb).not.toHaveBeenCalled();
+  });
+
+  it("returns memberships associated with the authenticated user", async () => {
+    authenticateAs();
+
+    getGroupsInDb.mockResolvedValue(groups);
+
+    getViewerMembershipsInDb.mockResolvedValue([
+      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_1 }),
+      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_2 }),
+      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_3 }),
+    ]);
+
+    getMemberCountsByGroupIdsInDb.mockResolvedValue({
+      [GROUP_ID_1]: 3,
+      [GROUP_ID_2]: 5,
+      [GROUP_ID_3]: 7,
+    });
+
+    await expect(service.getMemberships(USER_ID)).resolves.toEqual(
+      dtoMemberships,
+    );
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
+    expect(getViewerMembershipsInDb).toHaveBeenCalledWith(USER_ID);
   });
 });
 

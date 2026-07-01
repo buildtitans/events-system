@@ -9,6 +9,7 @@
     "build:fastify": "pnpm --dir src/server build:fastify",
     "start": "next start",
     "release:build": "pnpm build && pnpm build:fastify && pnpm release:package",
+    "typecheck": "tsc --noEmit",
     "release:package": "node scripts/release/package.mjs",
     "lint": "eslint",
     "test": "jest",

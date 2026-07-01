@@ -1,8 +1,8 @@
 import { DBClient } from "../../db";
-import { GroupLifecycleHandler } from "../handlers/groupLifecycleHandler";
-import { MembershipHandler } from "../handlers/membershipHandler";
+import { GroupLifecycleHandler } from "../handlers/groups/groupLifecycleHandler";
+import { MembershipHandler } from "../handlers/groups/membershipHandler";
 import { Authorization } from "../auth/authorization";
-import { GroupQueryHandler } from "../handlers/groupQueryHandler";
+import { GroupQueryHandler } from "../handlers/groups/groupQueryHandler";
 
 export class GroupService {
   public readonly groupLifecycle: GroupLifecycleHandler;

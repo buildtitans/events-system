@@ -3,9 +3,9 @@ import type {
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { DBClient } from "../../db";
-import type { NewOrganizerInput } from "../types";
-import { Authorization } from "../auth/authorization";
+import { DBClient } from "../../../db";
+import type { NewOrganizerInput } from "../../types";
+import { Authorization } from "../../auth/authorization";
 
 export class GroupLifecycleHandler {
   constructor(

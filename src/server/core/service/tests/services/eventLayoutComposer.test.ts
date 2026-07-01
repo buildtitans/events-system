@@ -1,4 +1,4 @@
-import { EventLayoutComposer } from "@/src/server/core/service/handlers/eventLayoutComposer";
+import { EventLayoutComposer } from "@/src/server/core/service/handlers/events/eventLayoutComposer";
 import {
   fullPage,
   multiplePages,

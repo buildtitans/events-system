@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { StoredSession } from "../../db/access/types/types";
+import type { StoredSession } from "../../../db/access/types/types";
 import { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 
 export class SessionHandler {
@@ -8,7 +8,7 @@ export class SessionHandler {
     private readonly reply: FastifyReply,
   ) {}
 
-  setCookieHeader(session: StoredSession, user: PublicUserSchemaType) {
+  setCookieHeader(session: StoredSession, user: PublicUserSchemaType): void {
     const token = session.id;
 
     this.reply.setCookie("session", token, {
@@ -26,7 +26,7 @@ export class SessionHandler {
     };
   }
 
-  removeCookieHeader() {
+  removeCookieHeader(): void {
     this.reply.clearCookie("session");
   }
 }
