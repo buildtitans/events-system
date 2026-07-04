@@ -33,14 +33,14 @@ export class EventAttendantsReader {
   async rawAttendant(
     event_id: string,
     user_id: string,
-  ): Promise<SelectedAttendant> {
+  ): Promise<SelectedAttendant | undefined> {
     return await this.db
       .selectFrom("event_attendants")
       .selectAll()
       .where("event_id", "=", event_id)
       .where("user_id", "=", user_id)
       .limit(1)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirst();
   }
 
   async allRawAttendants(
