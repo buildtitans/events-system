@@ -44,7 +44,7 @@ export class EventTimelineHandler {
   ): Promise<PastEventAttendanceLookup> {
     if (ids.length === 0) return {};
 
-    const attendees = await this.db.eventAttendants.getPastEventRecords(ids);
+    const attendees = await this.db.eventAttendants.select.pastRecords(ids);
     return this.mapPastEventHeadCounts(ids, attendees);
   }
 

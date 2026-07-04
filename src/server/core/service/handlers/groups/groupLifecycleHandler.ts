@@ -16,17 +16,27 @@ export class GroupLifecycleHandler {
   async createNewGroup(
     user_id: string | undefined | null,
     newGroupInput: NewGroupInputSchemaType,
-  ): Promise<GroupSchemaType> {
+  ): Promise<
+    { ok: true; data: GroupSchemaType } | { ok: false; error: string }
+  > {
     const id = this.policy.requireAuthenticated(user_id);
 
-    const group = await this.api.groups.write.createGroup(newGroupInput, id);
+    try {
+      const group = await this.api.groups.write.createGroup(newGroupInput, id);
 
-    await this.assignOrganizerToNewGroup({
-      user_id: group.organizer_id,
-      group_id: group.id,
-    });
+      await this.assignOrganizerToNewGroup({
+        user_id: group.organizer_id,
+        group_id: group.id,
+      });
 
-    return group;
+      return {
+        ok: true,
+        data: group,
+      };
+    } catch (err) {
+      console.error(err);
+      return { ok: false, error: `Unexpected error: ${err}` };
+    }
   }
 
   private async assignOrganizerToNewGroup(

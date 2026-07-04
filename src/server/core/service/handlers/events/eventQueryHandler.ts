@@ -24,7 +24,7 @@ export class EventQueryHandler {
   async getEventAttendants(
     event_id: string,
   ): Promise<EventAttendantsSchemaType[]> {
-    return await this.db.eventAttendants.getAttendants(event_id);
+    return await this.db.eventAttendants.select.attendants(event_id);
   }
 
   async getGroupEvents(group_id: string): Promise<EventsArraySchemaType> {

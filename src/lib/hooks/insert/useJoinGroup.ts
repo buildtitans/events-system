@@ -6,57 +6,48 @@ import {
   showModal,
 } from "../../store/slices/rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { useEffect, useRef } from "react";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
 import { JoinGroupHook } from "../../types/hooks/types";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { useCallback } from "react";
 
 const useJoinGroup = (): JoinGroupHook => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
   const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
   const dispatch = useDispatch<AppDispatch>();
-  const timerRef = useRef<number | null>(null);
 
-  async function handleResult(res: GroupMemberSchemaType | null) {
-    if (res) {
-      dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "success" }));
-      dispatch(getCurrentRole("member"));
-    }
-
-    timerRef.current = window.setTimeout(() => {
-      dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "idle" }));
-      timerRef.current = null;
-    }, 800);
-  }
-
-  const joinGroup = async (
-    group_id: GroupSchemaType["id"],
-  ): Promise<GroupMemberSchemaType | null> => {
-    const res = await trpcClient.groupMembers.addNewMember.mutate(group_id);
-    return res;
-  };
-
-  const handleClick = async (group_id: GroupSchemaType["id"]) => {
-    if (snackbar.status !== "idle") return;
-
-    if (userKind === "anonymous") {
-      dispatch(showModal("suggest join"));
-      return;
-    }
-
-    dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "pending" }));
-    const result = await joinGroup(group_id);
-    handleResult(result);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
+  const joinGroup = useCallback(
+    async (group_id: GroupSchemaType["id"]) => {
+      try {
+        const res = await trpcClient.groupMembers.addNewMember.mutate(group_id);
+        dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "success" }));
+        dispatch(getCurrentRole(res.role));
+        return;
+      } catch (err) {
+        logCaughtError("useJoinGroup.handleClick.joinGroup()", err);
+        dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "failed" }));
+        dispatch(getCurrentRole("anonymous"));
+        return;
       }
-    };
-  }, []);
+    },
+    [dispatch],
+  );
+
+  const handleClick = useCallback(
+    async (group_id: GroupSchemaType["id"]) => {
+      if (snackbar.status !== "idle") return;
+
+      if (userKind === "anonymous") {
+        dispatch(showModal("suggest join"));
+        return;
+      }
+
+      dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "pending" }));
+      await joinGroup(group_id);
+    },
+    [snackbar.status, userKind, dispatch, joinGroup],
+  );
 
   return {
     handleClick,

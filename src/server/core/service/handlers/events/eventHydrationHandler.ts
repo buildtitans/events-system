@@ -72,7 +72,7 @@ export class EventHydrationHandler {
     event_id: string,
   ): Promise<EventAttendantStatusSchemaType> {
     if (user_id) {
-      const status = await this.db.eventAttendants.getUserRsvpStatusToEvent(
+      const status = await this.db.eventAttendants.select.rsvp(
         user_id,
         event_id,
       );
@@ -84,7 +84,8 @@ export class EventHydrationHandler {
   }
 
   private async getAttendingAndInterested(event_id: string) {
-    const attendance = await this.db.eventAttendants.getAttendants(event_id);
+    const attendance =
+      await this.db.eventAttendants.select.attendants(event_id);
 
     let goingCount: number = 0;
     let interestedCount: number = 0;

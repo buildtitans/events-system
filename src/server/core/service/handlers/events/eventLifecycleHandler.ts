@@ -26,11 +26,26 @@ export class EventLifecycleHandler {
     newEvent: NewEventInputSchemaType,
     group_id: EventSchemaType["group_id"],
     user_id: string | undefined,
-  ): Promise<EventSchemaType> {
+  ): Promise<
+    { ok: true; data: EventSchemaType } | { ok: false; error: string }
+  > {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireOrganizer(userId, group_id);
 
-    return await this.db.events.write.create(newEvent);
+    try {
+      const result = await this.db.events.write.create(newEvent);
+
+      return {
+        ok: true,
+        data: result,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        ok: false,
+        error: `Failed to create new event. Error: ${err}`,
+      };
+    }
   }
 }

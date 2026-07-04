@@ -15,7 +15,8 @@ export class CensusHandler {
   async getNumberOfAttendantsForEvent(
     event_id: EventSchemaType["id"],
   ): Promise<AttendantCountType> {
-    const attendants = await this.api.eventAttendants.getAttendants(event_id);
+    const attendants =
+      await this.api.eventAttendants.select.attendants(event_id);
 
     return this.countEventAttendants(attendants);
   }
@@ -27,7 +28,7 @@ export class CensusHandler {
   }
 
   async getPopularEventsIds(): Promise<PopularEventsIds> {
-    const records = await this.api.eventAttendants.getAllAttendanceRecords();
+    const records = await this.api.eventAttendants.select.allRecords();
     const events = await this.api.events.select.allScheduled();
     const activeRecords = this.filterActiveRecords(events, records);
     return curatePopularEventsIds(activeRecords);

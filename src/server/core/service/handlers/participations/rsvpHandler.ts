@@ -31,7 +31,7 @@ export class RsvpHandler {
   ): Promise<EventAttendantsSchemaType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    return await this.db.eventAttendants.updateAttendanceStatus(
+    return await this.db.eventAttendants.write.updateAttendanceStatus(
       { event_id, user_id: userId },
       newStatus,
     );
@@ -42,10 +42,7 @@ export class RsvpHandler {
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const result = await this.db.eventAttendants.getUserRsvpStatusToEvent(
-      userId,
-      event_id,
-    );
+    const result = await this.db.eventAttendants.select.rsvp(userId, event_id);
 
     return RsvpStatusSchemaValidator(result);
   }
@@ -69,7 +66,7 @@ export class RsvpHandler {
     );
 
     const userAttendanceRecords =
-      await this.db.eventAttendants.getUserAttendanceRecords(userId);
+      await this.db.eventAttendants.select.userRecords(userId);
 
     return mapAttendanceDictionary(ids, userAttendanceRecords);
   }
@@ -99,7 +96,7 @@ export class RsvpHandler {
     userId: string,
   ): Promise<EventAttendantsSchemaType[]> {
     const userRecords =
-      await this.db.eventAttendants.getUserAttendanceRecords(userId);
+      await this.db.eventAttendants.select.userRecords(userId);
 
     if (userRecords.length === 0) {
       return [];
