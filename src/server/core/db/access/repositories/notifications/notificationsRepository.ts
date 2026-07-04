@@ -6,8 +6,8 @@ import {
   NotificationSchemaArrayType,
   NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { NotificationSchemaArrayValidator } from "../../../lib/validation/schemaValidators";
-import { NotificationCreationProcedure } from "../types/types";
+import { NotificationSchemaArrayValidator } from "../../../../lib/validation/schemaValidators";
+import { NotificationCreationProcedure } from "../../types/types";
 
 export class NotificationsRepository {
   constructor(private readonly db: Kysely<DB>) {}

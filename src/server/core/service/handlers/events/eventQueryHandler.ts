@@ -10,15 +10,15 @@ export class EventQueryHandler {
   constructor(private readonly db: DBClient) {}
 
   async getAllEvents(): Promise<EventsArraySchemaType> {
-    return await this.db.events.getEvents();
+    return await this.db.events.select.allEvents();
   }
 
   async searchEvents(query: SearchSchemaType): Promise<EventsArraySchemaType> {
-    return await this.db.events.searchEventByTitle(query);
+    return await this.db.events.select.search(query);
   }
 
   async getEventById(event_id: string): Promise<EventSchemaType> {
-    return await this.db.events.getEvent(event_id);
+    return await this.db.events.select.byId(event_id);
   }
 
   async getEventAttendants(
@@ -28,6 +28,6 @@ export class EventQueryHandler {
   }
 
   async getGroupEvents(group_id: string): Promise<EventsArraySchemaType> {
-    return await this.db.events.getGroupEvents(group_id);
+    return await this.db.events.select.byGroupId(group_id);
   }
 }

@@ -4,15 +4,15 @@ import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsS
 import {
   AttendanceStatusValidator,
   ValidateRawAttendants,
-} from "../../../lib/validation/schemaValidators";
+} from "../../../../lib/validation/schemaValidators";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
-import { ISO_FORMAT } from "../../../lib/tokens/isoFormats";
+import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
 import type {
   SelectedAttendant,
   PrivateUserAttendanceUpdate,
-} from "../types/types";
+} from "../../types/types";
 dayjs.extend(utc);
 
 export class EventAttendantsRepository {

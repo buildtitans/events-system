@@ -3,7 +3,7 @@ import {
   CategoriesValidator,
   type CategoriesSchemaType,
 } from "@/src/schemas/groups/categoriesSchema";
-import type { Categories, DB } from "../../types/db";
+import type { Categories, DB } from "../../../types/db";
 import type { Selectable } from "kysely";
 
 export class CategoriesRepository {

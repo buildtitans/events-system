@@ -28,7 +28,7 @@ export class NotificationService {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, notification.group_id);
 
-    const memberIds = await this.db.groupMembers.getMemberIds(
+    const memberIds = await this.db.groupMembers.select.memberIds(
       notification.group_id,
     );
 

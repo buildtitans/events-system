@@ -24,7 +24,7 @@ export class RoleBasedAccessHandler {
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
   ) {
-    return await this.db.groupMembers.getMembershipRole(user_id, group_id);
+    return await this.db.groupMembers.select.role(user_id, group_id);
   }
 
   private checkPermission(

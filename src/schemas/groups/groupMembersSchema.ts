@@ -19,6 +19,10 @@ const GroupMemberSchema = Type.Object({
   joined_at: Type.String(),
 });
 
+const GroupMemberIdSchema = Type.String();
+
+export const GroupMemberIdsSchema = Type.Array(GroupMemberIdSchema);
+
 export const MemberCountSchema = Type.Record(Type.String(), Type.Number());
 
 const MemberToRemoveSchema = Type.Object({
@@ -28,6 +32,8 @@ const MemberToRemoveSchema = Type.Object({
 const GroupIDForInsertSchema = Type.String();
 
 export const GroupMembersArraySchema = Type.Array(GroupMemberSchema);
+
+export type GroupMemberIdSchema = Static<typeof GroupMemberIdSchema>;
 
 type MemberCountSchemaType = Static<typeof MemberCountSchema>;
 

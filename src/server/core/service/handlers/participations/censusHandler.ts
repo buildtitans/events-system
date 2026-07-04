@@ -21,26 +21,24 @@ export class CensusHandler {
   }
 
   async getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number> {
-    const members = await this.api.groupMembers.getGroupMembers(group_id);
+    const members = await this.api.groupMembers.select.allMembers(group_id);
 
     return members.length;
   }
 
   async getPopularEventsIds(): Promise<PopularEventsIds> {
     const records = await this.api.eventAttendants.getAllAttendanceRecords();
-
-    const events = await this.api.events.getEvents();
+    const events = await this.api.events.select.allScheduled();
     const activeRecords = this.filterActiveRecords(events, records);
-
     return curatePopularEventsIds(activeRecords);
   }
 
   async getPopularGroups(): Promise<GroupSchemaType[]> {
-    const records = await this.api.groupMembers.getAllMembershipRecords();
+    const records = await this.api.groupMembers.select.all();
 
     const popularGroupIds = this.filterPopularGroupIds(records);
 
-    return await this.api.groups.getGroupsByIds(popularGroupIds);
+    return await this.api.groups.select.byIds(popularGroupIds);
   }
 
   private filterActiveRecords(

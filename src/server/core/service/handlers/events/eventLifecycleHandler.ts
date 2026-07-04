@@ -14,12 +14,12 @@ export class EventLifecycleHandler {
 
   async updateEventStatus(
     user_id: string | null | undefined,
-    eventUpdate: UpdateEventArgsSchemaType,
+    statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }> {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireOrganizer(userId, eventUpdate.group_id);
+    await this.policy.requireOrganizer(userId, statusUpdate.group_id);
 
-    return await this.db.events.updateEventStatus(eventUpdate);
+    return await this.db.events.write.update(statusUpdate);
   }
 
   async createEvent(
@@ -31,6 +31,6 @@ export class EventLifecycleHandler {
 
     await this.policy.requireOrganizer(userId, group_id);
 
-    return await this.db.events.createNewEvent(newEvent);
+    return await this.db.events.write.create(newEvent);
   }
 }

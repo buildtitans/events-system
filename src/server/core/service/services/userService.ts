@@ -39,7 +39,7 @@ export class UserService {
   ): Promise<GroupSchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    const createdGroups = await this.db.groups.getGroupsByOrganizerId(userId);
+    const createdGroups = await this.db.groups.select.byOrganizerId(userId);
 
     return chunkUserGroupsIntoPages(createdGroups);
   }
@@ -57,9 +57,8 @@ export class UserService {
   ): Promise<UserMembershipSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    const rawGroups = await this.db.groups.getGroups();
-    const rawMemberships =
-      await this.db.groupMembers.getViewerMemberships(userId);
+    const rawGroups = await this.db.groups.select.all();
+    const rawMemberships = await this.db.groupMembers.select.byUserId(userId);
 
     const nameSlugDescriptionLookup = buildGroupNameLookup(rawGroups);
     return await this.toUserMembershipShape(
@@ -76,7 +75,7 @@ export class UserService {
   ): Promise<UserMembershipSchemaType[]> {
     const groupIds = rawMemberships.map((m) => m.group_id);
     const memberCounts =
-      await this.db.groupMembers.getMemberCountsByGroupIds(groupIds);
+      await this.db.groupMembers.select.memberCounts(groupIds);
 
     const results = rawMemberships.map((membership) => {
       const group = rawGroups.find((grp) => grp.id === membership.group_id);

@@ -64,7 +64,9 @@ export class RsvpHandler {
   ): Promise<AttendanceDictionaryType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    const ids = (await this.db.events.getEvents()).map((event) => event.id);
+    const ids = (await this.db.events.select.allScheduled()).map(
+      (event) => event.id,
+    );
 
     const userAttendanceRecords =
       await this.db.eventAttendants.getUserAttendanceRecords(userId);
@@ -86,9 +88,9 @@ export class RsvpHandler {
     keys: string[],
     filtered: StatusLookupType,
   ): Promise<RsvpSchemaType[]> {
-    const groups = await this.db.groups.getGroups();
+    const groups = await this.db.groups.select.all();
     const hash = buildGroupNameLookup(groups);
-    const events = await this.db.events.getFlattenedEventsByIds(keys);
+    const events = await this.db.events.select.byIds(keys);
     const rsvps = this.parse.toRsvpShape(events, hash, filtered);
     return RsvpSchemaArrayValidator(rsvps);
   }
@@ -115,7 +117,7 @@ export class RsvpHandler {
     userRecords: EventAttendantsSchemaType[],
   ): Promise<EventAttendantsSchemaType[]> {
     const ids = userRecords.map((record) => record.event_id);
-    const events = await this.db.events.getFlattenedEventsByIds(ids);
+    const events = await this.db.events.select.byIds(ids);
     const activeEvents = events.map((event) => {
       const scheduledFor = new Date(event.starts_at);
       const today = new Date();

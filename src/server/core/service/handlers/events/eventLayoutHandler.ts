@@ -13,22 +13,22 @@ export class EventLayoutHandler {
   async byIds(
     ids: EventSchemaType["id"][],
   ): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.getEventsByIds(ids);
+    const events = await this.db.events.select.byIds(ids);
     return this.composer.compileLayout(events);
   }
 
   async all(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.getEvents();
+    const events = await this.db.events.select.allEvents();
     return this.composer.compileLayout(events);
   }
 
   async active(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.getEvents();
+    const events = await this.db.events.select.allScheduled();
     return this.composer.compileLayout(filterActiveEvents(events));
   }
 
   async forGroup(groupId: string): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.getGroupEvents(groupId);
+    const events = await this.db.events.select.byGroupId(groupId);
     return this.composer.compileLayout(filterActiveEvents(events));
   }
 }

@@ -19,7 +19,7 @@ export class GroupLifecycleHandler {
   ): Promise<GroupSchemaType> {
     const id = this.policy.requireAuthenticated(user_id);
 
-    const group = await this.api.groups.createGroup(newGroupInput, id);
+    const group = await this.api.groups.write.createGroup(newGroupInput, id);
 
     await this.assignOrganizerToNewGroup({
       user_id: group.organizer_id,
@@ -32,6 +32,6 @@ export class GroupLifecycleHandler {
   private async assignOrganizerToNewGroup(
     organizer: NewOrganizerInput,
   ): Promise<GroupMemberSchemaType> {
-    return await this.api.groupMembers.addOrganizer(organizer);
+    return await this.api.groupMembers.write.addOrganizer(organizer);
   }
 }
