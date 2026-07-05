@@ -1,15 +1,16 @@
 import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
-import { dbMock } from "../mockers/mocks";
+import { createMockDb } from "../mockers/mocks";
 
 describe("RoleBasedAccessHandler.can", () => {
-  const getMembershipRoleInDb = dbMock.groupMembers
-    .getMembershipRole as jest.Mock;
-
   let handler: RoleBasedAccessHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let getMembershipRoleInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new RoleBasedAccessHandler(dbMock);
+    db = createMockDb();
+    getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
+    handler = new RoleBasedAccessHandler(db);
   });
 
   it("returns false when there is no user id", async () => {
@@ -17,7 +18,7 @@ describe("RoleBasedAccessHandler.can", () => {
       handler.can(undefined, "group-1", "manage group"),
     ).resolves.toBe(false);
 
-    expect(dbMock.groupMembers.getMembershipRole).not.toHaveBeenCalled();
+    expect(getMembershipRoleInDb).not.toHaveBeenCalled();
   });
 
   it("allows organizers to manage groups", async () => {
@@ -27,7 +28,7 @@ describe("RoleBasedAccessHandler.can", () => {
       handler.can("user-1", "group-1", "manage group"),
     ).resolves.toBe(true);
 
-    expect(dbMock.groupMembers.getMembershipRole).toHaveBeenCalledWith(
+    expect(getMembershipRoleInDb).toHaveBeenCalledWith(
       "user-1",
       "group-1",
     );

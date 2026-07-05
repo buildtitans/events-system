@@ -2,17 +2,13 @@ import type { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupService } from "@/src/server/core/service/services/groupService";
 import {
   policyMock,
-  dbMock,
+  createMockDb,
   makeGroup,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("GroupService.groupLifecycle.createNewGroup", () => {
-  const createNewGroupInDb = dbMock.groups.createGroup as jest.Mock;
-  const assignOrganizerToNewGroupInDb = dbMock.groupMembers
-    .addOrganizer as jest.Mock;
-
   const newGroup = {
     name: "new-group-1",
     description: "new-group-1 description",
@@ -23,10 +19,17 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
   const group = makeGroup(newGroup);
 
   let service: GroupService;
+  let db: ReturnType<typeof createMockDb>;
+  let createNewGroupInDb: jest.Mock;
+  let assignOrganizerToNewGroupInDb: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new GroupService(dbMock, policyMock);
+    db = createMockDb();
+    createNewGroupInDb = db.groups.write.createGroup as jest.Mock;
+    assignOrganizerToNewGroupInDb =
+      db.groupMembers.write.addOrganizer as jest.Mock;
+    service = new GroupService(db, policyMock);
   });
 
   it("throws a 401 status when the user is not authenticated", async () => {
@@ -65,7 +68,7 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
 
     await expect(
       service.groupLifecycle.createNewGroup("user-1", newGroup),
-    ).resolves.toMatchObject(group);
+    ).resolves.toEqual({ ok: true, data: group });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalled();
     expect(createNewGroupInDb).toHaveBeenCalledWith(newGroup, "user-1");
@@ -77,13 +80,15 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
 });
 
 describe("GroupService.getGroupNameDictionary", () => {
-  const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
-
   let service: GroupService;
+  let db: ReturnType<typeof createMockDb>;
+  let getGroupsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new GroupService(dbMock, policyMock);
+    db = createMockDb();
+    getGroupsInDb = db.groups.select.all as jest.Mock;
+    service = new GroupService(db, policyMock);
   });
 
   it("returns a name, slug, and description lookup keyed by group id", async () => {
@@ -122,14 +127,17 @@ describe("GroupService.getGroupNameDictionary", () => {
 });
 
 describe("GroupService.getOrganizerEmail", () => {
-  const getOrganizerInDb = dbMock.groupMembers.getOrganizer as jest.Mock;
-  const getEmailByUserIdInDb = dbMock.auth.getEmailByUserId as jest.Mock;
-
   let service: GroupService;
+  let db: ReturnType<typeof createMockDb>;
+  let getOrganizerInDb: jest.Mock;
+  let getEmailByUserIdInDb: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new GroupService(dbMock, policyMock);
+    db = createMockDb();
+    getOrganizerInDb = db.groupMembers.select.organizer as jest.Mock;
+    getEmailByUserIdInDb = db.auth.getEmailByUserId as jest.Mock;
+    service = new GroupService(db, policyMock);
   });
 
   it("returns the organizer email for the group", async () => {

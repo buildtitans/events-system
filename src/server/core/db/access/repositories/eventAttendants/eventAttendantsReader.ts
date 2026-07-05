@@ -1,7 +1,6 @@
 import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
 import { SelectedAttendant } from "../../types/types";
-import { waitForDebugger } from "inspector";
 
 export class EventAttendantsReader {
   constructor(private readonly db: Kysely<DB>) {}
@@ -9,13 +8,13 @@ export class EventAttendantsReader {
   async rawRsvp(
     user_id: string,
     event_id: string,
-  ): Promise<{ status: string }> {
+  ): Promise<{ status: string } | undefined> {
     return await this.db
       .selectFrom("event_attendants")
       .select("status")
       .where("user_id", "=", user_id)
       .where("event_id", "=", event_id)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirst();
   }
 
   async allRawRecords(): Promise<Selectable<EventAttendants>[]> {
@@ -33,14 +32,14 @@ export class EventAttendantsReader {
   async rawAttendant(
     event_id: string,
     user_id: string,
-  ): Promise<SelectedAttendant | undefined> {
+  ): Promise<SelectedAttendant> {
     return await this.db
       .selectFrom("event_attendants")
       .selectAll()
       .where("event_id", "=", event_id)
       .where("user_id", "=", user_id)
       .limit(1)
-      .executeTakeFirst();
+      .executeTakeFirstOrThrow();
   }
 
   async allRawAttendants(

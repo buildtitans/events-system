@@ -1,20 +1,12 @@
 import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
 import {
-  dbMock,
+  createMockDb,
   makeAttendanceUpdate,
   makeEvent,
   makeGroup,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventHydrationHandler", () => {
-  const getEventInDb = dbMock.events.getEvent as jest.Mock;
-  const getAttendantsInDb = dbMock.eventAttendants.getAttendants as jest.Mock;
-  const getUserRsvpStatusToEventInDb = dbMock.eventAttendants
-    .getUserRsvpStatusToEvent as jest.Mock;
-  const getMembershipRoleInDb = dbMock.groupMembers
-    .getMembershipRole as jest.Mock;
-  const getEventMetaData = dbMock.groups.getGroupById as jest.Mock;
-
   const userId = "user-1";
   const eventId = "event-1";
   const groupId = "group-1";
@@ -22,10 +14,22 @@ describe("EventHydrationHandler", () => {
   const group = makeGroup({ id: groupId });
   const event = makeEvent({ id: eventId, group_id: groupId });
   let handler: EventHydrationHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let getEventInDb: jest.Mock;
+  let getAttendantsInDb: jest.Mock;
+  let getUserRsvpStatusToEventInDb: jest.Mock;
+  let getMembershipRoleInDb: jest.Mock;
+  let getEventMetaData: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new EventHydrationHandler(dbMock);
+    db = createMockDb();
+    getEventInDb = db.events.select.byId as jest.Mock;
+    getAttendantsInDb = db.eventAttendants.select.attendants as jest.Mock;
+    getUserRsvpStatusToEventInDb = db.eventAttendants.select.rsvp as jest.Mock;
+    getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
+    getEventMetaData = db.groups.select.byId as jest.Mock;
+    handler = new EventHydrationHandler(db);
   });
 
   describe("openedEvent", () => {
