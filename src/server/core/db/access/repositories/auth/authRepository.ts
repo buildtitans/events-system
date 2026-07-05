@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { DB } from "../../types/db";
+import { DB } from "../../../types/db";
 import {
   DbUserSchemaType,
   PublicUserSchemaType,
@@ -9,7 +9,7 @@ import type {
   AuthClientLoginResponse,
   NewUserResponse,
   PasswordResetRequestResult,
-} from "../types/types";
+} from "../../types/types";
 import crypto from "crypto";
 import argon2 from "argon2";
 

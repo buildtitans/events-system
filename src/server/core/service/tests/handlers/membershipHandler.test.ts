@@ -1,27 +1,31 @@
 import { MembershipHandler } from "@/src/server/core/service/handlers/groups/membershipHandler";
 import {
   authenticateAs,
-  dbMock,
+  createMockDb,
   makeMembership,
   policyMock,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("MembershipHandler", () => {
-  const addNewMemberInDb = dbMock.groupMembers.addNewMember as jest.Mock;
-  const removeMemberInDb = dbMock.groupMembers.removeMember as jest.Mock;
-  const getMembershipRoleInDb = dbMock.groupMembers
-    .getMembershipRole as jest.Mock;
-  const getGroupMembersInDb = dbMock.groupMembers.getGroupMembers as jest.Mock;
-
   const groupId = "group-1";
   const userId = "user-1";
 
   let handler: MembershipHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let addNewMemberInDb: jest.Mock;
+  let removeMemberInDb: jest.Mock;
+  let getMembershipRoleInDb: jest.Mock;
+  let getGroupMembersInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new MembershipHandler(dbMock, policyMock);
+    db = createMockDb();
+    addNewMemberInDb = db.groupMembers.write.newMember as jest.Mock;
+    removeMemberInDb = db.groupMembers.write.removeMember as jest.Mock;
+    getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
+    getGroupMembersInDb = db.groupMembers.select.allMembers as jest.Mock;
+    handler = new MembershipHandler(db, policyMock);
   });
 
   describe("addMember", () => {

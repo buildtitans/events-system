@@ -18,6 +18,7 @@ import { appendNewNotification } from "../../store/slices/notifications/notifica
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
 import { NewEventType } from "@/src/lib/types/hooks/types";
 import { getPicDate } from "../../utils/dates/getPicDate";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 export const useCreateEvent = (
   group_id: EventSchemaType["group_id"],
@@ -73,28 +74,27 @@ export const useCreateEvent = (
     }));
   };
 
-  const handleScheduleResult = async (result: EventSchemaType | null) => {
-    if (result) dispatch(getGroupEvents({ status: "refreshing" }));
-
-    dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-    dispatch(
-      enqueueAlert({
-        kind: result ? "success" : "error",
-        action: "createEvent",
-      }),
-    );
-    setCreateNotification(true);
-  };
-
   const scheduleEvent = async (newEvent: NewEventType) => {
-    return await trpcClient.events.newEvent.mutate(newEvent);
+    try {
+      const result = await trpcClient.events.newEvent.mutate(newEvent);
+      if (!result.ok) {
+        throw new Error(`${result.error}`);
+      }
+      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      dispatch(enqueueAlert({ kind: "success", action: "createEvent" }));
+      setCreateNotification(true);
+      dispatch(getGroupEvents({ status: "refreshing" }));
+    } catch (err) {
+      logCaughtError("useCreateEvent.schedule.scheduleEvent()", err);
+      dispatch(enqueueSnackbar({ kind: "newEvent", status: "failed" }));
+      dispatch(enqueueAlert({ kind: "error", action: "createEvent" }));
+    }
   };
 
   const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(enqueueSnackbar({ kind: "newEvent", status: "pending" }));
-    const result = await scheduleEvent(newEvent);
-    await handleScheduleResult(result);
+    await scheduleEvent(newEvent);
   };
 
   useEffect(() => {

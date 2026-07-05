@@ -1,15 +1,12 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import type {
   NewGroupInputType,
   CreateNewGroupHook,
 } from "@/src/lib/types/hooks/types";
-import {
-  GroupSchemaType,
-  NewGroupInputSchemaType,
-} from "@/src/schemas/groups/groupSchema";
+import { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { addGroup } from "@/src/lib/store/slices/groups/GroupsSlice";
 import {
@@ -21,10 +18,10 @@ import {
   enqueueDrawer,
   enqueueSnackbar,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
-  const timerRef = useRef<number | null>(null);
 
   const [newGroup, setNewGroup] = useState<NewGroupInputType>({
     name: "",
@@ -62,51 +59,39 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     setFieldValue(category_id, "category_id");
   }, []);
 
-  async function createGroup(
-    group: NewGroupInputSchemaType,
-  ): Promise<GroupSchemaType | null> {
-    const result = await trpcClient.groups.createNewGroup.mutate(group);
-    return result;
-  }
-
-  function dispatchGroupResults(created: GroupSchemaType) {
-    dispatch(addGroup(created));
-    dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-    dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
-
-    timerRef.current = window.setTimeout(() => {
-      dispatch(enqueueDrawer(null));
-      timerRef.current = null;
-    }, 400);
-  }
-
-  function handleNewGroupResult(created: GroupSchemaType | null): void {
-    if (created) {
-      dispatchGroupResults(created);
-    } else {
-      dispatch(enqueueSnackbar({ kind: "newGroup", status: "failed" }));
-    }
-  }
-
-  const submitNewGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!isSubmittable) {
-      return;
-    }
-    dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
-
-    const payload = normalizeNewGroupInput(newGroup);
-    const createdGroup = await createGroup(payload);
-    handleNewGroupResult(createdGroup);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
+  const createGroup = useCallback(
+    async (group: NewGroupInputSchemaType) => {
+      try {
+        const result = await trpcClient.groups.createNewGroup.mutate(group);
+        if (!result.ok) {
+          throw new Error(result.error);
+        }
+        dispatch(addGroup(result.data));
+        dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+        dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
+        enqueueDrawer(null);
+      } catch (err) {
+        logCaughtError("useCreateNewGroup.submitNewGroup.createGroup()", err);
+        dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+        enqueueAlert({ kind: "error", action: "createGroup" });
       }
-    };
-  }, []);
+    },
+    [dispatch],
+  );
+
+  const submitNewGroup = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      if (!isSubmittable) {
+        return;
+      }
+      dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
+
+      const payload = normalizeNewGroupInput(newGroup);
+      await createGroup(payload);
+    },
+    [createGroup, dispatch, isSubmittable, newGroup],
+  );
 
   return {
     newGroup,

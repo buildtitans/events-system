@@ -1,35 +1,22 @@
 import { CensusHandler } from "@/src/server/core/service/handlers/participations/censusHandler";
-import type { DBClient } from "@/src/server/core/db";
 import {
-  dbMock,
+  createMockDb,
   makeAttendanceUpdate,
   makeEvent,
   makeGroup,
   makeMembership,
 } from "../mockers/mocks";
 
-function makePopularGroupsDbMock(): DBClient {
-  return {
-    ...dbMock,
-    groups: {
-      ...dbMock.groups,
-      getGroupsByIds: jest.fn(),
-    },
-    groupMembers: {
-      ...dbMock.groupMembers,
-      getAllMembershipRecords: jest.fn(),
-    },
-  } as unknown as DBClient;
-}
-
 describe("CensusHandler.getNumberOfAttendantsForEvent", () => {
-  const getAttendantsInDb = dbMock.eventAttendants.getAttendants as jest.Mock;
-
   let handler: CensusHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let getAttendantsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new CensusHandler(dbMock);
+    db = createMockDb();
+    getAttendantsInDb = db.eventAttendants.select.attendants as jest.Mock;
+    handler = new CensusHandler(db);
   });
 
   const attendants = [
@@ -61,13 +48,15 @@ describe("CensusHandler.getNumberOfAttendantsForEvent", () => {
 });
 
 describe("CensusHandler.getGroupHeadCount", () => {
-  const getGroupMembersInDb = dbMock.groupMembers.getGroupMembers as jest.Mock;
-
   let handler: CensusHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let getGroupMembersInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    handler = new CensusHandler(dbMock);
+    db = createMockDb();
+    getGroupMembersInDb = db.groupMembers.select.allMembers as jest.Mock;
+    handler = new CensusHandler(db);
   });
 
   it("returns the total number of group members", async () => {
@@ -85,17 +74,20 @@ describe("CensusHandler.getGroupHeadCount", () => {
 });
 
 describe("CensusHandler.getPopularEventsIds", () => {
-  const getAllAttendanceRecordsInDb = dbMock.eventAttendants
-    .getAllAttendanceRecords as jest.Mock;
-  const getEventsInDb = dbMock.events.getEvents as jest.Mock;
-
   let handler: CensusHandler;
+  let db: ReturnType<typeof createMockDb>;
+  let getAllAttendanceRecordsInDb: jest.Mock;
+  let getEventsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
-    handler = new CensusHandler(dbMock);
+    db = createMockDb();
+    getAllAttendanceRecordsInDb =
+      db.eventAttendants.select.allRecords as jest.Mock;
+    getEventsInDb = db.events.select.allScheduled as jest.Mock;
+    handler = new CensusHandler(db);
   });
 
   afterEach(() => {
@@ -211,18 +203,17 @@ describe("CensusHandler.getPopularEventsIds", () => {
 });
 
 describe("CensusHandler.getPopularGroups", () => {
-  let testDbMock: DBClient;
+  let db: ReturnType<typeof createMockDb>;
   let getAllMembershipRecordsInDb: jest.Mock;
   let getGroupsByIdsInDb: jest.Mock;
   let handler: CensusHandler;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    testDbMock = makePopularGroupsDbMock();
-    getAllMembershipRecordsInDb = testDbMock.groupMembers
-      .getAllMembershipRecords as jest.Mock;
-    getGroupsByIdsInDb = testDbMock.groups.getGroupsByIds as jest.Mock;
-    handler = new CensusHandler(testDbMock);
+    db = createMockDb();
+    getAllMembershipRecordsInDb = db.groupMembers.select.all as jest.Mock;
+    getGroupsByIdsInDb = db.groups.select.byIds as jest.Mock;
+    handler = new CensusHandler(db);
   });
 
   it("returns groups with at least two members", async () => {

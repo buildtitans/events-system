@@ -9,7 +9,7 @@ import {
 } from "../inputValidators/inputValidation";
 
 const groupMembersRouter = router({
-  addNewMember: publicProcedure
+  addNewMember: protectedProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.memberships.addMember(

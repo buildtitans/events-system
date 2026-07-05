@@ -29,6 +29,7 @@ import {
 import { LoginCredentialsSchema } from "@/src/schemas/auth/loginCredentialsSchema";
 import { RsvpSchema, RsvpSchemaArray } from "@/src/schemas/events/rsvpSchema";
 import {
+  GroupMemberIdsSchema,
   GroupMembersArraySchema,
   GroupMemberSchema,
   GroupRoleSchema,
@@ -82,6 +83,11 @@ export function createValidator<T extends TSchema>(
     return data as Static<T>;
   };
 }
+
+const GroupMemberIdsSchemaValidator = createValidator(
+  GroupMemberIdsSchema,
+  "GroupMemberIdsSchema",
+);
 
 const ValidateEventSearchQuery = createValidator(
   EventSearchSchema,
@@ -202,4 +208,5 @@ export {
   ValidateEventSearchQuery,
   ValidateGroupId,
   AttendanceStatusValidator,
+  GroupMemberIdsSchemaValidator,
 };

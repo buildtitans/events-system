@@ -17,7 +17,7 @@ export class MembershipHandler {
 
     await this.policy.requireCanChangeMembership(userId, group_id);
 
-    return await this.db.groupMembers.addNewMember({
+    return await this.db.groupMembers.write.newMember({
       user_id: userId,
       group_id,
     });
@@ -31,7 +31,7 @@ export class MembershipHandler {
 
     await this.policy.requireCanChangeMembership(userId, group_id);
 
-    return await this.db.groupMembers.removeMember(userId, group_id);
+    return await this.db.groupMembers.write.removeMember(userId, group_id);
   }
 
   async getRoleInGroup(
@@ -40,16 +40,13 @@ export class MembershipHandler {
   ): Promise<GroupMemberSchemaType["role"]> {
     if (!user_id) return "anonymous";
 
-    const role = await this.db.groupMembers.getMembershipRole(
-      user_id,
-      group_id,
-    );
+    const role = await this.db.groupMembers.select.role(user_id, group_id);
 
     return role ?? "anonymous";
   }
 
   async getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number> {
-    const members = await this.db.groupMembers.getGroupMembers(group_id);
+    const members = await this.db.groupMembers.select.allMembers(group_id);
 
     return members.length;
   }

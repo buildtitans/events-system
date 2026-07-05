@@ -19,6 +19,15 @@ import {
   EVENT_ID_2,
   EVENT_ID_3,
 } from "@/src/server/core/service/tests/mockers/mockValues";
+import type {
+  AuthRepository,
+  CategoriesRepository,
+  EventAttendantsRepository,
+  EventsRepository,
+  GroupMembersRepository,
+  GroupsRepository,
+  NotificationsRepository,
+} from "../../../db/access/repositories";
 
 export const groups = [
   makeGroup({ id: GROUP_ID_1, name: "new group 1" }),
@@ -106,30 +115,78 @@ export const unauthenticated = () => {
   });
 };
 
-export const dbMock = {
-  events: {
-    getEvents: jest.fn(),
-    getFlattenedEvents: jest.fn(),
-    searchEventByTitle: jest.fn(),
-    getGroupEvents: jest.fn(),
-    getGroupEventsByGroupId: jest.fn(),
-    getEventsByGroupIds: jest.fn(),
-    getFlattenedEventsByIds: jest.fn(),
-    getEvent: jest.fn(),
-    getEventsByIds: jest.fn(),
-    updateEventStatus: jest.fn(),
-    createNewEvent: jest.fn(),
-    getCancelledGroupEvents: jest.fn(),
-  },
-  groups: {
-    getGroups: jest.fn(),
-    searchGroups: jest.fn(),
-    getGroupsByOrganizerId: jest.fn(),
-    getGroupBySlug: jest.fn(),
-    createGroup: jest.fn(),
-    getGroupById: jest.fn(),
-  },
-  auth: {
+function createMockEventsRepo() {
+  return {
+    select: {
+      search: jest.fn(),
+      allEvents: jest.fn(),
+      allScheduled: jest.fn(),
+      cancelledByGroupId: jest.fn(),
+      byId: jest.fn(),
+      byIds: jest.fn(),
+      byGroupId: jest.fn(),
+      byGroupIds: jest.fn(),
+    },
+    write: {
+      update: jest.fn(),
+      create: jest.fn(),
+    },
+  } as unknown as EventsRepository;
+}
+
+function createMockGroupsRepo() {
+  return {
+    select: {
+      all: jest.fn(),
+      byId: jest.fn(),
+      byIds: jest.fn(),
+      bySlug: jest.fn(),
+      byOrganizerId: jest.fn(),
+      search: jest.fn(),
+    },
+    write: {
+      createGroup: jest.fn(),
+    },
+  } as unknown as GroupsRepository;
+}
+
+function createMockGroupMembersRepo() {
+  return {
+    select: {
+      all: jest.fn(),
+      byUserId: jest.fn(),
+      allMembers: jest.fn(),
+      memberIds: jest.fn(),
+      role: jest.fn(),
+      organizer: jest.fn(),
+      memberCounts: jest.fn(),
+    },
+    write: {
+      addOrganizer: jest.fn(),
+      newMember: jest.fn(),
+      removeMember: jest.fn(),
+    },
+  } as unknown as GroupMembersRepository;
+}
+
+function createMockEventAttendantsRepo() {
+  return {
+    select: {
+      allRecords: jest.fn(),
+      userRecords: jest.fn(),
+      rsvp: jest.fn(),
+      pastRecords: jest.fn(),
+      attendant: jest.fn(),
+      attendants: jest.fn(),
+    },
+    write: {
+      updateAttendanceStatus: jest.fn(),
+    },
+  } as unknown as EventAttendantsRepository;
+}
+
+function createMockAuthRepo() {
+  return {
     authenticate: jest.fn(),
     signUp: jest.fn(),
     login: jest.fn(),
@@ -138,40 +195,34 @@ export const dbMock = {
     getSession: jest.fn(),
     requestPasswordReset: jest.fn(),
     resetPassword: jest.fn(),
-  },
-  categories: {
-    getCategories: jest.fn(),
-  },
-  groupMembers: {
-    getViewerMemberships: jest.fn(),
-    getMembershipRole: jest.fn(),
-    getOrganizer: jest.fn(),
-    addOrganizer: jest.fn(),
-    addNewMember: jest.fn(),
-    removeMember: jest.fn(),
-    getGroupMembers: jest.fn(),
-    getMemberIds: jest.fn(),
-    getMemberCountsByGroupIds: jest.fn(),
-  },
-  eventAttendants: {
-    getUserRsvpStatusToEvent: jest.fn(),
-    getAllAttendanceRecords: jest.fn(),
-    getAttendants: jest.fn(),
-    updateAttendanceStatus: jest.fn(),
-    getUserAttendanceRecords: jest.fn(),
-    getRawAttendants: jest.fn(),
-    getRawAttendant: jest.fn(),
-    upsertStatus: jest.fn(),
-    parseRawAttendants: jest.fn(),
-    parseRawAttendant: jest.fn(),
-    getPastEventRecords: jest.fn(),
-  },
-  notifications: {
+  } as unknown as AuthRepository;
+}
+
+function createMockNotificationsRepo() {
+  return {
     markOpenedNotifications: jest.fn(),
     getUnseenNotifications: jest.fn(),
     addNewNotifications: jest.fn(),
-  },
-} as unknown as DBClient;
+  } as unknown as NotificationsRepository;
+}
+
+function createMockCategoriesRepo() {
+  return {
+    getCategories: jest.fn(),
+  } as unknown as CategoriesRepository;
+}
+
+export function createMockDb() {
+  return {
+    events: createMockEventsRepo(),
+    groups: createMockGroupsRepo(),
+    groupMembers: createMockGroupMembersRepo(),
+    eventAttendants: createMockEventAttendantsRepo(),
+    auth: createMockAuthRepo(),
+    notifications: createMockNotificationsRepo(),
+    categories: createMockCategoriesRepo(),
+  } as unknown as DBClient;
+}
 
 export function makeEvent(
   overrides: Partial<EventSchemaType> = {},

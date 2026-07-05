@@ -1,0 +1,58 @@
+import { Kysely, Selectable } from "kysely";
+import { DB, Groups } from "../../../types/db";
+import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
+
+export class RawGroupsReader {
+  constructor(private readonly db: Kysely<DB>) {}
+
+  async allRawGroups(): Promise<Selectable<Groups>[]> {
+    return this.db
+      .selectFrom("groups")
+      .selectAll()
+      .orderBy("created_at", "desc")
+      .execute();
+  }
+
+  async rawById(id: GroupSchemaType["id"]): Promise<Selectable<Groups>> {
+    return await this.db
+      .selectFrom("groups")
+      .where("id", "=", id)
+      .selectAll()
+      .limit(1)
+      .executeTakeFirstOrThrow();
+  }
+
+  async rawByIds(ids: GroupSchemaType["id"][]): Promise<Selectable<Groups>[]> {
+    return await this.db
+      .selectFrom("groups")
+      .where("id", "in", ids)
+      .selectAll()
+      .execute();
+  }
+
+  async rawBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>> {
+    return await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("slug", "=", slug)
+      .executeTakeFirstOrThrow();
+  }
+
+  async rawByOrganizerId(
+    organizer_id: GroupSchemaType["organizer_id"],
+  ): Promise<Selectable<Groups>[]> {
+    return await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("organizer_id", "=", organizer_id)
+      .execute();
+  }
+
+  async byName(query: string): Promise<Selectable<Groups>[]> {
+    return await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("name", "ilike", `%${query}%`)
+      .execute();
+  }
+}

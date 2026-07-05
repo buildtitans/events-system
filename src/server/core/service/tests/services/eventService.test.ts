@@ -4,7 +4,7 @@ import type {
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import {
-  dbMock,
+  createMockDb,
   policyMock,
   makeEvent,
   makeAttendanceUpdate,
@@ -13,14 +13,17 @@ import {
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventService.layout.active", () => {
-  const getEvents = dbMock.events.getEvents as jest.Mock;
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let getEvents: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    getEvents = db.events.select.allScheduled as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   afterEach(() => {
@@ -89,16 +92,18 @@ describe("EventService.layout.active", () => {
 });
 
 describe("EventService.timeline.getArchivedGroupEvents", () => {
-  const getCancelledGroupEvents = dbMock.events
-    .getCancelledGroupEvents as jest.Mock;
-  const getPastEventRecords = dbMock.eventAttendants
-    .getPastEventRecords as jest.Mock;
-
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let getCancelledGroupEvents: jest.Mock;
+  let getPastEventRecords: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    getCancelledGroupEvents =
+      db.events.select.cancelledByGroupId as jest.Mock;
+    getPastEventRecords = db.eventAttendants.select.pastRecords as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   afterEach(() => {
@@ -190,16 +195,19 @@ describe("EventService.timeline.getArchivedGroupEvents", () => {
 });
 
 describe("EventService.timeline.getPastEventsForGroup", () => {
-  const getGroupEvents = dbMock.events.getGroupEvents as jest.Mock;
-  const getPastEventRecords = dbMock.eventAttendants
-    .getPastEventRecords as jest.Mock;
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let getGroupEvents: jest.Mock;
+  let getPastEventRecords: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    getGroupEvents = db.events.select.byGroupId as jest.Mock;
+    getPastEventRecords = db.eventAttendants.select.pastRecords as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   afterEach(() => {
@@ -303,14 +311,17 @@ describe("EventService.timeline.getPastEventsForGroup", () => {
 });
 
 describe("EventService.timeline.getNextEventMap", () => {
-  const getEventsByGroupIds = dbMock.events.getEventsByGroupIds as jest.Mock;
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let getEventsByGroupIds: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    getEventsByGroupIds = db.events.select.byGroupIds as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   afterEach(() => {
@@ -407,9 +418,9 @@ describe("EventService.timeline.getNextEventMap", () => {
 });
 
 describe("EventService.lifecycle.updateEventStatus", () => {
-  const updateEventStatusInDb = dbMock.events.updateEventStatus as jest.Mock;
-
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let updateEventStatusInDb: jest.Mock;
 
   const eventUpdate = {
     organizer_id: "organizer-1",
@@ -420,7 +431,9 @@ describe("EventService.lifecycle.updateEventStatus", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    updateEventStatusInDb = db.events.write.update as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   it("throws a 401 status error when the user is not authenticated", async () => {
@@ -451,11 +464,11 @@ describe("EventService.lifecycle.updateEventStatus", () => {
   it("updates the event status", async () => {
     authenticateAs();
     (policyMock.requireOrganizer as jest.Mock).mockImplementation(() => {});
-    updateEventStatusInDb.mockResolvedValue({ status: eventUpdate.status });
+    updateEventStatusInDb.mockResolvedValue({ updateStatus: "success" });
 
     await expect(
       service.lifecycle.updateEventStatus("user-1", eventUpdate),
-    ).resolves.toEqual({ status: eventUpdate.status });
+    ).resolves.toEqual({ updateStatus: "success" });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith(
@@ -467,9 +480,9 @@ describe("EventService.lifecycle.updateEventStatus", () => {
 });
 
 describe("EventService.lifecycle.createEvent", () => {
-  const createNewEventInDb = dbMock.events.createNewEvent as jest.Mock;
-
   let service: EventService;
+  let db: ReturnType<typeof createMockDb>;
+  let createNewEventInDb: jest.Mock;
 
   const groupId = "group-1";
 
@@ -486,7 +499,9 @@ describe("EventService.lifecycle.createEvent", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new EventService(dbMock, policyMock);
+    db = createMockDb();
+    createNewEventInDb = db.events.write.create as jest.Mock;
+    service = new EventService(db, policyMock);
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {
@@ -527,7 +542,7 @@ describe("EventService.lifecycle.createEvent", () => {
 
     await expect(
       service.lifecycle.createEvent(createEventInput, groupId, "user-1"),
-    ).resolves.toEqual(createdEvent);
+    ).resolves.toEqual({ ok: true, data: createdEvent });
 
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
     expect(createNewEventInDb).toHaveBeenCalledWith(createEventInput);

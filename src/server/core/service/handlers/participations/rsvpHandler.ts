@@ -31,7 +31,7 @@ export class RsvpHandler {
   ): Promise<EventAttendantsSchemaType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    return await this.db.eventAttendants.updateAttendanceStatus(
+    return await this.db.eventAttendants.write.updateAttendanceStatus(
       { event_id, user_id: userId },
       newStatus,
     );
@@ -42,10 +42,7 @@ export class RsvpHandler {
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const result = await this.db.eventAttendants.getUserRsvpStatusToEvent(
-      userId,
-      event_id,
-    );
+    const result = await this.db.eventAttendants.select.rsvp(userId, event_id);
 
     return RsvpStatusSchemaValidator(result);
   }
@@ -64,10 +61,12 @@ export class RsvpHandler {
   ): Promise<AttendanceDictionaryType> {
     const userId = this.policy.requireAuthenticated(user_id);
 
-    const ids = (await this.db.events.getEvents()).map((event) => event.id);
+    const ids = (await this.db.events.select.allScheduled()).map(
+      (event) => event.id,
+    );
 
     const userAttendanceRecords =
-      await this.db.eventAttendants.getUserAttendanceRecords(userId);
+      await this.db.eventAttendants.select.userRecords(userId);
 
     return mapAttendanceDictionary(ids, userAttendanceRecords);
   }
@@ -86,9 +85,9 @@ export class RsvpHandler {
     keys: string[],
     filtered: StatusLookupType,
   ): Promise<RsvpSchemaType[]> {
-    const groups = await this.db.groups.getGroups();
+    const groups = await this.db.groups.select.all();
     const hash = buildGroupNameLookup(groups);
-    const events = await this.db.events.getFlattenedEventsByIds(keys);
+    const events = await this.db.events.select.byIds(keys);
     const rsvps = this.parse.toRsvpShape(events, hash, filtered);
     return RsvpSchemaArrayValidator(rsvps);
   }
@@ -97,7 +96,7 @@ export class RsvpHandler {
     userId: string,
   ): Promise<EventAttendantsSchemaType[]> {
     const userRecords =
-      await this.db.eventAttendants.getUserAttendanceRecords(userId);
+      await this.db.eventAttendants.select.userRecords(userId);
 
     if (userRecords.length === 0) {
       return [];
@@ -115,7 +114,7 @@ export class RsvpHandler {
     userRecords: EventAttendantsSchemaType[],
   ): Promise<EventAttendantsSchemaType[]> {
     const ids = userRecords.map((record) => record.event_id);
-    const events = await this.db.events.getFlattenedEventsByIds(ids);
+    const events = await this.db.events.select.byIds(ids);
     const activeEvents = events.map((event) => {
       const scheduledFor = new Date(event.starts_at);
       const today = new Date();

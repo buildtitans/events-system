@@ -22,7 +22,7 @@ export class EventTimelineHandler {
   ) {}
 
   async getPastEventsForGroup(group_id: string): Promise<PastEventsResults> {
-    const groupEvents = await this.db.events.getGroupEvents(group_id);
+    const groupEvents = await this.db.events.select.byGroupId(group_id);
     const ids = groupEvents.map((ev) => ev.id);
     let pastEventsRecords: PastEventAttendanceLookup;
     let history: EventSchemaType[];
@@ -44,7 +44,7 @@ export class EventTimelineHandler {
   ): Promise<PastEventAttendanceLookup> {
     if (ids.length === 0) return {};
 
-    const attendees = await this.db.eventAttendants.getPastEventRecords(ids);
+    const attendees = await this.db.eventAttendants.select.pastRecords(ids);
     return this.mapPastEventHeadCounts(ids, attendees);
   }
 
@@ -76,7 +76,7 @@ export class EventTimelineHandler {
 
     let archives: EventSchemaType[];
     let archivedAttendanceRecords: PastEventAttendanceLookup;
-    archives = await this.db.events.getCancelledGroupEvents(group_id);
+    archives = await this.db.events.select.cancelledByGroupId(group_id);
     const ids = archives.map((ev) => ev.id);
 
     if (ids.length === 0) {
@@ -96,7 +96,7 @@ export class EventTimelineHandler {
   async getNextEventMap(
     ids: GroupSchemaType["id"][],
   ): Promise<UpComingEventsLookup> {
-    const events = await this.db.events.getEventsByGroupIds(ids);
+    const events = await this.db.events.select.byGroupIds(ids);
 
     const eventsByGroup = this.hashEventsByGroup(events);
 

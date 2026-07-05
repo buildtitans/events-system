@@ -26,7 +26,7 @@ export class EventHydrationHandler {
     user_id: string | undefined | null,
     event_id: string,
   ): Promise<HydratedEvent> {
-    const event = await this.db.events.getEvent(event_id);
+    const event = await this.db.events.select.byId(event_id);
     const rsvpStatus = await this.getEventRsvp(user_id, event_id);
     const attendants = await this.getAttendingAndInterested(event_id);
     const role = await this.getUserRoleInGroup(user_id, event_id);
@@ -47,13 +47,10 @@ export class EventHydrationHandler {
     user_id: string | undefined | null,
     event_id: string,
   ): Promise<"member" | "organizer" | "anonymous"> {
-    const event = await this.db.events.getEvent(event_id);
+    const event = await this.db.events.select.byId(event_id);
 
     if (user_id && event) {
-      return await this.db.groupMembers.getMembershipRole(
-        user_id,
-        event.group_id,
-      );
+      return await this.db.groupMembers.select.role(user_id, event.group_id);
     } else return "anonymous";
   }
 
@@ -61,7 +58,13 @@ export class EventHydrationHandler {
     event: EventSchemaType,
   ): Promise<{ name: string; slug: string }> {
     const { group_id } = event;
-    return await this.db.groups.getGroupById(group_id);
+    const res = await this.db.groups.select.byId(group_id);
+
+    const { name, slug } = res;
+    return {
+      name,
+      slug,
+    };
   }
 
   private async getEventRsvp(
@@ -69,7 +72,7 @@ export class EventHydrationHandler {
     event_id: string,
   ): Promise<EventAttendantStatusSchemaType> {
     if (user_id) {
-      const status = await this.db.eventAttendants.getUserRsvpStatusToEvent(
+      const status = await this.db.eventAttendants.select.rsvp(
         user_id,
         event_id,
       );
@@ -81,7 +84,8 @@ export class EventHydrationHandler {
   }
 
   private async getAttendingAndInterested(event_id: string) {
-    const attendance = await this.db.eventAttendants.getAttendants(event_id);
+    const attendance =
+      await this.db.eventAttendants.select.attendants(event_id);
 
     let goingCount: number = 0;
     let interestedCount: number = 0;

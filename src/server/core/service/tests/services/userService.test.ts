@@ -1,6 +1,6 @@
 import { UserService } from "@/src/server/core/service/services/userService";
 import {
-  dbMock,
+  createMockDb,
   groups,
   makeGroup,
   policyMock,
@@ -17,13 +17,15 @@ import {
 } from "../mockers/mockValues";
 
 describe("UserService.createNewUser", () => {
-  const signUpInDb = dbMock.auth.signUp as jest.Mock;
-
   let service: UserService;
+  let db: ReturnType<typeof createMockDb>;
+  let signUpInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new UserService(dbMock, policyMock);
+    db = createMockDb();
+    signUpInDb = db.auth.signUp as jest.Mock;
+    service = new UserService(db, policyMock);
   });
 
   it("trims and lowercases the email before signing up", async () => {
@@ -42,16 +44,19 @@ describe("UserService.createNewUser", () => {
 
 describe("getMemberships", () => {
   let service: UserService;
-
-  const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
-  const getViewerMembershipsInDb = dbMock.groupMembers
-    .getViewerMemberships as jest.Mock;
-  const getMemberCountsByGroupIdsInDb = dbMock.groupMembers
-    .getMemberCountsByGroupIds as jest.Mock;
+  let db: ReturnType<typeof createMockDb>;
+  let getGroupsInDb: jest.Mock;
+  let getViewerMembershipsInDb: jest.Mock;
+  let getMemberCountsByGroupIdsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new UserService(dbMock, policyMock);
+    db = createMockDb();
+    getGroupsInDb = db.groups.select.all as jest.Mock;
+    getViewerMembershipsInDb = db.groupMembers.select.byUserId as jest.Mock;
+    getMemberCountsByGroupIdsInDb =
+      db.groupMembers.select.memberCounts as jest.Mock;
+    service = new UserService(db, policyMock);
   });
 
   it("throws a 401 status for a user that is not authenticated", async () => {
@@ -91,10 +96,9 @@ describe("getMemberships", () => {
 });
 
 describe("UserService.getGroupsCreated", () => {
-  const getGroupsByOrganizerIdinDb = dbMock.groups
-    .getGroupsByOrganizerId as jest.Mock;
-
   let service: UserService;
+  let db: ReturnType<typeof createMockDb>;
+  let getGroupsByOrganizerIdinDb: jest.Mock;
 
   const groupsByUser = [
     makeGroup({
@@ -113,7 +117,9 @@ describe("UserService.getGroupsCreated", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new UserService(dbMock, policyMock);
+    db = createMockDb();
+    getGroupsByOrganizerIdinDb = db.groups.select.byOrganizerId as jest.Mock;
+    service = new UserService(db, policyMock);
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
@@ -139,16 +145,18 @@ describe("UserService.getGroupsCreated", () => {
 });
 
 describe("UserService.getEmailById", () => {
-  const getEmailByUserIdInDb = dbMock.auth.getEmailByUserId as jest.Mock;
-
   let service: UserService;
+  let db: ReturnType<typeof createMockDb>;
+  let getEmailByUserIdInDb: jest.Mock;
 
   const email = "alice@example.com";
   const user_id = "user-1";
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new UserService(dbMock, policyMock);
+    db = createMockDb();
+    getEmailByUserIdInDb = db.auth.getEmailByUserId as jest.Mock;
+    service = new UserService(db, policyMock);
   });
 
   it("Returns the email of an authenticated user", async () => {

@@ -1,6 +1,6 @@
 import { ParticipationsService } from "@/src/server/core/service/services/participationsService";
 import {
-  dbMock,
+  createMockDb,
   policyMock,
   makeEvent,
   makeAttendanceUpdate,
@@ -20,23 +20,28 @@ import {
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 describe("ParticipationsService", () => {
-  const updateAttendanceStatusInDb = dbMock.eventAttendants
-    .updateAttendanceStatus as jest.Mock;
-  const getUserRsvpStatusToEventInDb = dbMock.eventAttendants
-    .getUserRsvpStatusToEvent as jest.Mock;
-  const getUserAttendanceRecordsInDb = dbMock.eventAttendants
-    .getUserAttendanceRecords as jest.Mock;
-  const getEvents = dbMock.events.getEvents as jest.Mock;
-  const getGroupsInDb = dbMock.groups.getGroups as jest.Mock;
-
-  const getFlattenedEventsByIdsInDb = dbMock.events
-    .getFlattenedEventsByIds as jest.Mock;
-
   let service: ParticipationsService;
+  let db: ReturnType<typeof createMockDb>;
+  let updateAttendanceStatusInDb: jest.Mock;
+  let getUserRsvpStatusToEventInDb: jest.Mock;
+  let getUserAttendanceRecordsInDb: jest.Mock;
+  let getEvents: jest.Mock;
+  let getGroupsInDb: jest.Mock;
+  let getFlattenedEventsByIdsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new ParticipationsService(dbMock, policyMock);
+    db = createMockDb();
+    updateAttendanceStatusInDb =
+      db.eventAttendants.write.updateAttendanceStatus as jest.Mock;
+    getUserRsvpStatusToEventInDb =
+      db.eventAttendants.select.rsvp as jest.Mock;
+    getUserAttendanceRecordsInDb =
+      db.eventAttendants.select.userRecords as jest.Mock;
+    getEvents = db.events.select.allScheduled as jest.Mock;
+    getGroupsInDb = db.groups.select.all as jest.Mock;
+    getFlattenedEventsByIdsInDb = db.events.select.byIds as jest.Mock;
+    service = new ParticipationsService(db, policyMock);
   });
 
   describe("updateRsvpStatus", () => {

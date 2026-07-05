@@ -13,29 +13,29 @@ export class GroupQueryHandler {
   }
 
   async getGroupNameDictionary(): Promise<NameSlugDescriptionLookup> {
-    const groups = await this.db.groups.getGroups();
+    const groups = await this.db.groups.select.all();
     return buildGroupNameLookup(groups);
   }
 
   async getAllGroups(): Promise<GroupSchemaType[]> {
-    return await this.db.groups.getGroups();
+    return await this.db.groups.select.all();
   }
 
   async searchGroups(query: string): Promise<GroupSchemaType[]> {
-    return await this.db.groups.searchGroups(query);
+    return await this.db.groups.select.search(query);
   }
 
   async getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]> {
-    return await this.db.groupMembers.getGroupMembers(group_id);
+    return await this.db.groupMembers.select.allMembers(group_id);
   }
 
   async getOrganizerEmail(group_id: string): Promise<{ email: string }> {
-    const organizer = await this.db.groupMembers.getOrganizer(group_id);
+    const organizer = await this.db.groupMembers.select.organizer(group_id);
 
     return this.db.auth.getEmailByUserId(organizer.user_id);
   }
 
   async getGroupFromSlug(slug: string): Promise<GroupSchemaType> {
-    return await this.db.groups.getGroupBySlug(slug);
+    return await this.db.groups.select.bySlug(slug);
   }
 }

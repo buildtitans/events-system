@@ -14,6 +14,7 @@ import {
 import { CancelEventHook } from "../../types/hooks/types";
 import { createScheduleNotification } from "../../utils/helpers/notifications/createScheduleNotification";
 import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 export const useCancelEvent = (
   event: EventSchemaType,
@@ -83,7 +84,7 @@ export const useCancelEvent = (
       );
       dispatch(enqueueDrawer(null));
     } catch (err) {
-      console.error(err);
+      logCaughtError("useCancelEvent.handleSubmit()", err);
       dispatch(
         enqueueSnackbar({ kind: "changeEventScheduling", status: "failed" }),
       );

@@ -1,7 +1,7 @@
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
 import type { NewNotification } from "@/src/server/core/service/services/notificationService";
 import {
-  dbMock,
+  createMockDb,
   policyMock,
   makeNotificationNewOrSeen,
   makeNotification,
@@ -10,9 +10,6 @@ import {
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("NotificationService.createNotification", () => {
-  const addNewNotificationsInDb = dbMock.notifications
-    .addNewNotifications as jest.Mock;
-  const getMemberIdsInDb = dbMock.groupMembers.getMemberIds as jest.Mock;
   const requireOrganizer = policyMock.requireOrganizer as jest.Mock;
 
   const memberIds = ["00000000-83c9-46de-90ac-fe4047a00000"];
@@ -27,10 +24,16 @@ describe("NotificationService.createNotification", () => {
   const notificationResponse = makeNotification(newNotification);
 
   let service: NotificationService;
+  let db: ReturnType<typeof createMockDb>;
+  let addNewNotificationsInDb: jest.Mock;
+  let getMemberIdsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new NotificationService(dbMock, policyMock);
+    db = createMockDb();
+    addNewNotificationsInDb = db.notifications.addNewNotifications as jest.Mock;
+    getMemberIdsInDb = db.groupMembers.select.memberIds as jest.Mock;
+    service = new NotificationService(db, policyMock);
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {
@@ -93,9 +96,9 @@ describe("NotificationService.createNotification", () => {
 });
 
 describe("NotificationService.getNewNotifications", () => {
-  const getUnseenNotificationsInDb = dbMock.notifications
-    .getUnseenNotifications as jest.Mock;
   let service: NotificationService;
+  let db: ReturnType<typeof createMockDb>;
+  let getUnseenNotificationsInDb: jest.Mock;
 
   const notifications = [
     makeNotificationNewOrSeen({ id: "1", status: "new" }),
@@ -104,7 +107,10 @@ describe("NotificationService.getNewNotifications", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new NotificationService(dbMock, policyMock);
+    db = createMockDb();
+    getUnseenNotificationsInDb =
+      db.notifications.getUnseenNotifications as jest.Mock;
+    service = new NotificationService(db, policyMock);
   });
 
   it("Throws a 401 error when the user is not authenticated", async () => {
@@ -131,10 +137,10 @@ describe("NotificationService.getNewNotifications", () => {
 });
 
 describe("NotificationService.markSeen", () => {
-  const markOpenedNotificationsInDb = dbMock.notifications
-    .markOpenedNotifications as jest.Mock;
   const requireIsGroupMember = policyMock.requireIsGroupMember as jest.Mock;
   let service: NotificationService;
+  let db: ReturnType<typeof createMockDb>;
+  let markOpenedNotificationsInDb: jest.Mock;
 
   const seenNotifications = [
     makeNotificationNewOrSeen({
@@ -153,7 +159,10 @@ describe("NotificationService.markSeen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new NotificationService(dbMock, policyMock);
+    db = createMockDb();
+    markOpenedNotificationsInDb =
+      db.notifications.markOpenedNotifications as jest.Mock;
+    service = new NotificationService(db, policyMock);
   });
 
   it("throws a 401 error when the user is not authenticated", async () => {

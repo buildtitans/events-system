@@ -1,18 +1,20 @@
 import { SessionService } from "@/src/server/core/service/services/SessionService";
 import {
-  dbMock,
+  createMockDb,
   policyMock,
   emailServiceMock,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("SessionService.login", () => {
-  const loginInDb = dbMock.auth.login as jest.Mock;
-
   let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
+  let loginInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new SessionService(dbMock, policyMock, emailServiceMock);
+    db = createMockDb();
+    loginInDb = db.auth.login as jest.Mock;
+    service = new SessionService(db, policyMock, emailServiceMock);
   });
 
   it("trims and lowercases the email before logging in", async () => {
@@ -43,13 +45,15 @@ describe("SessionService.login", () => {
 });
 
 describe("SessionService.logout", () => {
-  const logOutInDb = dbMock.auth.logOut as jest.Mock;
-
   let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
+  let logOutInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new SessionService(dbMock, policyMock, emailServiceMock);
+    db = createMockDb();
+    logOutInDb = db.auth.logOut as jest.Mock;
+    service = new SessionService(db, policyMock, emailServiceMock);
   });
 
   it("throws when no token is provided", async () => {
@@ -75,13 +79,15 @@ describe("SessionService.logout", () => {
 });
 
 describe("SessionService.recoverSession", () => {
-  const getSessionInDb = dbMock.auth.getSession as jest.Mock;
-
   let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
+  let getSessionInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new SessionService(dbMock, policyMock, emailServiceMock);
+    db = createMockDb();
+    getSessionInDb = db.auth.getSession as jest.Mock;
+    service = new SessionService(db, policyMock, emailServiceMock);
   });
 
   it("throws when no token is provided", async () => {
@@ -115,13 +121,15 @@ describe("SessionService.recoverSession", () => {
 });
 
 describe("SessionService.resetPassword", () => {
-  const resetPasswordInDb = dbMock.auth.resetPassword as jest.Mock;
-
   let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
+  let resetPasswordInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    service = new SessionService(dbMock, policyMock, emailServiceMock);
+    db = createMockDb();
+    resetPasswordInDb = db.auth.resetPassword as jest.Mock;
+    service = new SessionService(db, policyMock, emailServiceMock);
   });
 
   it("returns ok true when the password reset succeeds", async () => {
@@ -149,11 +157,13 @@ describe("SessionService.resetPassword", () => {
 describe("SessionService.emailForPwReset", () => {
   let emailerMock = emailServiceMock.request as jest.Mock;
   let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    db = createMockDb();
     emailerMock = emailServiceMock.request as jest.Mock;
-    service = new SessionService(dbMock, policyMock, emailServiceMock);
+    service = new SessionService(db, policyMock, emailServiceMock);
   });
 
   it("delegates the password reset request to the injected emailer", async () => {
