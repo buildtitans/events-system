@@ -1,4 +1,4 @@
-import type { Insertable, Kysely, Selectable } from "kysely";
+import type { Insertable, Kysely } from "kysely";
 import { EventsValidator } from "./eventsValidator";
 import type {
   NewEventInputSchemaType,

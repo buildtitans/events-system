@@ -94,7 +94,7 @@ export const useCreateEvent = (
   const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(enqueueSnackbar({ kind: "newEvent", status: "pending" }));
-    const result = await scheduleEvent(newEvent);
+    await scheduleEvent(newEvent);
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import type {
@@ -22,7 +22,6 @@ import { logCaughtError } from "../../utils/errors/logCaughtError";
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
-  const timerRef = useRef<number | null>(null);
 
   const [newGroup, setNewGroup] = useState<NewGroupInputType>({
     name: "",
@@ -91,16 +90,8 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
       const payload = normalizeNewGroupInput(newGroup);
       await createGroup(payload);
     },
-    [createGroup, dispatch, isSubmittable],
+    [createGroup, dispatch, isSubmittable, newGroup],
   );
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
 
   return {
     newGroup,
