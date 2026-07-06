@@ -1,4 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  AsyncThunkConfig,
+  createAsyncThunk,
+  createSlice,
+  GetThunkAPI,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import type {
   MyGroupsState,
   UserAccountViewType,
@@ -8,6 +14,10 @@ import type {
   PasswordResetState,
   RequestPwResetState,
 } from "./types";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { enqueueSidebar } from "../rendering/RenderingSlice";
+import { trpcClient } from "@/src/trpc/trpcClient";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type InitialState = {
   email: UserEmailState;
@@ -28,6 +38,30 @@ const initialState: InitialState = {
   pwReset: { status: "initial" },
   requestPwReset: { status: "initial" },
 };
+
+export const hydrateAccountPage = createAsyncThunk(
+  "UserSlice/hydrateDashboard",
+  async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+    thunkAPI.dispatch(enqueueSidebar("user"));
+
+    try {
+      const myGroups = await trpcClient.users.createdGroups.mutate();
+      const email = await trpcClient.users.getUserEmail.mutate();
+
+      if (!email) {
+        throw new Error("Dashboard access requires authentication");
+      }
+
+      return {
+        myGroups,
+        email,
+      };
+    } catch (err) {
+      logCaughtError("UserSlice.hydrateAccountPage()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
 
 const UserSlice = createSlice({
   name: "slice/user",
@@ -75,6 +109,32 @@ const UserSlice = createSlice({
     ) => {
       state.pwReset = action.payload;
     },
+  },
+
+  extraReducers(builder) {
+    builder.addCase(hydrateAccountPage.pending, (state: InitialState) => {
+      state.email = { status: "pending" };
+      state.myGroups = { status: "pending" };
+    });
+
+    builder.addCase(hydrateAccountPage.rejected, (state: InitialState) => {
+      state.email = { status: "failed", error: "Failed to retrieve email" };
+      state.myGroups = {
+        status: "failed",
+        error: "Failed to retrieve created groups",
+      };
+    });
+
+    builder.addCase(
+      hydrateAccountPage.fulfilled,
+      (
+        state: InitialState,
+        action: PayloadAction<{ email: string; myGroups: GroupSchemaType[][] }>,
+      ) => {
+        state.email = { status: "ready", data: action.payload.email };
+        state.myGroups = { status: "ready", data: action.payload.myGroups };
+      },
+    );
   },
 });
 
