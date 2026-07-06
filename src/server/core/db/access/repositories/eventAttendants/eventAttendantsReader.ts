@@ -5,10 +5,13 @@ import { SelectedAttendant } from "../../types/types";
 export class EventAttendantsReader {
   constructor(private readonly db: Kysely<DB>) {}
 
-  async rawRsvp(
-    user_id: string,
-    event_id: string,
-  ): Promise<{ status: string } | undefined> {
+  async rawRsvp({
+    user_id,
+    event_id,
+  }: {
+    user_id: string;
+    event_id: string;
+  }): Promise<{ status: string } | undefined> {
     return await this.db
       .selectFrom("event_attendants")
       .select("status")
@@ -29,10 +32,13 @@ export class EventAttendantsReader {
       .execute();
   }
 
-  async rawAttendant(
-    user_id: string,
-    event_id: string,
-  ): Promise<SelectedAttendant> {
+  async rawAttendant({
+    user_id,
+    event_id,
+  }: {
+    user_id: string;
+    event_id: string;
+  }): Promise<SelectedAttendant> {
     return await this.db
       .selectFrom("event_attendants")
       .selectAll()

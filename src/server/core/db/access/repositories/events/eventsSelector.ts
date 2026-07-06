@@ -1,5 +1,3 @@
-import { Kysely } from "kysely";
-import { DB } from "../../../types/db";
 import { EventsValidator } from "./eventsValidator";
 import { RawEventsReader } from "./rawEventsReader";
 import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
@@ -10,13 +8,10 @@ import {
 import { SearchSchemaType } from "../../../../../../schemas/search/searchSchema";
 
 export class EventsSelector {
-  private readonly read: RawEventsReader;
   constructor(
-    private readonly db: Kysely<DB>,
     private readonly validate: EventsValidator,
-  ) {
-    this.read = new RawEventsReader(this.db);
-  }
+    private readonly read: RawEventsReader,
+  ) {}
 
   async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
     const raw = await this.read.rawByTitle(query);

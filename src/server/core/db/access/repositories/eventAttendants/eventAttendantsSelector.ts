@@ -25,7 +25,7 @@ export class EventAttendantsSelector {
     user_id: string,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
-    const raw = await this.read.rawRsvp(user_id, event_id);
+    const raw = await this.read.rawRsvp({ user_id, event_id });
     const status = raw?.status ? raw.status : "not_going";
     return this.validator.parseRsvpStatusResult(status);
   }
@@ -39,7 +39,7 @@ export class EventAttendantsSelector {
     user_id: string,
     event_id: string,
   ): Promise<EventAttendantsSchemaType> {
-    const raw = await this.read.rawAttendant(user_id, event_id);
+    const raw = await this.read.rawAttendant({ user_id, event_id });
     return this.validator.parseRawAttendant(raw);
   }
 
