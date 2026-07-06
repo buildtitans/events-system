@@ -8,14 +8,15 @@ import Calandar from "../../components/ui/dates/calandar";
 import OpenedGroupFallback from "../../components/ui/feedback/fallbacks/groupFallback";
 
 export default function GroupCalandar(): JSX.Element {
-  const groupEvents = useSelector((s: RootState) => s.openGroup.flattenedEvents);
+  const groupEvents = useSelector((s: RootState) => s.openGroup.calandar);
 
   return (
     <Stack gap={6}>
-      <AsyncStateRenderer state={groupEvents} empty={() => (<OpenedGroupFallback />)}>
-        {(state) => (
-          <Calandar history={state}/>
-        )}
+      <AsyncStateRenderer
+        state={groupEvents}
+        empty={() => <OpenedGroupFallback />}
+      >
+        {(state) => <Calandar history={state} />}
       </AsyncStateRenderer>
     </Stack>
   );

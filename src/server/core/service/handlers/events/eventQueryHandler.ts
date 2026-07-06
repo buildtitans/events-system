@@ -10,7 +10,7 @@ export class EventQueryHandler {
   constructor(private readonly db: DBClient) {}
 
   async getAllEvents(): Promise<EventsArraySchemaType> {
-    return await this.db.events.select.allEvents();
+    return await this.db.events.select.allStatuses();
   }
 
   async searchEvents(query: SearchSchemaType): Promise<EventsArraySchemaType> {

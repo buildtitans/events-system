@@ -9,7 +9,7 @@ import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
-  FlattenedGroupEventsState,
+  GroupEventsCalandarState,
   GroupHydrated,
   EventsOfGroup,
   GroupHistoryType,
@@ -23,6 +23,10 @@ import {
 } from "../../sync/syncOpenedGroup";
 import { getCurrentRole } from "../viewer/ViewerSlice";
 import { enqueueSidebar } from "../rendering/RenderingSlice";
+import { trpcClient } from "@/src/trpc/trpcClient";
+import { syncEventsForGroup } from "../../sync/syncEventsForGroup";
+import { EventsPages } from "../events/types";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 type InitialState = {
   group: GroupHydrated;
@@ -34,7 +38,7 @@ type InitialState = {
   archives: GroupArchivesState;
   numMembers: number;
   organizerEmail: string;
-  flattenedEvents: FlattenedGroupEventsState;
+  calandar: GroupEventsCalandarState;
   attendanceHistoryLookup: Record<
     EventAttendantsSchemaType["event_id"],
     number
@@ -52,7 +56,7 @@ const initialState: InitialState = {
   activeSection: "overview",
   numMembers: 0,
   organizerEmail: "N/A",
-  flattenedEvents: { status: "initial" },
+  calandar: { status: "initial" },
   attendanceHistoryLookup: {},
   archivesAttendance: {},
 };
@@ -77,6 +81,28 @@ export const hydrateGroup = createAsyncThunk(
       return results.data;
     } catch (err) {
       logCaughtError("OpenedGroupSlice.hydrateGroup()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const refreshGroupEvents = createAsyncThunk(
+  "OpenedGroup/refresh",
+  async (
+    id: GroupSchemaType["id"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    try {
+      const refreshedEventsLayout = await syncEventsForGroup(id);
+      const calandarEvents =
+        await trpcClient.events.getFlattenedGroupEvents.mutate(id);
+
+      return {
+        refreshedEventsLayout,
+        calandarEvents,
+      };
+    } catch (err) {
+      logCaughtError("OpenedGroupSlice.refreshGroupEvents()", err);
       return thunkAPI.rejectWithValue(err);
     }
   },
@@ -132,11 +158,11 @@ const OpenedGroupSlice = createSlice({
     getNumMembers: (state: InitialState, action: PayloadAction<number>) => {
       state.numMembers = action.payload;
     },
-    getFlattenedGroupEvents: (
+    getCalandarEvents: (
       state: InitialState,
-      action: PayloadAction<FlattenedGroupEventsState>,
+      action: PayloadAction<GroupEventsCalandarState>,
     ) => {
-      state.flattenedEvents = action.payload;
+      state.calandar = action.payload;
     },
     getPastEventsAttendanceRecords: (
       state: InitialState,
@@ -159,6 +185,50 @@ const OpenedGroupSlice = createSlice({
   },
 
   extraReducers(builder) {
+    builder.addCase(refreshGroupEvents.rejected, (state: InitialState) => {
+      state.events = {
+        status: "failed",
+        error: "Failed to refresh group events",
+      };
+      state.calandar = {
+        status: "failed",
+        error: "Failed to refresh group calandar",
+      };
+    });
+    builder.addCase(refreshGroupEvents.pending, (state: InitialState) => {
+      state.calandar = { status: "pending" };
+    });
+    builder.addCase(
+      refreshGroupEvents.fulfilled,
+      (
+        state: InitialState,
+        action: PayloadAction<{
+          refreshedEventsLayout: EventsPages;
+          calandarEvents: EventSchemaType[];
+        }>,
+      ) => {
+        const { refreshedEventsLayout, calandarEvents } = action.payload;
+
+        if (refreshedEventsLayout.length > 0) {
+          state.events = { status: "ready", data: refreshedEventsLayout };
+        } else {
+          state.events = {
+            status: "n/a",
+            message: "No events have been scheduled for this group",
+          };
+        }
+
+        if (calandarEvents.length > 0) {
+          state.calandar = { status: "ready", data: calandarEvents };
+        } else {
+          state.calandar = {
+            status: "n/a",
+            message: "No Events held for this group",
+          };
+        }
+      },
+    );
+
     builder.addCase(hydrateGroup.rejected, (state: InitialState) => {
       state.group = {
         status: "failed",
@@ -168,7 +238,7 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to hydrate group and associated events",
       };
-      state.flattenedEvents = {
+      state.calandar = {
         status: "failed",
         error: "Failed to hydrate selected group and associated schedule",
       };
@@ -177,7 +247,7 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(hydrateGroup.pending, (state: InitialState) => {
       state.group = { status: "pending" };
       state.events = { status: "pending" };
-      state.flattenedEvents = { status: "pending" };
+      state.calandar = { status: "pending" };
       state.history = { status: "initial" };
     });
 
@@ -201,9 +271,9 @@ const OpenedGroupSlice = createSlice({
         }
 
         if (allGroupEvents.length > 0) {
-          state.flattenedEvents = { status: "ready", data: allGroupEvents };
+          state.calandar = { status: "ready", data: allGroupEvents };
         } else {
-          state.flattenedEvents = {
+          state.calandar = {
             status: "n/a",
             message: "No Events held for this group",
           };
@@ -223,7 +293,7 @@ export const {
   clearOpenedGroupSlice,
   getNumMembers,
   getEmailOfGroupOrganizer,
-  getFlattenedGroupEvents,
+  getCalandarEvents,
   getPastEventsAttendanceRecords,
   getArchivesAttendanceRecords,
 } = OpenedGroupSlice.actions;

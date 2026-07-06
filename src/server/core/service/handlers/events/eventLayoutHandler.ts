@@ -18,7 +18,7 @@ export class EventLayoutHandler {
   }
 
   async all(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.select.allEvents();
+    const events = await this.db.events.select.allStatuses();
     return this.composer.compileLayout(events);
   }
 

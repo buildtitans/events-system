@@ -20,7 +20,7 @@ export type FilterOption = {
   label: string;
 };
 
-export type FlattenedGroupEventsState = AsyncState<
+export type GroupEventsCalandarState = AsyncState<
   EventSchemaType[],
   "No Events held for this group"
 >;
