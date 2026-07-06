@@ -1,11 +1,11 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderGroupDisplay";
 import {
   openedGroupHeroPanelSx,
   openedGroupHeroRootSx,
 } from "@/src/client/styles/sx/openedGroupHero";
-import OpenedGroupHero from "@/src/client/components/sections/group/openedGroup/head/openedGroupHero"
+import OpenedGroupHero from "@/src/client/components/sections/group/openedGroup/head/openedGroupHero";
 import ActiveDisplayHeader from "../head/activeDisplayHeader";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -42,8 +42,8 @@ export default function OpenedGroupPanel({
               justifyContent={"start"}
             >
               <ActiveDisplayHeader />
-              <Box minHeight={'50dvh'}>
-              <RenderGroupDisplay isMobile={isMobile} view={displayed} />
+              <Box minHeight={"50dvh"}>
+                <RenderGroupDisplay isMobile={isMobile} view={displayed} />
               </Box>
             </Stack>
           </Container>

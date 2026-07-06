@@ -5,8 +5,18 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { logCaughtError } from "../../utils/errors/logCaughtError";
 
-export type SyncOpenGroupPayload = {
-  group: GroupSchemaType | null;
+export type SyncOpenGroupPayload =
+  | {
+      ok: true;
+      data: OpenedGroupPayload;
+    }
+  | {
+      ok: false;
+      error: "Failed to hydrate group selected";
+    };
+
+export type OpenedGroupPayload = {
+  group: GroupSchemaType;
   events: EventsPages;
   role: GroupMemberSchemaType["role"];
   numMembers: number;
@@ -16,12 +26,8 @@ export type SyncOpenGroupPayload = {
 
 function createEmptyOpenGroupPayload(): SyncOpenGroupPayload {
   return {
-    group: null,
-    events: [],
-    role: "anonymous",
-    numMembers: 0,
-    organizerEmail: "",
-    allGroupEvents: [],
+    ok: false,
+    error: "Failed to hydrate group selected",
   };
 }
 
@@ -51,12 +57,15 @@ export async function syncOpenedGroup(
       await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group.id);
 
     return {
-      group,
-      events,
-      role,
-      numMembers: members.length,
-      organizerEmail: email,
-      allGroupEvents,
+      ok: true,
+      data: {
+        group,
+        events,
+        role,
+        numMembers: members.length,
+        organizerEmail: email,
+        allGroupEvents,
+      },
     };
   } catch (err) {
     logCaughtError("sync/syncOpenedGroup", err);

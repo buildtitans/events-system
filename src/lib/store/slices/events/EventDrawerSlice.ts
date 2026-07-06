@@ -1,9 +1,18 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  AsyncThunkConfig,
+  createAsyncThunk,
+  createSlice,
+  GetThunkAPI,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
+import { trpcClient } from "@/src/trpc/trpcClient";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { enqueueDrawer } from "../rendering/RenderingSlice";
 
 export type OpenedEventState = AsyncState<EventSchemaType, "Event not found">;
 
@@ -39,6 +48,29 @@ const initialState: InitialState = {
   numberInterested: { status: "initial" },
   drawerViewerRole: "anonymous",
 };
+
+export const hydrateEventDrawer = createAsyncThunk(
+  "EventDrawer/hydrate",
+  async (
+    id: EventSchemaType["id"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(enqueueDrawer("event drawer"));
+
+    try {
+      const result = await trpcClient.events.eventForDrawer.mutate(id);
+
+      if (!result) {
+        throw new Error("Failed to hydrate selected event");
+      }
+
+      return result;
+    } catch (err) {
+      logCaughtError("hydrateEventDrawer()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
 
 const EventDrawerSlice = createSlice({
   name: "EventDrawer",
@@ -81,6 +113,39 @@ const EventDrawerSlice = createSlice({
       state.viewerAttendanceStatus = action.payload;
     },
     closeEventDrawer: () => initialState,
+  },
+  extraReducers(builder) {
+    builder.addCase(hydrateEventDrawer.rejected, (state: InitialState) => {
+      state.event = {
+        status: "failed",
+        error: "Failed to hydrate event drawer",
+      };
+    });
+    builder.addCase(
+      hydrateEventDrawer.fulfilled,
+      (state: InitialState, action) => {
+        const { meta, event } = action.payload;
+
+        state.groupName = { status: "ready", data: meta.name };
+        state.drawerViewerRole = meta.role;
+        state.groupSlug = { status: "ready", data: meta.slug };
+        state.numberAttending = {
+          status: "ready",
+          data: meta.attendants.going,
+        };
+        state.numberInterested = {
+          status: "ready",
+          data: meta.attendants.interested,
+        };
+        state.viewerAttendanceStatus = meta.rsvpStatus;
+
+        state.event = { status: "ready", data: event };
+      },
+    );
+
+    builder.addCase(hydrateEventDrawer.pending, (state: InitialState) => {
+      state.event = { status: "pending" };
+    });
   },
 });
 

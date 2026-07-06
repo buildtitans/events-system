@@ -1,4 +1,4 @@
-import type { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { CurrentDisplay } from "../store/slices/groups/types";
 
 type HeaderInfo = {
   title: string;

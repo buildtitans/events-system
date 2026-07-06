@@ -1,10 +1,8 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import {
-  CurrentDisplay,
-  displaySection,
-} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import type { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 import type { JSX } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -62,19 +60,19 @@ export default function MobileGroupNav() {
           const active = displayed === option.value;
 
           return (
-          <Button
-            key={option.value}
-            onClick={() => dispatch(displaySection(option.value))}
-            type="button"
-            sx={getMobileBottomDrawerTabSx(active)}
-          >
-            <Box sx={getMobileBottomDrawerIconWrapSx(active)}>
-              {option.icon}
-            </Box>
-            <Typography sx={mobileBottomDrawerTabLabelSx}>
-              {option.label}
-            </Typography>
-          </Button>
+            <Button
+              key={option.value}
+              onClick={() => dispatch(displaySection(option.value))}
+              type="button"
+              sx={getMobileBottomDrawerTabSx(active)}
+            >
+              <Box sx={getMobileBottomDrawerIconWrapSx(active)}>
+                {option.icon}
+              </Box>
+              <Typography sx={mobileBottomDrawerTabLabelSx}>
+                {option.label}
+              </Typography>
+            </Button>
           );
         })}
       </Box>

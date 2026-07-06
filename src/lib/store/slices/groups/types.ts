@@ -1,6 +1,7 @@
 import { AsyncState } from "@/src/lib/types/state/types";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { EventsPages } from "../events/types";
 
 export type GroupsFilter = "all" | "popular";
 
@@ -18,6 +19,28 @@ export type FilterOption = {
   value: GroupsFilter;
   label: string;
 };
+
+export type FlattenedGroupEventsState = AsyncState<
+  EventSchemaType[],
+  "No Events held for this group"
+>;
+
+export type GroupHydrated = AsyncState<GroupSchemaType>;
+
+export type EventsOfGroup =
+  | AsyncState<EventsPages, "No events have been scheduled for this group">
+  | { status: "refreshing" };
+
+export type GroupHistoryType = AsyncState<
+  EventSchemaType[],
+  "No history to display"
+>;
+
+export type CurrentDisplay =
+  | "overview"
+  | "events"
+  | "group history"
+  | "archives";
 
 // ******** New Display State Model Prototype Example Below ***************
 
