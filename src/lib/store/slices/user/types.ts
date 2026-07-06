@@ -14,8 +14,13 @@ type ParticipationsStatePayload = {
 };
 
 type PariticpationsState = AsyncState<
-  ParticipationsStatePayload,
+  RsvpSchemaType[],
   "We couldn't find any records of user participations"
+>;
+
+type MembershipsState = AsyncState<
+  UserMembershipSchemaType[],
+  "No records of any memberships"
 >;
 
 type MyGroupsState = AsyncState<GroupSchemaType[][], "No groups created yet">;
@@ -35,4 +40,5 @@ export type {
   MyGroupsState,
   PariticpationsState,
   ParticipationsStatePayload,
+  MembershipsState,
 };
