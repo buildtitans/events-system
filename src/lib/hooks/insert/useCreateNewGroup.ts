@@ -69,11 +69,11 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
         dispatch(addGroup(result.data));
         dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
         dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
-        enqueueDrawer(null);
+        dispatch(enqueueDrawer(null));
       } catch (err) {
         logCaughtError("useCreateNewGroup.submitNewGroup.createGroup()", err);
         dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-        enqueueAlert({ kind: "error", action: "createGroup" });
+        dispatch(enqueueAlert({ kind: "error", action: "createGroup" }));
       }
     },
     [dispatch],
