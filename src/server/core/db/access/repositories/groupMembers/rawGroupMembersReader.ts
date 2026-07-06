@@ -49,6 +49,7 @@ export class RawGroupMembersReader {
       .selectFrom("group_members")
       .selectAll()
       .where("group_id", "=", group_id)
+      .where("role", "=", "organizer")
       .executeTakeFirstOrThrow();
   }
 
