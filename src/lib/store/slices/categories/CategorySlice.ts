@@ -2,7 +2,8 @@ import {
   CategoryLookupType,
   createCategoryLookup,
 } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
-import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type { SyncDomainsType } from "@/src/lib/types/server/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initializeDomains } from "../rendering/RenderingSlice";
 
@@ -38,18 +39,24 @@ const CategoriesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(initializeDomains, (state, action) => {
-      const result = action.payload;
+    builder.addCase(
+      initializeDomains,
+      (
+        state: CategoriesSliceInitialState,
+        action: PayloadAction<SyncDomainsType>,
+      ) => {
+        const result = action.payload;
 
-      if (result.status === "fulfilled") {
-        state.categories = result.data.categories;
-        const lookup = createCategoryLookup(result.data.groups);
-        state.categoryLookup = {
-          status: "ready",
-          data: lookup,
-        };
-      }
-    });
+        if (result.status === "fulfilled") {
+          state.categories = result.data.categories;
+          const lookup = createCategoryLookup(result.data.groups);
+          state.categoryLookup = {
+            status: "ready",
+            data: lookup,
+          };
+        }
+      },
+    );
   },
 });
 

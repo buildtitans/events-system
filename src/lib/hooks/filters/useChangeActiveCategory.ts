@@ -17,6 +17,7 @@ import {
   UpcomingEventIds,
 } from "../../utils/dates/curateUpcomingEventIds";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { assertNever } from "../../utils/assert/assertNever";
 
 type PopularEventsIds = EventSchemaType["id"][];
 
@@ -121,7 +122,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
           return;
         }
         default: {
-          return;
+          return assertNever(filter);
         }
       }
     };

@@ -16,16 +16,20 @@ export type NameSlugDescriptionLookup = Record<
 
 type DomainStateType = {
   events: EventsPages;
-  activeEvents: EventsPages;
   groups: GroupsSchemaType;
   categories: CategoriesSchemaType;
   groupNameDictionary: NameSlugDescriptionLookup;
 };
 
-type SyncDomainsResult = {
-  status: "fulfilled" | "rejected";
-  data: DomainStateType;
-};
+type SyncDomainsType =
+  | {
+      status: "fulfilled";
+      data: DomainStateType;
+    }
+  | {
+      status: "rejected";
+      error: string;
+    };
 
 type Domains = keyof DomainStateType;
 
@@ -44,6 +48,6 @@ export type {
   DomainPromise,
   DomainPromises,
   SyncResults,
-  SyncDomainsResult,
   DomainStateType,
+  SyncDomainsType,
 };
