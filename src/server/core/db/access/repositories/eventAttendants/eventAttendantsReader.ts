@@ -30,8 +30,8 @@ export class EventAttendantsReader {
   }
 
   async rawAttendant(
-    event_id: string,
     user_id: string,
+    event_id: string,
   ): Promise<SelectedAttendant> {
     return await this.db
       .selectFrom("event_attendants")
