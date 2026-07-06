@@ -1,4 +1,4 @@
-import type { CurrentDisplay } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import type { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 
 export type FallbackCopyType = {
   eyeBrow: "History" | "Events" | "Archives" | "Overview";

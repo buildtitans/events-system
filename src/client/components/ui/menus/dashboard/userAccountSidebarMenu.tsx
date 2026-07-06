@@ -6,28 +6,26 @@ import Divider from "@mui/material/Divider";
 import { type JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import { CurrentDisplay, displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { capitalizeFirstLetter } from "@/src/lib/utils/helpers/capitalizeFirstLetter";
+import type { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 
 const options: CurrentDisplay[] = ["overview", "events", "group history"];
-
 
 export default function UserAccountSidebarMenu(): JSX.Element {
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = (option: CurrentDisplay) => {
-
-      dispatch(displaySection(option));
+    dispatch(displaySection(option));
   };
-
 
   return (
     <Stack
       sx={{
         width: "95%",
         height: "100%",
-          marginX: 'auto',
+        marginX: "auto",
       }}
       direction={"column"}
       alignItems={"center"}
@@ -46,21 +44,24 @@ export default function UserAccountSidebarMenu(): JSX.Element {
       >
         <MenuList variant="menu">
           {options.map((option) => {
-              const label = capitalizeFirstLetter(option);
+            const label = capitalizeFirstLetter(option);
 
-              return (
-                  <MenuItem
-                  onClick={() => handleClick(option)}
-                  key={option}
-                  value={option}
-            sx={{
-              borderRadius: 2,
-              backgroundColor: (displayed === option) ? 'rgba(255, 255, 255, 0.2)' : 'transparent'
-            }}
-          >
-            {label}
-          </MenuItem>      
-              )
+            return (
+              <MenuItem
+                onClick={() => handleClick(option)}
+                key={option}
+                value={option}
+                sx={{
+                  borderRadius: 2,
+                  backgroundColor:
+                    displayed === option
+                      ? "rgba(255, 255, 255, 0.2)"
+                      : "transparent",
+                }}
+              >
+                {label}
+              </MenuItem>
+            );
           })}
         </MenuList>
       </Paper>

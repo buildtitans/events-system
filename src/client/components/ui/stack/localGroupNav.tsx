@@ -5,10 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useEffect, type JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import {
-  CurrentDisplay,
-  displaySection,
-} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { displaySection } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
@@ -20,6 +17,7 @@ import {
   groupSidebarSectionLabelMap,
   groupSidebarSectionLabelSx,
 } from "@/src/client/styles/sx/groupSidebar";
+import { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 
 const options = [
   {
