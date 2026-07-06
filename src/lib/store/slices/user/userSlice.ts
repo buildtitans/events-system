@@ -13,6 +13,7 @@ import type {
   UserEmailState,
   PasswordResetState,
   RequestPwResetState,
+  MembershipsState,
 } from "./types";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { enqueueSidebar } from "../rendering/RenderingSlice";
@@ -22,6 +23,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 type InitialState = {
   email: UserEmailState;
   participations: PariticpationsState;
+  memberships: MembershipsState;
   myGroups: MyGroupsState;
   view: UserAccountViewType;
   nextEventLookup: NextGroupEventLookupMapType;
@@ -33,6 +35,7 @@ const initialState: InitialState = {
   email: { status: "initial" },
   myGroups: { status: "initial" },
   participations: { status: "initial" },
+  memberships: { status: "initial" },
   view: "my groups",
   nextEventLookup: {},
   pwReset: { status: "initial" },
@@ -78,6 +81,12 @@ const UserSlice = createSlice({
       action: PayloadAction<PariticpationsState>,
     ) => {
       state.participations = action.payload;
+    },
+    getMemberships: (
+      state: InitialState,
+      action: PayloadAction<MembershipsState>,
+    ) => {
+      state.memberships = action.payload;
     },
     getMyGroups: (
       state: InitialState,
@@ -132,7 +141,12 @@ const UserSlice = createSlice({
         action: PayloadAction<{ email: string; myGroups: GroupSchemaType[][] }>,
       ) => {
         state.email = { status: "ready", data: action.payload.email };
-        state.myGroups = { status: "ready", data: action.payload.myGroups };
+
+        if (action.payload.myGroups.length > 0) {
+          state.myGroups = { status: "ready", data: action.payload.myGroups };
+        } else {
+          state.myGroups = { status: "n/a", message: "No groups created yet" };
+        }
       },
     );
   },
@@ -146,6 +160,7 @@ export const {
   getNextGroupEventLookup,
   requestResetPassword,
   resetPassword,
+  getMemberships,
 } = UserSlice.actions;
 
 export type UserSliceType = ReturnType<typeof UserSlice.reducer>;

@@ -5,6 +5,7 @@ import { AppDispatch } from "@/src/lib/store";
 import {
   getParticipations,
   getNextGroupEventLookup,
+  getMemberships,
 } from "@/src/lib/store/slices/user/userSlice";
 import {
   NextGroupEventLookupMapType,
@@ -35,19 +36,39 @@ export const useHydrateMyRsvps = () => {
       const { participations, lookup } = results;
       dispatch(getNextGroupEventLookup(lookup));
 
-      dispatch(
-        getParticipations({
-          status: "ready",
-          data: {
-            rsvps: participations.rsvps,
-            memberships: participations.memberships,
-          },
-        }),
-      );
+      if (participations.memberships.length > 0) {
+        dispatch(
+          getMemberships({ status: "ready", data: participations.memberships }),
+        );
+      } else {
+        dispatch(
+          getMemberships({
+            status: "n/a",
+            message: "No records of any memberships",
+          }),
+        );
+      }
+
+      if (participations.rsvps.length > 0) {
+        dispatch(
+          getParticipations({
+            status: "ready",
+            data: participations.rsvps,
+          }),
+        );
+      } else {
+        dispatch(
+          getParticipations({
+            status: "n/a",
+            message: "We couldn't find any records of user participations",
+          }),
+        );
+      }
     };
 
     const executeHydrateRsvps = async () => {
       dispatch(getParticipations({ status: "pending" }));
+      dispatch(getMemberships({ status: "pending" }));
 
       try {
         const results = await syncUserParticipations();
