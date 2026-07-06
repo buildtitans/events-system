@@ -8,6 +8,7 @@ import type {
   EventsStateType,
   GroupNameByGroupID,
 } from "./types";
+import type { SyncDomainsType } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
 
 type EventCategoryState = {
@@ -65,34 +66,26 @@ export const EventsSlice = createSlice({
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<EventCategoryState>) => {
-    builder.addCase(initializeDomains, (state, action) => {
-      state.eventPages.status = "pending";
+    builder.addCase(
+      initializeDomains,
+      (state: EventCategoryState, action: PayloadAction<SyncDomainsType>) => {
+        state.eventPages.status = "pending";
 
-      const result = action.payload;
+        const result = action.payload;
 
-      if (result.status === "fulfilled") {
-        state.eventPages = {
-          status: "ready",
-          data: result.data.activeEvents,
-        };
-
-        state.allEventsPages = {
-          status: "ready",
-          data: result.data.events,
-        };
-
-        state.currentPage = 0;
-      } else {
-        state.eventPages = {
-          status: "failed",
-          error: "Failed to retrieve active events",
-        };
-        state.allEventsPages = {
-          status: "failed",
-          error: "Failed to retrieve all events",
-        };
-      }
-    });
+        if (result.status === "rejected") {
+          state.eventPages = {
+            status: "failed",
+            error: "Failed to retrieve active events",
+          };
+        } else if (result.status === "fulfilled") {
+          state.eventPages = {
+            status: "ready",
+            data: result.data.events,
+          };
+        }
+      },
+    );
   },
 });
 

@@ -8,9 +8,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 export type EventDisplayFilter =
   | "All Events"
   | "Popular Events"
-  | "Upcoming events"
-  | "Local events"
-  | "Tech Events";
+  | "Upcoming events";
 
 export type GroupNameByGroupID = Record<string, string>;
 

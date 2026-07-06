@@ -9,9 +9,9 @@ import type {
   SnackbarStatusAndKind,
   AlertType,
 } from "./types";
-import { SyncDomainsResult } from "@/src/lib/types/server/types";
+import { SyncDomainsType } from "@/src/lib/types/server/types";
 
-export const initializeDomains = createAction<SyncDomainsResult>(
+export const initializeDomains = createAction<SyncDomainsType>(
   "app/initializeDomains",
 );
 
@@ -89,13 +89,19 @@ const RenderingSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(initializeDomains, (state, action) => {
-      const result = action.payload;
+    builder.addCase(
+      initializeDomains,
+      (
+        state: RenderingInitialState,
+        action: PayloadAction<SyncDomainsType>,
+      ) => {
+        const result = action.payload;
 
-      if (result.status === "fulfilled") {
-        state.initialLoadStatus = "idle";
-      }
-    });
+        if (result.status === "fulfilled") {
+          state.initialLoadStatus = "idle";
+        }
+      },
+    );
   },
 });
 
