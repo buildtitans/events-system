@@ -19,7 +19,7 @@ export class EventsSelector {
     return this.validate.events(raw);
   }
 
-  async allEvents(): Promise<EventSchemaType[]> {
+  async allStatuses(): Promise<EventSchemaType[]> {
     const raw = await this.read.allRawEvents();
     return this.validate.events(raw);
   }

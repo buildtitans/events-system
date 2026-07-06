@@ -119,7 +119,7 @@ function createMockEventsRepo() {
   return {
     select: {
       search: jest.fn(),
-      allEvents: jest.fn(),
+      allStatuses: jest.fn(),
       allScheduled: jest.fn(),
       cancelledByGroupId: jest.fn(),
       byId: jest.fn(),
