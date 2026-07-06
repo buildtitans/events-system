@@ -1,21 +1,15 @@
-import { Kysely } from "kysely";
-import { DB } from "../../../types/db";
 import { GroupsValidator } from "./groupsValidator";
 import { RawGroupsReader } from "./rawGroupsReader";
 import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
 
 export class GroupsSelector {
-  protected readonly read: RawGroupsReader;
   constructor(
-    private readonly db: Kysely<DB>,
+    private readonly read: RawGroupsReader,
     private readonly validator: GroupsValidator,
-  ) {
-    this.read = new RawGroupsReader(this.db);
-    this.validator = new GroupsValidator();
-  }
+  ) {}
 
   async all(): Promise<GroupSchemaType[]> {
-    const raw = await this.db.selectFrom("groups").selectAll().execute();
+    const raw = await this.read.allRawGroups();
     return this.validator.groups(raw);
   }
 

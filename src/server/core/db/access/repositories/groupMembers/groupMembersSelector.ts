@@ -1,5 +1,3 @@
-import { Kysely } from "kysely";
-import { DB } from "../../../types/db";
 import { GroupMembersValidator } from "./groupMembersValidator";
 import { RawGroupMembersReader } from "./rawGroupMembersReader";
 import {
@@ -8,13 +6,10 @@ import {
 } from "../../../../../../schemas/groups/groupMembersSchema";
 
 export class GroupMembersSelector {
-  private readonly read: RawGroupMembersReader;
   constructor(
-    private readonly db: Kysely<DB>,
+    private readonly read: RawGroupMembersReader,
     private readonly validator: GroupMembersValidator,
-  ) {
-    this.read = new RawGroupMembersReader(this.db);
-  }
+  ) {}
 
   async all() {
     const raw = await this.read.allRawMembers();
