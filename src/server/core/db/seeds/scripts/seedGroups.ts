@@ -57,10 +57,5 @@ export async function seedGroups(
   }
 
   console.log(`Seeded ${rawGroups.length} groups`);
-
-  console.log({
-    Slugs: groupBySlug,
-  });
-
   return groupBySlug;
 }

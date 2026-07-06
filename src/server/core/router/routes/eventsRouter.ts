@@ -53,10 +53,6 @@ export const eventsRouter = router({
       return await ctx.services.api.domains.events.layout.byIds(input);
     }),
 
-  getFlattendEvents: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.events.query.getAllEvents();
-  }),
-
   getEvent: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {

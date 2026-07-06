@@ -6,7 +6,6 @@ import rawEvents from "@/src/server/core/db/seeds/data/placeholder-events.json";
 export async function seedEvents(groupsBySlug: Record<string, string>) {
   for (const event of rawEvents) {
     const groupID = groupsBySlug[event.group];
-    console.log(groupID);
 
     const row: Insertable<Events> = {
       title: event.title,
