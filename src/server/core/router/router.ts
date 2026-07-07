@@ -1,9 +1,9 @@
 import { router } from "@/src/server/core/context/init";
 import { authRouter } from "./routes/authRouter";
 import { categoriesRouter } from "./routes/categoriesRouter";
-import { groupsRouter } from "./routes/groupsRouter";
-import { groupMembersRouter } from "./routes/groupMembersRouter";
-import { eventAttendantsRouter } from "./routes/eventAttendantsRouter";
+import { groupRouter } from "./routes/groupsRouter";
+import { membersRouter } from "./routes/groupMembersRouter";
+import { attendantsRouter } from "./routes/eventAttendantsRouter";
 import { notificationsRouter } from "./routes/notificationsRouter";
 import { usersRouter } from "./routes/usersRouter";
 import { geoCodingRouter } from "./routes/geoCodingRouter";
@@ -11,11 +11,11 @@ import { eventRouter } from "./routes/eventRouter";
 
 export const appRouter = router({
   events: eventRouter,
-  groups: groupsRouter,
+  groups: groupRouter,
   auth: authRouter,
   categories: categoriesRouter,
-  groupMembers: groupMembersRouter,
-  eventAttendants: eventAttendantsRouter,
+  groupMembers: membersRouter,
+  eventAttendants: attendantsRouter,
   notifications: notificationsRouter,
   users: usersRouter,
   addressSearch: geoCodingRouter,

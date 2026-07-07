@@ -62,7 +62,7 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
   const createGroup = useCallback(
     async (group: NewGroupInputSchemaType) => {
       try {
-        const result = await trpcClient.groups.createNewGroup.mutate(group);
+        const result = await trpcClient.groups.write.newGroup.mutate(group);
         if (!result.ok) {
           throw new Error(result.error);
         }

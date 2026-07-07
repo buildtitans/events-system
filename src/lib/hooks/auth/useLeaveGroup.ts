@@ -20,7 +20,7 @@ export const useLeaveGroup = (): RemoveUserFromGroupHook => {
     dispatch(enqueueSnackbar({ kind: "leaveGroup", status: "pending" }));
 
     try {
-      const result = await trpcClient.groupMembers.leaveGroup.mutate({
+      const result = await trpcClient.groupMembers.write.leave.mutate({
         group_id,
       });
 

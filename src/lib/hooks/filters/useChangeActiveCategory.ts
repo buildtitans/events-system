@@ -70,7 +70,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     };
 
     const compilePopularEventIds = async (): Promise<PopularEventsIds> => {
-      return await trpcClient.eventAttendants.getPopularEventIds.mutate();
+      return await trpcClient.eventAttendants.select.popular.mutate();
     };
 
     const retrievePopularEvents = async (

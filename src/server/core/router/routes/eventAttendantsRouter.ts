@@ -8,8 +8,8 @@ import {
   UpdateAttendanceInputValidator,
 } from "../inputValidators/inputValidation";
 
-export const eventAttendantsRouter = router({
-  getAttendants: publicProcedure
+const selectAttendantsRouter = router({
+  attendants: publicProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.query.getEventAttendants(
@@ -17,15 +17,7 @@ export const eventAttendantsRouter = router({
       );
     }),
 
-  getNumberAttendingEvent: publicProcedure
-    .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
-        input,
-      );
-    }),
-
-  getViewerAttendance: protectedProcedure
+  userStatus: protectedProcedure
     .input(EventIDValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.rsvps.getUserRsvpToEvent(
@@ -34,7 +26,27 @@ export const eventAttendantsRouter = router({
       );
     }),
 
-  updateViewerAttendance: protectedProcedure
+  headCount: publicProcedure
+    .input(EventIDValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
+        input,
+      );
+    }),
+
+  rsvps: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
+      ctx.req.user?.id,
+    );
+  }),
+
+  popular: publicProcedure.mutation(async ({ ctx }) => {
+    return ctx.services.api.domains.participations.census.getPopularEventsIds();
+  }),
+});
+
+const writeAttendantsRouter = router({
+  rsvp: protectedProcedure
     .input(UpdateAttendanceInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.rsvps.updateRsvpStatus(
@@ -43,14 +55,9 @@ export const eventAttendantsRouter = router({
         input.newStatus,
       );
     }),
+});
 
-  getPopularEventIds: publicProcedure.mutation(async ({ ctx }) => {
-    return ctx.services.api.domains.participations.census.getPopularEventsIds();
-  }),
-
-  getUserRsvpdEvents: protectedProcedure.mutation(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
-      ctx.req.user?.id,
-    );
-  }),
+export const attendantsRouter = router({
+  select: selectAttendantsRouter,
+  write: writeAttendantsRouter,
 });

@@ -31,8 +31,8 @@ export const useFilterGroups = (): FilterGroupsHook => {
       try {
         const groups =
           filter === "all"
-            ? await trpcClient.groups.list.mutate()
-            : await trpcClient.groups.popularGroups.mutate();
+            ? await trpcClient.groups.select.all.mutate()
+            : await trpcClient.groups.select.popular.mutate();
 
         if (cancelled) return;
 

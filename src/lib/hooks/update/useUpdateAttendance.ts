@@ -59,11 +59,10 @@ export const useUpdateAttendance = (
     );
 
     try {
-      const result =
-        await trpcClient.eventAttendants.updateViewerAttendance.mutate({
-          event_id: event_id,
-          newStatus: newStatus,
-        });
+      const result = await trpcClient.eventAttendants.write.rsvp.mutate({
+        event_id: event_id,
+        newStatus: newStatus,
+      });
 
       handleResult(result);
     } catch (err) {
