@@ -44,14 +44,15 @@ export async function syncOpenedGroup(
     const role = await trpcClient.groupMembers.getViewerRole.mutate(group.id);
 
     const events =
-      (await trpcClient.events.groupEventsLayout.mutate(group.id)) ?? [];
+      (await trpcClient.events.layout.forGroup.mutate(group.id)) ?? [];
 
     const members = await trpcClient.groupMembers.getGroupMembers.mutate(
       group.id,
     );
 
-    const allGroupEvents =
-      await trpcClient.events.getFlattenedGroupEvents.mutate(group.id);
+    const allGroupEvents = await trpcClient.events.select.forGroup.mutate(
+      group.id,
+    );
 
     const { email } =
       await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group.id);

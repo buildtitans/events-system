@@ -74,7 +74,7 @@ export const useCancelEvent = (
     );
 
     try {
-      const result = await trpcClient.events.updateEventStatus.mutate(options);
+      const result = await trpcClient.events.write.update.mutate(options);
       if (!result?.updateStatus) {
         throw new Error(`Error attempting to cancel event`);
       }

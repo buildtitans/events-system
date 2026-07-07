@@ -49,7 +49,7 @@ export const useDebouncedSerach = (): DebouncedSearchHook => {
       }));
 
       try {
-        const events = await trpcClient.events.search.mutate(query);
+        const events = await trpcClient.events.select.search.mutate(query);
         const groups = await trpcClient.groups.searchGroups.mutate(query);
 
         if (requestId !== requestIdRef.current) return;

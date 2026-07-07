@@ -58,7 +58,7 @@ export const hydrateEventDrawer = createAsyncThunk(
     thunkAPI.dispatch(enqueueDrawer("event drawer"));
 
     try {
-      const result = await trpcClient.events.eventForDrawer.mutate(id);
+      const result = await trpcClient.events.select.hydrateEvent.mutate(id);
 
       if (!result) {
         throw new Error("Failed to hydrate selected event");

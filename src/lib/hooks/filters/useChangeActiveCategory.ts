@@ -31,7 +31,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
 
   useEffect(() => {
     const getUpcomingEvents = async (ids: UpcomingEventIds) => {
-      const upcomingEvents = await trpcClient.events.eventsById.mutate(ids);
+      const upcomingEvents = await trpcClient.events.layout.byIds.mutate(ids);
 
       dispatch(
         populateEvents({
@@ -42,7 +42,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     };
 
     const executeGetUpcomingEvents = async (): Promise<void> => {
-      const eventsPages = await trpcClient.events.allEventsLayout.mutate();
+      const eventsPages = await trpcClient.events.layout.allActive.mutate();
 
       const ids = curateUpcomingEventIds(eventsPages);
 
@@ -59,8 +59,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     };
 
     const getAllActiveEvents = async (): Promise<void> => {
-      const allActiveEvents =
-        await trpcClient.events.allActiveEventsLayout.mutate();
+      const allActiveEvents = await trpcClient.events.layout.allActive.mutate();
 
       dispatch(
         populateEvents({
@@ -77,7 +76,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
     const retrievePopularEvents = async (
       ids: PopularEventsIds,
     ): Promise<EventsPages> => {
-      const events = await trpcClient.events.eventsById.mutate(ids);
+      const events = await trpcClient.events.layout.byIds.mutate(ids);
 
       return events;
     };

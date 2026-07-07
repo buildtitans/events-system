@@ -26,7 +26,7 @@ export const useHydrateGroupHistory = () => {
 
       try {
         const { pastEventsRecords, history } =
-          await trpcClient.events.getGroupHistory.mutate(openedGroup.data.id);
+          await trpcClient.events.select.history.mutate(openedGroup.data.id);
 
         if (history.length > 0 && pastEventsRecords) {
           const sortedBydate = sortByDate(history);
