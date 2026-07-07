@@ -94,8 +94,7 @@ export const refreshGroupEvents = createAsyncThunk(
   ) => {
     try {
       const refreshedEventsLayout = await syncEventsForGroup(id);
-      const calandarEvents =
-        await trpcClient.events.getFlattenedGroupEvents.mutate(id);
+      const calandarEvents = await trpcClient.events.select.forGroup.mutate(id);
 
       return {
         refreshedEventsLayout,

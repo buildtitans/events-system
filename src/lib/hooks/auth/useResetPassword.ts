@@ -82,7 +82,7 @@ export const useResetPassword = (token: string): ResetPasswordHook => {
     dispatch(resetPassword({ status: "pending" }));
 
     try {
-      const res = await trpcClient.users.resetUserPassword.mutate({
+      const res = await trpcClient.users.credentials.resetPassword.mutate({
         password: newPassword.password,
         token,
       });

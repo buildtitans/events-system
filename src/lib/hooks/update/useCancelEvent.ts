@@ -31,7 +31,7 @@ export const useCancelEvent = (
   async function executeCreateNotifications(): Promise<void> {
     const notification = createScheduleNotification(event, options);
 
-    await trpcClient.notifications.createNotification.mutate(notification);
+    await trpcClient.notifications.write.create.mutate(notification);
   }
 
   const handleStatusChange = () => {
@@ -74,7 +74,7 @@ export const useCancelEvent = (
     );
 
     try {
-      const result = await trpcClient.events.updateEventStatus.mutate(options);
+      const result = await trpcClient.events.write.update.mutate(options);
       if (!result?.updateStatus) {
         throw new Error(`Error attempting to cancel event`);
       }

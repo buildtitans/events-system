@@ -4,5 +4,5 @@ import type { NotificationSchemaArrayType } from "@/src/schemas/notifications/no
 export async function syncSeenNotifications(
   seen: NotificationSchemaArrayType,
 ): Promise<void> {
-  await trpcClient.notifications.markOpenedNotifications.mutate(seen);
+  await trpcClient.notifications.write.markOpened.mutate(seen);
 }

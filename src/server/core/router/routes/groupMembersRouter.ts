@@ -8,26 +8,16 @@ import {
   groupIdInputValidator,
 } from "../inputValidators/inputValidation";
 
-const groupMembersRouter = router({
-  addNewMember: protectedProcedure
+const selectMembersRouter = router({
+  forGroup: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.memberships.addMember(
-        ctx.req.user?.id,
+      return await ctx.services.api.domains.groups.query.getAllGroupMembers(
         input,
       );
     }),
 
-  leaveGroup: publicProcedure
-    .input(MemberToRemoveInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.memberships.leaveGroup(
-        input.group_id,
-        ctx.req.user?.id,
-      );
-    }),
-
-  getViewerRole: publicProcedure
+  role: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.memberships.getRoleInGroup(
@@ -36,21 +26,13 @@ const groupMembersRouter = router({
       );
     }),
 
-  getGroupMembers: publicProcedure
-    .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.getAllGroupMembers(
-        input,
-      );
-    }),
-
-  viewerMemberships: protectedProcedure.mutation(async ({ ctx }) => {
+  userMemberships: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
 
-  getGroupOrganizerEmail: publicProcedure
+  organizerEmail: publicProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.getOrganizerEmail(
@@ -59,4 +41,27 @@ const groupMembersRouter = router({
     }),
 });
 
-export { groupMembersRouter };
+const writeMembersRouter = router({
+  join: protectedProcedure
+    .input(groupIdInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.groups.memberships.addMember(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  leave: publicProcedure
+    .input(MemberToRemoveInputValidator)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.groups.memberships.leaveGroup(
+        input.group_id,
+        ctx.req.user?.id,
+      );
+    }),
+});
+
+export const membersRouter = router({
+  select: selectMembersRouter,
+  write: writeMembersRouter,
+});

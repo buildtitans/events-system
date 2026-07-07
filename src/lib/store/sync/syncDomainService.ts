@@ -17,10 +17,10 @@ export class SyncDomainsService {
   private async runSync(): Promise<SyncResults> {
     const [events, groups, categories, groupNameDictionary] =
       await Promise.allSettled([
-        this.client.events.allActiveEventsLayout.mutate(),
-        this.client.groups.list.mutate(),
+        this.client.events.layout.allActive.mutate(),
+        this.client.groups.select.all.mutate(),
         this.client.categories.getAllCategories.mutate(),
-        this.client.groups.nameLookup.mutate(),
+        this.client.groups.lookup.groupNames.mutate(),
       ]);
 
     return {

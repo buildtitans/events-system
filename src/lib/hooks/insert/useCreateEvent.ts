@@ -76,7 +76,7 @@ export const useCreateEvent = (
 
   const scheduleEvent = async (newEvent: NewEventType) => {
     try {
-      const result = await trpcClient.events.newEvent.mutate(newEvent);
+      const result = await trpcClient.events.write.create.mutate(newEvent);
       if (!result.ok) {
         throw new Error(`${result.error}`);
       }
@@ -108,7 +108,7 @@ export const useCreateEvent = (
       );
 
       const result =
-        await trpcClient.notifications.createNotification.mutate(notification);
+        await trpcClient.notifications.write.create.mutate(notification);
 
       dispatch(
         appendNewNotification({

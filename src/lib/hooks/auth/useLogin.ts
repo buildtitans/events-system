@@ -50,7 +50,7 @@ const useLogin = (credentials: LoginCredentials): UseLoginHook => {
   };
 
   const login = async (email: string, password: string) => {
-    return await trpcClient.auth.login.mutate({
+    return await trpcClient.auth.session.login.mutate({
       email,
       password,
     });

@@ -35,26 +35,27 @@ export async function syncOpenedGroup(
   slug: GroupSchemaType["slug"],
 ): Promise<SyncOpenGroupPayload> {
   try {
-    const group = await trpcClient.groups.groupBySlug.mutate(slug);
+    const group = await trpcClient.groups.select.bySlug.mutate(slug);
 
     if (!group) {
       return createEmptyOpenGroupPayload();
     }
 
-    const role = await trpcClient.groupMembers.getViewerRole.mutate(group.id);
+    const role = await trpcClient.groupMembers.select.role.mutate(group.id);
 
     const events =
-      (await trpcClient.events.groupEventsLayout.mutate(group.id)) ?? [];
+      (await trpcClient.events.layout.forGroup.mutate(group.id)) ?? [];
 
-    const members = await trpcClient.groupMembers.getGroupMembers.mutate(
+    const members = await trpcClient.groupMembers.select.forGroup.mutate(
       group.id,
     );
 
-    const allGroupEvents =
-      await trpcClient.events.getFlattenedGroupEvents.mutate(group.id);
+    const allGroupEvents = await trpcClient.events.select.forGroup.mutate(
+      group.id,
+    );
 
     const { email } =
-      await trpcClient.groupMembers.getGroupOrganizerEmail.mutate(group.id);
+      await trpcClient.groupMembers.select.organizerEmail.mutate(group.id);
 
     return {
       ok: true,

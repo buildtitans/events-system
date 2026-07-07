@@ -4,14 +4,16 @@ import {
   NotificationArrayInputValidator,
 } from "../inputValidators/inputValidation";
 
-export const notificationsRouter = router({
-  getNotifications: protectedProcedure.mutation(async ({ ctx }) => {
+const selectNotificationRouter = router({
+  new: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.notifications.getNewNotifications(
       ctx.req.user?.id,
     );
   }),
+});
 
-  createNotification: protectedProcedure
+const writeNotificationRouter = router({
+  create: protectedProcedure
     .input(createNotificationInput)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.createNotification(
@@ -20,7 +22,7 @@ export const notificationsRouter = router({
       );
     }),
 
-  markOpenedNotifications: protectedProcedure
+  markOpened: protectedProcedure
     .input(NotificationArrayInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.markSeen(
@@ -30,4 +32,9 @@ export const notificationsRouter = router({
     }),
 });
 
-export type NotificatonsRouter = typeof notificationsRouter;
+export const notificationRouter = router({
+  select: selectNotificationRouter,
+  write: writeNotificationRouter,
+});
+
+export type NotificatonsRouter = typeof notificationRouter;

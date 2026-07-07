@@ -20,7 +20,7 @@ const useJoinGroup = (): JoinGroupHook => {
   const joinGroup = useCallback(
     async (group_id: GroupSchemaType["id"]) => {
       try {
-        const res = await trpcClient.groupMembers.addNewMember.mutate(group_id);
+        const res = await trpcClient.groupMembers.write.join.mutate(group_id);
         dispatch(enqueueSnackbar({ kind: "joiningGroup", status: "success" }));
         dispatch(getCurrentRole(res.role));
         return;

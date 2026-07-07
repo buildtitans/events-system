@@ -15,8 +15,7 @@ export const useHydrateNotifications = () => {
     const hydrateNotifications = async () => {
       dispatch(populateNewNotifications({ status: "pending" }));
 
-      const notifications =
-        await trpcClient.notifications.getNotifications.mutate();
+      const notifications = await trpcClient.notifications.select.new.mutate();
 
       if (Array.isArray(notifications) && notifications.length > 0) {
         dispatch(
