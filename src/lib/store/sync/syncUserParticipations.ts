@@ -11,7 +11,7 @@ export type UserParticipationsResult = {
 
 export async function syncUserParticipations(): Promise<UserParticipationsResult> {
   const rsvps = await trpcClient.eventAttendants.select.rsvps.mutate();
-  const memberships = await trpcClient.users.userMemberships.mutate();
+  const memberships = await trpcClient.users.select.memberships.mutate();
 
   const ids = memberships.map((m) => m.group_id);
   const lookup = await trpcClient.groups.lookup.nextEvents.mutate(ids);

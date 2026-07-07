@@ -8,18 +8,18 @@ import {
   UserEmailInputValidator,
 } from "../inputValidators/inputValidation";
 
-export const usersRouter = router({
-  getUserEmail: protectedProcedure.mutation(async ({ ctx }) => {
+const selectUserRouter = router({
+  email: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getEmailById(ctx.req.user?.id);
   }),
 
-  userMemberships: protectedProcedure.mutation(async ({ ctx }) => {
+  memberships: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
 
-  rsvpsToEvents: protectedProcedure.mutation(async ({ ctx }) => {
+  rsvps: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
@@ -30,14 +30,16 @@ export const usersRouter = router({
       ctx.req.user?.id,
     );
   }),
+});
 
+const userCredentialsRouter = router({
   requestPasswordReset: publicProcedure
     .input(UserEmailInputValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.session.emailForPwReset(input);
     }),
 
-  resetUserPassword: publicProcedure
+  resetPassword: publicProcedure
     .input(TokenAndPasswordValidator)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.session.resetPassword(
@@ -45,4 +47,9 @@ export const usersRouter = router({
         input.password,
       );
     }),
+});
+
+export const userRouter = router({
+  select: selectUserRouter,
+  credentials: userCredentialsRouter,
 });

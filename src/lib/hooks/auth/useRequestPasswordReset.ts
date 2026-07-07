@@ -38,7 +38,8 @@ export const useRequestPasswordReset = ({
     dispatch(requestResetPassword({ status: "pending" }));
     dispatch(enqueueSnackbar({ kind: "pwResetEmail", status: "pending" }));
 
-    const result = await trpcClient.users.requestPasswordReset.mutate(email);
+    const result =
+      await trpcClient.users.credentials.requestPasswordReset.mutate(email);
     dispatch(enqueueSnackbar({ kind: "pwResetEmail", status: "idle" }));
 
     if (result) {

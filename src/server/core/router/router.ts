@@ -5,7 +5,7 @@ import { groupRouter } from "./routes/groupsRouter";
 import { membersRouter } from "./routes/groupMembersRouter";
 import { attendantsRouter } from "./routes/eventAttendantsRouter";
 import { notificationsRouter } from "./routes/notificationsRouter";
-import { usersRouter } from "./routes/usersRouter";
+import { userRouter } from "./routes/usersRouter";
 import { geoCodingRouter } from "./routes/geoCodingRouter";
 import { eventRouter } from "./routes/eventRouter";
 
@@ -17,7 +17,7 @@ export const appRouter = router({
   groupMembers: membersRouter,
   eventAttendants: attendantsRouter,
   notifications: notificationsRouter,
-  users: usersRouter,
+  users: userRouter,
   addressSearch: geoCodingRouter,
 });
 
