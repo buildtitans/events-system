@@ -47,12 +47,12 @@ export default function ConfirmModal({
         status: success ? "success" : "failed",
       }),
     );
-    
+
     dispatch(showModal(null));
   }
   const handleSignout = async (): Promise<void> => {
     dispatch(enqueueSnackbar({ kind: "logout", status: "pending" }));
-    const res = await trpcClient.auth.signout.mutate();
+    const res = await trpcClient.auth.session.signout.mutate();
     await handleLogoutResponse(res ? true : false);
   };
 

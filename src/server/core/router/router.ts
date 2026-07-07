@@ -4,7 +4,7 @@ import { categoriesRouter } from "./routes/categoriesRouter";
 import { groupRouter } from "./routes/groupsRouter";
 import { membersRouter } from "./routes/groupMembersRouter";
 import { attendantsRouter } from "./routes/eventAttendantsRouter";
-import { notificationsRouter } from "./routes/notificationsRouter";
+import { notificationRouter } from "./routes/notificationsRouter";
 import { userRouter } from "./routes/usersRouter";
 import { geoCodingRouter } from "./routes/geoCodingRouter";
 import { eventRouter } from "./routes/eventRouter";
@@ -16,7 +16,7 @@ export const appRouter = router({
   categories: categoriesRouter,
   groupMembers: membersRouter,
   eventAttendants: attendantsRouter,
-  notifications: notificationsRouter,
+  notifications: notificationRouter,
   users: userRouter,
   addressSearch: geoCodingRouter,
 });

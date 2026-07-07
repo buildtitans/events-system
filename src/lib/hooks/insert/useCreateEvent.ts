@@ -108,7 +108,7 @@ export const useCreateEvent = (
       );
 
       const result =
-        await trpcClient.notifications.createNotification.mutate(notification);
+        await trpcClient.notifications.write.create.mutate(notification);
 
       dispatch(
         appendNewNotification({

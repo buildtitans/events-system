@@ -3,7 +3,7 @@ import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredent
 import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
 
-export const authRouter = router({
+const sessionRouter = router({
   login: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
@@ -43,7 +43,9 @@ export const authRouter = router({
 
     return res;
   }),
+});
 
+const writeAuthRouter = router({
   signup: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
@@ -52,7 +54,9 @@ export const authRouter = router({
         input.password,
       );
     }),
+});
 
+const statusRouter = router({
   recover: publicProcedure.mutation(async ({ ctx }) => {
     const session = await ctx.services.api.domains.session.recoverSession(
       ctx.req.cookies.session,
@@ -78,4 +82,10 @@ export const authRouter = router({
       ctx.req.cookies.session,
     );
   }),
+});
+
+export const authRouter = router({
+  status: statusRouter,
+  session: sessionRouter,
+  write: writeAuthRouter,
 });

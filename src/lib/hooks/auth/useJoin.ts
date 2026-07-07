@@ -33,7 +33,7 @@ export const useSignUp = (email: string, password: string) => {
   const followUpLogin = async (email: string, password: string) => {
     dispatch(enqueueSnackbar({ kind: "login", status: "pending" }));
 
-    const loginReques = await trpcClient.auth.login.mutate({
+    const loginReques = await trpcClient.auth.session.login.mutate({
       email: email,
       password: password,
     });
@@ -62,7 +62,10 @@ export const useSignUp = (email: string, password: string) => {
 
   const sendRequest = async (email: string, password: string) => {
     dispatch(enqueueSnackbar({ kind: "signup", status: "pending" }));
-    const request = await trpcClient.auth.signup.mutate({ email, password });
+    const request = await trpcClient.auth.write.signup.mutate({
+      email,
+      password,
+    });
     return request;
   };
   return {

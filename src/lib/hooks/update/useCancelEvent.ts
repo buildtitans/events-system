@@ -31,7 +31,7 @@ export const useCancelEvent = (
   async function executeCreateNotifications(): Promise<void> {
     const notification = createScheduleNotification(event, options);
 
-    await trpcClient.notifications.createNotification.mutate(notification);
+    await trpcClient.notifications.write.create.mutate(notification);
   }
 
   const handleStatusChange = () => {
