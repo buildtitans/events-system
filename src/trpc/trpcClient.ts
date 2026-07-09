@@ -21,3 +21,5 @@ export const trpcClient = createTRPCProxyClient<AppRouter>({
     }),
   ],
 });
+
+export type TrpcClientType = typeof trpcClient;

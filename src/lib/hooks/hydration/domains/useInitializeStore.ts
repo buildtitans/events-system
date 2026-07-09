@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback } from "react";
 import { AppStore, makeStore } from "@/src/lib/store/root/store";
 import { signalDomainStatus } from "@/src/lib/store/slices/rendering/RenderingSlice";

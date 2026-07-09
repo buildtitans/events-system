@@ -13,6 +13,10 @@ export class EventQueryHandler {
     return await this.db.events.select.allStatuses();
   }
 
+  async allActive(): Promise<EventSchemaType[]> {
+    return await this.db.events.select.allScheduled();
+  }
+
   async searchEvents(query: SearchSchemaType): Promise<EventsArraySchemaType> {
     return await this.db.events.select.search(query);
   }

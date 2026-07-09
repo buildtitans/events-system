@@ -88,9 +88,8 @@ type DebouncedSearchHook = {
 };
 
 type ChangeActiveCategoryHook = {
-  setFilter: React.Dispatch<SetStateAction<FilterType>>;
+  filterFor: (filter: EventDisplayFilter) => Promise<void>;
   eventStatus: EventsStateType["status"];
-  mountStatus: AppBootState["status"];
   pendingFilter: boolean;
 };
 
