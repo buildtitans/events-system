@@ -11,7 +11,7 @@ import type {
 import type { SyncDomainsType } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
 
-type EventCategoryState = {
+export type EventCategoryState = {
   displayed: EventDisplayFilter;
   eventPages: EventsStateType;
   allEventsPages: EventsStateType;
