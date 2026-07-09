@@ -9,12 +9,21 @@ type InitializeDomainsHook = {
   domains: SyncDomainsType | null;
 };
 
-export const useInitializeDomains = (): InitializeDomainsHook => {
+type InitializeDomainsCallbacks = {
+  onStart: () => void;
+  onFailure: () => void;
+};
+
+export const useInitializeDomains = ({
+  onFailure,
+  onStart,
+}: InitializeDomainsCallbacks): InitializeDomainsHook => {
   const [domains, setDomains] = useState<SyncDomainsType | null>(null);
 
   useEffect(() => {
     async function executeHydrateDomains() {
       try {
+        onStart();
         const service = new SyncDomainsService(trpcClient);
         const result = await service.sync();
         setDomains(result);
@@ -23,11 +32,13 @@ export const useInitializeDomains = (): InitializeDomainsHook => {
           "hook/useInitializeDomains.executeHydrateDomains.SyncDomainsService.sync()",
           err,
         );
+
+        onFailure();
       }
     }
 
     void executeHydrateDomains();
-  }, []);
+  }, [onFailure, onStart]);
 
   return { domains };
 };

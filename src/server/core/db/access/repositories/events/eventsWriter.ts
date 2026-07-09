@@ -8,6 +8,7 @@ import type { EventSchemaType } from "../../../../../../schemas/events/eventSche
 import type { Events, DB } from "../../../types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
 dayjs.extend(utc);
 
 export class EventsWriter {
@@ -39,9 +40,7 @@ export class EventsWriter {
   private toInsertableEvent(
     newEvent: NewEventInputSchemaType,
   ): Insertable<Events> {
-    const start_time = dayjs(newEvent.starts_at)
-      .utc()
-      .format("YYYY-MM-DDTHH:mm:ss.sssZ");
+    const start_time = dayjs(newEvent.starts_at).utc().format(ISO_FORMAT);
 
     return {
       title: newEvent.title,

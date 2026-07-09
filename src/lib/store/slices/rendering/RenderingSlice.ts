@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit";
-import type { LoadingStatus, DomainStatus } from "@/src/lib/types/tokens/types";
 
 import type {
   MainContentTabType,
@@ -10,6 +9,7 @@ import type {
   AlertType,
 } from "./types";
 import { SyncDomainsType } from "@/src/lib/types/server/types";
+import { AppBootState } from "@/src/lib/types/state/types";
 
 export const initializeDomains = createAction<SyncDomainsType>(
   "app/initializeDomains",
@@ -17,7 +17,7 @@ export const initializeDomains = createAction<SyncDomainsType>(
 
 type RenderingInitialState = {
   mainContent: MainContentTabType;
-  initialLoadStatus: DomainStatus;
+  appBoot: AppBootState;
   modal: ActiveModal;
   snackbar: SnackbarStatusAndKind;
   alert: AlertType;
@@ -27,7 +27,7 @@ type RenderingInitialState = {
 
 const initialState: RenderingInitialState = {
   mainContent: "Upcoming Events",
-  initialLoadStatus: "pending",
+  appBoot: { status: "initial" },
   modal: null,
   drawer: null,
   snackbar: {
@@ -83,9 +83,9 @@ const RenderingSlice = createSlice({
     },
     signalDomainStatus: (
       state: RenderingInitialState,
-      action: PayloadAction<LoadingStatus>,
+      action: PayloadAction<AppBootState>,
     ) => {
-      state.initialLoadStatus = action.payload;
+      state.appBoot = action.payload;
     },
   },
   extraReducers(builder) {
@@ -98,7 +98,13 @@ const RenderingSlice = createSlice({
         const result = action.payload;
 
         if (result.status === "fulfilled") {
-          state.initialLoadStatus = "idle";
+          state.appBoot = { status: "ready" };
+        } else if (result.status === "rejected") {
+          state.appBoot = {
+            status: "failed",
+            message: "The app could not load its required startup data",
+            error: "INITIAL_DOMAIN_SYNC_FAILED",
+          };
         }
       },
     );
