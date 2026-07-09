@@ -17,9 +17,7 @@ import {
 } from "@/src/client/styles/sx/nav";
 
 export function Search(): JSX.Element {
-  const mountStatus = useSelector(
-    (s: RootState) => s.rendering.initialLoadStatus,
-  );
+  const appBoot = useSelector((s: RootState) => s.rendering.appBoot.status);
   const { suggestions, input, onInputChange, selectOption, status } =
     useDebouncedSerach();
 
@@ -27,7 +25,7 @@ export function Search(): JSX.Element {
     <Autocomplete
       sx={navSearchAutocompleteSx}
       loading={status === "pending"}
-      disabled={mountStatus !== "idle"}
+      disabled={appBoot !== "ready"}
       noOptionsText={"Query matched 0 results"}
       inputValue={input}
       onChange={selectOption}
@@ -40,11 +38,7 @@ export function Search(): JSX.Element {
         option: SuggestionType,
       ) => {
         const { key, ...rest } = props;
-        return <SearchSuggestion 
-        props={rest} 
-        key={key} 
-        option={option} 
-        />;
+        return <SearchSuggestion props={rest} key={key} option={option} />;
       }}
       options={suggestions}
       slotProps={{

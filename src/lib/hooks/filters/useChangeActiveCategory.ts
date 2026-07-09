@@ -23,7 +23,7 @@ type PopularEventsIds = EventSchemaType["id"][];
 
 export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
   const hydrateStatus = useSelector(
-    (s: RootState) => s.rendering.initialLoadStatus,
+    (s: RootState) => s.rendering.appBoot.status,
   );
   const status = useSelector((s: RootState) => s.events.eventPages.status);
   const [filter, setFilter] = useState<FilterType>("initial");
@@ -92,7 +92,7 @@ export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
       );
     };
 
-    if (hydrateStatus !== "idle") return;
+    if (hydrateStatus !== "ready") return;
     if (filter === "initial") return;
 
     const executeFilterEvents = async (filter: FilterType) => {

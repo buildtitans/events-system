@@ -5,7 +5,6 @@ import {
   GetThunkAPI,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import type { LoadingStatus } from "@/src/lib/types/tokens/types";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
@@ -31,7 +30,6 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 type InitialState = {
   group: GroupHydrated;
   events: EventsOfGroup;
-  syncStatus: LoadingStatus;
   currPage: number;
   activeSection: CurrentDisplay;
   history: GroupHistoryType;
@@ -51,7 +49,6 @@ const initialState: InitialState = {
   events: { status: "refreshing" },
   history: { status: "initial" },
   archives: { status: "initial" },
-  syncStatus: "idle",
   currPage: 0,
   activeSection: "overview",
   numMembers: 0,
@@ -124,12 +121,6 @@ const OpenedGroupSlice = createSlice({
       state.group = action.payload;
     },
 
-    groupEventsStatus: (
-      state: InitialState,
-      action: PayloadAction<LoadingStatus>,
-    ) => {
-      state.syncStatus = action.payload;
-    },
     displaySection: (
       state: InitialState,
       action: PayloadAction<CurrentDisplay>,
@@ -285,7 +276,6 @@ const OpenedGroupSlice = createSlice({
 export const {
   getGroupEvents,
   groupOpened,
-  groupEventsStatus,
   displaySection,
   getGroupHistory,
   populateGroupArchives,

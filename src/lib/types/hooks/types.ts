@@ -1,15 +1,9 @@
 import type { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
-import type {
-  UserInGroupRoleType,
-  LoadingStatus,
-  DomainStatus,
-} from "@/src/lib/types/tokens/types";
 import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
 import type {
   EventsStateType,
-  EventsPages,
   EventDisplayFilter,
 } from "../../store/slices/events/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
@@ -35,6 +29,7 @@ import type {
   SuggestionType,
 } from "../../hooks/search/types";
 import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
+import { AppBootState } from "../state/types";
 
 type RBACType = Record<
   GroupMemberSchemaType["group_id"],
@@ -95,7 +90,7 @@ type DebouncedSearchHook = {
 type ChangeActiveCategoryHook = {
   setFilter: React.Dispatch<SetStateAction<FilterType>>;
   eventStatus: EventsStateType["status"];
-  mountStatus: DomainStatus;
+  mountStatus: AppBootState["status"];
   pendingFilter: boolean;
 };
 
@@ -148,7 +143,7 @@ type ValidateCredentialsHook = {
 
 type GetGroupRoleAndIdHook = {
   groupID: OrganizerAndUserIdsType["groupId"];
-  roleType: UserInGroupRoleType;
+  roleType: GroupMemberSchemaType["role"];
   groupName: GroupSchemaType["name"];
 };
 
@@ -169,15 +164,6 @@ type LoginResType =
 type UseLoginHook = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   status: LoginResType["status"] | "initial";
-};
-
-type UsePopulateEventsListHook = {
-  eventLoadingStatus: LoadingStatus;
-};
-
-type GetGroupEventsHook = {
-  groupEvents: EventsPages;
-  status: LoadingStatus;
 };
 
 type GetGroupMembersHook = {
@@ -210,8 +196,6 @@ export type {
   GetGroupRoleAndIdHook,
   CreateEventHook,
   UseLoginHook,
-  UsePopulateEventsListHook,
-  GetGroupEventsHook,
   GetGroupMembersHook,
   JoinGroupHook,
   UpdateAttendanceStatusHook,

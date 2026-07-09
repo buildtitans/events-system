@@ -1,14 +1,10 @@
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+
 type PromiseAllSettledResult<T> =
   | PromiseFulfilledResult<T>
   | PromiseRejectedResult;
 
 type MountStatus = "active" | "idle";
-
-type LoadingStatus = "idle" | "pending" | "failed" | "warning";
-
-type LeaveGroupStatus = LoadingStatus | "initial";
-
-type DomainStatus = LoadingStatus | "initial";
 
 type RequestStatus = "idle" | "success" | "pending" | "failed";
 
@@ -24,8 +20,6 @@ type SnackbarMessages = {
   leaveGroup: Record<RequestStatus, string>;
   pwResetEmail: Record<RequestStatus, string>;
 };
-
-type UserInGroupRoleType = "anonymous" | "member" | "organizer";
 
 type LoginCredentials = {
   email: string;
@@ -76,16 +70,12 @@ type AlertMessagesType =
 
 export type {
   MountStatus,
-  LoadingStatus,
   RequestStatus,
   SnackbarMessages,
-  UserInGroupRoleType,
   AlertKind,
   AlertMessages,
   AlertMessagesType,
   LoginCredentials,
   ValidationState,
-  DomainStatus,
   PromiseAllSettledResult,
-  LeaveGroupStatus,
 };

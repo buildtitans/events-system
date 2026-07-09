@@ -23,9 +23,7 @@ const metaPillSx = {
 function LandingHeader({ isMobile }: { isMobile: boolean }) {
   const displayed = useSelector((s: RootState) => s.events.displayed);
   const eventPages = useSelector((s: RootState) => s.events.eventPages);
-  const mountStatus = useSelector(
-    (s: RootState) => s.rendering.initialLoadStatus,
-  );
+  const appBoot = useSelector((s: RootState) => s.rendering.appBoot.status);
 
   const pages = eventPages.status === "ready" ? eventPages.data.length : 0;
   const totalEvents =
@@ -43,16 +41,14 @@ function LandingHeader({ isMobile }: { isMobile: boolean }) {
       : 0;
 
   const paginationBttons = () => {
-    if ((pages < 1) || (mountStatus !== "idle")) return null;
+    if (pages < 1 || appBoot !== "ready") return null;
 
-   return (
-    <AsyncStateRenderer
-      state={eventPages}
-      pending={() => null}
-    >
-      {() => <PaginateEvents />}
-    </AsyncStateRenderer>
-  )};
+    return (
+      <AsyncStateRenderer state={eventPages} pending={() => null}>
+        {() => <PaginateEvents />}
+      </AsyncStateRenderer>
+    );
+  };
 
   const headerSummary =
     totalEvents > 0
