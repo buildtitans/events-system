@@ -5,15 +5,10 @@ import {
   enqueueAlert,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { loginSuccess } from "../../store/slices/auth/AuthSlice";
-import { LoginResType } from "./useLogin";
-
-type NewUser = {
-  id: string;
-  email: string;
-};
+import { loginSuccess } from "@/src/lib/store/slices/auth/AuthSlice";
+import type { AppDispatch } from "@/src/lib/store";
+import type { LoginResType, NewUser } from "@/src/lib/types/hooks/types";
 
 export const useSignUp = (email: string, password: string) => {
   const dispatch = useDispatch<AppDispatch>();

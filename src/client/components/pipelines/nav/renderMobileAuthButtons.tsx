@@ -1,8 +1,8 @@
-import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
+import { UserKind } from "@/src/lib/store/slices/auth/types";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { JSX } from "react";
-import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import {
   navPrimaryButtonSx,
   navSecondaryButtonSx,
@@ -10,25 +10,23 @@ import {
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export default function RenderMobileAuthButtons({
-    userKind, 
-    showSigninDrawer,
-    openSignupDrawer,
-    openUserDashboard,
-    mobileOpenSignOutModal
+  userKind,
+  showSigninDrawer,
+  openSignupDrawer,
+  openUserDashboard,
+  mobileOpenSignOutModal,
 }: {
-    userKind: UserKind, 
-    showSigninDrawer: () => void,
-    openSignupDrawer: () => void,
-    openUserDashboard: () => void,
-    mobileOpenSignOutModal: () => void
+  userKind: UserKind;
+  showSigninDrawer: () => void;
+  openSignupDrawer: () => void;
+  openUserDashboard: () => void;
+  mobileOpenSignOutModal: () => void;
 }): JSX.Element {
   switch (userKind) {
     case "authenticated": {
       return (
-        <Stack
-        gap={2}
-        >
-          <Button 
+        <Stack gap={2}>
+          <Button
             onClick={openUserDashboard}
             type="button"
             variant="contained"
@@ -61,10 +59,8 @@ export default function RenderMobileAuthButtons({
     }
     case "anonymous": {
       return (
-        <Stack
-        gap={2}
-        >
-          <Button 
+        <Stack gap={2}>
+          <Button
             onClick={openSignupDrawer}
             variant="contained"
             fullWidth

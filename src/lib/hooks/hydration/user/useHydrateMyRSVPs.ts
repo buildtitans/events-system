@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
 import {
@@ -11,8 +11,9 @@ import {
   NextGroupEventLookupMapType,
   ParticipationsStatePayload,
 } from "@/src/lib/store/slices/user/types";
-import { syncUserParticipations } from "@/src/lib/store/sync/syncUserParticipations";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { HydrateUserService } from "@/src/lib/store/services/hydrateUserService";
+import { trpcClient } from "@/src/trpc/trpcClient";
 
 type TrpcResults = {
   participations: ParticipationsStatePayload;
@@ -21,6 +22,7 @@ type TrpcResults = {
 
 export const useHydrateMyRsvps = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const service = useMemo(() => new HydrateUserService(trpcClient), []);
 
   useEffect(() => {
     const handleFailure = () => {
@@ -71,7 +73,7 @@ export const useHydrateMyRsvps = () => {
       dispatch(getMemberships({ status: "pending" }));
 
       try {
-        const results = await syncUserParticipations();
+        const results = await service.participations();
 
         handleParticipationsResults(results);
       } catch (err) {
@@ -81,5 +83,5 @@ export const useHydrateMyRsvps = () => {
     };
 
     void executeHydrateRsvps();
-  }, [dispatch]);
+  }, [dispatch, service]);
 };

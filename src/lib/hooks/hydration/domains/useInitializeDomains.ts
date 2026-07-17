@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { SyncDomainsType } from "@/src/lib/types/server/types";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { SyncDomainsService } from "@/src/lib/store/sync/syncDomainService";
+import { SyncDomainsService } from "@/src/lib/store/services/syncDomainService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 type InitializeDomainsHook = {

@@ -1,96 +1,93 @@
-"use client"
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Email from '@/src/client/components/sections/inputs/auth/Email';
-import Password from '@/src/client/components/sections/inputs/auth/Password';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/lib/store';
-import ForgotPassword from '@/src/client/features/auth/ForgotPassword';
-import type { ValidateCredentialsHook } from '@/src/lib/types/hooks/types';
-import type { UseLoginHook } from '@/src/lib/types/hooks/types';
-import AuthDrawerShell from '@/src/client/components/ui/drawers/authDrawerShell';
+"use client";
+import type { ValidateCredentialsHook } from "@/src/lib/types/hooks/types";
+import type { UseLoginHook } from "@/src/lib/types/hooks/types";
+import * as React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 import {
-    authCheckboxLabelSx,
-    authCheckboxSx,
-    authDrawerFormSx,
-    authPrimaryButtonSx,
-} from '@/src/client/styles/sx/authDrawer';
+  authCheckboxLabelSx,
+  authCheckboxSx,
+  authDrawerFormSx,
+  authPrimaryButtonSx,
+} from "@/src/client/styles/sx/authDrawer";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Email from "@/src/client/components/sections/inputs/auth/Email";
+import Password from "@/src/client/components/sections/inputs/auth/Password";
+import ForgotPassword from "@/src/client/features/auth/ForgotPassword";
+import AuthDrawerShell from "@/src/client/components/ui/drawers/authDrawerShell";
 
 type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
-    handleSubmit: UseLoginHook["handleSubmit"]
-}
-
+  handleSubmit: UseLoginHook["handleSubmit"];
+};
 
 export default function SignInCard({
-    isSubmittable,
-    emailErrorMessage,
-    emailError,
-    passwordError,
-    passwordErrorMessage,
-    handleEmail,
-    handlePassword,
-    handleSubmit
+  isSubmittable,
+  errors,
+  handleEmail,
+  handlePassword,
+  handleSubmit,
 }: SignInCardProps) {
-    const userKind = useSelector((s: RootState) => s.auth.userKind);
-    const [open, setOpen] = React.useState(false);
+  const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  const { inputErrors, authError } = errors;
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    return (
-        <AuthDrawerShell
-            eyebrow="Welcome Back"
-            title="Sign in"
-            description="Jump back into your groups, events, and dashboard with the account you already use."
+  return (
+    <AuthDrawerShell
+      eyebrow="Welcome Back"
+      title="Sign in"
+      description="Jump back into your groups, events, and dashboard with the account you already use."
+    >
+      <Box
+        component="form"
+        method="POST"
+        noValidate
+        onSubmit={(e) => handleSubmit(e)}
+        sx={authDrawerFormSx}
+      >
+        <Email
+          handleEmail={handleEmail}
+          emailError={inputErrors.emailError}
+          emailErrorMessage={inputErrors.emailErrorMessage}
+          authError={authError}
+        />
+        <Password
+          handlePassword={handlePassword}
+          passwordError={inputErrors.passwordError}
+          passwordErrorMessage={inputErrors.passwordErrorMessage}
+          handleClickOpen={handleClickOpen}
+        />
+        <FormControlLabel
+          sx={authCheckboxLabelSx}
+          control={<Checkbox value="remember" sx={authCheckboxSx} />}
+          label="Remember me"
+        />
+        <ForgotPassword
+          open={open}
+          handleClose={handleClose}
+          setOpen={setOpen}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={authPrimaryButtonSx}
+          disabled={!isSubmittable || userKind === "authenticated"}
         >
-            <Box
-                component="form"
-                method="POST"
-                noValidate
-                onSubmit={(e) => handleSubmit(e)}
-                sx={authDrawerFormSx}
-            >
-                <Email
-                    handleEmail={handleEmail}
-                    emailError={emailError}
-                    emailErrorMessage={emailErrorMessage}
-                />
-                <Password
-                    handlePassword={handlePassword}
-                    passwordError={passwordError}
-                    passwordErrorMessage={passwordErrorMessage}
-                    handleClickOpen={handleClickOpen}
-                />
-                <FormControlLabel
-                    sx={authCheckboxLabelSx}
-                    control={<Checkbox value="remember" sx={authCheckboxSx} />}
-                    label="Remember me"
-                />
-                <ForgotPassword 
-                open={open} 
-                handleClose={handleClose} 
-                setOpen={setOpen}
-                />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={authPrimaryButtonSx}
-                    disabled={(!isSubmittable) || (userKind === "authenticated")}
-                >
-                    Sign in
-                </Button>
-            </Box>
-            
-        </AuthDrawerShell>
-    );
+          Sign in
+        </Button>
+      </Box>
+    </AuthDrawerShell>
+  );
 }

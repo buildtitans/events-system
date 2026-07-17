@@ -16,16 +16,13 @@ import type {
 } from "@/src/lib/store/slices/groups/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import {
-  OpenedGroupPayload,
-  syncOpenedGroup,
-} from "../../sync/syncOpenedGroup";
+import type { OpenedGroupPayload } from "../../services/types";
 import { getCurrentRole } from "../viewer/ViewerSlice";
 import { enqueueSidebar } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { syncEventsForGroup } from "../../sync/syncEventsForGroup";
 import { EventsPages } from "../events/types";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { HydrateOpenGroupService } from "../../services/hydrateOpenGroupService";
 
 type InitialState = {
   group: GroupHydrated;
@@ -64,10 +61,12 @@ export const hydrateGroup = createAsyncThunk(
     slug: GroupSchemaType["slug"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
+    const service = new HydrateOpenGroupService(trpcClient);
+
     thunkAPI.dispatch(enqueueSidebar("group"));
 
     try {
-      const results = await syncOpenedGroup(slug);
+      const results = await service.hydrate(slug);
 
       if (!results.ok) {
         throw new Error("Failed to hydrate group selected");
@@ -90,7 +89,8 @@ export const refreshGroupEvents = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const refreshedEventsLayout = await syncEventsForGroup(id);
+      const refreshedEventsLayout =
+        await trpcClient.events.layout.forGroup.mutate(id);
       const calandarEvents = await trpcClient.events.select.forGroup.mutate(id);
 
       return {
@@ -244,15 +244,15 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(
       hydrateGroup.fulfilled,
       (state: InitialState, action: PayloadAction<OpenedGroupPayload>) => {
-        const { group, events, allGroupEvents, numMembers, organizerEmail } =
+        const { group, layout, calandar, numMembers, organizerEmail } =
           action.payload;
 
         state.group = { status: "ready", data: group };
         state.numMembers = numMembers;
         state.organizerEmail = organizerEmail;
 
-        if (events.length > 0) {
-          state.events = { status: "ready", data: events };
+        if (layout.length > 0) {
+          state.events = { status: "ready", data: layout };
         } else {
           state.events = {
             status: "n/a",
@@ -260,8 +260,8 @@ const OpenedGroupSlice = createSlice({
           };
         }
 
-        if (allGroupEvents.length > 0) {
-          state.calandar = { status: "ready", data: allGroupEvents };
+        if (calandar.length > 0) {
+          state.calandar = { status: "ready", data: calandar };
         } else {
           state.calandar = {
             status: "n/a",

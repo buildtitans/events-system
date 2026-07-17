@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { MouseEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { markSeen } from "@/src/lib/store/slices/notifications/notificationSlice";
-import { syncSeenNotifications } from "@/src/lib/store/sync/syncNotifications";
 import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { trpcClient } from "@/src/trpc/trpcClient";
 
 export const useNotificationsMenu = () => {
   const notifications = useSelector(
@@ -23,7 +23,7 @@ export const useNotificationsMenu = () => {
 
   const markNotificationsSeen = async () => {
     try {
-      await syncSeenNotifications(newNotifications);
+      await trpcClient.notifications.write.markOpened.mutate(newNotifications);
       dispatch(markSeen());
     } catch (err) {
       logCaughtError("hook/useNotificationsMenu.markNotificationsSeen", err);
