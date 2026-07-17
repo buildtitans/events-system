@@ -6,7 +6,7 @@ import { SyncDomainsService } from "@/src/lib/store/services/syncDomainService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 type InitializeDomainsHook = {
-  domains: SyncDomainsType | null;
+  syncResult: SyncDomainsType | null;
 };
 
 type InitializeDomainsCallbacks = {
@@ -18,7 +18,7 @@ export const useInitializeDomains = ({
   onFailure,
   onStart,
 }: InitializeDomainsCallbacks): InitializeDomainsHook => {
-  const [domains, setDomains] = useState<SyncDomainsType | null>(null);
+  const [syncResult, setSyncResult] = useState<SyncDomainsType | null>(null);
 
   useEffect(() => {
     async function executeHydrateDomains() {
@@ -26,13 +26,17 @@ export const useInitializeDomains = ({
         onStart();
         const service = new SyncDomainsService(trpcClient);
         const result = await service.sync();
-        setDomains(result);
+
+        if (result.status === "rejected") {
+          onFailure();
+        }
+
+        setSyncResult(result);
       } catch (err) {
         logCaughtError(
           "hook/useInitializeDomains.executeHydrateDomains.SyncDomainsService.sync()",
           err,
         );
-
         onFailure();
       }
     }
@@ -40,5 +44,5 @@ export const useInitializeDomains = ({
     void executeHydrateDomains();
   }, [onFailure, onStart]);
 
-  return { domains };
+  return { syncResult };
 };

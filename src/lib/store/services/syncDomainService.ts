@@ -1,13 +1,13 @@
-import { trpcClient } from "@/src/trpc/trpcClient";
-import {
+import type { TrpcClientType } from "@/src/trpc/trpcClient";
+import type {
   SyncDomainsType,
   SyncResults,
   DomainStateType,
 } from "@/src/lib/types/server/types";
-import { assertNever } from "../../utils/assert/assertNever";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 export class SyncDomainsService {
-  constructor(private readonly client: typeof trpcClient) {}
+  constructor(private readonly client: TrpcClientType) {}
 
   async sync(): Promise<SyncDomainsType> {
     const results = await this.runSync();

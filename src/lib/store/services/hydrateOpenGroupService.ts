@@ -51,21 +51,21 @@ export class HydrateOpenGroupService {
   }
 
   private async getGroupMetaData(group_id: GroupSchemaType["id"]) {
-    const role = await this.trpc.groupMembers.select.role.mutate(group_id);
-    const layout =
-      (await this.trpc.events.layout.forGroup.mutate(group_id)) ?? [];
-    const calandar = await this.trpc.events.select.forGroup.mutate(group_id);
-    const members =
-      await this.trpc.groupMembers.select.forGroup.mutate(group_id);
-    const { email } =
-      await this.trpc.groupMembers.select.organizerEmail.mutate(group_id);
+    const [role, layoutResult, calandar, members, organizer] =
+      await Promise.all([
+        this.trpc.groupMembers.select.role.mutate(group_id),
+        this.trpc.events.layout.forGroup.mutate(group_id),
+        this.trpc.events.select.forGroup.mutate(group_id),
+        this.trpc.groupMembers.select.forGroup.mutate(group_id),
+        this.trpc.groupMembers.select.organizerEmail.mutate(group_id),
+      ]);
 
     return {
       role,
-      layout,
+      layout: layoutResult ?? [],
       calandar,
       members,
-      organizerEmail: email,
+      organizerEmail: organizer.email,
     };
   }
 }
