@@ -1,46 +1,41 @@
-import { JSX } from "react";
+import type { JSX } from "react";
+import type { AuthenticationState } from "@/src/lib/store/slices/auth/types";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import {
-    authFieldControlSx,
-    authFieldLabelSx,
-    authTextFieldSx,
+  authFieldControlSx,
+  authFieldLabelSx,
 } from "@/src/client/styles/sx/authDrawer";
+import RenderEmailInputField from "@/src/client/components/pipelines/forms/renderEmailInputField";
 
-type EmailInputProps = {
-    emailErrorMessage: string,
-    handleEmail: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    emailError: boolean
-}
+export type EmailInputProps = {
+  emailErrorMessage: string;
+  handleEmail: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => void;
+  emailError: boolean;
+  authState: AuthenticationState;
+};
 
 function Email({
-    emailErrorMessage,
-    handleEmail,
-    emailError
+  emailErrorMessage,
+  handleEmail,
+  emailError,
+  authState,
 }: EmailInputProps): JSX.Element {
-
-    return (
-        <FormControl fullWidth sx={authFieldControlSx}>
-            <FormLabel htmlFor="email" sx={authFieldLabelSx}>Email</FormLabel>
-            <TextField
-                onChange={(e) => handleEmail(e)}
-                error={emailError}
-                helperText={emailErrorMessage}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                autoComplete="email"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                sx={authTextFieldSx}
-                color={emailError ? 'error' : 'primary'}
-            />
-        </FormControl>
-    )
+  return (
+    <FormControl fullWidth sx={authFieldControlSx}>
+      <FormLabel htmlFor="email" sx={authFieldLabelSx}>
+        Email
+      </FormLabel>
+      <RenderEmailInputField
+        emailErrorMessage={emailErrorMessage}
+        handleEmail={handleEmail}
+        emailError={emailError}
+        authState={authState}
+      />
+    </FormControl>
+  );
 }
 
 export default Email;

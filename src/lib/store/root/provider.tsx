@@ -11,12 +11,12 @@ type Props = {
 
 export default function ReduxProvider({ children }: Props) {
   const { store, onStart, onFailure } = useInitializeStore();
-  const { domains } = useInitializeDomains({ onStart, onFailure });
+  const { syncResult } = useInitializeDomains({ onStart, onFailure });
 
   useEffect(() => {
-    if (!domains) return;
-    store.dispatch(initializeDomains(domains));
-  }, [domains, store]);
+    if (!syncResult) return;
+    store.dispatch(initializeDomains(syncResult));
+  }, [syncResult, store]);
 
   return <Provider store={store}>{children}</Provider>;
 }

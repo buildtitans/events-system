@@ -1,8 +1,9 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import { emailFormat } from "@/src/lib/utils/regex/regex";
-import { wait } from "../../utils/rendering/wait";
 import { ValidateSignupCredsHook } from "../../types/hooks/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const MIN_PW_LENGTH = 8;
 
@@ -29,6 +30,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     invalidPassword: "",
     needPasswordConfirmation: "",
   });
+  const authState = useSelector((s: RootState) => s.auth.authenticationState);
 
   const isValidated = useMemo(() => {
     const metRequiredFields =
@@ -125,7 +127,6 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
         ...prev,
         email: value,
       }));
-      await wait(300);
       validateEmail(credentials.email);
     },
     [credentials.email, validateEmail],
@@ -141,8 +142,6 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
         ...prev,
         password: trimmed,
       }));
-
-      await wait(300);
 
       validatePassword(credentials.password);
     },
@@ -160,12 +159,15 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
         confirmPassword: trimmed,
       }));
 
-      await wait(300);
-
       confirmPassword(credentials.password, credentials.confirmPassword);
     },
     [credentials.password, credentials.confirmPassword, confirmPassword],
   );
+
+  const messages: ValidateSignupCredsHook["messages"] = {
+    inputErrors,
+    authState,
+  };
 
   return {
     handleEmailInput,
@@ -173,7 +175,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     handleConfirmingPassword,
     password: credentials.password,
     email: credentials.email,
-    errors: inputErrors,
+    messages,
     isValidated: isValidated,
   };
 };

@@ -19,6 +19,10 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectEventsRouter = router({
+  all: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.services.api.domains.events.query.allActive();
+  }),
+
   search: publicProcedure
     .input(searchInputValidator)
     .mutation(async ({ ctx, input }) => {

@@ -1,78 +1,87 @@
 "use client";
-import { SetStateAction } from "react";
-import { emailFormat } from "../../utils/regex/regex";
+import { useCallback } from "react";
+import { emailFormat } from "@/src/lib/utils/regex/regex";
 import type {
   ValidationState,
   LoginCredentials,
-} from "../../types/tokens/types";
-
+  HTMLInputField,
+  ValidateCredentialsHookArgs,
+} from "@/src/lib/types/tokens/types";
 import type {
-  UseLoginHook,
   ValidateCredentialsHook,
-} from "../../types/hooks/types";
+  CredentialsInputErrors,
+} from "@/src/lib/types/hooks/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
-export const useValidateCredentials = (
-  credentials: LoginCredentials,
-  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>,
-  status: UseLoginHook["status"],
-): ValidateCredentialsHook => {
-  const getValidationState = (
-    email: string,
-    password: string,
-  ): {
-    emailError: ValidationState;
-    passwordError: ValidationState;
-  } => {
-    const hasEmailInput = email.length > 0;
+export const useValidateCredentials = ({
+  credentials,
+  setCredentials,
+}: ValidateCredentialsHookArgs): ValidateCredentialsHook => {
+  const authState = useSelector((s: RootState) => s.auth.authenticationState);
+
+  function passwordValidation(password: LoginCredentials["password"]) {
     const hasPasswordInput = password.length > 0;
-    const invalidEmailFormat = hasEmailInput && !emailFormat.test(email);
     const invalidPassword = hasPasswordInput && password.length < 6;
 
-    const emailError: ValidationState = {
+    const passwordError: ValidationState = {
+      hasError: invalidPassword,
+      message: invalidPassword
+        ? "Password needs to be at least 6 characters"
+        : "",
+    };
+
+    return passwordError;
+  }
+
+  function emailValidation(email: LoginCredentials["email"]) {
+    const hasEmailInput = email.length > 0;
+    const invalidEmailFormat = hasEmailInput && !emailFormat.test(email);
+
+    return {
       hasError: invalidEmailFormat,
       message: invalidEmailFormat ? "Please provide a valid email" : "",
     };
+  }
 
-    const passwordError: ValidationState =
-      status === "failed" && hasEmailInput && hasPasswordInput
-        ? {
-            hasError: true,
-            message: "Invalid password or email",
-          }
-        : {
-            hasError: invalidPassword,
-            message: invalidPassword
-              ? "Password needs to be at least 6 characters"
-              : "",
-          };
+  function validateInput(credentials: LoginCredentials) {
+    const { email, password } = credentials;
 
-    return { emailError, passwordError };
-  };
+    const emailError = emailValidation(email);
+    const passwordError = passwordValidation(password);
 
-  const setField =
-    (field: keyof LoginCredentials) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    return {
+      emailError,
+      passwordError,
+    };
+  }
+
+  const setField = useCallback(
+    (field: keyof LoginCredentials) => (e: HTMLInputField) => {
       const value = e.target.value;
       setCredentials((prev) => ({
         ...prev,
         [field]: value,
       }));
-    };
+    },
+    [setCredentials],
+  );
 
   const handleEmail = setField("email");
   const handlePassword = setField("password");
 
-  const { emailError, passwordError } = getValidationState(
-    credentials.email,
-    credentials.password,
-  );
+  const { emailError, passwordError } = validateInput(credentials);
 
-  return {
-    isSubmittable: !!credentials.email && !!credentials.password,
+  const inputErrors = {
     emailErrorMessage: emailError.message,
     emailError: emailError.hasError,
     passwordError: passwordError.hasError,
     passwordErrorMessage: passwordError.message,
+  } satisfies CredentialsInputErrors;
+
+  return {
+    isSubmittable: !!credentials.email && !!credentials.password,
+    errors: { inputErrors, authState },
     handleEmail,
     handlePassword,
   };

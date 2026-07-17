@@ -1,12 +1,14 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "@/src/lib/store";
 import { populateNewNotifications } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
+import { HydrateUserService } from "@/src/lib/store/services/hydrateUserService";
 
 export const useHydrateNotifications = () => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);
+  const service = useMemo(() => new HydrateUserService(trpcClient), []);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export const useHydrateNotifications = () => {
     const hydrateNotifications = async () => {
       dispatch(populateNewNotifications({ status: "pending" }));
 
-      const notifications = await trpcClient.notifications.select.new.mutate();
+      const notifications = await service.notifications();
 
       if (Array.isArray(notifications) && notifications.length > 0) {
         dispatch(
@@ -35,5 +37,5 @@ export const useHydrateNotifications = () => {
     };
 
     void hydrateNotifications();
-  }, [userKind, dispatch]);
+  }, [userKind, dispatch, service]);
 };

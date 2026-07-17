@@ -1,20 +1,21 @@
 "use client";
 import { EventCategories } from "@/src/client/features/events/categories";
-import type { AppBootState } from "@/src/lib/types/state/types";
 import type { EventCategoriesProps } from "@/src/client/features/events/categories";
 import { JSX } from "react";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/lib/store";
 
 type ChipRendererProps = {
   rest: EventCategoriesProps;
-  status: AppBootState["status"];
 };
 
-export const RenderCategoryChips = ({
-  status,
+export default function RenderCategoryChips({
   rest,
-}: ChipRendererProps): JSX.Element | null => {
-  switch (status) {
+}: ChipRendererProps): JSX.Element | null {
+  const appBoot = useSelector((s: RootState) => s.rendering.appBoot);
+
+  switch (appBoot.status) {
     case "pending":
     case "failed":
     case "n/a":
@@ -25,7 +26,7 @@ export const RenderCategoryChips = ({
       return <EventCategories {...rest} />;
     }
     default: {
-      return assertNever(status);
+      return assertNever(appBoot);
     }
   }
-};
+}

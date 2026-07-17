@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
 import { enqueueDrawer } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { AppDispatch } from "@/src/lib/store";
-import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
+import { UserKind } from "@/src/lib/store/slices/auth/types";
 import type { JSX } from "react";
 import Notifications from "../menus/notifications/notifications";
 import Box from "@mui/material/Box";

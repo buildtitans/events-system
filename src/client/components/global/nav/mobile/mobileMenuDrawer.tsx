@@ -3,7 +3,7 @@ import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import Stack from "@mui/material/Stack";
 import RenderMobileAuthButtons from "@/src/client/components/pipelines/nav/renderMobileAuthButtons";
-import { UserKind } from "@/src/lib/store/slices/auth/AuthSlice";
+import { UserKind } from "@/src/lib/store/slices/auth/types";
 import Button from "@mui/material/Button";
 import {
   mobileNavDrawerPaperSx,
@@ -29,20 +29,21 @@ export default function MobileMenuDrawer({
   open,
   openSignupDrawer,
   openUserDashboard,
-  mobileOpenSignOutModal
+  mobileOpenSignOutModal,
 }: MobileMenuDrawerProps) {
-
   return (
     <Drawer
       anchor="top"
       open={open}
       onClose={toggleDrawer(false)}
-      slotProps={{ paper: {
-        sx: {
-          top: "var(--template-frame-height, 40px)",
-          ...mobileNavDrawerPaperSx,
-        }
-      }}}
+      slotProps={{
+        paper: {
+          sx: {
+            top: "var(--template-frame-height, 40px)",
+            ...mobileNavDrawerPaperSx,
+          },
+        },
+      }}
     >
       <Stack
         sx={{
@@ -65,7 +66,7 @@ export default function MobileMenuDrawer({
         >
           Home
         </Button>
-       
+
         <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.08)" }} />
 
         <RenderMobileAuthButtons
@@ -79,4 +80,3 @@ export default function MobileMenuDrawer({
     </Drawer>
   );
 }
-

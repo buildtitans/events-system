@@ -1,138 +1,74 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
 import {
   populateEvents,
   selectDisplayFilter,
 } from "@/src/lib/store/slices/events/EventsSlice";
-import { EventsPages } from "../../store/slices/events/types";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import type {
-  ChangeActiveCategoryHook,
-  FilterType,
-} from "../../types/hooks/types";
+import type { ChangeActiveCategoryHook } from "@/src/lib/types/hooks/types";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import {
-  curateUpcomingEventIds,
-  UpcomingEventIds,
-} from "../../utils/dates/curateUpcomingEventIds";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { assertNever } from "../../utils/assert/assertNever";
+  EventFilterService,
+  FilterResults,
+} from "../../store/services/eventFilterService";
+import { EventDisplayFilter } from "../../store/slices/events/types";
 
-type PopularEventsIds = EventSchemaType["id"][];
+type HandleFilterResultsArgs = {
+  filter: EventDisplayFilter;
+  results: FilterResults;
+};
 
 export const useChangeActiveCategory = (): ChangeActiveCategoryHook => {
-  const hydrateStatus = useSelector(
-    (s: RootState) => s.rendering.appBoot.status,
-  );
   const status = useSelector((s: RootState) => s.events.eventPages.status);
-  const [filter, setFilter] = useState<FilterType>("initial");
   const dispatch = useDispatch<AppDispatch>();
+  const service = useMemo(() => new EventFilterService(trpcClient), []);
 
-  useEffect(() => {
-    const getUpcomingEvents = async (ids: UpcomingEventIds) => {
-      const upcomingEvents = await trpcClient.events.layout.byIds.mutate(ids);
+  const handleFilterResults = useCallback(
+    ({ filter, results }: HandleFilterResultsArgs) => {
+      dispatch(selectDisplayFilter(filter));
 
-      dispatch(
-        populateEvents({
-          status: "ready",
-          data: upcomingEvents,
-        }),
-      );
-    };
-
-    const executeGetUpcomingEvents = async (): Promise<void> => {
-      const eventsPages = await trpcClient.events.layout.allActive.mutate();
-
-      const ids = curateUpcomingEventIds(eventsPages);
-
-      if (ids.length === 0) {
-        dispatch(
-          populateEvents({
-            status: "failed",
-            error: "Couldn't find any events for that filter",
-          }),
-        );
+      if (results.ok) {
+        dispatch(populateEvents({ status: "ready", data: results.events }));
         return;
       }
-      await getUpcomingEvents(ids);
-    };
+      dispatch(populateEvents({ status: "failed", error: results.error }));
+    },
+    [dispatch],
+  );
 
-    const getAllActiveEvents = async (): Promise<void> => {
-      const allActiveEvents = await trpcClient.events.layout.allActive.mutate();
-
-      dispatch(
-        populateEvents({
-          status: "ready",
-          data: allActiveEvents,
-        }),
-      );
-    };
-
-    const compilePopularEventIds = async (): Promise<PopularEventsIds> => {
-      return await trpcClient.eventAttendants.select.popular.mutate();
-    };
-
-    const retrievePopularEvents = async (
-      ids: PopularEventsIds,
-    ): Promise<EventsPages> => {
-      const events = await trpcClient.events.layout.byIds.mutate(ids);
-
-      return events;
-    };
-
-    const getPopularEvents = async () => {
-      const ids = await compilePopularEventIds();
-      const popularEvents = await retrievePopularEvents(ids);
-      dispatch(
-        populateEvents({
-          status: "ready",
-          data: popularEvents,
-        }),
-      );
-    };
-
-    if (hydrateStatus !== "ready") return;
-    if (filter === "initial") return;
-
-    const executeFilterEvents = async (filter: FilterType) => {
+  const filterFor = useCallback(
+    async (filter: EventDisplayFilter) => {
       dispatch(populateEvents({ status: "pending" }));
 
       switch (filter) {
-        case "All Events":
-          await getAllActiveEvents();
-          dispatch(selectDisplayFilter(filter));
-          setFilter("initial");
-          return;
-        case "Popular Events":
-          await getPopularEvents();
-          dispatch(selectDisplayFilter(filter));
-          setFilter("initial");
-          return;
-
-        case "Upcoming events":
-          await executeGetUpcomingEvents();
-          dispatch(selectDisplayFilter(filter));
-
-          setFilter("initial");
-          return;
-
-        case "initial": {
-          return;
+        case "All Events": {
+          return handleFilterResults({ filter, results: await service.all() });
+        }
+        case "Popular Events": {
+          return handleFilterResults({
+            filter,
+            results: await service.popular(),
+          });
+        }
+        case "Upcoming events": {
+          return handleFilterResults({
+            filter,
+            results: await service.upcoming(),
+          });
         }
         default: {
           return assertNever(filter);
         }
       }
-    };
-
-    void executeFilterEvents(filter);
-  }, [hydrateStatus, filter, dispatch]);
+    },
+    [dispatch, handleFilterResults, service],
+  );
 
   return {
-    setFilter,
+    filterFor,
     eventStatus: status,
-    mountStatus: hydrateStatus,
     pendingFilter: status === "pending",
   };
 };

@@ -1,4 +1,4 @@
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { SetStateAction } from "react";
 
 type PromiseAllSettledResult<T> =
   | PromiseFulfilledResult<T>
@@ -21,14 +21,30 @@ type SnackbarMessages = {
   pwResetEmail: Record<RequestStatus, string>;
 };
 
+export type HTMLInputField = React.ChangeEvent<
+  HTMLInputElement | HTMLTextAreaElement
+>;
+export interface ValidateCredentialsHookArgs {
+  credentials: LoginCredentials;
+  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>;
+}
+
 type LoginCredentials = {
   email: string;
   password: string;
 };
 
+type HasPasswordError =
+  | "Invalid password or email"
+  | "Password needs to be at least 6 characters";
+
+type HasEmailError = "Please provide a valid email";
+
+type CredentialsInputError = HasEmailError | HasPasswordError | "";
+
 type ValidationState = {
   hasError: boolean;
-  message: string;
+  message: CredentialsInputError;
 };
 
 type AlertKind = "success" | "error";

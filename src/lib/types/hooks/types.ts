@@ -29,9 +29,10 @@ import type {
   SuggestionType,
 } from "../../hooks/search/types";
 import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
-import { AppBootState } from "../state/types";
+import { LoginCredentials } from "../tokens/types";
+import { AuthenticationState } from "../../store/slices/auth/types";
 
-type RBACType = Record<
+export type RBACType = Record<
   GroupMemberSchemaType["group_id"],
   GroupMemberSchemaType["role"]
 >;
@@ -48,7 +49,7 @@ export type ValidateSignupCredsHook = {
   ) => Promise<void>;
   password: string;
   email: string;
-  errors: InputErrorsType;
+  messages: { authState: AuthenticationState; inputErrors: InputErrorsType };
   isValidated: boolean;
 };
 
@@ -88,9 +89,8 @@ type DebouncedSearchHook = {
 };
 
 type ChangeActiveCategoryHook = {
-  setFilter: React.Dispatch<SetStateAction<FilterType>>;
+  filterFor: (filter: EventDisplayFilter) => Promise<void>;
   eventStatus: EventsStateType["status"];
-  mountStatus: AppBootState["status"];
   pendingFilter: boolean;
 };
 
@@ -127,12 +127,21 @@ export type CreateNewGroupHook = {
   ) => void;
 };
 
-type ValidateCredentialsHook = {
-  isSubmittable: boolean;
+export type CredentialsInputErrors = {
   emailErrorMessage: string;
   emailError: boolean;
   passwordError: boolean;
   passwordErrorMessage: string;
+};
+
+type CredentialsValidationErrors = {
+  authState: AuthenticationState;
+  inputErrors: CredentialsInputErrors;
+};
+
+type ValidateCredentialsHook = {
+  isSubmittable: boolean;
+  errors: CredentialsValidationErrors;
   handleEmail: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
@@ -147,23 +156,27 @@ type GetGroupRoleAndIdHook = {
   groupName: GroupSchemaType["name"];
 };
 
-type LoginResType =
+export type LoginResType =
   | {
       status: "ok";
       email: string;
-      lookupMap: RBACType;
       attendanceDictionary: AttendanceDictionaryType;
     }
   | {
       status: "failed";
       email: undefined;
-      lookupMap: undefined;
       attendanceDictionary: undefined;
     };
 
 type UseLoginHook = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  status: LoginResType["status"] | "initial";
+  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>;
+  credentials: LoginCredentials;
+};
+
+type NewUser = {
+  id: string;
+  email: string;
 };
 
 type GetGroupMembersHook = {
@@ -204,4 +217,5 @@ export type {
   ChangeActiveCategoryHook,
   DebouncedSearchHook,
   RemoveUserFromGroupHook,
+  NewUser,
 };

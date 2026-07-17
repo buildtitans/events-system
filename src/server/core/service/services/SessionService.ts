@@ -2,6 +2,7 @@ import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 import { PasswordResetEmailService } from "./passwordResetEmailService";
+import { AuthClientLoginResponse } from "../../db/access/types/types";
 
 export class SessionService {
   constructor(
@@ -10,7 +11,10 @@ export class SessionService {
     private readonly emailer: PasswordResetEmailService,
   ) {}
 
-  async login(emailInput: string, passwordInput: string) {
+  async login(
+    emailInput: string,
+    passwordInput: string,
+  ): Promise<AuthClientLoginResponse> {
     const { email, password } = validateLoginCredentials(
       emailInput,
       passwordInput,

@@ -1,12 +1,12 @@
 import type { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import {
   authFieldControlSx,
   authFieldLabelSx,
-  authTextFieldSx,
 } from "@/src/client/styles/sx/authDrawer";
+import { AuthenticationState } from "@/src/lib/store/slices/auth/types";
+import RenderConfirmPasswordInputField from "@/src/client/components/pipelines/forms/renderConfirmPasswordInputField";
 
 type PasswordInputProps = {
   handleClickOpen?: () => void;
@@ -15,32 +15,25 @@ type PasswordInputProps = {
   ) => void;
   passwordError: boolean;
   passwordErrorMessage: string;
+  authState: AuthenticationState;
 };
 
 function ConfirmPassword({
   handleConfirmingPassword,
   passwordError,
   passwordErrorMessage,
+  authState,
 }: PasswordInputProps): JSX.Element {
   return (
     <FormControl fullWidth sx={authFieldControlSx}>
       <FormLabel htmlFor="password" sx={authFieldLabelSx}>
         Confirm Password
       </FormLabel>
-      <TextField
-        onChange={(e) => handleConfirmingPassword(e)}
-        error={passwordError}
-        helperText={passwordErrorMessage}
-        name="password"
-        placeholder="Confirm your password"
-        type="password"
-        id="password"
-        autoComplete="new-password"
-        required
-        fullWidth
-        variant="outlined"
-        sx={authTextFieldSx}
-        color={passwordError ? "error" : "primary"}
+      <RenderConfirmPasswordInputField
+        handleConfirmingPassword={handleConfirmingPassword}
+        passwordError={passwordError}
+        passwordErrorMessage={passwordErrorMessage}
+        authState={authState}
       />
     </FormControl>
   );
