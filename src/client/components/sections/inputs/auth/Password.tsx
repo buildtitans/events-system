@@ -9,7 +9,7 @@ import {
   authLinkSx,
 } from "@/src/client/styles/sx/authDrawer";
 import { AuthenticationState } from "@/src/lib/store/slices/auth/types";
-import RenderPasswordInputField from "../../../pipelines/drawers/auth/renderPasswordInputField";
+import RenderPasswordInputField from "@/src/client/components/pipelines/forms/renderPasswordInputField";
 
 export type PasswordInputProps = {
   handleClickOpen?: () => void;

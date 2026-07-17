@@ -5,8 +5,8 @@ import {
   authFieldControlSx,
   authFieldLabelSx,
 } from "@/src/client/styles/sx/authDrawer";
-import RenderConfirmPasswordInputField from "../../../pipelines/drawers/auth/renderConfirmPasswordInputField";
 import { AuthenticationState } from "@/src/lib/store/slices/auth/types";
+import RenderConfirmPasswordInputField from "@/src/client/components/pipelines/forms/renderConfirmPasswordInputField";
 
 type PasswordInputProps = {
   handleClickOpen?: () => void;

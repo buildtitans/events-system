@@ -6,7 +6,7 @@ import {
   authFieldControlSx,
   authFieldLabelSx,
 } from "@/src/client/styles/sx/authDrawer";
-import RenderEmailInputField from "@/src/client/components/pipelines/drawers/auth/renderEmailInputField";
+import RenderEmailInputField from "@/src/client/components/pipelines/forms/renderEmailInputField";
 
 export type EmailInputProps = {
   emailErrorMessage: string;
