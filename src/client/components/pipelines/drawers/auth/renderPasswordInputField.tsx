@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import TextField from "@mui/material/TextField";
 import { authTextFieldSx } from "@/src/client/styles/sx/authDrawer";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
-import { PasswordInputProps } from "../../../sections/inputs/auth/Password";
+import { PasswordInputProps } from "@/src/client/components/sections/inputs/auth/Password";
 
 type RenderPasswordInputFieldProps = Omit<
   PasswordInputProps,
@@ -20,7 +20,7 @@ export default function RenderPasswordInputField({
       return (
         <TextField
           onChange={(e) => handlePassword(e)}
-          error={passwordError}
+          error={authState.status === "failed"}
           helperText={authState.error}
           name="password"
           placeholder="Enter your password"
@@ -31,14 +31,34 @@ export default function RenderPasswordInputField({
           fullWidth
           variant="outlined"
           sx={authTextFieldSx}
-          color={passwordError ? "error" : "primary"}
+          color={authState.status === "failed" ? "error" : "primary"}
         />
       );
     }
-    case "ready":
+
+    case "n/a": {
+      return (
+        <TextField
+          onChange={(e) => handlePassword(e)}
+          error={authState.status === "n/a"}
+          helperText={authState.message}
+          name="password"
+          placeholder="Enter your password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          required
+          fullWidth
+          variant="outlined"
+          sx={authTextFieldSx}
+          color={authState.status === "n/a" ? "error" : "primary"}
+        />
+      );
+    }
+
     case "initial":
     case "pending":
-    case "n/a": {
+    case "ready": {
       return (
         <TextField
           onChange={(e) => handlePassword(e)}

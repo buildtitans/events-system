@@ -19,6 +19,8 @@ export default function RenderConfirmPasswordInputField({
   passwordError,
   passwordErrorMessage,
 }: RenderConfirmPasswordInputFieldProps): JSX.Element {
+  console.log(authState.status);
+
   switch (authState.status) {
     case "failed": {
       return (
@@ -35,7 +37,7 @@ export default function RenderConfirmPasswordInputField({
           fullWidth
           variant="outlined"
           sx={authTextFieldSx}
-          color={passwordError ? "error" : "primary"}
+          color={authState.status === "failed" ? "error" : "primary"}
         />
       );
     }

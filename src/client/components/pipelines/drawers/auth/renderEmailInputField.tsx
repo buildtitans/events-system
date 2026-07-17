@@ -15,7 +15,7 @@ export default function RenderEmailInputField({
       return (
         <TextField
           onChange={(e) => handleEmail(e)}
-          error={emailError}
+          error={authState.status === "failed"}
           helperText={authState.error}
           id="email"
           type="email"
@@ -27,7 +27,7 @@ export default function RenderEmailInputField({
           fullWidth
           variant="outlined"
           sx={authTextFieldSx}
-          color={emailError ? "error" : "primary"}
+          color={authState.status === "failed" ? "error" : "primary"}
         />
       );
     }
@@ -36,7 +36,7 @@ export default function RenderEmailInputField({
       return (
         <TextField
           onChange={(e) => handleEmail(e)}
-          error={emailError}
+          error={authState.status === "n/a"}
           helperText={authState.message}
           id="email"
           type="email"
