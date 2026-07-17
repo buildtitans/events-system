@@ -1,23 +1,24 @@
 import type { JSX } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import {
   authFieldControlSx,
   authFieldLabelSx,
   authLinkSx,
-  authTextFieldSx,
 } from "@/src/client/styles/sx/authDrawer";
+import { AuthenticationState } from "@/src/lib/store/slices/auth/types";
+import RenderPasswordInputField from "../../../pipelines/drawers/auth/renderPasswordInputField";
 
-type PasswordInputProps = {
+export type PasswordInputProps = {
   handleClickOpen?: () => void;
   handlePassword: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   passwordError: boolean;
   passwordErrorMessage: string;
+  authState: AuthenticationState;
 };
 
 function Password({
@@ -25,26 +26,18 @@ function Password({
   handlePassword,
   passwordError,
   passwordErrorMessage,
+  authState,
 }: PasswordInputProps): JSX.Element {
   return (
     <FormControl fullWidth sx={authFieldControlSx}>
       <FormLabel htmlFor="password" sx={authFieldLabelSx}>
         Password
       </FormLabel>
-      <TextField
-        onChange={(e) => handlePassword(e)}
-        error={passwordError}
-        helperText={passwordErrorMessage}
-        name="password"
-        placeholder="Enter your password"
-        type="password"
-        id="password"
-        autoComplete="current-password"
-        required
-        fullWidth
-        variant="outlined"
-        sx={authTextFieldSx}
-        color={passwordError ? "error" : "primary"}
+      <RenderPasswordInputField
+        handlePassword={handlePassword}
+        passwordError={passwordError}
+        passwordErrorMessage={passwordErrorMessage}
+        authState={authState}
       />
       {handleClickOpen && (
         <Box sx={{ display: "flex", justifyContent: "end", pt: 1 }}>

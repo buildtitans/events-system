@@ -14,14 +14,14 @@ export type EmailInputProps = {
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => void;
   emailError: boolean;
-  authError: AuthenticationState;
+  authState: AuthenticationState;
 };
 
 function Email({
   emailErrorMessage,
   handleEmail,
   emailError,
-  authError,
+  authState,
 }: EmailInputProps): JSX.Element {
   return (
     <FormControl fullWidth sx={authFieldControlSx}>
@@ -32,7 +32,7 @@ function Email({
         emailErrorMessage={emailErrorMessage}
         handleEmail={handleEmail}
         emailError={emailError}
-        authError={authError}
+        authState={authState}
       />
     </FormControl>
   );

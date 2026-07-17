@@ -20,6 +20,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const { getInput, submitPwReset, errors, isSubmittable } = useResetPassword(
     token ?? "",
   );
+  const authState = useSelector((s: RootState) => s.auth.authenticationState);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +34,12 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <Container maxWidth="sm" sx={{ py: { xs: 8, md: 12 } }}>
       <Stack spacing={3}>
         <Box>
-          <Typography component="h1" variant="h3" fontWeight="light" gutterBottom>
+          <Typography
+            component="h1"
+            variant="h3"
+            fontWeight="light"
+            gutterBottom
+          >
             Reset your password
           </Typography>
           <Typography color="text.secondary">
@@ -44,8 +50,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
         {!token && (
           <Alert severity="error">
-            This password reset link is missing a token. Request a new reset email
-            and try again.
+            This password reset link is missing a token. Request a new reset
+            email and try again.
           </Alert>
         )}
 
@@ -58,12 +64,14 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             handlePassword={(e) => getInput("password", e)}
             passwordError={errors.invalidPassword !== ""}
             passwordErrorMessage={errors.invalidPassword}
+            authState={authState}
           />
 
           <ConfirmPassword
             handleConfirmingPassword={(e) => getInput("confirmPassword", e)}
             passwordError={errors.confirmPassword !== ""}
             passwordErrorMessage={errors.confirmPassword}
+            authState={authState}
           />
 
           <Button

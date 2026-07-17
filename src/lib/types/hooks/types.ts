@@ -49,7 +49,7 @@ export type ValidateSignupCredsHook = {
   ) => Promise<void>;
   password: string;
   email: string;
-  errors: { authError: AuthenticationState; inputErrors: InputErrorsType };
+  messages: { authState: AuthenticationState; inputErrors: InputErrorsType };
   isValidated: boolean;
 };
 
@@ -135,7 +135,7 @@ export type CredentialsInputErrors = {
 };
 
 type CredentialsValidationErrors = {
-  authError: AuthenticationState;
+  authState: AuthenticationState;
   inputErrors: CredentialsInputErrors;
 };
 

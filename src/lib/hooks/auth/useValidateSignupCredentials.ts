@@ -164,9 +164,9 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     [credentials.password, credentials.confirmPassword, confirmPassword],
   );
 
-  const errors: ValidateSignupCredsHook["errors"] = {
+  const messages: ValidateSignupCredsHook["messages"] = {
     inputErrors,
-    authError: authState,
+    authState,
   };
 
   return {
@@ -175,7 +175,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     handleConfirmingPassword,
     password: credentials.password,
     email: credentials.email,
-    errors,
+    messages,
     isValidated: isValidated,
   };
 };

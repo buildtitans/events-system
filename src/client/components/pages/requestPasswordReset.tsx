@@ -5,7 +5,7 @@ import Password from "../sections/inputs/auth/Password";
 import ConfirmPassword from "../sections/inputs/auth/ConfirmPassword";
 
 export default function ResetPasswordReset(): JSX.Element {
-  const { errors, handlePasswordInput, handleConfirmingPassword } =
+  const { messages, handlePasswordInput, handleConfirmingPassword } =
     useValidateSignupCredentials();
 
   return (
@@ -25,20 +25,22 @@ export default function ResetPasswordReset(): JSX.Element {
           <Password
             handlePassword={handlePasswordInput}
             passwordError={
-              errors.inputErrors.invalidPassword !==
+              messages.inputErrors.invalidPassword !==
               "Password must be at least 8 characters"
             }
-            passwordErrorMessage={errors.inputErrors.invalidPassword}
+            passwordErrorMessage={messages.inputErrors.invalidPassword}
+            authState={messages.authState}
           />
         </Box>
         <Box>
           <ConfirmPassword
             handleConfirmingPassword={handleConfirmingPassword}
-            passwordErrorMessage={errors.inputErrors.needPasswordConfirmation}
+            passwordErrorMessage={messages.inputErrors.needPasswordConfirmation}
             passwordError={
-              errors.inputErrors.needPasswordConfirmation !==
+              messages.inputErrors.needPasswordConfirmation !==
               "Password must match"
             }
+            authState={messages.authState}
           />
         </Box>
 

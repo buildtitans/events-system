@@ -31,9 +31,9 @@ export default function ForgotPassword({
   handleClose,
   setOpen,
 }: ForgotPasswordProps) {
-  const { errors, handleEmailInput, email } = useValidateSignupCredentials();
+  const { messages, handleEmailInput, email } = useValidateSignupCredentials();
   const { submitPasswordResetRequest } = useRequestPasswordReset({
-    emailError: errors.inputErrors.invalidEmail,
+    emailError: messages.inputErrors.invalidEmail,
     email,
     setOpen,
   });

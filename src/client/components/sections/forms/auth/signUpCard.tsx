@@ -23,7 +23,7 @@ export default function SignUpCard() {
     handleEmailInput,
     handlePasswordInput,
     handleConfirmingPassword,
-    errors,
+    messages,
     isValidated,
   } = useValidateSignupCredentials();
   const { handleSubmit } = useSignUp(email, password);
@@ -37,19 +37,20 @@ export default function SignUpCard() {
       <Box component="form" method="POST" noValidate sx={authDrawerFormSx}>
         <Email
           handleEmail={handleEmailInput}
-          emailError={errors.inputErrors.invalidEmail !== ""}
-          emailErrorMessage={errors.inputErrors.invalidEmail}
-          authError={errors.authError}
+          emailError={messages.inputErrors.invalidEmail !== ""}
+          emailErrorMessage={messages.inputErrors.invalidEmail}
+          authState={messages.authState}
         />
         <CreatePassword
           handlePassword={handlePasswordInput}
-          passwordError={errors.inputErrors.invalidPassword !== ""}
-          passwordErrorMessage={errors.inputErrors.invalidPassword}
+          passwordError={messages.inputErrors.invalidPassword !== ""}
+          passwordErrorMessage={messages.inputErrors.invalidPassword}
         />
         <ConfirmPassword
           handleConfirmingPassword={handleConfirmingPassword}
-          passwordError={errors.inputErrors.needPasswordConfirmation !== ""}
-          passwordErrorMessage={errors.inputErrors.needPasswordConfirmation}
+          passwordError={messages.inputErrors.needPasswordConfirmation !== ""}
+          passwordErrorMessage={messages.inputErrors.needPasswordConfirmation}
+          authState={messages.authState}
         />
 
         <FormControlLabel

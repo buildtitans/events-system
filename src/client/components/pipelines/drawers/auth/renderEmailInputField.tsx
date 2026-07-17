@@ -8,15 +8,15 @@ export default function RenderEmailInputField({
   emailError,
   emailErrorMessage,
   handleEmail,
-  authError,
+  authState,
 }: EmailInputProps): JSX.Element {
-  switch (authError.status) {
+  switch (authState.status) {
     case "failed": {
       return (
         <TextField
           onChange={(e) => handleEmail(e)}
           error={emailError}
-          helperText={authError.error}
+          helperText={authState.error}
           id="email"
           type="email"
           name="email"
@@ -37,7 +37,7 @@ export default function RenderEmailInputField({
         <TextField
           onChange={(e) => handleEmail(e)}
           error={emailError}
-          helperText={authError.message}
+          helperText={authState.message}
           id="email"
           type="email"
           name="email"
@@ -77,7 +77,7 @@ export default function RenderEmailInputField({
     }
 
     default: {
-      return assertNever(authError);
+      return assertNever(authState);
     }
   }
 }

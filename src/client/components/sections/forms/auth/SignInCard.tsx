@@ -33,7 +33,7 @@ export default function SignInCard({
   const userKind = useSelector((s: RootState) => s.auth.userKind);
   const [open, setOpen] = React.useState(false);
 
-  const { inputErrors, authError } = errors;
+  const { inputErrors, authState } = errors;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,13 +60,14 @@ export default function SignInCard({
           handleEmail={handleEmail}
           emailError={inputErrors.emailError}
           emailErrorMessage={inputErrors.emailErrorMessage}
-          authError={authError}
+          authState={authState}
         />
         <Password
           handlePassword={handlePassword}
           passwordError={inputErrors.passwordError}
           passwordErrorMessage={inputErrors.passwordErrorMessage}
           handleClickOpen={handleClickOpen}
+          authState={authState}
         />
         <FormControlLabel
           sx={authCheckboxLabelSx}

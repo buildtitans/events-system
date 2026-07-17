@@ -81,7 +81,7 @@ export const useValidateCredentials = ({
 
   return {
     isSubmittable: !!credentials.email && !!credentials.password,
-    errors: { inputErrors, authError: authState },
+    errors: { inputErrors, authState },
     handleEmail,
     handlePassword,
   };
