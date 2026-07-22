@@ -6,8 +6,9 @@ import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSch
 import { DBClient } from "../../../db";
 import type { NewOrganizerInput } from "../../types";
 import { Authorization } from "../../auth/authorization";
+import { IGroupLifecycleHandler } from "./types";
 
-export class GroupLifecycleHandler {
+export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   constructor(
     private readonly api: DBClient,
     private readonly policy: Authorization,

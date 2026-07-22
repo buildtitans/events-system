@@ -14,7 +14,7 @@ export class EventFilterService {
 
   async all(): Promise<FilterResults> {
     try {
-      const events = await this.trpc.events.layout.allActive.mutate();
+      const events = await this.trpc.events.layout.allActive.query();
 
       return {
         ok: true,
@@ -31,8 +31,8 @@ export class EventFilterService {
 
   async popular(): Promise<FilterResults> {
     try {
-      const ids = await this.trpc.eventAttendants.select.popular.mutate();
-      const events = await this.trpc.events.layout.byIds.mutate(ids);
+      const ids = await this.trpc.eventAttendants.select.popular.query();
+      const events = await this.trpc.events.layout.byIds.query(ids);
 
       return {
         ok: true,
@@ -49,9 +49,9 @@ export class EventFilterService {
 
   async upcoming(): Promise<FilterResults> {
     try {
-      const allEvents = await this.trpc.events.select.all.mutate();
+      const allEvents = await this.trpc.events.select.all.query();
       const ids = this.extractUpcoming(allEvents);
-      const events = await this.trpc.events.layout.byIds.mutate(ids);
+      const events = await this.trpc.events.layout.byIds.query(ids);
 
       return {
         ok: true,

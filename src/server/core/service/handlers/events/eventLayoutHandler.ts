@@ -1,10 +1,11 @@
-import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
-import { PaginatedLayoutSchemaType } from "../../../../../schemas/events/layoutSlotSchema";
-import { DBClient } from "../../../db";
-import { filterActiveEvents } from "../../../lib/utils/filterActiveEvents";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import { DBClient } from "@/src/server/core/db";
+import { filterActiveEvents } from "@/src/server/core/lib/utils/filterActiveEvents";
 import { EventLayoutComposer } from "./eventLayoutComposer";
+import { IEventLayoutHandler } from "./types";
 
-export class EventLayoutHandler {
+export class EventLayoutHandler implements IEventLayoutHandler {
   constructor(
     private readonly db: DBClient,
     private readonly composer: EventLayoutComposer,

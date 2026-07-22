@@ -14,8 +14,9 @@ import { EventsByGroupIdSchemaValidator } from "../../../lib/validation/schemaVa
 import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
 import { Authorization } from "../../auth/authorization";
+import { IEventTimelineHandler } from "./types";
 
-export class EventTimelineHandler {
+export class EventTimelineHandler implements IEventTimelineHandler {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,
@@ -37,31 +38,6 @@ export class EventTimelineHandler {
     history = this.filterPastEvents(groupEvents);
 
     return { history, pastEventsRecords };
-  }
-
-  async getAttendantsOfPastEvents(
-    ids: string[],
-  ): Promise<PastEventAttendanceLookup> {
-    if (ids.length === 0) return {};
-
-    const attendees = await this.db.eventAttendants.select.pastRecords(ids);
-    return this.mapPastEventHeadCounts(ids, attendees);
-  }
-
-  private mapPastEventHeadCounts(
-    ids: string[],
-    attendees: EventAttendantsSchemaType[],
-  ): PastEventAttendanceLookup {
-    const lookup = Object.fromEntries(
-      ids.map((id) => [id, 0]),
-    ) satisfies PastEventAttendanceLookup;
-
-    for (const attendant of attendees) {
-      if (attendant.status === "going") {
-        lookup[attendant.event_id] += 1;
-      }
-    }
-    return lookup;
   }
 
   async getArchivedGroupEvents(
@@ -101,6 +77,31 @@ export class EventTimelineHandler {
     const eventsByGroup = this.hashEventsByGroup(events);
 
     return this.mapSoonestEvents(eventsByGroup);
+  }
+
+  async getAttendantsOfPastEvents(
+    ids: string[],
+  ): Promise<PastEventAttendanceLookup> {
+    if (ids.length === 0) return {};
+
+    const attendees = await this.db.eventAttendants.select.pastRecords(ids);
+    return this.mapPastEventHeadCounts(ids, attendees);
+  }
+
+  private mapPastEventHeadCounts(
+    ids: string[],
+    attendees: EventAttendantsSchemaType[],
+  ): PastEventAttendanceLookup {
+    const lookup = Object.fromEntries(
+      ids.map((id) => [id, 0]),
+    ) satisfies PastEventAttendanceLookup;
+
+    for (const attendant of attendees) {
+      if (attendant.status === "going") {
+        lookup[attendant.event_id] += 1;
+      }
+    }
+    return lookup;
   }
 
   private filterPastEvents(events: EventSchemaType[]): EventSchemaType[] {

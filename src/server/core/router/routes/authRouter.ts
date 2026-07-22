@@ -57,7 +57,7 @@ const writeAuthRouter = router({
 });
 
 const statusRouter = router({
-  recover: publicProcedure.mutation(async ({ ctx }) => {
+  recover: publicProcedure.query(async ({ ctx }) => {
     const session = await ctx.services.api.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
@@ -77,7 +77,7 @@ const statusRouter = router({
     };
   }),
 
-  checkSession: publicProcedure.mutation(async ({ ctx }) => {
+  checkSession: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.session.recoverSession(
       ctx.req.cookies.session,
     );

@@ -8,8 +8,9 @@ import {
   PopularEventsIds,
 } from "../../../lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { ICensusHandler } from "./types";
 
-export class CensusHandler {
+export class CensusHandler implements ICensusHandler {
   constructor(private readonly api: DBClient) {}
 
   async getNumberOfAttendantsForEvent(

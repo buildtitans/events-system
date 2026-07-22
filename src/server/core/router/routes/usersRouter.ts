@@ -9,23 +9,23 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectUserRouter = router({
-  email: protectedProcedure.mutation(async ({ ctx }) => {
+  email: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getEmailById(ctx.req.user?.id);
   }),
 
-  memberships: protectedProcedure.mutation(async ({ ctx }) => {
+  memberships: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
 
-  rsvps: protectedProcedure.mutation(async ({ ctx }) => {
+  rsvps: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),
 
-  createdGroups: protectedProcedure.mutation(async ({ ctx }) => {
+  createdGroups: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getGroupsCreated(
       ctx.req.user?.id,
     );

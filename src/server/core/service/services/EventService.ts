@@ -6,13 +6,21 @@ import { EventTimelineHandler } from "../handlers/events/eventTimelineHandler";
 import { EventQueryHandler } from "../handlers/events/eventQueryHandler";
 import { EventLifecycleHandler } from "../handlers/events/eventLifecycleHandler";
 import { EventLayoutHandler } from "../handlers/events/eventLayoutHandler";
+import {
+  IEventHydrationHandler,
+  IEventLayoutHandler,
+  IEventLifecycleHandler,
+  IEventQueryHandler,
+  IEventTimelineHandler,
+} from "../handlers/events/types";
+import { IEventService } from "./types";
 
-export class EventService {
-  public readonly hydrate: EventHydrationHandler;
-  public readonly query: EventQueryHandler;
-  public readonly timeline: EventTimelineHandler;
-  public readonly layout: EventLayoutHandler;
-  public readonly lifecycle: EventLifecycleHandler;
+export class EventService implements IEventService {
+  public readonly hydrate: IEventHydrationHandler;
+  public readonly query: IEventQueryHandler;
+  public readonly timeline: IEventTimelineHandler;
+  public readonly layout: IEventLayoutHandler;
+  public readonly lifecycle: IEventLifecycleHandler;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

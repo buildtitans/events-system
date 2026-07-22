@@ -11,7 +11,7 @@ import {
 const selectMembersRouter = router({
   forGroup: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.getAllGroupMembers(
         input,
       );
@@ -19,14 +19,14 @@ const selectMembersRouter = router({
 
   role: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.memberships.getRoleInGroup(
         ctx.req.user?.id,
         input,
       );
     }),
 
-  userMemberships: protectedProcedure.mutation(async ({ ctx }) => {
+  userMemberships: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.users.getMemberships(
       ctx.req.user?.id,
     );
@@ -34,7 +34,7 @@ const selectMembersRouter = router({
 
   organizerEmail: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.getOrganizerEmail(
         input,
       );

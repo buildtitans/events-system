@@ -2,8 +2,9 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { DBClient } from "../../../db";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { Authorization } from "../../auth/authorization";
+import { IMembershipHandler } from "./types";
 
-export class MembershipHandler {
+export class MembershipHandler implements IMembershipHandler {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

@@ -8,14 +8,23 @@ import { EventService } from "@/src/server/core/service/services/EventService";
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
 import { ResendVariables } from "../../lib/init/resendSecrets";
 import { PasswordResetEmailService } from "../services/passwordResetEmailService";
+import {
+  IEventService,
+  IGroupService,
+  INotificationService,
+  IParticipationsService,
+  ISessionService,
+  IUserService,
+} from "../services/types";
+import { IDomains } from "./types";
 
-export class Domains {
-  public readonly participations: ParticipationsService;
-  public readonly users: UserService;
-  public readonly session: SessionService;
-  public readonly groups: GroupService;
-  public readonly events: EventService;
-  public readonly notifications: NotificationService;
+export class Domains implements IDomains {
+  public readonly participations: IParticipationsService;
+  public readonly users: IUserService;
+  public readonly session: ISessionService;
+  public readonly groups: IGroupService;
+  public readonly events: IEventService;
+  public readonly notifications: INotificationService;
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

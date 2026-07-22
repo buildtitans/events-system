@@ -4,8 +4,9 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
+import { IGroupQueryHandler } from "./types";
 
-export class GroupQueryHandler {
+export class GroupQueryHandler implements IGroupQueryHandler {
   constructor(private readonly db: DBClient) {}
 
   async getGroupCategories(): Promise<CategoriesSchemaType> {

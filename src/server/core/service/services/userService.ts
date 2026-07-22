@@ -15,8 +15,9 @@ import {
 import { GroupMembersArraySchemaType } from "../../../../schemas/groups/groupMembersSchema";
 import { UserMembershipSchemaArrayValidator } from "../../lib/validation/schemaValidators";
 import { NewUserResponse } from "../../db/access/types/types";
+import { IUserService } from "./types";
 
-export class UserService {
+export class UserService implements IUserService {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

@@ -1,11 +1,28 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchemaType,
+  EventAttendantStatusSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 
 export type AttendantCountType = {
   numGoing: number;
   numInterested: number;
+};
+
+export type HydratedEvent = {
+  event: EventSchemaType;
+  meta: {
+    rsvpStatus: EventAttendantStatusSchemaType;
+    attendants: {
+      going: number;
+      interested: number;
+    };
+    role: GroupMemberSchemaType["role"];
+    name: GroupSchemaType["name"];
+    slug: GroupSchemaType["slug"];
+  };
 };
 
 export type GroupNameLookupMap = Record<
