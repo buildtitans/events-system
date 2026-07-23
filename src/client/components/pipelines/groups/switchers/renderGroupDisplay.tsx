@@ -8,7 +8,7 @@ import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { AsyncStateRenderer } from "../../async/asyncStateRenderer";
 import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
-import OpenedGroupFallback from "../../../ui/feedback/fallbacks/groupFallback";
+import OpenedGroupFallback from "../../../ui/feedback/fallbacks/widgets/groupFallback";
 import Archives from "../../../sections/group/openedGroup/displays/archives";
 import HistoryTimeline from "../../../sections/group/openedGroup/displays/groupHistory";
 
@@ -21,7 +21,10 @@ export function RenderGroupDisplay({
   view,
   isMobile,
 }: RenderGroupDisplayProps): JSX.Element {
-  const {archives, history} = useSelector((s: RootState) => s.openGroup, shallowEqual);
+  const { archives, history } = useSelector(
+    (s: RootState) => s.openGroup,
+    shallowEqual,
+  );
 
   switch (view) {
     case "overview": {
@@ -40,9 +43,12 @@ export function RenderGroupDisplay({
     }
     case "group history": {
       return (
-        <AsyncStateRenderer state={history} empty={() => (<OpenedGroupFallback />)}>
+        <AsyncStateRenderer
+          state={history}
+          empty={() => <OpenedGroupFallback />}
+        >
           {(history) => (
-            <HistoryTimeline history={history} isMobile={isMobile}/>
+            <HistoryTimeline history={history} isMobile={isMobile} />
           )}
         </AsyncStateRenderer>
       );
@@ -52,10 +58,7 @@ export function RenderGroupDisplay({
         <FadeIn keyValue="archives-fade-in">
           <AsyncStateRenderer
             state={archives}
-            empty={() => (
-              <OpenedGroupFallback
-              />
-            )}
+            empty={() => <OpenedGroupFallback />}
           >
             {(archivedEvents) => (
               <Archives archivedEvents={archivedEvents} isMobile={isMobile} />

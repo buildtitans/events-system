@@ -2,7 +2,10 @@ import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 import { PasswordResetEmailService } from "./passwordResetEmailService";
-import { AuthClientLoginResponse } from "../../db/access/types/types";
+import {
+  AuthClientLoginResponse,
+  StoredSession,
+} from "../../db/access/types/types";
 
 export class SessionService {
   constructor(
@@ -23,13 +26,15 @@ export class SessionService {
     return await this.db.auth.login(email, password);
   }
 
-  async logout(token: string | undefined) {
+  async logout(token: string | undefined): Promise<boolean> {
     const cookie = this.policy.requireToken(token);
 
     return await this.db.auth.logOut(cookie);
   }
 
-  async recoverSession(token: string | undefined | null) {
+  async recoverSession(
+    token: string | undefined | null,
+  ): Promise<StoredSession | undefined> {
     const cookie = this.policy.requireToken(token);
 
     const session = await this.db.auth.getSession(cookie);
@@ -53,7 +58,9 @@ export class SessionService {
     return { ok: true };
   }
 
-  async emailForPwReset(email: string) {
+  async emailForPwReset(email: string): Promise<{
+    ok: true;
+  }> {
     return await this.emailer.request(email);
   }
 }

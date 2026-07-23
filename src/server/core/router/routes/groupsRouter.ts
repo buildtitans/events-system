@@ -12,37 +12,37 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectGroupsRouter = router({
-  all: publicProcedure.mutation(async ({ ctx }) => {
+  all: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.groups.query.getAllGroups();
   }),
 
   bySlug: publicProcedure
     .input(groupSlugInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.getGroupFromSlug(
         input,
       );
     }),
 
-  popular: publicProcedure.mutation(async ({ ctx }) => {
+  popular: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.census.getPopularGroups();
   }),
 
   search: publicProcedure
     .input(searchInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.searchGroups(input);
     }),
 });
 
 const lookupRouter = router({
-  groupNames: publicProcedure.mutation(async ({ ctx }) => {
+  groupNames: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.groups.query.getGroupNameDictionary();
   }),
 
   nextEvents: publicProcedure
     .input(typeboxInputV2<GroupIdArraySchema>(GroupIdArraySchema))
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.timeline.getNextEventMap(
         input,
       );

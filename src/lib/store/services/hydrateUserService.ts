@@ -17,7 +17,7 @@ export class HydrateUserService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   public async notifications(): Promise<NotificationSchemaType[]> {
-    return await this.trpc.notifications.select.new.mutate();
+    return await this.trpc.notifications.select.new.query();
   }
 
   public async participations(): Promise<UserParticipationsResult> {
@@ -32,17 +32,17 @@ export class HydrateUserService {
   }
 
   private async rsvps(): Promise<RsvpSchemaType[]> {
-    return await this.trpc.eventAttendants.select.rsvps.mutate();
+    return await this.trpc.eventAttendants.select.rsvps.query();
   }
 
   private async memberships(): Promise<UserMembershipSchemaType[]> {
-    return await this.trpc.users.select.memberships.mutate();
+    return await this.trpc.users.select.memberships.query();
   }
 
   private async nextEventsLookup(
     memberships: UserMembershipSchemaType[],
   ): Promise<UpComingEventsLookup> {
     const ids = memberships.map((m) => m.group_id);
-    return await this.trpc.groups.lookup.nextEvents.mutate(ids);
+    return await this.trpc.groups.lookup.nextEvents.query(ids);
   }
 }

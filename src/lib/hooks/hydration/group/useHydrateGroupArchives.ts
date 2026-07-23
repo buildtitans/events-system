@@ -16,7 +16,7 @@ export const useHydrateGroupArchives = (group_id: GroupSchemaType["id"]) => {
     dispatch(populateGroupArchives({ status: "pending" }));
     try {
       const { archives, archivedAttendanceRecords } =
-        await trpcClient.events.select.archives.mutate(group_id);
+        await trpcClient.events.select.archives.query(group_id);
 
       if (archives.length === 0) {
         dispatch(

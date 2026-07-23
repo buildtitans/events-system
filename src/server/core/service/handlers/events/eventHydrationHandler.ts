@@ -2,22 +2,8 @@ import { DBClient } from "@/src/server/core/db/access/client/dbClient";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpStatusSchemaValidator } from "../../../lib/validation/schemaValidators";
 import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
+import type { HydratedEvent } from "../../types";
 import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
-import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
-
-type HydratedEvent = {
-  event: EventSchemaType;
-  meta: {
-    rsvpStatus: EventAttendantStatusSchemaType;
-    attendants: {
-      going: number;
-      interested: number;
-    };
-    role: GroupMemberSchemaType["role"];
-    name: GroupSchemaType["name"];
-    slug: GroupSchemaType["slug"];
-  };
-};
 
 export class EventHydrationHandler {
   constructor(private readonly db: DBClient) {}
@@ -46,7 +32,7 @@ export class EventHydrationHandler {
   async getUserRoleInGroup(
     user_id: string | undefined | null,
     event_id: string,
-  ): Promise<"member" | "organizer" | "anonymous"> {
+  ): Promise<GroupMemberSchemaType["role"]> {
     const event = await this.db.events.select.byId(event_id);
 
     if (user_id && event) {

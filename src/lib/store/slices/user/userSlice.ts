@@ -48,8 +48,8 @@ export const hydrateAccountPage = createAsyncThunk(
     thunkAPI.dispatch(enqueueSidebar("user"));
 
     try {
-      const myGroups = await trpcClient.users.select.createdGroups.mutate();
-      const email = await trpcClient.users.select.email.mutate();
+      const myGroups = await trpcClient.users.select.createdGroups.query();
+      const email = await trpcClient.users.select.email.query();
 
       if (!email) {
         throw new Error("Dashboard access requires authentication");

@@ -4,13 +4,13 @@ import { GeoApifySearchInput } from "../inputValidators/inputValidation";
 export const geoCodingRouter = router({
   addressSuggestions: publicProcedure
     .input(GeoApifySearchInput)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.integrations.geoApify.suggestAddresses(input);
     }),
 
   citySearchSuggestions: publicProcedure
     .input(GeoApifySearchInput)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.integrations.geoApify.suggestAddresses(
         input,
         "city",

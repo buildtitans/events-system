@@ -12,7 +12,7 @@ const useRecoverSession = (): void => {
   useEffect(() => {
     const executeRecoverSession = async () => {
       try {
-        const result = await trpcClient.auth.status.recover.mutate();
+        const result = await trpcClient.auth.status.recover.query();
         if (result) {
           dispatch(loginSuccess());
           dispatch(storeUserEmail({ status: "ready", data: result.email }));

@@ -1,31 +1,14 @@
 import { GeoapifyConfig } from "../../lib/init/geoApifyConfig";
 import { GeoapifyAutocompleteValidator } from "../../lib/validation/schemaValidators";
 import type { GeoapifyAutocompleteJsonResponse } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
+import {
+  IGeoApifySearch,
+  AddressSuggestion,
+  LocationType,
+  SuggestAddressesResults,
+} from "./types";
 
-type AddressSuggestion = {
-  label: string;
-  sublabel: string;
-  country?: string;
-  state?: string;
-  city?: string;
-  street?: string;
-};
-
-type LocationType =
-  | "country"
-  | "state"
-  | "city"
-  | "postcode"
-  | "street"
-  | "amenity"
-  | "locality";
-
-type SuggestAddressesResults = Promise<
-  | { status: "success"; data: AddressSuggestion[] }
-  | { status: "failed"; message: string }
->;
-
-export class GeoApifySearch {
+export class GeoApifySearch implements IGeoApifySearch {
   private readonly apiKey: GeoapifyConfig["geoApifyKey"];
   private readonly geoapifyUrl: GeoapifyConfig["geoApifyUrl"];
   constructor(private readonly config: GeoapifyConfig) {

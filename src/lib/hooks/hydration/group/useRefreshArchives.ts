@@ -24,7 +24,7 @@ export const useRefreshArchives = () => {
 
       try {
         const { archives, archivedAttendanceRecords } =
-          await trpcClient.events.select.archives.mutate(group.data.id);
+          await trpcClient.events.select.archives.query(group.data.id);
 
         if (archives.length === 0) {
           dispatch(

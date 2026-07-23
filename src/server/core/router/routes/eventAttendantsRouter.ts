@@ -11,7 +11,7 @@ import {
 const selectAttendantsRouter = router({
   attendants: publicProcedure
     .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.query.getEventAttendants(
         input,
       );
@@ -19,7 +19,7 @@ const selectAttendantsRouter = router({
 
   userStatus: protectedProcedure
     .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.rsvps.getUserRsvpToEvent(
         ctx.req.user?.id,
         input,
@@ -28,19 +28,19 @@ const selectAttendantsRouter = router({
 
   headCount: publicProcedure
     .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
         input,
       );
     }),
 
-  rsvps: protectedProcedure.mutation(async ({ ctx }) => {
+  rsvps: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),
 
-  popular: publicProcedure.mutation(async ({ ctx }) => {
+  popular: publicProcedure.query(async ({ ctx }) => {
     return ctx.services.api.domains.participations.census.getPopularEventsIds();
   }),
 });

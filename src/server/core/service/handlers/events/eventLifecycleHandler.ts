@@ -5,8 +5,9 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import { DBClient } from "@/src/server/core/db/access/client/dbClient";
 import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { IEventLifecycleHandler } from "./types";
 
-export class EventLifecycleHandler {
+export class EventLifecycleHandler implements IEventLifecycleHandler {
   constructor(
     private readonly db: DBClient,
     private readonly policy: Authorization,

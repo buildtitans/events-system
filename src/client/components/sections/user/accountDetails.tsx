@@ -7,8 +7,7 @@ type AccountDetailsProps = {
   email: string;
 };
 
-export default function AccountDetails({
-}: AccountDetailsProps): JSX.Element {
+export default function AccountDetails({}: AccountDetailsProps): JSX.Element {
   return (
     <Container
       maxWidth={false}

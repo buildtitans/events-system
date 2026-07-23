@@ -6,15 +6,6 @@ import List from "@mui/material/List";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import RsvpListItem from "../../ui/list/rsvps/rsvpListItem";
 import { useRouter } from "next/navigation";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import DashboardFallback from "../../ui/feedback/fallbacks/dashboardFallback";
-import { Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
-import { changeAccountTab } from "@/src/lib/store/slices/user/userSlice";
-import { noGroupsFallbackActionButtonSx, noGroupsFallbackIconSx } from "@/src/client/styles/sx/noGroupsFallback";
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 
 type MyRsvpsProps = {
   rsvps: RsvpSchemaType[];
@@ -31,87 +22,23 @@ export default function MyRsvps({ rsvps }: MyRsvpsProps): JSX.Element {
 
   return (
     <Container>
-      <RenderRsvpsOrFallback
-        rsvps={rsvps}
-        handleNavigateToGroup={handleNavigateToGroup}
-        handleOpenEvent={handleOpenEvent}
-      />
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: "100%",
+        }}
+      >
+        {rsvps.map((rsvp) => (
+          <RsvpListItem
+            key={rsvp.event_id}
+            rsvp={rsvp}
+            handleOpenEvent={handleOpenEvent}
+            handleNavigateToGroup={handleNavigateToGroup}
+          />
+        ))}
+      </List>
     </Container>
   );
-}
-
-type RenderRsvpsOrFallbackProps = {
-  rsvps: RsvpSchemaType[];
-  handleOpenEvent: (event_id: EventSchemaType["id"]) => Promise<void>;
-  handleNavigateToGroup: (slug: RsvpSchemaType["group_slug"]) => void;
-};
-
-function RenderRsvpsOrFallback({
-  rsvps,
-  handleNavigateToGroup,
-  handleOpenEvent,
-}: RenderRsvpsOrFallbackProps) {
-  const action = () => {
-    return (
-      <CheckMembershipsForNextEventButton />
-    )
-  }
-  const icon = () => {
-    return (
-      <EventAvailableRoundedIcon sx={noGroupsFallbackIconSx} />
-    )
-  }
-
-
-
-  if (rsvps.length === 0) {
-    return (
-    <DashboardFallback 
-    eyeBrow={"Workspace"}
-    fallbackTitle={"No commitments yet"}
-    fallbackBody={"You have not saved any event plans yet. If you have already joined communities, your memberships can help you find upcoming events worth RSVPing to."}
-    action={action()}
-    icon={icon()}
-    actionCaption={"Once you mark an event as going or interested, it will appear here for quick access later."}
-    />);
-  }
-
-  return (
-    <List
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: "100%",
-      }}
-    >
-      {rsvps.map((rsvp) => (
-        <RsvpListItem
-          key={rsvp.event_id}
-          rsvp={rsvp}
-          handleOpenEvent={handleOpenEvent}
-          handleNavigateToGroup={handleNavigateToGroup}
-        />
-      ))}
-    </List>
-  );
-}
-
-
-function CheckMembershipsForNextEventButton() {
-  const dispatch = useDispatch<AppDispatch>();
-  const handleClick = () => {
-    dispatch(changeAccountTab("memberships"));
-  }
-
-  return (
-    <Button
-    onClick={handleClick}
-    sx={noGroupsFallbackActionButtonSx}
-    variant={"contained"}
-    startIcon={<PersonSearchIcon />}
-    >
-    Check memberships
-    </Button>
-  )
 }

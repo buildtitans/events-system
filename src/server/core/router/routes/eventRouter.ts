@@ -19,25 +19,25 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectEventsRouter = router({
-  all: publicProcedure.mutation(async ({ ctx }) => {
+  all: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.events.query.allActive();
   }),
 
   search: publicProcedure
     .input(searchInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.query.searchEvents(input);
     }),
 
   byId: publicProcedure
     .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.query.getEventById(input);
     }),
 
   archives: protectedProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.timeline.getArchivedGroupEvents(
         ctx.req.user?.id,
         input,
@@ -46,7 +46,7 @@ const selectEventsRouter = router({
 
   history: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.timeline.getPastEventsForGroup(
         input,
       );
@@ -54,13 +54,13 @@ const selectEventsRouter = router({
 
   forGroup: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.query.getGroupEvents(input);
     }),
 
   hydrateEvent: publicProcedure
     .input(EventIDValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.hydrate.openedEvent(
         ctx.req.user?.id,
         input,
@@ -69,23 +69,23 @@ const selectEventsRouter = router({
 });
 
 const layoutRouter = router({
-  all: publicProcedure.mutation(async ({ ctx }) => {
+  all: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.events.layout.all();
   }),
 
-  allActive: publicProcedure.mutation(async ({ ctx }) => {
+  allActive: publicProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.events.layout.active();
   }),
 
   byIds: publicProcedure
     .input(EventIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.layout.byIds(input);
     }),
 
   forGroup: publicProcedure
     .input(groupIdInputValidator)
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.events.layout.forGroup(input);
     }),
 });

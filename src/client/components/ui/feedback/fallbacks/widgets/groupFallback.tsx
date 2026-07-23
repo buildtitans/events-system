@@ -15,7 +15,7 @@ import {
 } from "@/src/client/styles/sx/noGroupHistoryFallback";
 import { RootState } from "@/src/lib/store";
 import { useSelector } from "react-redux";
-import { groupFallbackCopy } from "./groupFallbackCopy";
+import { groupFallbackCopy } from "../groupFallbackCopy";
 
 export default function OpenedGroupFallback() {
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
