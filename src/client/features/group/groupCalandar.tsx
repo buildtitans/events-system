@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { AsyncStateRenderer } from "../../components/pipelines/async/asyncStateRenderer";
 import Calandar from "../../components/ui/dates/calandar";
-import OpenedGroupFallback from "../../components/ui/feedback/fallbacks/groupFallback";
+import OpenedGroupFallback from "../../components/ui/feedback/fallbacks/widgets/groupFallback";
 
 export default function GroupCalandar(): JSX.Element {
   const groupEvents = useSelector((s: RootState) => s.openGroup.calandar);

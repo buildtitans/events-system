@@ -3,8 +3,8 @@ import EventsLayout from "@/src/client/components/sections/events/eventsLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import React, { JSX } from "react";
-import { RelativeSpinner } from "@/src/client/components/ui/feedback/pending/spinner";
-import OpenedGroupFallback from "@/src/client/components/ui/feedback/fallbacks/groupFallback";
+import Spinner from "@/src/client/components/ui/feedback/pending/spinner";
+import OpenedGroupFallback from "@/src/client/components/ui/feedback/fallbacks/widgets/groupFallback";
 import FadeIn from "@/src/client/components/ui/box/motionboxes/fadeIn";
 import AsyncFailedFallback from "@/src/client/components/ui/feedback/failure/asyncFailedFallback";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
@@ -22,10 +22,7 @@ export const RenderEventsForGroup = (): JSX.Element => {
     }
 
     case "n/a": {
-      return (
-        <OpenedGroupFallback
-        />
-      );
+      return <OpenedGroupFallback />;
     }
 
     case "failed": {
@@ -41,15 +38,11 @@ export const RenderEventsForGroup = (): JSX.Element => {
     case "initial":
     case "refreshing":
     case "pending": {
-      return <RelativeSpinner />;
+      return <Spinner />;
     }
-    
 
     default: {
       return assertNever(events);
     }
-
   }
-
-
 };
