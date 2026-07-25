@@ -20,10 +20,10 @@ overrides:
   "picomatch@<2.3.2": "2.3.2"
   "picomatch@>=4.0.0 <4.0.4": "4.0.4"
   "yaml@>=1.0.0 <1.10.3": "1.10.3"
-  "postcss@<8.5.10": "8.5.12"
+  "postcss@<8.5.10": "8.5.18"
   "@babel/core@<=7.29.0": "7.29.6"
   "js-yaml": "3.15.0"
-  "brace-expansion": "1.1.16"
+  "brace-expansion": "5.0.8"
   "sharp": "0.35.0"
 allowBuilds:
   argon2: set this to true or false
