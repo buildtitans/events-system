@@ -3,17 +3,17 @@ import {
   EventsByGroupIdSchemaType,
   EventSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import { isPastEvent } from "../../../lib/utils/isPastEvent";
+import { isPastEvent } from "@/src/server/core/lib/utils/isPastEvent";
 import {
   EventsByGroupId,
   UpComingEventsLookup,
   PastEventsResults,
   PastEventAttendanceLookup,
-} from "../../types";
-import { EventsByGroupIdSchemaValidator } from "../../../lib/validation/schemaValidators";
-import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
-import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
-import { Authorization } from "../../auth/authorization";
+} from "@/src/server/core/service/types";
+import { EventsByGroupIdSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import { Authorization } from "@/src/server/core/service/auth/authorization";
 import { IEventTimelineHandler } from "./types";
 
 export class EventTimelineHandler implements IEventTimelineHandler {
