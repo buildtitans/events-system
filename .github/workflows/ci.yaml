@@ -32,7 +32,7 @@ jobs:
       NEXT_TELEMETRY_DISABLED: 1
       NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
       NEXT_PUBLIC_PROD_API_URL: /api/trpc
-      npm_config_node_linker: hoisted
+      npm_config_node_linker: isolated
       npm_config_package_import_method: copy
 
     steps:
