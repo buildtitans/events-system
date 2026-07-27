@@ -1,7 +1,7 @@
 "use client";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import { refreshGroupEvents } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { refreshGroupEvents } from "@/src/lib/store/slices/groups/thunks";
 import { useEffect } from "react";
 
 export const useRefreshGroupEvents = () => {

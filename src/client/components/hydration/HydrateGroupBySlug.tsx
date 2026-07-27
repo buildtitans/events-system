@@ -4,7 +4,7 @@ import type { AppDispatch, RootState } from "@/src/lib/store";
 import { useEffect } from "react";
 import { useRefreshGroupEvents } from "@/src/lib/hooks/hydration/group/useRefreshGroupEvents";
 import { useRefreshArchives } from "@/src/lib/hooks/hydration/group/useRefreshArchives";
-import { hydrateGroup } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
+import { hydrateGroup } from "@/src/lib/store/slices/groups/thunks";
 
 export default function HydrateGroupBySlug({
   slug,

@@ -1,12 +1,7 @@
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
-import {
-  getArchivesAttendanceRecords,
-  populateGroupArchives,
-} from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import { useEffect } from "react";
-import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { refreshArchivedEvents } from "@/src/lib/store/slices/groups/thunks";
 
 export const useRefreshArchives = () => {
   const group = useSelector((s: RootState) => s.openGroup.group);
@@ -20,28 +15,7 @@ export const useRefreshArchives = () => {
     if (archives.status !== "ready") return;
 
     const executeRefreshArchives = async () => {
-      dispatch(populateGroupArchives({ status: "pending" }));
-
-      try {
-        const { archives, archivedAttendanceRecords } =
-          await trpcClient.events.select.archives.query(group.data.id);
-
-        if (archives.length === 0) {
-          dispatch(
-            populateGroupArchives({
-              status: "n/a",
-              message: "This group has no archived events",
-            }),
-          );
-          return;
-        }
-
-        dispatch(populateGroupArchives({ status: "ready", data: archives }));
-        dispatch(getArchivesAttendanceRecords(archivedAttendanceRecords));
-      } catch (err) {
-        logCaughtError("hook/useRefreshArchives.executeRefreshArchives", err);
-        dispatch(populateGroupArchives({ status: "failed", error: `${err}` }));
-      }
+      dispatch(refreshArchivedEvents(group.data.id));
     };
 
     void executeRefreshArchives();

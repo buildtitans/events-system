@@ -1,20 +1,30 @@
 FROM node:24-bookworm-slim
-
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Use environment variables to handle the pnpm v11 structural config flags
+ENV pnpm_config_node_linker=hoisted
+ENV pnpm_config_package_import_method=copy
+
 RUN corepack enable
 
+# FIX: Copy ALL package.json files and workspace configuration files before installing
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY src/server/package.json ./src/server/package.json
 
-RUN pnpm config set node-linker hoisted && \
-    pnpm config set package-import-method copy && \
-    pnpm install --frozen-lockfile
+# FIX: Removed the failing config set commands entirely
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
 EXPOSE 3000
-
 CMD ["pnpm", "exec", "next", "dev", "--hostname", "0.0.0.0"]
+
+
+# ---> PLACE THEM HERE INSIDE THE DOCKERFILE <---
+ENV pnpm_config_node_linker=hoisted
+ENV pnpm_config_package_import_method=copy
+
+RUN corepack enable
+# ... rest of your Dockerfile
