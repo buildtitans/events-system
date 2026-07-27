@@ -83,7 +83,7 @@ async function prepareServerRuntime() {
       "--filter",
       "events-system-server",
       "--prod",
-      "--bundled-dependencies",
+      "--legacy",
       "deploy",
       serverRuntimeRoot,
     ],
