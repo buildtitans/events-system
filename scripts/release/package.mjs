@@ -79,7 +79,14 @@ async function prepareServerRuntime() {
 
   await run(
     "pnpm",
-    ["--filter", "events-system-server", "--prod", "deploy", serverRuntimeRoot],
+    [
+      "--filter",
+      "events-system-server",
+      "--prod",
+      "--bundled-dependencies",
+      "deploy",
+      serverRuntimeRoot,
+    ],
     {
       cwd: repoRoot,
       env: {
