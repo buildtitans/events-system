@@ -6,9 +6,15 @@ import {
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { getCurrentRole } from "../viewer/ViewerSlice";
-import { enqueueSidebar } from "../rendering/RenderingSlice";
+import {
+  enqueueAlert,
+  enqueueDrawer,
+  enqueueSidebar,
+  enqueueSnackbar,
+} from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { HydrateOpenGroupService } from "../../services/hydrateOpenGroupService";
+import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 
 export const hydrateGroup = createAsyncThunk(
   "OpenedGroup/hydrate",
@@ -75,6 +81,38 @@ export const refreshArchivedEvents = createAsyncThunk(
       };
     } catch (err) {
       logCaughtError("OpenedGroupSlice.refreshArchivedEvents()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const scheduleNewEvent = createAsyncThunk(
+  "OpenGroup/scheduleNewEvent",
+  async (
+    event: NewEventInputSchemaType,
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(enqueueSnackbar({ kind: "newEvent", status: "pending" }));
+
+    try {
+      const result = await trpcClient.events.write.create.mutate(event);
+
+      if (!result.ok) {
+        throw new Error(`${result.error}`);
+      }
+
+      thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      thunkAPI.dispatch(
+        enqueueAlert({ action: "createEvent", kind: "success" }),
+      );
+      thunkAPI.dispatch(enqueueDrawer(null));
+
+      return result.data;
+    } catch (err) {
+      logCaughtError("OpenGroupSlice.scheduleNewEvent()", err);
+      thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      thunkAPI.dispatch(enqueueAlert({ action: "createEvent", kind: "error" }));
+
       return thunkAPI.rejectWithValue(err);
     }
   },

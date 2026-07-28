@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
+import { enqueueSidebar } from "../../../store/slices/rendering/RenderingSlice";
 import { useRouter } from "next/navigation";
 import type { RootState, AppDispatch } from "@/src/lib/store";
-import { changeAccountTab } from "../../store/slices/user/userSlice";
+import { changeAccountTab } from "../../../store/slices/user/userSlice";
 
 export const useDetectActiveSession = () => {
   const router = useRouter();

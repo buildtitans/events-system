@@ -1,5 +1,5 @@
 "use client";
-import { useResetPassword } from "@/src/lib/hooks/auth/useResetPassword";
+import { useResetPassword } from "@/src/lib/hooks/auth/credentials/useResetPassword";
 import Password from "@/src/client/components/sections/inputs/auth/Password";
 import ConfirmPassword from "@/src/client/components/sections/inputs/auth/ConfirmPassword";
 import { RootState } from "@/src/lib/store";

@@ -2,14 +2,14 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import {
   InputErrorsType,
   SignupCredentialsType,
-} from "./useValidateSignupCredentials";
+} from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { requestResetPassword } from "../../store/slices/user/userSlice";
+import { AppDispatch } from "@/src/lib/store";
+import { requestResetPassword } from "@/src/lib/store/slices/user/userSlice";
 import {
   enqueueAlert,
   enqueueSnackbar,
-} from "../../store/slices/rendering/RenderingSlice";
+} from "@/src/lib/store/slices/rendering/RenderingSlice";
 import React, { SetStateAction } from "react";
 
 type RequestPasswordResetHookParameters = {

@@ -1,16 +1,16 @@
 "use client";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../store";
+import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { loginSuccess, logout } from "../../store/slices/auth/AuthSlice";
-import { storeUserEmail } from "../../store/slices/user/userSlice";
+import { loginSuccess, logout } from "@/src/lib/store/slices/auth/AuthSlice";
+import { storeUserEmail } from "@/src/lib/store/slices/user/userSlice";
 
 const useRecoverSession = (): void => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    const executeRecoverSession = async () => {
+    const executeRecoverSession = async (): Promise<void> => {
       try {
         const result = await trpcClient.auth.status.recover.query();
         if (result) {

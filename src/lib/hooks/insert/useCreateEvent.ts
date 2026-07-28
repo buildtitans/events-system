@@ -1,137 +1,85 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import {
-  EventSchemaType,
-  NewEventInputSchemaType,
+  type EventSchemaType,
+  NewEventInputSchema,
 } from "@/src/schemas/events/eventSchema";
-import { trpcClient } from "@/src/trpc/trpcClient";
-import {
-  enqueueAlert,
-  enqueueDrawer,
-  enqueueSnackbar,
-} from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { Dayjs } from "dayjs";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
-import { createNewEventNotification } from "../../utils/helpers/notifications/createScheduleNotification";
-import { appendNewNotification } from "../../store/slices/notifications/notificationSlice";
-import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { NewEventType } from "@/src/lib/types/hooks/types";
-import { getPicDate } from "../../utils/dates/getPicDate";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import type { NewEventInput } from "@/src/lib/types/hooks/types";
+import { Dayjs } from "dayjs";
+import { createInitialNewEventState } from "@/src/lib/utils/newEvent/createInitialNewEventState";
+import { scheduleNewEvent } from "@/src/lib/store/slices/groups/thunks";
+import { useCreateNotifications } from "@/src/lib/hooks/update/useCreateNotifications";
+import { assertSchema } from "@/src/lib/utils/assert/assertSchema";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 
 export const useCreateEvent = (
   group_id: EventSchemaType["group_id"],
 ): CreateEventHook => {
-  const dispatch = useDispatch<AppDispatch>();
   const snackbar = useSelector((s: RootState) => s.rendering.snackbar);
-  const groups = useSelector((s: RootState) => s.groups.communities);
-  const picDate = getPicDate();
-  const [createNotification, setCreateNotification] = useState<boolean>();
-  const [newEvent, setNewEvent] = useState<NewEventType>({
-    title: "",
-    description: "",
-    starts_at: "",
-    group_id: group_id,
-    img: `https://picsum.photos/800/450?random=${picDate}`,
-    meeting_location: "",
-    tag: "",
-  });
-  const isSubmittable = useMemo(() => {
+  const [newEvent, setNewEvent] = useState<NewEventInput>(() =>
+    createInitialNewEventState(group_id),
+  );
+  const { createEventScheduledNotifications } = useCreateNotifications();
+  const isDisabled = useMemo(() => {
     const filledOutForm =
       !!newEvent.title && !!newEvent.starts_at && !!newEvent.group_id;
-    return !filledOutForm;
-  }, [newEvent]);
-  const currentGroup = useMemo(() => {
-    const thisGroup = groups.find((grp) => grp.id === group_id);
-    return thisGroup;
-  }, [group_id, groups]);
+
+    const isScheduling =
+      snackbar.kind === "newEvent" && snackbar.status === "pending";
+
+    return !filledOutForm || isScheduling;
+  }, [newEvent, snackbar.kind, snackbar.status]);
+  const dispatch = useDispatch<AppDispatch>();
 
   const getInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    field: keyof NewEventType,
+    field: keyof NewEventInput,
   ) => {
     const value = e.target.value;
 
-    setNewEvent((prev: NewEventType) => ({
+    setNewEvent((prev: NewEventInput) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   const handleLocation = (input: string) => {
-    setNewEvent((prev: NewEventType) => ({
+    setNewEvent((prev: NewEventInput) => ({
       ...prev,
       meeting_location: input,
     }));
   };
 
   const handleStartsAt = (value: Dayjs | null) => {
-    const date = value?.toISOString();
-    setNewEvent((prev: NewEventType) => ({
+    const date = value?.toISOString() ?? "";
+    setNewEvent((prev: NewEventInput) => ({
       ...prev,
-      starts_at: date ?? "",
+      starts_at: date,
     }));
-  };
-
-  const scheduleEvent = async (newEvent: NewEventType) => {
-    try {
-      const result = await trpcClient.events.write.create.mutate(newEvent);
-      if (!result.ok) {
-        throw new Error(`${result.error}`);
-      }
-      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-      dispatch(enqueueAlert({ kind: "success", action: "createEvent" }));
-      setCreateNotification(true);
-      dispatch(getGroupEvents({ status: "refreshing" }));
-    } catch (err) {
-      logCaughtError("useCreateEvent.schedule.scheduleEvent()", err);
-      dispatch(enqueueSnackbar({ kind: "newEvent", status: "failed" }));
-      dispatch(enqueueAlert({ kind: "error", action: "createEvent" }));
-    }
   };
 
   const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(enqueueSnackbar({ kind: "newEvent", status: "pending" }));
-    await scheduleEvent(newEvent);
+
+    try {
+      const validatedEvent = assertSchema(newEvent, NewEventInputSchema);
+      const scheduledEvent = await dispatch(
+        scheduleNewEvent(validatedEvent),
+      ).unwrap();
+
+      await createEventScheduledNotifications(scheduledEvent);
+    } catch (err) {
+      logCaughtError("useCreateEvent.schedule()", err);
+    }
   };
-
-  useEffect(() => {
-    if (!currentGroup || !createNotification) return;
-
-    const executeNotifyMembers = async () => {
-      const scheduledEvent = newEvent as NewEventInputSchemaType;
-      const notification = createNewEventNotification(
-        scheduledEvent,
-        currentGroup,
-      );
-
-      const result =
-        await trpcClient.notifications.write.create.mutate(notification);
-
-      dispatch(
-        appendNewNotification({
-          status: "ready",
-          data: {
-            new: [result.items[0]],
-            seen: [],
-          },
-        }),
-      );
-
-      setCreateNotification(false);
-      dispatch(enqueueDrawer(null));
-    };
-
-    void executeNotifyMembers();
-  }, [currentGroup, newEvent, snackbar, createNotification, dispatch]);
 
   return {
     schedule,
     handleStartsAt,
     handleLocation,
     getInput,
-    isSubmittable,
+    isDisabled,
   };
 };

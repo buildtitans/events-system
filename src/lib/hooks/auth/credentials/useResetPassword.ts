@@ -1,12 +1,12 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { resetPassword } from "../../store/slices/user/userSlice";
+import { AppDispatch } from "@/src/lib/store";
+import { resetPassword } from "@/src/lib/store/slices/user/userSlice";
 import React, { useMemo, useState } from "react";
 import {
   enqueueAlert,
   enqueueDrawer,
-} from "../../store/slices/rendering/RenderingSlice";
+} from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useRouter } from "next/navigation";
 
 type NewPasswordState = {

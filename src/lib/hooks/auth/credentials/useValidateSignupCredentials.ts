@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import { emailFormat } from "@/src/lib/utils/regex/regex";
-import { ValidateSignupCredsHook } from "../../types/hooks/types";
+import { ValidateSignupCredsHook } from "@/src/lib/types/hooks/types";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "@/src/lib/store";
 
 const MIN_PW_LENGTH = 8;
 

@@ -28,7 +28,7 @@ import type {
   SuggestionOptions,
   SuggestionType,
 } from "../../hooks/search/types";
-import { InputErrorsType } from "../../hooks/auth/useValidateSignupCredentials";
+import { InputErrorsType } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import { LoginCredentials } from "../tokens/types";
 import { AuthenticationState } from "../../store/slices/auth/types";
 
@@ -53,11 +53,11 @@ export type ValidateSignupCredsHook = {
   isValidated: boolean;
 };
 
-export type NewEventType = {
+export type NewEventInput = {
   title: EventSchemaType["title"];
   description: EventSchemaType["description"];
   starts_at: string;
-  group_id: EventSchemaType["group_id"];
+  group_id: EventSchemaType["group_id"] | null;
   img: EventSchemaType["img"] | null;
   meeting_location: EventSchemaType["meeting_location"];
   tag: EventSchemaType["tag"];
@@ -101,10 +101,10 @@ type CreateEventHook = {
   ) => void;
   handleLocation: (input: string) => void;
   schedule: (e: React.FormEvent<HTMLFormElement>) => void;
-  isSubmittable: boolean;
+  isDisabled: boolean;
   getInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    field: keyof NewEventType,
+    field: keyof NewEventInput,
   ) => void;
 };
 
