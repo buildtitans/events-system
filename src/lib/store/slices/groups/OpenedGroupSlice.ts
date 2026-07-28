@@ -15,6 +15,7 @@ import {
   hydrateGroup,
   refreshGroupEvents,
   refreshArchivedEvents,
+  scheduleNewEvent,
 } from "./thunks";
 import { PastEventAttendanceLookup } from "@/src/server/core/service/types";
 
@@ -37,7 +38,7 @@ type InitialState = {
 
 const initialState: InitialState = {
   group: { status: "initial" },
-  events: { status: "refreshing" },
+  events: { status: "initial" },
   history: { status: "initial" },
   archives: { status: "initial" },
   currPage: 0,
@@ -120,6 +121,10 @@ const OpenedGroupSlice = createSlice({
   },
 
   extraReducers(builder) {
+    builder.addCase(scheduleNewEvent.fulfilled, (state: InitialState) => {
+      state.events = { status: "refreshing" };
+    });
+
     builder.addCase(refreshArchivedEvents.rejected, (state: InitialState) => {
       state.archives = {
         status: "failed",

@@ -4,9 +4,9 @@ import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Email from "@/src/client/components/sections/inputs/auth/Email";
-import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/useValidateSignupCredentials";
+import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import ConfirmPassword from "@/src/client/components/sections/inputs/auth/ConfirmPassword";
-import { useSignUp } from "@/src/lib/hooks/auth/useJoin";
+import { useSignUp } from "@/src/lib/hooks/auth/authenticate/useJoin";
 import CreatePassword from "@/src/client/components/sections/inputs/auth/CreatePassword";
 import AuthDrawerShell from "@/src/client/components/ui/drawers/authDrawerShell";
 import {

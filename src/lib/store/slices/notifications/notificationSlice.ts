@@ -39,6 +39,8 @@ export const NotificationSlice = createSlice({
         const incoming = action.payload.data.new;
         const appendPayload = [...state.notifications.data.new, ...incoming];
         state.notifications.data.new = appendPayload;
+      } else {
+        state.notifications = action.payload;
       }
     },
     markSeen: (state: InitialState) => {

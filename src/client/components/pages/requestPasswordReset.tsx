@@ -1,6 +1,6 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { JSX } from "react";
-import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/useValidateSignupCredentials";
+import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import Password from "../sections/inputs/auth/Password";
 import ConfirmPassword from "../sections/inputs/auth/ConfirmPassword";
 

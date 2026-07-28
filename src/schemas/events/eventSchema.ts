@@ -27,14 +27,16 @@ export const GroupIdArraySchema = Type.Array(GroupIdSchema);
 
 export type GroupIdArraySchema = Static<typeof GroupIdArraySchema>;
 
+const NonEmptyString = Type.String({ minLength: 1 });
+
 const NewEventInputSchema = Type.Object({
-  group_id: Type.String(),
-  starts_at: Type.String(),
-  img: Type.Union([Type.String(), Type.Null()]),
-  tag: Type.Union([Type.String(), Type.Null()]),
-  title: Type.String(),
+  group_id: NonEmptyString,
+  starts_at: Type.String({ minLength: 1 }),
+  title: NonEmptyString,
   description: Type.String(),
   meeting_location: Type.String(),
+  img: Type.Union([NonEmptyString, Type.Null()]),
+  tag: Type.Union([Type.String(), Type.Null()]),
 });
 
 const EventsArraySchema = Type.Array(EventSchema);
