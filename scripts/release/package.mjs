@@ -84,7 +84,7 @@ async function prepareServerRuntime() {
       cwd: repoRoot,
       env: {
         ...process.env,
-        npm_config_node_linker: "isolated",
+        npm_config_node_linker: "hoisted",
         npm_config_package_import_method: "copy",
       },
       stdio: "inherit",
