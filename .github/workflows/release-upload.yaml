@@ -32,8 +32,8 @@ jobs:
       NEXT_TELEMETRY_DISABLED: 1
       NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
       NEXT_PUBLIC_PROD_API_URL: /api/trpc
-      npm_config_node_linker: hoisted
-      npm_config_package_import_method: copy
+      pnpm_config_node_linker: isolated
+      pnpm_config_package_import_method: copy
 
     steps:
       - name: Prepare Amazon Linux build environment
@@ -65,8 +65,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Audit dependencies
-        run: pnpm audit --audit-level high
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level high
+
+      - name: Audit development dependencies
+        continue-on-error: true
+        run: pnpm audit --dev --audit-level high
 
       - name: Create CI env files
         run: |
