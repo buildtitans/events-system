@@ -1,18 +1,21 @@
 FROM node:24-bookworm-slim
-
 WORKDIR /app
+
+# FIX: Inject the pnpm configurations as environment variables
+ENV pnpm_config_node_linker=hoisted
+ENV pnpm_config_package_import_method=copy
 
 RUN corepack enable
 
+# Copy the monorepo manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY src/server/package.json ./src/server/package.json
 
-RUN pnpm config set node-linker hoisted && \
-    pnpm config set package-import-method copy && \
-    pnpm install --frozen-lockfile
+# FIX: Clean install without the broken global config commands
+RUN pnpm install --frozen-lockfile
 
-COPY src/server ./src/server
+# FIX: Copy ALL code files so monorepo workspace links don't break
+COPY . .
 
 EXPOSE 3001
-
 CMD ["pnpm", "--filter", "./src/server", "run", "dev:fastify"]

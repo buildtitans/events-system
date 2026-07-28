@@ -18,4 +18,4 @@ export const cardSizingConfig = {
     md: 4,
     xs: 12,
   },
-} satisfies CardSizeConfig;
+} as const satisfies CardSizeConfig;

@@ -1,7 +1,7 @@
-import { DBClient } from "../../db";
+import { DBClient } from "@/src/server/core/db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupAction, Permissions } from "../types";
-import { permissionsConfig } from "../../lib/config/permissionsConfig";
+import { permissionsConfig } from "@/src/server/core/lib/config/permissionsConfig";
 
 export class RoleBasedAccessHandler {
   private readonly permissions: Permissions;
@@ -13,7 +13,7 @@ export class RoleBasedAccessHandler {
     user_id: GroupMemberSchemaType["user_id"] | undefined,
     group_id: GroupMemberSchemaType["group_id"],
     action: GroupAction,
-  ) {
+  ): Promise<boolean> {
     if (!user_id) return false;
 
     const role = await this.getRoleInGroup(user_id, group_id);
@@ -23,7 +23,7 @@ export class RoleBasedAccessHandler {
   private async getRoleInGroup(
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
-  ) {
+  ): Promise<GroupMemberSchemaType["role"]> {
     return await this.db.groupMembers.select.role(user_id, group_id);
   }
 

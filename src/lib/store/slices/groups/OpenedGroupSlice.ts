@@ -1,10 +1,4 @@
-import {
-  AsyncThunkConfig,
-  createAsyncThunk,
-  createSlice,
-  GetThunkAPI,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
@@ -14,15 +8,15 @@ import type {
   GroupHistoryType,
   CurrentDisplay,
 } from "@/src/lib/store/slices/groups/types";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import type { OpenedGroupPayload } from "../../services/types";
-import { getCurrentRole } from "../viewer/ViewerSlice";
-import { enqueueSidebar } from "../rendering/RenderingSlice";
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventsPages } from "../events/types";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { HydrateOpenGroupService } from "../../services/hydrateOpenGroupService";
+import {
+  hydrateGroup,
+  refreshGroupEvents,
+  refreshArchivedEvents,
+} from "./thunks";
+import { PastEventAttendanceLookup } from "@/src/server/core/service/types";
 
 type InitialState = {
   group: GroupHydrated;
@@ -54,55 +48,6 @@ const initialState: InitialState = {
   attendanceHistoryLookup: {},
   archivesAttendance: {},
 };
-
-export const hydrateGroup = createAsyncThunk(
-  "OpenedGroup/hydrate",
-  async (
-    slug: GroupSchemaType["slug"],
-    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
-  ) => {
-    const service = new HydrateOpenGroupService(trpcClient);
-
-    thunkAPI.dispatch(enqueueSidebar("group"));
-
-    try {
-      const results = await service.hydrate(slug);
-
-      if (!results.ok) {
-        throw new Error("Failed to hydrate group selected");
-      }
-
-      thunkAPI.dispatch(getCurrentRole(results.data.role));
-
-      return results.data;
-    } catch (err) {
-      logCaughtError("OpenedGroupSlice.hydrateGroup()", err);
-      return thunkAPI.rejectWithValue(err);
-    }
-  },
-);
-
-export const refreshGroupEvents = createAsyncThunk(
-  "OpenedGroup/refresh",
-  async (
-    id: GroupSchemaType["id"],
-    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
-  ) => {
-    try {
-      const refreshedEventsLayout =
-        await trpcClient.events.layout.forGroup.query(id);
-      const calandarEvents = await trpcClient.events.select.forGroup.query(id);
-
-      return {
-        refreshedEventsLayout,
-        calandarEvents,
-      };
-    } catch (err) {
-      logCaughtError("OpenedGroupSlice.refreshGroupEvents()", err);
-      return thunkAPI.rejectWithValue(err);
-    }
-  },
-);
 
 const OpenedGroupSlice = createSlice({
   name: "OpenedGroup",
@@ -175,6 +120,31 @@ const OpenedGroupSlice = createSlice({
   },
 
   extraReducers(builder) {
+    builder.addCase(refreshArchivedEvents.rejected, (state: InitialState) => {
+      state.archives = {
+        status: "failed",
+        error: "Failed to refresh archived events",
+      };
+    });
+
+    builder.addCase(refreshArchivedEvents.pending, (state: InitialState) => {
+      state.archives = { status: "pending" };
+    });
+
+    builder.addCase(
+      refreshArchivedEvents.fulfilled,
+      (
+        state: InitialState,
+        action: PayloadAction<{
+          archives: EventSchemaType[];
+          archivedAttendanceRecords: PastEventAttendanceLookup;
+        }>,
+      ) => {
+        state.archives = { status: "ready", data: action.payload.archives };
+        state.archivesAttendance = action.payload.archivedAttendanceRecords;
+      },
+    );
+
     builder.addCase(refreshGroupEvents.rejected, (state: InitialState) => {
       state.events = {
         status: "failed",

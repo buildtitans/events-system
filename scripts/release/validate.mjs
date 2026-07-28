@@ -2,13 +2,7 @@
 
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
-import {
-  lstat,
-  readFile,
-  readdir,
-  realpath,
-  stat,
-} from "node:fs/promises";
+import { lstat, readFile, readdir, realpath, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -36,9 +30,7 @@ const ENTRY_POINTS = [
   "src/server/dist/src/server/core/db/seeds/scripts/seedDB.js",
 ];
 
-const REQUIRED_FILES = [
-  "next-standalone/node_modules/@next/env/package.json",
-];
+const REQUIRED_FILES = ["next-standalone/node_modules/next/package.json"];
 
 const REQUIRED_DIRECTORIES = [
   "next-standalone/.next/static",
@@ -147,11 +139,10 @@ async function scanFileContents(files) {
     PRIVATE_KEY_BLOCK_PATTERN.lastIndex = 0;
     for (const match of text.matchAll(PRIVATE_KEY_BLOCK_PATTERN)) {
       const compactBody = match[2].replace(/\s/g, "");
-      if (
-        compactBody.length >= 128 &&
-        /^[A-Za-z0-9+/=]+$/.test(compactBody)
-      ) {
-        throw new Error(`Release contains private key material: ${relativePath}`);
+      if (compactBody.length >= 128 && /^[A-Za-z0-9+/=]+$/.test(compactBody)) {
+        throw new Error(
+          `Release contains private key material: ${relativePath}`,
+        );
       }
     }
 
@@ -192,10 +183,7 @@ function checkJavaScriptSyntax(filePath, relativePath) {
 }
 
 async function validateManifest(root) {
-  const manifestPath = await requireRegularFile(
-    root,
-    ".bt-infra-release.json",
-  );
+  const manifestPath = await requireRegularFile(root, ".bt-infra-release.json");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
 
   if (JSON.stringify(manifest) !== JSON.stringify(EXPECTED_MANIFEST)) {
@@ -213,7 +201,9 @@ async function validateLaunchers(root, options = {}) {
     const contents = await readFile(launcherPath, "utf8");
 
     if (!contents.startsWith("#!/usr/bin/env bash\nset -euo pipefail\n")) {
-      throw new Error(`Launcher is missing its defensive preamble: ${relativePath}`);
+      throw new Error(
+        `Launcher is missing its defensive preamble: ${relativePath}`,
+      );
     }
 
     if (!contents.includes("exec /usr/bin/node ")) {
@@ -227,10 +217,7 @@ async function validateLaunchers(root, options = {}) {
 }
 
 async function validateDependencies(root) {
-  const fastifyEntry = path.join(
-    root,
-    "src/server/dist/src/server/index.js",
-  );
+  const fastifyEntry = path.join(root, "src/server/dist/src/server/index.js");
   const packagePath = path.join(root, "src/server/package.json");
   const packageJson = JSON.parse(await readFile(packagePath, "utf8"));
   const requireFromFastify = createRequire(fastifyEntry);
@@ -267,7 +254,10 @@ async function validateDependencies(root) {
   }
 
   const argon2 = requireFromFastify("argon2");
-  if (typeof argon2.hash !== "function" || typeof argon2.verify !== "function") {
+  if (
+    typeof argon2.hash !== "function" ||
+    typeof argon2.verify !== "function"
+  ) {
     throw new Error("argon2 loaded without its expected native API");
   }
 }
