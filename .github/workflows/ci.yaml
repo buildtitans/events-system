@@ -32,8 +32,8 @@ jobs:
       NEXT_TELEMETRY_DISABLED: 1
       NEXT_PUBLIC_DEV_API_URL: http://localhost:3001/api/trpc
       NEXT_PUBLIC_PROD_API_URL: /api/trpc
-      npm_config_node_linker: isolated
-      npm_config_package_import_method: copy
+      PNPM_CONFIG_NODE_LINKER: isolated
+      PNPM_CONFIG_PACKAGE_IMPORT_METHOD: copy
 
     steps:
       - name: Prepare Amazon Linux build environment

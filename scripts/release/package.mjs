@@ -79,14 +79,18 @@ async function prepareServerRuntime() {
 
   await run(
     "pnpm",
-    ["--filter", "events-system-server", "--prod", "deploy", serverRuntimeRoot],
+    [
+      "--config.node-linker=hoisted",
+      "--config.package-import-method=copy",
+      "--filter",
+      "events-system-server",
+      "--prod",
+      "deploy",
+      serverRuntimeRoot,
+    ],
     {
       cwd: repoRoot,
-      env: {
-        ...process.env,
-        npm_config_node_linker: "hoisted",
-        npm_config_package_import_method: "copy",
-      },
+      env: process.env,
       stdio: "inherit",
     },
   );
