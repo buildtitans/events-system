@@ -90,20 +90,7 @@ export type GroupSuggestionOptionsAndSlugs = {
   slugsByIds: GroupSlugsByIds;
 };
 
-type AutoCompleteMessageType = "Matched 0 terms" | null;
-
-type AutoCompleteErrormessageType = string | null;
-
-type AutoCompleteStatusType =
-  | "initial"
-  | "pending"
-  | "ready"
-  | "n/a"
-  | "warning";
-
-export type AutoCompleteOptions = {
-  status: AutoCompleteStatusType;
-  data: SuggestionOptions;
-  message: AutoCompleteMessageType;
-  error: AutoCompleteErrormessageType;
-};
+export type AutoCompleteSearch = AsyncState<
+  SuggestionOptions,
+  "Your query had 0 Results"
+>;

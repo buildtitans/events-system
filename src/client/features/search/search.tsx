@@ -2,7 +2,7 @@
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { useDebouncedSerach } from "@/src/lib/hooks/search/useDebouncedSearch";
+import { useAppSearch } from "@/src/lib/hooks/search/useAppSearch";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import type { HTMLAttributes } from "react";
@@ -18,13 +18,12 @@ import {
 
 export function Search(): JSX.Element {
   const appBoot = useSelector((s: RootState) => s.rendering.appBoot.status);
-  const { suggestions, input, onInputChange, selectOption, status } =
-    useDebouncedSerach();
+  const { suggestions, input, onInputChange, selectOption } = useAppSearch();
 
   return (
     <Autocomplete
       sx={navSearchAutocompleteSx}
-      loading={status === "pending"}
+      loading={suggestions.status === "pending"}
       disabled={appBoot !== "ready"}
       noOptionsText={"Query matched 0 results"}
       inputValue={input}
@@ -40,7 +39,7 @@ export function Search(): JSX.Element {
         const { key, ...rest } = props;
         return <SearchSuggestion props={rest} key={key} option={option} />;
       }}
-      options={suggestions}
+      options={suggestions.status === "ready" ? suggestions.data : []}
       slotProps={{
         clearIndicator: {
           sx: {

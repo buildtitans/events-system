@@ -24,8 +24,7 @@ import type {
   AutocompleteChangeReason,
 } from "@mui/material/useAutocomplete";
 import type {
-  AutoCompleteOptions,
-  SuggestionOptions,
+  AutoCompleteSearch,
   SuggestionType,
 } from "../../hooks/search/types";
 import { InputErrorsType } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
@@ -70,7 +69,7 @@ export type AttendanceDictionaryType = Record<
   EventAttendantsSchemaType["status"]
 >;
 
-type DebouncedSearchHook = {
+type AppSearchSearchHook = {
   input: string;
   onInputChange: (
     _event: SyntheticEvent<Element, Event>,
@@ -82,10 +81,7 @@ type DebouncedSearchHook = {
     value: SuggestionType | null,
     reason: AutocompleteChangeReason,
   ) => void;
-  suggestions: SuggestionOptions;
-  status: AutoCompleteOptions["status"];
-  message: AutoCompleteOptions["message"];
-  error: AutoCompleteOptions["error"];
+  suggestions: AutoCompleteSearch;
 };
 
 type ChangeActiveCategoryHook = {
@@ -215,7 +211,7 @@ export type {
   ValidateCredentialsHook,
   CancelEventHook,
   ChangeActiveCategoryHook,
-  DebouncedSearchHook,
+  AppSearchSearchHook,
   RemoveUserFromGroupHook,
   NewUser,
 };

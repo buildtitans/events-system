@@ -1,6 +1,6 @@
 "use client";
 import type { HTMLAttributes, JSX } from "react";
-import { useSearchLocationSuggestions } from "@/src/lib/hooks/search/useSearchLocationSuggestions";
+import { useAddressSearch } from "@/src/lib/hooks/search/useAddressSearch";
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
@@ -14,15 +14,15 @@ import {
 
 type LocationAutoCompleteProps = {
   handleLocation: (input: string) => void;
-  searchKind: 'city' | 'street';
+  searchKind: "city" | "street";
 };
 
 export default function LocationAutoComplete({
   handleLocation,
-  searchKind
+  searchKind,
 }: LocationAutoCompleteProps): JSX.Element {
   const { onInputChange, suggestions, query, selectAddressOption } =
-    useSearchLocationSuggestions(handleLocation, searchKind);
+    useAddressSearch(handleLocation, searchKind);
 
   return (
     <Autocomplete
