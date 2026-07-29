@@ -1,38 +1,36 @@
 import type { SyntheticEvent } from "react";
+import { useCallback, useRef, useState } from "react";
+import type {
+  AutocompleteChangeReason,
+  AutocompleteInputChangeReason,
+} from "@mui/material/useAutocomplete";
+
 import type {
   AddressSuggestion,
   AddressSearchState,
   SearchAddressSuggestionsHook,
 } from "@/src/lib/hooks/search/types";
 import type { CreateEventHook } from "@/src/lib/types/hooks/types";
-import type {
-  AutocompleteChangeReason,
-  AutocompleteInputChangeReason,
-} from "@mui/material/useAutocomplete";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { searchByAddressKind } from "@/src/lib/utils/helpers/search/searchByAddressKind";
+import { useDebouncedCallback } from "./useDebounce";
 
-const WAIT_DURATION = 300;
-
-export const useSearchLocationSuggestions = (
+export const useAddressSearch = (
   handleLocation: CreateEventHook["handleLocation"],
   searchKind: "city" | "street" = "street",
 ): SearchAddressSuggestionsHook => {
+  const requestIdRef = useRef<number>(0);
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<AddressSearchState>({
     status: "initial",
   });
 
-  const timerRef = useRef<number | null>(null);
-  const requestIdRef = useRef(0);
-
   const sendRequest = useCallback(
-    async (value: string) => {
+    async (value: string): Promise<void> => {
       const requestId = ++requestIdRef.current;
-      const trimmed = value.trim();
+      const trimmedQuery = value.trim();
 
-      if (!trimmed) {
+      if (!trimmedQuery) {
         setSuggestions({ status: "initial" });
         return;
       }
@@ -40,7 +38,8 @@ export const useSearchLocationSuggestions = (
       setSuggestions({ status: "pending" });
 
       try {
-        const results = await searchByAddressKind(searchKind, trimmed);
+        const results = await searchByAddressKind(searchKind, trimmedQuery);
+
         if (requestId !== requestIdRef.current) return;
 
         if (results.status === "failed") {
@@ -66,7 +65,8 @@ export const useSearchLocationSuggestions = (
       } catch (err) {
         if (requestId !== requestIdRef.current) return;
 
-        logCaughtError("hook/useSearchLocationSuggestions.sendRequest", err);
+        logCaughtError("useAddressSearch.sendRequest()", err);
+
         setSuggestions({
           status: "failed",
           error: err instanceof Error ? err.message : String(err),
@@ -76,43 +76,36 @@ export const useSearchLocationSuggestions = (
     [searchKind],
   );
 
-  const debounce = useCallback(
-    (query: string) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+  const { run: debounce, cancel: cancelDebounce } =
+    useDebouncedCallback(sendRequest);
 
-      timerRef.current = window.setTimeout(() => {
-        void sendRequest(query);
-        timerRef.current = null;
-      }, WAIT_DURATION);
-    },
-    [sendRequest],
-  );
+  const resetSearch = useCallback((): void => {
+    requestIdRef.current++;
+    cancelDebounce();
+    setSuggestions({ status: "initial" });
+  }, [cancelDebounce]);
 
   const onInputChange = useCallback(
     (
       _event: SyntheticEvent,
       value: string,
       reason: AutocompleteInputChangeReason,
-    ) => {
+    ): void => {
       if (reason === "input") {
         setQuery(value);
+
+        requestIdRef.current++;
         debounce(value);
+        return;
       }
 
       if (reason === "clear") {
         setQuery("");
         handleLocation("");
-        requestIdRef.current++;
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-          timerRef.current = null;
-        }
-        setSuggestions({ status: "initial" });
+        resetSearch();
       }
     },
-    [debounce, handleLocation],
+    [debounce, handleLocation, resetSearch],
   );
 
   const selectAddressOption = useCallback(
@@ -120,29 +113,24 @@ export const useSearchLocationSuggestions = (
       _event: SyntheticEvent,
       value: AddressSuggestion | null,
       reason: AutocompleteChangeReason,
-    ) => {
-      if (reason === "selectOption" && value?.label) {
-        const address = value.label;
-        setQuery(value.label);
-        handleLocation(address);
-        setSuggestions({ status: "initial" });
-      }
+    ): void => {
+      if (reason !== "selectOption" || value === null) return;
+
+      resetSearch();
+      setQuery(value.label);
+      handleLocation(value.label);
     },
-    [handleLocation],
+    [handleLocation, resetSearch],
   );
 
-  const selectOption = (option: AddressSuggestion) => {
-    handleLocation(option.label);
-    setSuggestions({ status: "initial" });
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
+  const selectOption = useCallback(
+    (option: AddressSuggestion): void => {
+      resetSearch();
+      setQuery(option.label);
+      handleLocation(option.label);
+    },
+    [handleLocation, resetSearch],
+  );
 
   return {
     suggestions,
