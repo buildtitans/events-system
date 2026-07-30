@@ -1,4 +1,3 @@
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import {
   GroupSchemaType,
