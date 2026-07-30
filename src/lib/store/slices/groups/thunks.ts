@@ -3,7 +3,10 @@ import {
   createAsyncThunk,
   GetThunkAPI,
 } from "@reduxjs/toolkit";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  GroupSchemaType,
+  NewGroupInputSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { getCurrentRole } from "../viewer/ViewerSlice";
 import {
@@ -15,6 +18,7 @@ import {
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { HydrateOpenGroupService } from "../../services/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
+import { addGroup } from "./GroupsSlice";
 
 export const hydrateGroup = createAsyncThunk(
   "OpenedGroup/hydrate",
@@ -114,6 +118,61 @@ export const scheduleNewEvent = createAsyncThunk(
       thunkAPI.dispatch(enqueueAlert({ action: "createEvent", kind: "error" }));
 
       return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const createGroup = createAsyncThunk(
+  "OpenGroupSlice/createGroup",
+  async (
+    group: NewGroupInputSchemaType,
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
+
+    try {
+      const result = await trpcClient.groups.write.newGroup.mutate(group);
+      if (!result.ok) {
+        throw new Error(result.error);
+      }
+      thunkAPI.dispatch(addGroup(result.data));
+      thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      thunkAPI.dispatch(
+        enqueueAlert({ kind: "success", action: "createGroup" }),
+      );
+      thunkAPI.dispatch(enqueueDrawer(null));
+    } catch (err) {
+      logCaughtError("OpenGroupSlice.createGroup()", err);
+      thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+      thunkAPI.dispatch(enqueueAlert({ kind: "error", action: "createGroup" }));
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const makeMembership = createAsyncThunk(
+  "OpenGroupSlice/makeMembership",
+  async (
+    group_id: GroupSchemaType["id"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(
+      enqueueSnackbar({ kind: "joiningGroup", status: "pending" }),
+    );
+
+    try {
+      const result = await trpcClient.groupMembers.write.join.mutate(group_id);
+      thunkAPI.dispatch(
+        enqueueSnackbar({ kind: "joiningGroup", status: "success" }),
+      );
+      thunkAPI.dispatch(getCurrentRole(result.role));
+      return result;
+    } catch (err) {
+      logCaughtError("OpenGroupSlice.makeMembership()", err);
+      thunkAPI.dispatch(
+        enqueueSnackbar({ kind: "joiningGroup", status: "failed" }),
+      );
+      thunkAPI.dispatch(getCurrentRole("anonymous"));
     }
   },
 );

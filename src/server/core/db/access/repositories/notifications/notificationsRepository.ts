@@ -9,7 +9,22 @@ import {
 import { NotificationSchemaArrayValidator } from "../../../../lib/validation/schemaValidators";
 import { NotificationCreationProcedure } from "../../types/types";
 
-export class NotificationsRepository {
+export interface INotificationsRepository {
+  markOpenedNotifications({
+    ids,
+    userId,
+  }: {
+    ids: NotificationSchemaType["id"][];
+    userId: NotificationSchemaType["user_id"];
+  }): Promise<UpdateResult>;
+  getUnseenNotifications(user_id: string): Promise<NotificationSchemaArrayType>;
+  addNewNotifications(
+    notification: CreateNotificationSchemaType,
+    memberIds: string[],
+  ): Promise<NotificationCreationProcedure>;
+}
+
+export class NotificationsRepository implements INotificationsRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async markOpenedNotifications({

@@ -1,4 +1,3 @@
-import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { EventHydrationHandler } from "../handlers/events/eventHydrationHandler";
 import { EventLayoutComposer } from "../handlers/events/eventLayoutComposer";
@@ -13,7 +12,7 @@ import {
   IEventQueryHandler,
   IEventTimelineHandler,
 } from "../handlers/events/types";
-import { IEventService } from "./types";
+import { EventServiceDB, IEventService } from "./types";
 
 export class EventService implements IEventService {
   public readonly hydrate: IEventHydrationHandler;
@@ -22,7 +21,7 @@ export class EventService implements IEventService {
   public readonly layout: IEventLayoutHandler;
   public readonly lifecycle: IEventLifecycleHandler;
   constructor(
-    private readonly db: DBClient,
+    private readonly db: EventServiceDB,
     private readonly policy: Authorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);

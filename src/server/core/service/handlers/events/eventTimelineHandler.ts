@@ -1,4 +1,4 @@
-import { DBClient } from "@/src/server/core/db/access/client/dbClient";
+import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   EventsByGroupIdSchemaType,
   EventSchemaType,
@@ -18,7 +18,7 @@ import { IEventTimelineHandler } from "./types";
 
 export class EventTimelineHandler implements IEventTimelineHandler {
   constructor(
-    private readonly db: DBClient,
+    private readonly db: Pick<IDBClient, "events" | "eventAttendants">,
     private readonly policy: Authorization,
   ) {}
 

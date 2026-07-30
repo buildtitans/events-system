@@ -1,14 +1,21 @@
 import { Kysely } from "kysely";
-import { DB, Groups } from "../../../types/db";
-import { GroupsValidator } from "./groupsValidator";
+import { DB, Groups } from "@/src/server/core/db/types/db";
 import type { Selectable, Insertable } from "kysely";
 import type {
   GroupSchemaType,
   NewGroupInputSchemaType,
-} from "../../../../../../schemas/groups/groupSchema";
-import { slugify } from "../../../../lib/utils/slugify";
+} from "@/src/schemas/groups/groupSchema";
+import { slugify } from "@/src/server/core/lib/utils/slugify";
+import { GroupsValidator } from "./groupsValidator";
 
-export class GroupsWriter {
+export interface IGroupsWriter {
+  createGroup(
+    newGroup: NewGroupInputSchemaType,
+    organizer_id: string,
+  ): Promise<GroupSchemaType>;
+}
+
+export class GroupsWriter implements IGroupsWriter {
   constructor(
     private readonly db: Kysely<DB>,
     private readonly validator: GroupsValidator,

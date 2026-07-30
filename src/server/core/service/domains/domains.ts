@@ -1,4 +1,3 @@
-import { DBClient } from "@/src/server/core/db";
 import { ParticipationsService } from "@/src/server/core/service/services/participationsService";
 import { UserService } from "@/src/server/core/service/services/userService";
 import { GroupService } from "@/src/server/core/service/services/groupService";
@@ -17,6 +16,7 @@ import {
   IUserService,
 } from "../services/types";
 import { IDomains } from "./types";
+import { IDBClient } from "../../db/access/client/dbClient";
 
 export class Domains implements IDomains {
   public readonly participations: IParticipationsService;
@@ -26,7 +26,7 @@ export class Domains implements IDomains {
   public readonly events: IEventService;
   public readonly notifications: INotificationService;
   constructor(
-    private readonly db: DBClient,
+    private readonly db: IDBClient,
     private readonly policy: Authorization,
     private readonly resendSecrets: ResendVariables,
   ) {

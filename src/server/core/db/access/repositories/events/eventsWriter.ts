@@ -3,15 +3,22 @@ import { EventsValidator } from "./eventsValidator";
 import type {
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
-} from "../../../../../../schemas/events/eventSchema";
-import type { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
-import type { Events, DB } from "../../../types/db";
+} from "@/src/schemas/events/eventSchema";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { Events, DB } from "@/src/server/core/db/types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
+import { ISO_FORMAT } from "@/src/server/core/lib/tokens/isoFormats";
 dayjs.extend(utc);
 
-export class EventsWriter {
+export interface IEventsWriter {
+  update(
+    eventUpdate: UpdateEventArgsSchemaType,
+  ): Promise<{ updateStatus: "success" | "failure" }>;
+  create(newEvent: NewEventInputSchemaType): Promise<EventSchemaType>;
+}
+
+export class EventsWriter implements IEventsWriter {
   constructor(
     private readonly db: Kysely<DB>,
     private readonly validate: EventsValidator,

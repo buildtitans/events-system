@@ -1,25 +1,25 @@
-import { DBClient } from "../../db/access/client/dbClient";
+import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import {
   GroupSchemaType,
   GroupsSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { Authorization } from "../auth/authorization";
-import { chunkUserGroupsIntoPages } from "../../lib/utils/chunkUserGroupsToPages";
-import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
-import { UserMembershipSchemaType } from "../../../../schemas/groups/userMembershipSchema";
+import { chunkUserGroupsIntoPages } from "@/src/server/core/lib/utils/chunkUserGroupsToPages";
+import { validateLoginCredentials } from "@/src/server/core/lib/validation/validateLoginCredentials";
+import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import {
   buildGroupNameLookup,
   NameSlugDescriptionLookup,
-} from "../../lib/utils/buildGroupNameLookup";
-import { GroupMembersArraySchemaType } from "../../../../schemas/groups/groupMembersSchema";
-import { UserMembershipSchemaArrayValidator } from "../../lib/validation/schemaValidators";
-import { NewUserResponse } from "../../db/access/types/types";
+} from "@/src/server/core/lib/utils/buildGroupNameLookup";
+import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { UserMembershipSchemaArrayValidator } from "@/src/server/core/lib/validation/schemaValidators";
+import { NewUserResponse } from "@/src/server/core/db/access/types/types";
 import { IUserService } from "./types";
 
 export class UserService implements IUserService {
   constructor(
-    private readonly db: DBClient,
+    private readonly db: IDBClient,
     private readonly policy: Authorization,
   ) {}
 

@@ -3,14 +3,14 @@ import type {
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { DBClient } from "../../../db";
 import type { NewOrganizerInput } from "../../types";
 import { Authorization } from "../../auth/authorization";
 import { IGroupLifecycleHandler } from "./types";
+import { GroupServiceDb } from "../../services/types";
 
 export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   constructor(
-    private readonly api: DBClient,
+    private readonly api: GroupServiceDb,
     private readonly policy: Authorization,
   ) {}
 

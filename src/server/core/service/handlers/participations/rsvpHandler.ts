@@ -1,6 +1,6 @@
 import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
 import { RsvpSchemaType } from "../../../../../schemas/events/rsvpSchema";
-import { DBClient } from "../../../db";
+import { IDBClient } from "../../../db/access/client/dbClient";
 import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import {
   filterUserRsvps,
@@ -19,7 +19,7 @@ import { ParticipationDtoHandler } from "./participationDtoHandler";
 
 export class RsvpHandler {
   constructor(
-    private readonly db: DBClient,
+    private readonly db: IDBClient,
     private readonly policy: Authorization,
     private readonly parse: ParticipationDtoHandler,
   ) {}

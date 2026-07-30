@@ -1,13 +1,13 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { DBClient } from "../../../db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 import { IGroupQueryHandler } from "./types";
+import { GroupServiceDb } from "../../services/types";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
-  constructor(private readonly db: DBClient) {}
+  constructor(private readonly db: GroupServiceDb) {}
 
   async getGroupCategories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();

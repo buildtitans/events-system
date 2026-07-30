@@ -1,11 +1,22 @@
 import { Kysely } from "kysely";
-import { DB } from "../../../types/db";
+import { DB } from "@/src/server/core/db/types/db";
 import { GroupMembersValidator } from "./groupMembersValidator";
-import { GroupMemberSchemaType } from "../../../../../../schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 type InsertableMember = Pick<GroupMemberSchemaType, "group_id" | "user_id">;
 
-export class GroupMembersWriter {
+export interface IGroupMembersWriter {
+  addOrganizer(organizer: InsertableMember): Promise<GroupMemberSchemaType>;
+  newMember(
+    newMember: Pick<GroupMemberSchemaType, "group_id" | "user_id">,
+  ): Promise<GroupMemberSchemaType>;
+  removeMember(
+    user_id: GroupMemberSchemaType["user_id"],
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<boolean>;
+}
+
+export class GroupMembersWriter implements IGroupMembersWriter {
   constructor(
     private readonly db: Kysely<DB>,
     private readonly validator: GroupMembersValidator,

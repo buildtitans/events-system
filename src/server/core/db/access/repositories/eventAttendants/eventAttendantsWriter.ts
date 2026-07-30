@@ -7,7 +7,14 @@ import type {
 } from "../../types/types";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";
 
-export class EventAttendantsWriter {
+export interface IEventAttendantsWriter {
+  updateAttendanceStatus(
+    attendant: PrivateUserAttendanceUpdate,
+    newStatus: EventAttendantsSchemaType["status"],
+  ): Promise<EventAttendantsSchemaType>;
+}
+
+export class EventAttendantsWriter implements IEventAttendantsWriter {
   constructor(
     private readonly validator: EventAttendantsValidator,
     private readonly db: Kysely<DB>,

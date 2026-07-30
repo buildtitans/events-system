@@ -1,11 +1,19 @@
-import { DBClient } from "@/src/server/core/db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import type { GroupAction, Permissions } from "../types";
+import type { GroupAction, Permissions } from "@/src/server/core/service/types";
 import { permissionsConfig } from "@/src/server/core/lib/config/permissionsConfig";
+import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 
-export class RoleBasedAccessHandler {
+export interface IRoleBasedAccessHandler {
+  can(
+    user_id: GroupMemberSchemaType["user_id"] | undefined,
+    group_id: GroupMemberSchemaType["group_id"],
+    action: GroupAction,
+  ): Promise<boolean>;
+}
+
+export class RoleBasedAccessHandler implements IRoleBasedAccessHandler {
   private readonly permissions: Permissions;
-  constructor(private readonly db: DBClient) {
+  constructor(private readonly db: IDBClient) {
     this.permissions = permissionsConfig;
   }
 

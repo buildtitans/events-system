@@ -1,8 +1,19 @@
 import { GroupsValidator } from "./groupsValidator";
 import { RawGroupsReader } from "./rawGroupsReader";
-import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
-export class GroupsSelector {
+export interface IGroupsSelector {
+  all(): Promise<GroupSchemaType[]>;
+  byId(id: GroupSchemaType["id"]): Promise<GroupSchemaType>;
+  byIds(ids: GroupSchemaType["id"][]): Promise<GroupSchemaType[]>;
+  bySlug(slug: GroupSchemaType["slug"]): Promise<GroupSchemaType>;
+  byOrganizerId(
+    organizer_id: GroupSchemaType["organizer_id"],
+  ): Promise<GroupSchemaType[]>;
+  search(query: string): Promise<GroupSchemaType[]>;
+}
+
+export class GroupsSelector implements IGroupsSelector {
   constructor(
     private readonly read: RawGroupsReader,
     private readonly validator: GroupsValidator,
