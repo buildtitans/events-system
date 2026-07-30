@@ -5,11 +5,11 @@ import {
   AuthClientLoginResponse,
   StoredSession,
 } from "../../db/access/types/types";
-import { IDBClient } from "../../db/access/client/dbClient";
+import { SessionServiceDb } from "./types";
 
 export class SessionService {
   constructor(
-    private readonly db: IDBClient,
+    private readonly db: SessionServiceDb,
     private readonly policy: Authorization,
     private readonly emailer: PasswordResetEmailService,
   ) {}

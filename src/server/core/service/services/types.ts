@@ -23,6 +23,15 @@ import {
 } from "../handlers/groups/types";
 import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
 
+export type SessionServiceDb = Pick<IDBClient, "auth">;
+
+export type ParticipationsServiceDb = Pick<
+  IDBClient,
+  "eventAttendants" | "groupMembers" | "groups" | "events"
+>;
+
+export type UserServiceDb = Pick<IDBClient, "groups" | "groupMembers" | "auth">;
+
 export type GroupServiceDb = IDBClient;
 
 export type EventServiceDB = Pick<

@@ -8,10 +8,10 @@ import {
 } from "@/src/server/core/lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { ICensusHandler } from "./types";
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
+import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
 
 export class CensusHandler implements ICensusHandler {
-  constructor(private readonly api: IDBClient) {}
+  constructor(private readonly api: ParticipationsServiceDb) {}
 
   async getNumberOfAttendantsForEvent(
     event_id: EventSchemaType["id"],

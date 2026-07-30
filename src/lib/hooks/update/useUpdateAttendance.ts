@@ -1,21 +1,12 @@
 "use client";
-import React, { useRef } from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
-import {
-  enqueueAlert,
-  enqueueDrawer,
-  enqueueSnackbar,
-} from "../../store/slices/rendering/RenderingSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import type { UpdatedAttendanceResponseSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { getUserAttendanceStatus } from "../../store/slices/events/EventDrawerSlice";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { updateRSVP } from "../../store/slices/events/thunks";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 
@@ -25,7 +16,6 @@ export const useUpdateAttendance = (
 ): UpdateAttendanceStatusHook => {
   const [newStatus, setNewStatus] =
     useState<EventAttendantStatusSchemaType>(currentStatus);
-  const timerRef = useRef<number | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleStatusChange = (e: SelectChangeEvent) => {
@@ -33,48 +23,10 @@ export const useUpdateAttendance = (
     setNewStatus(value);
   };
 
-  function handleResult(result: UpdatedAttendanceResponseSchemaType) {
-    timerRef.current = window.setTimeout(() => {
-      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-      dispatch(
-        enqueueAlert({
-          action: "updateAttendance",
-          kind: result ? "success" : "error",
-        }),
-      );
-
-      if (result) {
-        dispatch(getUserAttendanceStatus(result.status));
-      }
-
-      dispatch(enqueueDrawer(null));
-      timerRef.current = null;
-    }, 1200);
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(
-      enqueueSnackbar({ kind: "updatingAttendance", status: "pending" }),
-    );
-
-    try {
-      const result = await trpcClient.eventAttendants.write.rsvp.mutate({
-        event_id: event_id,
-        newStatus: newStatus,
-      });
-
-      handleResult(result);
-    } catch (err) {
-      logCaughtError("hooks/useUpdateAttendance.handleSubmit", err);
-    }
+    await dispatch(updateRSVP({ event_id, newStatus }));
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) clearTimeout(timerRef.current);
-    };
-  }, []);
 
   return {
     newStatus,

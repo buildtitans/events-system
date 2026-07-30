@@ -15,11 +15,11 @@ import {
 import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { UserMembershipSchemaArrayValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { NewUserResponse } from "@/src/server/core/db/access/types/types";
-import { IUserService } from "./types";
+import { IUserService, UserServiceDb } from "./types";
 
 export class UserService implements IUserService {
   constructor(
-    private readonly db: IDBClient,
+    private readonly db: UserServiceDb,
     private readonly policy: Authorization,
   ) {}
 

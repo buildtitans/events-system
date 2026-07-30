@@ -69,7 +69,7 @@ export const joinAndAuthenticate = createAsyncThunk(
         throw new Error("Failed to create account");
       }
 
-      thunkAPI.dispatch(enqueueSnackbar({ kind: "signup", status: "success" }));
+      thunkAPI.dispatch(enqueueAlert({ action: "signup", kind: "success" }));
     } catch (err) {
       logCaughtError("AuthSlice.joinAndAuthenticate.signup()", err);
       thunkAPI.dispatch(enqueueAlert({ action: "signup", kind: "error" }));

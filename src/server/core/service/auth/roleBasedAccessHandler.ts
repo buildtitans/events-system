@@ -3,6 +3,8 @@ import type { GroupAction, Permissions } from "@/src/server/core/service/types";
 import { permissionsConfig } from "@/src/server/core/lib/config/permissionsConfig";
 import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 
+type RbacDB = Pick<IDBClient, "groupMembers">;
+
 export interface IRoleBasedAccessHandler {
   can(
     user_id: GroupMemberSchemaType["user_id"] | undefined,
@@ -13,7 +15,7 @@ export interface IRoleBasedAccessHandler {
 
 export class RoleBasedAccessHandler implements IRoleBasedAccessHandler {
   private readonly permissions: Permissions;
-  constructor(private readonly db: IDBClient) {
+  constructor(private readonly db: RbacDB) {
     this.permissions = permissionsConfig;
   }
 

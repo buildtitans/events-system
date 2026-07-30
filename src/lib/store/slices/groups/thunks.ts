@@ -141,6 +141,7 @@ export const createGroup = createAsyncThunk(
         enqueueAlert({ kind: "success", action: "createGroup" }),
       );
       thunkAPI.dispatch(enqueueDrawer(null));
+      return result;
     } catch (err) {
       logCaughtError("OpenGroupSlice.createGroup()", err);
       thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
@@ -173,6 +174,7 @@ export const makeMembership = createAsyncThunk(
         enqueueSnackbar({ kind: "joiningGroup", status: "failed" }),
       );
       thunkAPI.dispatch(getCurrentRole("anonymous"));
+      return thunkAPI.rejectWithValue(err);
     }
   },
 );

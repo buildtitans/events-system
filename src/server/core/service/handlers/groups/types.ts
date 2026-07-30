@@ -1,10 +1,10 @@
-import { CategoriesSchemaType } from "../../../../../schemas/groups/categoriesSchema";
-import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
-import {
+import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type {
   GroupSchemaType,
   NewGroupInputSchemaType,
-} from "../../../../../schemas/groups/groupSchema";
-import { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
+} from "@/src/schemas/groups/groupSchema";
+import type { NameSlugDescriptionLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 
 export interface IGroupLifecycleHandler {
   createNewGroup(

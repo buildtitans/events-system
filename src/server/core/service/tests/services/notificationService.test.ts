@@ -1,5 +1,5 @@
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
-import type { NewNotification } from "@/src/server/core/service/services/notificationService";
+import type { NewNotification } from "@/src/server/core/service/services/types";
 import {
   createMockDb,
   policyMock,
@@ -108,8 +108,8 @@ describe("NotificationService.getNewNotifications", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    getUnseenNotificationsInDb =
-      db.notifications.getUnseenNotifications as jest.Mock;
+    getUnseenNotificationsInDb = db.notifications
+      .getUnseenNotifications as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
 
@@ -160,8 +160,8 @@ describe("NotificationService.markSeen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    markOpenedNotificationsInDb =
-      db.notifications.markOpenedNotifications as jest.Mock;
+    markOpenedNotificationsInDb = db.notifications
+      .markOpenedNotifications as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
 

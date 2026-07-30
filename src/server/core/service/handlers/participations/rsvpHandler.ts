@@ -1,25 +1,25 @@
-import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
-import { RsvpSchemaType } from "../../../../../schemas/events/rsvpSchema";
-import { IDBClient } from "../../../db/access/client/dbClient";
-import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
+import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
+import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { ParticipationDtoHandler } from "./participationDtoHandler";
+import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import {
   filterUserRsvps,
   StatusLookupType,
-} from "../../../lib/utils/filterRsvps";
+} from "@/src/server/core/lib/utils/filterRsvps";
 import {
-  AttendanceDictionaryType,
+  type AttendanceDictionaryType,
   mapAttendanceDictionary,
-} from "../../../lib/utils/mapAttendanceDictionary";
+} from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import {
   RsvpSchemaArrayValidator,
   RsvpStatusSchemaValidator,
-} from "../../../lib/validation/schemaValidators";
-import { Authorization } from "../../auth/authorization";
-import { ParticipationDtoHandler } from "./participationDtoHandler";
+} from "@/src/server/core/lib/validation/schemaValidators";
 
 export class RsvpHandler {
   constructor(
-    private readonly db: IDBClient,
+    private readonly db: ParticipationsServiceDb,
     private readonly policy: Authorization,
     private readonly parse: ParticipationDtoHandler,
   ) {}
