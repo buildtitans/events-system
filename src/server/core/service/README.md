@@ -1,298 +1,341 @@
-# Service Layer
+# Server Service Layer
 
-## Purpose
+This directory contains the application layer between the tRPC routers and the
+database repositories.
 
-This directory contains the application layer that sits between the tRPC routers and the database clients.
+Its job is to decide **what the application should do** for a request:
+authorize the operation, coordinate collaborators, enforce business rules, and
+shape the result. The database layer remains responsible for **how data is read
+and persisted**.
 
-The goal of this layer is to keep:
+## Design Goals
 
-- routers thin
-- authorization explicit
-- business rules testable
-- data shaping reusable
-- database access focused on persistence instead of orchestration
+- Keep tRPC routers thin.
+- Keep authorization explicit and server-enforced.
+- Give business rules a clear, testable home.
+- Separate orchestration from persistence.
+- Expose stable interfaces between architectural layers.
+- Give each service only the database capabilities it consumes.
 
-At a high level, this layer is responsible for deciding **what should happen** for a request, while the DB layer is responsible for **how data is stored or fetched**.
+## Request and Dependency Flow
 
----
+```mermaid
+flowchart LR
+    Request["Fastify request"] --> Context["tRPC context"]
+    Context --> AppServices
+    AppServices --> ContextApi
+    AppServices --> Integrations
+    ContextApi --> Domains
+    ContextApi --> Authorization
+    Domains --> Services
+    Services --> Handlers
+    Services --> Authorization
+    Handlers --> Authorization
+    Services --> DB["IDBClient subsets"]
+    Handlers --> DB
+    DB --> Repositories
+    Repositories --> PostgreSQL[(PostgreSQL)]
+```
 
-## Directory Layout
+The common runtime path is:
+
+```text
+Fastify request
+  -> session detection
+  -> tRPC context
+  -> router
+  -> domain service or handler facet
+  -> authorization policy
+  -> repository interface
+  -> PostgreSQL
+```
+
+External operations use a parallel path through
+`ctx.services.integrations`.
+
+## Composition Root
+
+The service graph is assembled in three steps.
 
 ### `appServices.ts`
 
-Creates the service entry point attached to tRPC context.
+`AppServices` is attached to each tRPC context and exposes:
 
-- `api` is a `ContextApi` instance
-- `integrations` is an `Integrations` instance
+- `api`, the internal application API
+- `integrations`, adapters for external services
 
 ### `api/contextApi.ts`
 
-Builds the service graph for each request context:
+`ContextApi` creates the shared application dependencies:
 
-1. creates a `DBClient`
-2. creates a `RoleBasedAccessHandler`
-3. creates an `Authorization` policy object
-4. creates `Domains`
+1. `DBClient`
+2. `RoleBasedAccessHandler`
+3. `Authorization`
+4. `Domains`
 
-This gives the app one place where the core service dependencies are wired together.
+This is the main composition root for database-backed application behavior.
 
-### `domains/`
+### `domains/domains.ts`
 
-Groups the main service classes by domain:
+`Domains` constructs and exposes the domain entry points:
 
 - `session`
-- `participations`
 - `users`
 - `groups`
 - `events`
+- `participations`
 - `notifications`
 
-This is the main API routers call through `ctx.services.api.domains`.
+Routers access them through `ctx.services.api.domains`.
 
-### `services/`
+## Directory Layout
 
-Contains the primary domain service entry points.
+```text
+service/
+├── api/             # Internal application API composition
+├── auth/            # Authentication and role-based policy guards
+├── domains/         # Domain registry exposed to routers
+├── handlers/        # Focused application workflows and transformations
+├── integrations/    # External-service adapters
+├── services/        # Domain entry points and service contracts
+├── tests/           # Unit tests organized by responsibility
+├── appServices.ts   # Root service container attached to tRPC context
+└── types.ts         # Shared service-layer types
+```
+
+## Domain Services
+
+Services are the stable entry points for application use cases. Some coordinate
+work directly; others expose smaller handler facets.
+
+| Domain | Public surface | Responsibility |
+| --- | --- | --- |
+| Events | `query`, `lifecycle`, `timeline`, `layout`, `hydrate` | Event reads, mutations, history, layout, and drawer hydration |
+| Groups | `query`, `groupLifecycle`, `memberships` | Group discovery, creation, membership, and group metadata |
+| Participations | `rsvps`, `census` | RSVP state, attendance shaping, counts, and popularity |
+| Session | Direct service methods | Login, logout, recovery, and password reset |
+| Users | Direct service methods | Account lookup, memberships, and created groups |
+| Notifications | Direct service methods | Notification creation, retrieval, and seen state |
+
+The interfaces in `services/types.ts` define these public surfaces so routers
+and domain composition depend on contracts rather than concrete classes.
+
+## Handlers
+
+Handlers contain application logic that is narrower than an entire domain
+service.
+
+### Events
+
+- `EventQueryHandler` performs event reads and search.
+- `EventLifecycleHandler` creates events and changes scheduling status.
+- `EventTimelineHandler` builds past, archived, and next-event views.
+- `EventLayoutHandler` loads event sets for client layout use cases.
+- `EventLayoutComposer` paginates events and produces validated layout slots.
+- `EventHydrationHandler` assembles event, group, role, RSVP, and count metadata
+  for the opened-event drawer.
+
+### Groups
+
+- `GroupQueryHandler` performs group, category, member, organizer, and slug
+  lookups.
+- `GroupLifecycleHandler` creates a group and assigns its organizer membership.
+- `MembershipHandler` joins users to groups, removes memberships, and resolves
+  roles and head counts.
+
+### Participations
+
+- `RsvpHandler` updates attendance, retrieves viewer RSVP data, creates the
+  attendance dictionary, and assembles user RSVP history.
+- `ParticipationDtoHandler` converts event, group, and attendance data into the
+  client-facing RSVP shape.
+- `CensusHandler` calculates attendance counts and derives popular groups and
+  events.
 
-Examples:
+### Session
 
-- `EventService`
-- `GroupService`
-- `ParticipationsService`
-- `SessionService`
-- `UserService`
-- `NotificationService`
+- `SessionHandler` is request-scoped and owns writing and clearing the signed
+  session cookie on the Fastify request and reply.
 
-Some service classes still coordinate workflows directly. Others now act mostly as thin domain aggregators that expose focused handler facets.
+## Authorization
 
-Examples:
+Client-side role-based rendering improves the interface, but it is not treated
+as a security boundary. Mutating and viewer-specific operations are authorized
+again in this layer.
 
-- `EventService` exposes `hydrate`, `query`, `timeline`, `layout`, and `lifecycle`
-- `GroupService` exposes `groupLifecycle`, `memberships`, and `query`
-- `ParticipationsService` exposes `rsvps` and `census`
-- `SessionService`, `UserService`, and `NotificationService` continue to expose direct service methods
+`Authorization` exposes application-facing guards:
 
-### `handlers/`
+- `requireAuthenticated`
+- `requireToken`
+- `requireOrganizer`
+- `requireIsGroupMember`
+- `requireCanChangeMembership`
 
-Contains narrower pieces of application logic that would make the services noisy if kept inline.
+`RoleBasedAccessHandler` resolves the user's group role through the
+`groupMembers` repository and evaluates it against the centralized permissions
+configuration.
 
-Examples:
+The separation is intentional:
 
-- `EventQueryHandler`
-- `EventLifecycleHandler`
-- `EventTimelineHandler`
-- `EventLayoutHandler`
-- `EventLayoutComposer`
-- `GroupLifecycleHandler`
-- `MembershipHandler`
-- `GroupQueryHandler`
-- `RsvpHandler`
-- `ParticipationDtoHandler`
-- `CensusHandler`
-- `EventHydrationHandler`
-- `SessionHandler`
+- `Authorization` expresses the business rule and produces the appropriate
+  resolver error.
+- `RoleBasedAccessHandler` answers whether a role permits an action.
+- Repositories only retrieve the persistence data needed to make that decision.
 
-These handlers exist to isolate focused orchestration, transformation, and request-specific behavior.
+## Database Boundaries
 
-### `integrations/`
+`DBClient` implements `IDBClient`, whose properties are repository interfaces
+rather than concrete repository classes.
 
-Contains service-level adapters for external systems.
+```ts
+export interface IDBClient {
+  readonly events: IEventsRepository;
+  readonly groups: IGroupsRepository;
+  readonly auth: IAuthRepository;
+  readonly categories: ICategoriesRepository;
+  readonly groupMembers: IGroupMembersRepository;
+  readonly eventAttendants: IEventAttendantsRepository;
+  readonly notifications: INotificationsRepository;
+}
+```
 
-Examples:
+Service constructors narrow that interface with `Pick`:
 
-- `GeoApifySearch` powers address suggestions through `ctx.services.integrations.geoApify`
-- `ResendPasswordResetMailer` sends password reset emails behind `PasswordResetEmailService`
+```ts
+export type SessionServiceDb = Pick<IDBClient, "auth">;
 
-### `auth/`
+export type NotificationServiceDB = Pick<
+  IDBClient,
+  "notifications" | "groupMembers"
+>;
+```
 
-Contains the authorization layer:
+This makes dependencies visible in the type system. A service cannot
+accidentally reach into an unrelated repository, and tests can provide smaller
+structural mocks.
 
-- `Authorization` exposes application-facing guard methods like `requireAuthenticated`, `requireToken`, `requireOrganizer`, `requireIsGroupMember`, and `requireCanChangeMembership`
-- `RoleBasedAccessHandler` resolves a user's role in a group and maps that role to allowed actions
+Current service-level database requirements are:
 
-### `tests/`
+| Service | Repository capabilities |
+| --- | --- |
+| `SessionService` | `auth` |
+| `UserService` | `auth`, `groups`, `groupMembers` |
+| `ParticipationsService` | `events`, `groups`, `groupMembers`, `eventAttendants` |
+| `EventService` | `events`, `groups`, `groupMembers`, `eventAttendants` |
+| `NotificationService` | `notifications`, `groupMembers` |
+| `PasswordResetEmailService` | `auth` |
+| `RoleBasedAccessHandler` | `groupMembers` |
 
-Contains unit tests for the service, handler, and auth layers.
+`GroupService` currently receives the full client because its query, lifecycle,
+and membership facets collectively use most of the group-related repositories.
 
-The tests are organized by responsibility:
+## Integrations
 
-- `tests/services`
-- `tests/handlers`
-- `tests/auth`
+External services are exposed separately from the database-backed domains:
 
----
+- `GeoApifySearch` provides city and street address suggestions through
+  `ctx.services.integrations.geoApify`.
+- `ResendPasswordResetMailer` sends password-reset email behind
+  `PasswordResetEmailService`.
 
-## Request Flow
+Keeping integrations behind adapters prevents external SDK and transport
+details from spreading through routers and domain services.
 
-The usual request path looks like this:
+## Example Workflows
 
-`router -> service/domain -> handler/auth -> db`
+### Creating an event
 
-For example, `events.newEvent` in the router calls `ctx.services.api.domains.events.lifecycle.createEvent(...)`, which:
+`eventRouter` delegates to
+`domains.events.lifecycle.createEvent(newEvent, groupId, userId)`.
 
-1. requires an authenticated user
-2. checks whether that user can create an event for the target group
-3. delegates persistence to `db.events.createNewEvent(...)`
+The handler:
 
-Another example is RSVP retrieval through `ctx.services.api.domains.participations.rsvps.getRsvpdEvents(...)`, which:
+1. requires an authenticated user;
+2. verifies organizer permission for the group;
+3. writes through `db.events.write.create(...)`;
+4. returns a client-facing success or failure result.
 
-1. requires authentication
-2. loads raw attendance records and groups
-3. filters records down to meaningful RSVP states
-4. short-circuits early when there are no qualifying RSVPs
-5. shapes the response through `ParticipationDtoHandler`
+### Loading a user's RSVPs
 
-This keeps the routers simple and keeps orchestration in one testable place.
+The router delegates to `domains.participations.rsvps.getRsvpdEvents(userId)`.
 
----
+The handler:
 
-## Responsibilities By Layer
+1. requires authentication;
+2. retrieves the user's attendance records;
+3. removes records that are not meaningful active RSVPs;
+4. returns early when no qualifying records remain;
+5. loads the corresponding events and group names;
+6. delegates response shaping to `ParticipationDtoHandler`;
+7. validates the resulting RSVP collection.
 
-### Routers
+### Creating a group
 
-Routers should stay small.
+The router delegates to
+`domains.groups.groupLifecycle.createNewGroup(userId, input)`.
 
-They are responsible for:
+The handler:
 
-- validating input
-- reading request/session context
-- calling the appropriate service method
-- returning the result
+1. requires authentication;
+2. creates the group through `groups.write.createGroup(...)`;
+3. assigns the creator as organizer through
+   `groupMembers.write.addOrganizer(...)`;
+4. returns the created group.
 
-They are not meant to hold business rules or data-shaping logic.
+## Business Rules
 
-### Services
+Important rules enforced in this layer include:
 
-Services are the main domain entry points.
-
-They are responsible for:
-
-- coordinating use cases
-- invoking authorization rules
-- delegating focused work to handlers
-- selecting the right DB operations
-- returning frontend-usable results
-
-Examples in this codebase:
-
-- `EventService` exposes focused event handlers for query, lifecycle, timeline, layout, and hydration workflows
-- `GroupService` exposes focused group handlers for lifecycle, membership, and query workflows
-- `ParticipationsService` exposes RSVP and census workflows through focused handlers
-- `SessionService` handles login normalization, logout, and session recovery
-- `UserService` handles user creation, account lookup, created groups, and viewer membership shaping
-- `NotificationService` handles notification reads, writes, and seen-state updates
-
-### Handlers
-
-Handlers pull out focused logic that is still application logic, but narrower than a whole service.
-
-Examples:
-
-- `EventQueryHandler` handles direct event reads and event search
-- `EventLifecycleHandler` handles event creation and event status changes
-- `EventTimelineHandler` handles past events, archived events, and next-event lookup by group
-- `EventLayoutHandler` loads event sets for layout use cases and delegates layout construction
-- `EventLayoutComposer` converts event lists into validated card/stack layout slots
-- `EventHydrationHandler` assembles drawer-ready event state such as RSVP status, counts, viewer role, and group metadata
-- `GroupLifecycleHandler` creates a group and assigns the organizer membership
-- `MembershipHandler` handles join/leave behavior and role lookup
-- `GroupQueryHandler` handles group reads, category lookup, group search, member lookup, organizer email lookup, and slug lookup
-- `RsvpHandler` handles RSVP updates, viewer RSVP lookup, attendance dictionaries, and RSVP list shaping
-- `ParticipationDtoHandler` maps event, group, and attendance data into frontend RSVP DTOs
-- `CensusHandler` derives counts and popular event IDs from attendance records
-- `SessionHandler` writes and clears the session cookie on the Fastify request/response pair
-
-### Authorization
-
-Authorization is kept out of the routers and mostly out of the DB layer.
-
-`Authorization` is the application-facing policy layer.
-`RoleBasedAccessHandler` is the lower-level role/permission resolver.
-
-This makes permission checks explicit and easier to test directly.
-
-### Event Layout
-
-Event layout is part of the service layer because event layout is treated as application-level formatting rather than a UI-only concern.
-
-`EventLayoutHandler`:
-
-- loads the requested event set
-- filters active events for active/group layout views
-- delegates layout construction to `EventLayoutComposer`
-
-`EventLayoutComposer`:
-
-- paginates event lists
-- converts events into card/stack layout slots
-- validates the final layout shape before returning it
-
-This allows the client to consume a stable layout contract instead of rebuilding layout decisions itself.
-
----
-
-## Business Rules In This Layer
-
-Some of the important rules enforced here include:
-
-- authentication is required before mutating RSVP state
-- authentication is required before reading viewer-specific membership or RSVP data
-- only organizers can create, update, cancel, and archive events, and create group notifications
-- membership changes are gated by role-aware permission checks
-- user-facing membership and RSVP data is shaped before leaving the service layer
-- some methods short-circuit early when no meaningful data exists, such as when a user has no qualifying RSVP records
-- event hydration depends on both viewer state and event context
-
-These rules are intentionally kept here so they are easy to locate, reason about, and test.
-
----
+- RSVP mutations and viewer-specific participation data require authentication.
+- Organizer permission is required to create or change events.
+- Organizer permission is required to publish group notifications.
+- Reading group notifications requires group membership.
+- Membership changes are checked against role-aware permissions.
+- New groups receive an organizer membership for their creator.
+- RSVP and membership data is shaped before crossing the API boundary.
+- Empty datasets short-circuit before unnecessary dependent reads.
+- Opened-event hydration combines public event data with viewer-specific state.
 
 ## Testing Strategy
 
-This layer is covered primarily with unit tests.
+Tests are organized under:
 
-The tests focus first on high-ROI behavior:
+- `tests/auth`
+- `tests/handlers`
+- `tests/services`
 
-- authentication and authorization branches
-- orchestration across collaborators
-- transformation logic
-- early returns and edge cases
-- permission-sensitive workflows
+They prioritize behavior with the highest regression risk:
 
-Examples of direct test coverage in this directory:
+- authentication and authorization branches;
+- allowed and denied role-based operations;
+- orchestration across repositories and collaborators;
+- data transformation and response shaping;
+- early-return behavior and empty collections;
+- event lifecycle, history, layout, and hydration;
+- group creation and membership changes;
+- RSVP, attendance, notification, session, and password-reset behavior.
 
-- `EventService`
-- `ParticipationsService`
-- `GroupService`
-- `SessionService`
-- `UserService`
-- `NotificationService`
-- `EventLayoutComposer`
-- `MembershipHandler`
-- `EventHydrationHandler`
-- `ParticipationDtoHandler`
-- `CensusHandler`
-- `Authorization`
-- `RoleBasedAccessHandler`
+The database dependencies are mocked at their interfaces, so these tests protect
+application rules without requiring a live PostgreSQL instance.
 
-The intent is not just coverage for its own sake.
-The goal is to protect the code where regressions would most likely break business behavior.
+Run them from the repository root:
 
----
+```bash
+pnpm test -- --runInBand
+```
 
-## Why This Structure
+## Adding a Use Case
 
-This service layer is organized this way to make the application easier to:
+When adding server behavior:
 
-- test
-- refactor
-- extend
-- reason about
+1. Add or update the shared input and output schemas.
+2. Keep the tRPC route limited to validation, context access, and delegation.
+3. Place the use case in the appropriate service or focused handler.
+4. Apply authorization before protected reads or writes.
+5. Add only the repository capabilities the use case needs.
+6. Keep SQL and Kysely details inside the database layer.
+7. Validate shaped data before returning it across the API boundary.
+8. Add tests for success, authorization failure, and meaningful edge cases.
 
-In practice, this structure helps avoid a few common problems:
-
-- routers growing into business-logic controllers
-- database clients becoming responsible for application decisions
-- authorization checks being scattered across the codebase
-- frontend-specific response shaping leaking into unrelated layers
-
-The result is a service layer where the important application behavior has a clear home and a clear set of tests around it.
+This structure is meant to make the next change easier to locate, reason about,
+and verify—not to add abstraction for its own sake.
