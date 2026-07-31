@@ -1,10 +1,10 @@
-import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
-import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
-import { RsvpSchemaType } from "../../../../../schemas/events/rsvpSchema";
-import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
-import { PopularEventsIds } from "../../../lib/utils/curatePopularEventsIds";
-import { AttendanceDictionaryType } from "../../../lib/utils/mapAttendanceDictionary";
-import { AttendantCountType } from "../../types";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { PopularEventsIds } from "@/src/server/core/lib/utils/curatePopularEventsIds";
+import { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
+import { AttendantCountType } from "@/src/server/core/service/types";
 
 export interface ICensusHandler {
   getNumberOfAttendantsForEvent(

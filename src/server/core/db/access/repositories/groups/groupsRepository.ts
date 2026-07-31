@@ -1,13 +1,24 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
-import { GroupsSelector } from "@/src/server/core/db/access/repositories/groups/groupsSelector";
-import { GroupsWriter } from "@/src/server/core/db/access/repositories/groups/groupsWriter";
+import {
+  GroupsSelector,
+  IGroupsSelector,
+} from "@/src/server/core/db/access/repositories/groups/groupsSelector";
+import {
+  GroupsWriter,
+  IGroupsWriter,
+} from "@/src/server/core/db/access/repositories/groups/groupsWriter";
 import { GroupsValidator } from "@/src/server/core/db/access/repositories/groups/groupsValidator";
 import { RawGroupsReader } from "./rawGroupsReader";
 
-export class GroupsRepository {
-  public readonly select: GroupsSelector;
-  public readonly write: GroupsWriter;
+export interface IGroupsRepository {
+  readonly select: IGroupsSelector;
+  readonly write: IGroupsWriter;
+}
+
+export class GroupsRepository implements IGroupsRepository {
+  public readonly select: IGroupsSelector;
+  public readonly write: IGroupsWriter;
   private readonly validator: GroupsValidator;
   private readonly read: RawGroupsReader;
   constructor(private readonly db: Kysely<DB>) {

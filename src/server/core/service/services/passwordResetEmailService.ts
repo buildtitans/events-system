@@ -1,11 +1,14 @@
-import { DBClient } from "../../db";
 import { ResendVariables } from "../../lib/init/resendSecrets";
 import { ResendPasswordResetMailer } from "../integrations/resendPasswordResetMailer";
+import {
+  IPasswordResetEmailService,
+  PasswordResetEmailServiceDB,
+} from "./types";
 
-export class PasswordResetEmailService {
+export class PasswordResetEmailService implements IPasswordResetEmailService {
   private readonly mailer: ResendPasswordResetMailer;
   constructor(
-    private readonly db: DBClient,
+    private readonly db: PasswordResetEmailServiceDB,
     private readonly resendSecrets: ResendVariables,
   ) {
     this.mailer = new ResendPasswordResetMailer(this.resendSecrets);

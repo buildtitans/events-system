@@ -3,15 +3,38 @@ import { RawGroupMembersReader } from "./rawGroupMembersReader";
 import {
   GroupMemberSchemaType,
   MemberCountSchemaType,
-} from "../../../../../../schemas/groups/groupMembersSchema";
+} from "@/src/schemas/groups/groupMembersSchema";
 
-export class GroupMembersSelector {
+export interface IGroupMembersSelector {
+  all(): Promise<GroupMemberSchemaType[]>;
+  byUserId(
+    user_id: GroupMemberSchemaType["user_id"],
+  ): Promise<GroupMemberSchemaType[]>;
+  allMembers(
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<GroupMemberSchemaType[]>;
+  memberIds(
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<GroupMemberSchemaType["group_id"][]>;
+  role(
+    user_id: GroupMemberSchemaType["user_id"],
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<GroupMemberSchemaType["role"]>;
+  organizer(
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<GroupMemberSchemaType>;
+  memberCounts(
+    groupIds: GroupMemberSchemaType["group_id"][],
+  ): Promise<MemberCountSchemaType>;
+}
+
+export class GroupMembersSelector implements IGroupMembersSelector {
   constructor(
     private readonly read: RawGroupMembersReader,
     private readonly validator: GroupMembersValidator,
   ) {}
 
-  async all() {
+  async all(): Promise<GroupMemberSchemaType[]> {
     const raw = await this.read.allRawMembers();
     return this.validator.members(raw);
   }

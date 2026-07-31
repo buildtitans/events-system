@@ -5,7 +5,22 @@ import { EventAttendantsValidator } from "./eventAttendantsValidator";
 import { EventAttendantsReader } from "./eventAttendantsReader";
 dayjs.extend(utc);
 
-export class EventAttendantsSelector {
+export interface IEventAttendantsSelector {
+  allRecords(): Promise<EventAttendantsSchemaType[]>;
+  userRecords(user_id: string): Promise<EventAttendantsSchemaType[]>;
+  rsvp(
+    user_id: string,
+    event_id: string,
+  ): Promise<EventAttendantsSchemaType["status"]>;
+  pastRecords(ids: string[]): Promise<EventAttendantsSchemaType[]>;
+  attendant(
+    user_id: string,
+    event_id: string,
+  ): Promise<EventAttendantsSchemaType>;
+  attendants(event_id: string): Promise<EventAttendantsSchemaType[]>;
+}
+
+export class EventAttendantsSelector implements IEventAttendantsSelector {
   constructor(
     private readonly validator: EventAttendantsValidator,
     private readonly read: EventAttendantsReader,

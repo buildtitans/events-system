@@ -1,12 +1,17 @@
-import { DBClient } from "@/src/server/core/db/access/client/dbClient";
+import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { RsvpStatusSchemaValidator } from "../../../lib/validation/schemaValidators";
-import { EventSchemaType } from "../../../../../schemas/events/eventSchema";
-import type { HydratedEvent } from "../../types";
-import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
+import { RsvpStatusSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { HydratedEvent } from "@/src/server/core/service/types";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export class EventHydrationHandler {
-  constructor(private readonly db: DBClient) {}
+  constructor(
+    private readonly db: Pick<
+      IDBClient,
+      "events" | "groupMembers" | "groups" | "eventAttendants"
+    >,
+  ) {}
 
   async openedEvent(
     user_id: string | undefined | null,

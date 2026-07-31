@@ -13,7 +13,21 @@ import type {
 import crypto from "crypto";
 import argon2 from "argon2";
 
-export class AuthRepository {
+export interface IAuthRepository {
+  authenticate(token: string | undefined): Promise<PublicUserSchemaType | null>;
+  signUp(email: string, password: string): Promise<NewUserResponse>;
+  login(
+    input_email: string,
+    input_password: string,
+  ): Promise<AuthClientLoginResponse>;
+  logOut(token: string): Promise<boolean>;
+  getEmailByUserId(user_id: DbUserSchemaType["id"]): Promise<{ email: string }>;
+  getSession(token: string): Promise<StoredSession | undefined>;
+  resetPassword(token: string, password: string): Promise<boolean>;
+  requestPasswordReset(emailInput: string): PasswordResetRequestResult;
+}
+
+export class AuthRepository implements IAuthRepository {
   constructor(private readonly db: Kysely<DB>) {}
 
   async authenticate(
@@ -77,7 +91,9 @@ export class AuthRepository {
     return Number(result[0].numDeletedRows ?? 0) > 0;
   }
 
-  async getEmailByUserId(user_id: DbUserSchemaType["id"]) {
+  async getEmailByUserId(
+    user_id: DbUserSchemaType["id"],
+  ): Promise<{ email: string }> {
     return await this.db
       .selectFrom("users")
       .select("email")
@@ -85,47 +101,26 @@ export class AuthRepository {
       .executeTakeFirstOrThrow();
   }
 
-  private async verifyCredentials(
-    input_email: string,
-    input_password: string,
-  ): Promise<DbUserSchemaType> {
-    const user = await this.db
-      .selectFrom("users")
-      .select(["id", "email", "password_hash"])
-      .where("email", "=", input_email)
-      .executeTakeFirst();
+  async requestPasswordReset(emailInput: string): PasswordResetRequestResult {
+    const { id } = await this.getUserForPwReset(emailInput);
 
-    if (!user) {
-      throw new Error(`That email doesn't match any of our records`);
-    }
+    const { token, tokenHash, expiresAt } =
+      await this.createResetTokenAndExpiration();
 
-    const ok = await argon2.verify(user?.password_hash, input_password);
-    if (!ok) {
-      throw new Error(`Invalid email or password`);
-    }
-    return user;
-  }
-
-  private async hashNewPassword(password: string): Promise<string> {
-    return argon2.hash(password);
-  }
-
-  private async createSession(user_id: string): Promise<StoredSession> {
-    const token = crypto.randomUUID();
-
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 4);
-
-    const session = await this.db
-      .insertInto("sessions")
+    const result = await this.db
+      .insertInto("password_reset_tokens")
       .values({
-        id: token,
-        user_id: user_id,
+        user_id: id,
+        token_hash: tokenHash,
         expires_at: expiresAt,
       })
-      .returning(["id", "user_id", "expires_at"])
-      .executeTakeFirstOrThrow();
+      .returning(["created_at", "expires_at"])
+      .executeTakeFirst();
 
-    return session;
+    return {
+      result,
+      token,
+    };
   }
 
   async getSession(token: string): Promise<StoredSession | undefined> {
@@ -183,26 +178,47 @@ export class AuthRepository {
     });
   }
 
-  async requestPasswordReset(emailInput: string): PasswordResetRequestResult {
-    const { id } = await this.getUserForPwReset(emailInput);
-
-    const { token, tokenHash, expiresAt } =
-      await this.createResetTokenAndExpiration();
-
-    const result = await this.db
-      .insertInto("password_reset_tokens")
-      .values({
-        user_id: id,
-        token_hash: tokenHash,
-        expires_at: expiresAt,
-      })
-      .returning(["created_at", "expires_at"])
+  private async verifyCredentials(
+    input_email: string,
+    input_password: string,
+  ): Promise<DbUserSchemaType> {
+    const user = await this.db
+      .selectFrom("users")
+      .select(["id", "email", "password_hash"])
+      .where("email", "=", input_email)
       .executeTakeFirst();
 
-    return {
-      result,
-      token,
-    };
+    if (!user) {
+      throw new Error(`That email doesn't match any of our records`);
+    }
+
+    const ok = await argon2.verify(user?.password_hash, input_password);
+    if (!ok) {
+      throw new Error(`Invalid email or password`);
+    }
+    return user;
+  }
+
+  private async hashNewPassword(password: string): Promise<string> {
+    return argon2.hash(password);
+  }
+
+  private async createSession(user_id: string): Promise<StoredSession> {
+    const token = crypto.randomUUID();
+
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 4);
+
+    const session = await this.db
+      .insertInto("sessions")
+      .values({
+        id: token,
+        user_id: user_id,
+        expires_at: expiresAt,
+      })
+      .returning(["id", "user_id", "expires_at"])
+      .executeTakeFirstOrThrow();
+
+    return session;
   }
 
   private async createResetTokenAndExpiration() {

@@ -1,13 +1,24 @@
 import { EventsValidator } from "./eventsValidator";
 import { RawEventsReader } from "./rawEventsReader";
-import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
   EventsArraySchemaType,
   EventSchemaType,
-} from "../../../../../../schemas/events/eventSchema";
-import { SearchSchemaType } from "../../../../../../schemas/search/searchSchema";
+} from "@/src/schemas/events/eventSchema";
+import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 
-export class EventsSelector {
+export interface IEventsSelector {
+  search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
+  allStatuses(): Promise<EventSchemaType[]>;
+  allScheduled(): Promise<EventSchemaType[]>;
+  cancelledByGroupId(group_id: string): Promise<EventSchemaType[]>;
+  byId(event_id: EventSchemaType["id"]): Promise<EventSchemaType>;
+  byIds(ids: EventSchemaType["id"][]): Promise<EventsArraySchemaType>;
+  byGroupId(group_id: GroupSchemaType["id"]): Promise<EventsArraySchemaType>;
+  byGroupIds(groupIds: GroupSchemaType["id"][]): Promise<EventsArraySchemaType>;
+}
+
+export class EventsSelector implements IEventsSelector {
   constructor(
     private readonly validate: EventsValidator,
     private readonly read: RawEventsReader,
@@ -24,7 +35,7 @@ export class EventsSelector {
     return this.validate.events(raw);
   }
 
-  async allScheduled() {
+  async allScheduled(): Promise<EventSchemaType[]> {
     const raw = await this.read.allRawScheduledEvents();
     return this.validate.events(raw);
   }

@@ -2,6 +2,7 @@ import { DbUserSchemaType } from "../../../../schemas/auth/userSchema";
 import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
 import { UserMembershipSchemaType } from "../../../../schemas/groups/userMembershipSchema";
 import { NotificationSchemaType } from "../../../../schemas/notifications/notificationsSchema";
+import { IDBClient } from "../../db/access/client/dbClient";
 import {
   AuthClientLoginResponse,
   NewUserResponse,
@@ -21,7 +22,38 @@ import {
   IMembershipHandler,
 } from "../handlers/groups/types";
 import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
-import { NewNotification } from "./notificationService";
+
+export type SessionServiceDb = Pick<IDBClient, "auth">;
+
+export type ParticipationsServiceDb = Pick<
+  IDBClient,
+  "eventAttendants" | "groupMembers" | "groups" | "events"
+>;
+
+export type UserServiceDb = Pick<IDBClient, "groups" | "groupMembers" | "auth">;
+
+export type GroupServiceDb = IDBClient;
+
+export type EventServiceDB = Pick<
+  IDBClient,
+  "eventAttendants" | "events" | "groupMembers" | "groups"
+>;
+
+export type PasswordResetEmailServiceDB = Pick<IDBClient, "auth">;
+
+export type NotificationServiceDB = Pick<
+  IDBClient,
+  "notifications" | "groupMembers"
+>;
+
+export type NewNotification = Pick<
+  NotificationSchemaType,
+  "group_id" | "priority" | "message" | "subject"
+>;
+
+export interface IPasswordResetEmailService {
+  request(email: string): Promise<{ ok: true }>;
+}
 
 export interface IEventService {
   readonly hydrate: IEventHydrationHandler;

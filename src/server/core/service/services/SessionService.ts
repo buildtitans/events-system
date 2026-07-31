@@ -1,4 +1,3 @@
-import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 import { PasswordResetEmailService } from "./passwordResetEmailService";
@@ -6,10 +5,11 @@ import {
   AuthClientLoginResponse,
   StoredSession,
 } from "../../db/access/types/types";
+import { SessionServiceDb } from "./types";
 
 export class SessionService {
   constructor(
-    private readonly db: DBClient,
+    private readonly db: SessionServiceDb,
     private readonly policy: Authorization,
     private readonly emailer: PasswordResetEmailService,
   ) {}

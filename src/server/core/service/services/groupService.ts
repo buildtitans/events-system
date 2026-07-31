@@ -1,4 +1,3 @@
-import { DBClient } from "../../db";
 import { GroupLifecycleHandler } from "../handlers/groups/groupLifecycleHandler";
 import { MembershipHandler } from "../handlers/groups/membershipHandler";
 import { Authorization } from "../auth/authorization";
@@ -8,13 +7,14 @@ import {
   IGroupQueryHandler,
   IMembershipHandler,
 } from "../handlers/groups/types";
+import { GroupServiceDb } from "./types";
 
 export class GroupService {
   public readonly groupLifecycle: IGroupLifecycleHandler;
   public readonly memberships: IMembershipHandler;
   public readonly query: IGroupQueryHandler;
   constructor(
-    private readonly db: DBClient,
+    private readonly db: GroupServiceDb,
     private readonly policy: Authorization,
   ) {
     this.groupLifecycle = new GroupLifecycleHandler(this.db, this.policy);

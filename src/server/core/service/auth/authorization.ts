@@ -1,5 +1,5 @@
-import { RoleBasedAccessHandler } from "./roleBasedAccessHandler";
-import { TRPCResolverError } from "../../lib/errors/trpcResolverError";
+import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 
 export class Authorization {
   constructor(private readonly auth: RoleBasedAccessHandler) {}

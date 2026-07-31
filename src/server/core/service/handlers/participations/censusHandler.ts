@@ -1,17 +1,17 @@
-import { DBClient } from "@/src/server/core/db";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { AttendantCountType } from "../../types";
+import { AttendantCountType } from "@/src/server/core/service/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
   curatePopularEventsIds,
   PopularEventsIds,
-} from "../../../lib/utils/curatePopularEventsIds";
+} from "@/src/server/core/lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { ICensusHandler } from "./types";
+import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
 
 export class CensusHandler implements ICensusHandler {
-  constructor(private readonly api: DBClient) {}
+  constructor(private readonly api: ParticipationsServiceDb) {}
 
   async getNumberOfAttendantsForEvent(
     event_id: EventSchemaType["id"],

@@ -1,13 +1,21 @@
 import { Kysely } from "kysely";
 import type { DB } from "../../../types/db";
 import { GroupMembersValidator } from "./groupMembersValidator";
-import { GroupMembersSelector } from "./groupMembersSelector";
-import { GroupMembersWriter } from "./groupMembersWriter";
+import {
+  GroupMembersSelector,
+  IGroupMembersSelector,
+} from "./groupMembersSelector";
+import { GroupMembersWriter, IGroupMembersWriter } from "./groupMembersWriter";
 import { RawGroupMembersReader } from "./rawGroupMembersReader";
 
-export class GroupMembersRepository {
-  public readonly select: GroupMembersSelector;
-  public readonly write: GroupMembersWriter;
+export interface IGroupMembersRepository {
+  readonly select: IGroupMembersSelector;
+  readonly write: IGroupMembersWriter;
+}
+
+export class GroupMembersRepository implements IGroupMembersRepository {
+  public readonly select: IGroupMembersSelector;
+  public readonly write: IGroupMembersWriter;
   private readonly read: RawGroupMembersReader;
   private readonly validator: GroupMembersValidator;
   constructor(private readonly db: Kysely<DB>) {

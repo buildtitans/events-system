@@ -4,9 +4,10 @@ import { Authorization } from "@/src/server/core/service/auth/authorization";
 import { Domains } from "../domains/domains";
 import { resendSecrets } from "../../lib/init/resendSecrets";
 import { IDomains } from "../domains/types";
+import { IDBClient } from "../../db/access/client/dbClient";
 
 export class ContextApi {
-  private readonly db: DBClient;
+  private readonly db: IDBClient;
   private readonly auth: RoleBasedAccessHandler;
   private readonly policy: Authorization;
   public readonly domains: IDomains;

@@ -1,16 +1,15 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import type { NotificationCreationProcedure } from "../../db/access/types/types";
-import { DBClient } from "../../db";
 import { Authorization } from "../auth/authorization";
+import {
+  INotificationService,
+  NotificationServiceDB,
+  NewNotification,
+} from "./types";
 
-export type NewNotification = Pick<
-  NotificationSchemaType,
-  "group_id" | "priority" | "message" | "subject"
->;
-
-export class NotificationService {
+export class NotificationService implements INotificationService {
   constructor(
-    private readonly db: DBClient,
+    private readonly db: NotificationServiceDB,
     private readonly policy: Authorization,
   ) {}
 

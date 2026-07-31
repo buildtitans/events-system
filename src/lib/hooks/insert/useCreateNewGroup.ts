@@ -6,19 +6,12 @@ import type {
   NewGroupInputType,
   CreateNewGroupHook,
 } from "@/src/lib/types/hooks/types";
-import { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
-import { trpcClient } from "@/src/trpc/trpcClient";
-import { addGroup } from "@/src/lib/store/slices/groups/GroupsSlice";
 import {
   isNewGroupSubmittable,
   normalizeNewGroupInput,
 } from "@/src/lib/utils/newGroup/newGroupHelpers";
-import {
-  enqueueAlert,
-  enqueueDrawer,
-  enqueueSnackbar,
-} from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice";
+import { createGroup } from "@/src/lib/store/slices/groups/thunks";
 
 const useCreateNewGroup = (): CreateNewGroupHook => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,26 +52,6 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
     setFieldValue(category_id, "category_id");
   }, []);
 
-  const createGroup = useCallback(
-    async (group: NewGroupInputSchemaType) => {
-      try {
-        const result = await trpcClient.groups.write.newGroup.mutate(group);
-        if (!result.ok) {
-          throw new Error(result.error);
-        }
-        dispatch(addGroup(result.data));
-        dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-        dispatch(enqueueAlert({ kind: "success", action: "createGroup" }));
-        dispatch(enqueueDrawer(null));
-      } catch (err) {
-        logCaughtError("useCreateNewGroup.submitNewGroup.createGroup()", err);
-        dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-        dispatch(enqueueAlert({ kind: "error", action: "createGroup" }));
-      }
-    },
-    [dispatch],
-  );
-
   const submitNewGroup = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -88,9 +61,9 @@ const useCreateNewGroup = (): CreateNewGroupHook => {
       dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
 
       const payload = normalizeNewGroupInput(newGroup);
-      await createGroup(payload);
+      await dispatch(createGroup(payload));
     },
-    [createGroup, dispatch, isSubmittable, newGroup],
+    [dispatch, isSubmittable, newGroup],
   );
 
   return {
