@@ -2,11 +2,11 @@ import type {
   PublicUserSchemaType,
   DbUserSchemaType,
 } from "@/src/schemas/auth/userSchema";
-import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
+import type { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
-import { EventAttendants } from "../../types/db";
-import { Selectable } from "kysely";
+import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import type { EventAttendants } from "@/src/server/core/db/types/db";
+import type { Selectable } from "kysely";
 
 export type SelectedAttendant = Selectable<EventAttendants>;
 

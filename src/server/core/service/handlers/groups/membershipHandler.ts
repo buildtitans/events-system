@@ -1,13 +1,13 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { Authorization } from "../../auth/authorization";
+import { IAuthorization } from "../../auth/authorization";
 import { IMembershipHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
 
 export class MembershipHandler implements IMembershipHandler {
   constructor(
     private readonly db: GroupServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {}
 
   async addMember(

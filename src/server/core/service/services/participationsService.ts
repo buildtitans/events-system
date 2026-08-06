@@ -1,4 +1,4 @@
-import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { CensusHandler } from "../handlers/participations/censusHandler";
 import { ParticipationDtoHandler } from "../handlers/participations/participationDtoHandler";
 import { RsvpHandler } from "../handlers/participations/rsvpHandler";
@@ -10,7 +10,7 @@ export class ParticipationsService {
   public readonly rsvps: IRsvpHandler;
   constructor(
     private readonly db: ParticipationsServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {
     this.census = new CensusHandler(this.db);
     this.rsvps = new RsvpHandler(

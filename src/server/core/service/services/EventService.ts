@@ -1,4 +1,4 @@
-import { Authorization } from "../auth/authorization";
+import { IAuthorization } from "../auth/authorization";
 import { EventHydrationHandler } from "../handlers/events/eventHydrationHandler";
 import { EventLayoutComposer } from "../handlers/events/eventLayoutComposer";
 import { EventTimelineHandler } from "../handlers/events/eventTimelineHandler";
@@ -22,7 +22,7 @@ export class EventService implements IEventService {
   public readonly lifecycle: IEventLifecycleHandler;
   constructor(
     private readonly db: EventServiceDB,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
     this.timeline = new EventTimelineHandler(this.db, this.policy);

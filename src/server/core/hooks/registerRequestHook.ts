@@ -1,30 +1,29 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
+import type { IDBClient } from "../db/access/client/dbClient";
 
 async function detectSession(
   app: FastifyInstance,
   req: FastifyRequest,
+  db: IDBClient,
 ): Promise<void> {
   try {
     const token = req.cookies.session;
-
-    const user = await app.db.auth.authenticate(token);
-
-    if (user) {
-      req.user = {
-        id: user.id,
-        role: "user",
-        email: user.email,
-      };
-    } else {
-      req.user = null;
-    }
+    const user = await db.auth.authenticate(token);
+    req.user = user ? { id: user.id } : null;
   } catch (err) {
+    req.user = null;
     app.log.error({ err }, "Session authentication failed");
   }
 }
 
-export async function registerContextHook(app: FastifyInstance) {
+export function registerRequestHook({
+  app,
+  db,
+}: {
+  app: FastifyInstance;
+  db: IDBClient;
+}) {
   app.addHook("onRequest", async (req: FastifyRequest) => {
-    await detectSession(app, req);
+    await detectSession(app, req, db);
   });
 }

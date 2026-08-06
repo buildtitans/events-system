@@ -1,4 +1,4 @@
-import { Authorization } from "../auth/authorization";
+import { IAuthorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
 import { PasswordResetEmailService } from "./passwordResetEmailService";
 import {
@@ -10,7 +10,7 @@ import { SessionServiceDb } from "./types";
 export class SessionService {
   constructor(
     private readonly db: SessionServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
     private readonly emailer: PasswordResetEmailService,
   ) {}
 
