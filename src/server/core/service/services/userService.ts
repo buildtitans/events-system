@@ -3,7 +3,7 @@ import {
   GroupSchemaType,
   GroupsSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { Authorization } from "../auth/authorization";
+import { IAuthorization } from "../auth/authorization";
 import { chunkUserGroupsIntoPages } from "@/src/server/core/lib/utils/chunkUserGroupsToPages";
 import { validateLoginCredentials } from "@/src/server/core/lib/validation/validateLoginCredentials";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
@@ -19,7 +19,7 @@ import { IUserService, UserServiceDb } from "./types";
 export class UserService implements IUserService {
   constructor(
     private readonly db: UserServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {}
 
   async createNewUser(

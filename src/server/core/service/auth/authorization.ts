@@ -1,8 +1,16 @@
-import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import { IRoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 
-export class Authorization {
-  constructor(private readonly auth: RoleBasedAccessHandler) {}
+export interface IAuthorization {
+  requireAuthenticated(userId: string | undefined | null): string;
+  requireToken(token: string | undefined | null): string;
+  requireOrganizer(userId: string, groupId: string): Promise<void>;
+  requireIsGroupMember(userId: string, groupId: string): Promise<void>;
+  requireCanChangeMembership(userId: string, groupId: string): Promise<void>;
+}
+
+export class Authorization implements IAuthorization {
+  constructor(private readonly auth: IRoleBasedAccessHandler) {}
 
   requireAuthenticated(userId: string | undefined | null): string {
     if (!userId) {
@@ -31,7 +39,7 @@ export class Authorization {
     }
   }
 
-  async requireIsGroupMember(userId: string, groupId: string) {
+  async requireIsGroupMember(userId: string, groupId: string): Promise<void> {
     const permitted = await this.auth.can(
       userId,
       groupId,
@@ -46,7 +54,10 @@ export class Authorization {
     }
   }
 
-  async requireCanChangeMembership(userId: string, groupId: string) {
+  async requireCanChangeMembership(
+    userId: string,
+    groupId: string,
+  ): Promise<void> {
     const permitted = await this.auth.can(userId, groupId, "change membership");
 
     if (!permitted) {

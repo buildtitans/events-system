@@ -70,7 +70,6 @@ function EventHeroCard({
   const date = new Date(event.starts_at);
   const isFutureDateOrNow = isFutureOrNow(date);
 
-
   return (
     <Grid
       size={{
@@ -95,6 +94,8 @@ function EventHeroCard({
           <CardMedia
             component="img"
             alt="green iguana"
+            loading="lazy"
+            decoding="async"
             image={event.img ?? undefined}
             sx={{
               ...eventCardMediaSx,
@@ -102,18 +103,32 @@ function EventHeroCard({
             }}
           />
           <Box sx={eventCardMediaOverlaySx} />
-
-          {event.status === "cancelled" && <EventCancelledOverlay />}
         </Box>
 
         <StyledCardContent sx={eventCardContentSx}>
-          { <Typography gutterBottom variant="caption" component="div" sx={eventCardGroupLabelSx}>
-            {groupName}
-          </Typography> }
-          <Typography gutterBottom variant="h6" component="div" sx={eventCardTitleSx}>
+          {
+            <Typography
+              gutterBottom
+              variant="caption"
+              component="div"
+              sx={eventCardGroupLabelSx}
+            >
+              {groupName}
+            </Typography>
+          }
+          <Typography
+            gutterBottom
+            variant="h6"
+            component="div"
+            sx={eventCardTitleSx}
+          >
             {event.title}
           </Typography>
-          <StyledTypography variant="body2" gutterBottom sx={eventCardDescriptionSx}>
+          <StyledTypography
+            variant="body2"
+            gutterBottom
+            sx={eventCardDescriptionSx}
+          >
             {event.description}
           </StyledTypography>
         </StyledCardContent>

@@ -1,6 +1,6 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import type { NotificationCreationProcedure } from "../../db/access/types/types";
-import { Authorization } from "../auth/authorization";
+import { IAuthorization } from "../auth/authorization";
 import {
   INotificationService,
   NotificationServiceDB,
@@ -10,7 +10,7 @@ import {
 export class NotificationService implements INotificationService {
   constructor(
     private readonly db: NotificationServiceDB,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {}
 
   async getNewNotifications(

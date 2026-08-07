@@ -3,5 +3,4 @@ import { config } from "dotenv";
 
 config({ path: path.resolve(process.cwd(), ".env") });
 
-
-export { }
+export {};

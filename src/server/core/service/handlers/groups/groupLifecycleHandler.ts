@@ -4,14 +4,14 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { NewOrganizerInput } from "../../types";
-import { Authorization } from "../../auth/authorization";
+import { IAuthorization } from "../../auth/authorization";
 import { IGroupLifecycleHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
 
 export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   constructor(
     private readonly api: GroupServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {}
 
   async createNewGroup(

@@ -11,7 +11,7 @@ onlyBuiltDependencies:
   - "unrs-resolver"
 overrides:
   find-my-way: "9.7.0"
-  fast-uri: "3.1.4"
+  fast-uri: "3.1.5"
   ajv: "8.20.0"
 
   "minimatch@<3.1.4": "3.1.4"
@@ -28,7 +28,7 @@ overrides:
   "picomatch@<2.3.2": "2.3.2"
   "picomatch@>=4.0.0 <4.0.4": "4.0.4"
   "yaml@>=1.0.0 <1.10.3": "1.10.3"
-  "postcss@<8.5.10": "8.5.18"
+  "postcss@<8.5.10": "8.5.23"
   "@babel/core@<=7.29.0": "7.29.6"
   "js-yaml": "3.15.0"
   "sharp": "0.35.0"

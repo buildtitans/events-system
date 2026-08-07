@@ -13,13 +13,13 @@ import {
 import { EventsByGroupIdSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { IEventTimelineHandler } from "./types";
 
 export class EventTimelineHandler implements IEventTimelineHandler {
   constructor(
     private readonly db: Pick<IDBClient, "events" | "eventAttendants">,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
   ) {}
 
   async getPastEventsForGroup(group_id: string): Promise<PastEventsResults> {

@@ -12,7 +12,7 @@ const EventSchema = Type.Object({
   status: EventStatusSchema,
   starts_at: Type.String(),
   starts_at_ms: Type.Integer({ minimum: 0 }),
-  img: Type.Union([Type.String(), Type.Null()]),
+  img: Type.String(),
   tag: Type.Union([Type.String(), Type.Null()]),
   title: Type.String(),
   description: Type.String(),

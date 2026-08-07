@@ -1,7 +1,7 @@
 import { ParticipationsService } from "@/src/server/core/service/services/participationsService";
 import { UserService } from "@/src/server/core/service/services/userService";
 import { GroupService } from "@/src/server/core/service/services/groupService";
-import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { SessionService } from "@/src/server/core/service/services/SessionService";
 import { EventService } from "@/src/server/core/service/services/EventService";
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
@@ -27,7 +27,7 @@ export class Domains implements IDomains {
   public readonly notifications: INotificationService;
   constructor(
     private readonly db: IDBClient,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
     private readonly resendSecrets: ResendVariables,
   ) {
     const emailer = new PasswordResetEmailService(this.db, this.resendSecrets);

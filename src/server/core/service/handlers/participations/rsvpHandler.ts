@@ -1,7 +1,7 @@
 import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
-import { Authorization } from "@/src/server/core/service/auth/authorization";
+import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { ParticipationDtoHandler } from "./participationDtoHandler";
 import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import {
@@ -20,7 +20,7 @@ import {
 export class RsvpHandler {
   constructor(
     private readonly db: ParticipationsServiceDb,
-    private readonly policy: Authorization,
+    private readonly policy: IAuthorization,
     private readonly parse: ParticipationDtoHandler,
   ) {}
 

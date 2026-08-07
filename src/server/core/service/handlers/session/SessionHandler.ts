@@ -2,7 +2,12 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import type { StoredSession } from "../../../db/access/types/types";
 import { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 
-export class SessionHandler {
+export interface ISessionHandler {
+  setCookieHeader(session: StoredSession, user: PublicUserSchemaType): void;
+  removeCookieHeader(): void;
+}
+
+export class SessionHandler implements ISessionHandler {
   constructor(
     private readonly req: FastifyRequest,
     private readonly reply: FastifyReply,
@@ -10,6 +15,7 @@ export class SessionHandler {
 
   setCookieHeader(session: StoredSession, user: PublicUserSchemaType): void {
     const token = session.id;
+    const { id } = user;
 
     this.reply.setCookie("session", token, {
       httpOnly: true,
@@ -20,9 +26,7 @@ export class SessionHandler {
     });
 
     this.req.user = {
-      id: user.id,
-      email: user.email,
-      role: "user",
+      id,
     };
   }
 
