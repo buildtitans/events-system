@@ -1,8 +1,8 @@
-import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import type { Context } from "./context";
+import { initTRPC, TRPCError } from "@trpc/server";
+import type { TRPCContext } from "./types";
 
-const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,
 });
 
@@ -10,7 +10,9 @@ const router = t.router;
 const publicProcedure = t.procedure;
 
 const requireAuth = t.middleware(({ ctx, next }) => {
-  if (!ctx.req.user?.id) {
+  const authenticatedUser = ctx.req.user;
+
+  if (!authenticatedUser?.id) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Authentication required to access this resource",

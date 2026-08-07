@@ -1,5 +1,7 @@
 "use client";
-import { useMemo } from "react";
+import type { EventCardProps } from "./eventHeroCard";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import React, { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import {
   StyledCard,
@@ -7,8 +9,6 @@ import {
   StyledTypography,
 } from "@/src/client/styles/styledComponents/styledCard";
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
-import { EventCardProps } from "./eventHeroCard";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Box from "@mui/material/Box";
 import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
@@ -47,7 +47,7 @@ function EventStackCard({
   return (
     <StyledCard
       variant="outlined"
-       onClick={() => handleOpenEvent(event.id)}
+      onClick={() => handleOpenEvent(event.id)}
       onFocus={() => handleFocus(3)}
       onBlur={handleBlur}
       tabIndex={0}
@@ -81,10 +81,19 @@ function EventStackCard({
           >
             {groupName}
           </Typography>
-          <Typography gutterBottom variant="h6" component="div" sx={eventCardTitleSx}>
+          <Typography
+            gutterBottom
+            variant="h6"
+            component="div"
+            sx={eventCardTitleSx}
+          >
             {event.title}
           </Typography>
-          <StyledTypography variant="body2" gutterBottom sx={eventCardDescriptionSx}>
+          <StyledTypography
+            variant="body2"
+            gutterBottom
+            sx={eventCardDescriptionSx}
+          >
             {event.description}
           </StyledTypography>
         </Box>
@@ -98,4 +107,4 @@ function EventStackCard({
   );
 }
 
-export { EventStackCard };
+export default React.memo(EventStackCard);

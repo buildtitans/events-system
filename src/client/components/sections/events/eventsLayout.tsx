@@ -40,6 +40,7 @@ function EventsLayout({
           animate="animate"
           exit="exit"
           container
+          width="100%"
           spacing={2}
           columns={12}
         >

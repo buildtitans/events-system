@@ -1,2 +1,2 @@
-export { registerDevelopmentCors } from "./registerDevelopmentCors";
-export { registerTRPC } from "./registerTRPC";
+export { registerDevelopmentCors } from "./fastify/registerDevelopmentCors";
+export { registerTRPC } from "./fastify/registerTRPC";

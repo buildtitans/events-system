@@ -1,5 +1,5 @@
 import cors from "@fastify/cors";
-import { getEnv } from "../lib/init/getEnv";
+import { getEnv } from "@/src/server/core/lib/init/getEnv";
 import type { FastifyInstance } from "fastify";
 
 export function registerDevelopmentCors(

@@ -1,13 +1,16 @@
-import type { JSX } from "react";
-import EventHeroCard, {
-  type EventCardProps,
-} from "@/src/client/components/ui/box/cards/eventHeroCard";
+"use client";
+import { lazy, Suspense, type JSX } from "react";
+import { type EventCardProps } from "@/src/client/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/client/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
+import EventHeroCardSkeleton from "@/src/client/components/ui/box/cards/skeletons/eventHeroCardSkeleton";
+const HeroCard = lazy(
+  () => import("@/src/client/components/ui/box/cards/eventHeroCard"),
+);
 
 type RenderEventsLayoutProps = {
   slots: LayoutSlotSchemaType[];
@@ -31,17 +34,22 @@ function RenderEventsLayout({
     switch (slot.kind) {
       case "card": {
         return (
-          <EventHeroCard
-            index={i}
-            groupName={groupNameLookup[slot.event.group_id].name}
+          <Suspense
             key={slot.event.id}
-            event={slot.event}
-            variant={slot.variant}
-            handleBlur={handleBlur}
-            handleFocus={handleFocus}
-            focusedCardIndex={focusedCardIndex}
-            handleOpenEvent={handleOpenEvent}
-          />
+            fallback={<EventHeroCardSkeleton variant={slot.variant} />}
+          >
+            <HeroCard
+              index={i}
+              groupName={groupNameLookup[slot.event.group_id].name}
+              key={slot.event.id}
+              event={slot.event}
+              variant={slot.variant}
+              handleBlur={handleBlur}
+              handleFocus={handleFocus}
+              focusedCardIndex={focusedCardIndex}
+              handleOpenEvent={handleOpenEvent}
+            />
+          </Suspense>
         );
       }
 
