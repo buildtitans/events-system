@@ -64,19 +64,24 @@ export const useFilterGroups = (): FilterGroupsHook => {
     dispatch(updateGroupsDisplayed({ status: "pending" }));
     dispatch(enqueueDrawer(null));
 
-    const filterSet = getFilterArgs();
-
     try {
-      const groups = await filterService.filter(filterSet);
+      const groups = await filterService.filter(getFilterArgs());
 
-      console.log(groups);
-
-      dispatch(
-        updateGroupsDisplayed({
-          status: "ready",
-          data: chunkGroupsIntoPages(groups),
-        }),
-      );
+      if (groups.length === 0) {
+        dispatch(
+          updateGroupsDisplayed({
+            status: "n/a",
+            message: "0 results for the applied filter",
+          }),
+        );
+      } else {
+        dispatch(
+          updateGroupsDisplayed({
+            status: "ready",
+            data: chunkGroupsIntoPages(groups),
+          }),
+        );
+      }
     } catch (err) {
       logCaughtError("", err);
       dispatch(

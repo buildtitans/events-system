@@ -7,7 +7,7 @@ export type GroupsFilter = "all" | "popular" | "category";
 
 export type LandingGroupsDisplayedState = AsyncState<
   GroupSchemaType[][],
-  "Failed to retrieve groups"
+  "0 results for the applied filter"
 >;
 
 export type GroupArchivesState = AsyncState<
