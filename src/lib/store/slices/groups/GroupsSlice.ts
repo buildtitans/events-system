@@ -5,7 +5,7 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
-import { GroupsFilter, LandingGroupsDisplayedState } from "./types";
+import { GroupsFilter } from "./types";
 
 type GroupsInitialState = {
   communities: GroupsSchemaType;

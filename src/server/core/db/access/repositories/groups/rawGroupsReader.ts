@@ -1,7 +1,7 @@
-import { Kysely, Selectable, Transaction } from "kysely";
-import { DB, Groups } from "../../../types/db";
-import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
-import { CategorySchemaType } from "../../../../../../schemas/groups/categoriesSchema";
+import { Kysely, Selectable } from "kysely";
+import { DB, Groups } from "@/src/server/core/db/types/db";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 export class RawGroupsReader {
   constructor(private readonly db: Kysely<DB>) {}
