@@ -12,8 +12,8 @@ import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import {
   EventFilterService,
   FilterResults,
-} from "../../store/services/eventFilterService";
-import { EventDisplayFilter } from "../../store/slices/events/types";
+} from "@/src/lib/store/services/filter/eventFilterService";
+import { EventDisplayFilter } from "@/src/lib/store/slices/events/types";
 
 type HandleFilterResultsArgs = {
   filter: EventDisplayFilter;

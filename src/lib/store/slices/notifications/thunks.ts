@@ -6,9 +6,10 @@ import {
   GetThunkAPI,
 } from "@reduxjs/toolkit";
 import { appendNewNotification } from "./notificationSlice";
-import { createNewEventNotification } from "@/src/lib/utils/helpers/notifications/createScheduleNotification";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
+import { ScheduleNotificationService } from "../../services/notifications/scheduleNotificationService";
+const service = new ScheduleNotificationService(trpcClient);
 
 type NotifyNewEventParams = {
   event: EventSchemaType;
@@ -21,11 +22,11 @@ export const notifyNewEvent = createAsyncThunk(
     params: NotifyNewEventParams,
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
-    const notification = createNewEventNotification(params.event, params.group);
-
     try {
-      const result =
-        await trpcClient.notifications.write.create.mutate(notification);
+      const result = await service.createNewEventNotification(
+        params.event,
+        params.group,
+      );
 
       thunkAPI.dispatch(
         appendNewNotification({

@@ -10,6 +10,8 @@ import type {
 } from "./types";
 import { SyncDomainsType } from "@/src/lib/types/server/types";
 import { AppBootState } from "@/src/lib/types/state/types";
+import { LandingGroupsDisplayedState } from "../groups/types";
+import { chunkGroupsIntoPages } from "@/src/lib/utils/helpers/chunk/chunkGroupsIntoPages";
 
 export const initializeDomains = createAction<SyncDomainsType>(
   "app/initializeDomains",
@@ -23,6 +25,7 @@ type RenderingInitialState = {
   alert: AlertType;
   drawer: ActiveDrawer;
   sidebar: ActiveSidebar;
+  groupsTab: LandingGroupsDisplayedState;
 };
 
 const initialState: RenderingInitialState = {
@@ -39,6 +42,7 @@ const initialState: RenderingInitialState = {
     kind: null,
   },
   sidebar: null,
+  groupsTab: { status: "initial" },
 };
 
 const RenderingSlice = createSlice({
@@ -87,6 +91,12 @@ const RenderingSlice = createSlice({
     ) => {
       state.appBoot = action.payload;
     },
+    updateGroupsDisplayed: (
+      state: RenderingInitialState,
+      action: PayloadAction<LandingGroupsDisplayedState>,
+    ) => {
+      state.groupsTab = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(
@@ -98,7 +108,10 @@ const RenderingSlice = createSlice({
         const result = action.payload;
 
         if (result.status === "fulfilled") {
+          const groupsPages = chunkGroupsIntoPages(result.data.groups);
+
           state.appBoot = { status: "ready" };
+          state.groupsTab = { status: "ready", data: groupsPages };
         } else if (result.status === "rejected") {
           state.appBoot = {
             status: "failed",
@@ -119,6 +132,7 @@ export const {
   enqueueDrawer,
   enqueueSidebar,
   signalDomainStatus,
+  updateGroupsDisplayed,
 } = RenderingSlice.actions;
 
 export default RenderingSlice.reducer;

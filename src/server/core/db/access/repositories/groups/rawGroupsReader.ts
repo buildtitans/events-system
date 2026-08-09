@@ -1,6 +1,7 @@
-import { Kysely, Selectable } from "kysely";
+import { Kysely, Selectable, Transaction } from "kysely";
 import { DB, Groups } from "../../../types/db";
 import { GroupSchemaType } from "../../../../../../schemas/groups/groupSchema";
+import { CategorySchemaType } from "../../../../../../schemas/groups/categoriesSchema";
 
 export class RawGroupsReader {
   constructor(private readonly db: Kysely<DB>) {}
@@ -53,6 +54,16 @@ export class RawGroupsReader {
       .selectFrom("groups")
       .selectAll()
       .where("name", "ilike", `%${query}%`)
+      .execute();
+  }
+
+  async rawByCategoryId(
+    id: CategorySchemaType["id"],
+  ): Promise<Selectable<Groups>[]> {
+    return await this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("category_id", "=", id)
       .execute();
   }
 }

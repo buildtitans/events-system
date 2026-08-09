@@ -1,14 +1,5 @@
-import type { GroupsFilter } from "@/src/lib/store/slices/groups/types";
+import type { GroupFilterOptions } from "@/src/lib/tokens/categoryTokens";
 
-export type FilterOption = {
-  value: GroupsFilter;
-  label: string;
-};
-
-export function createGroupFilterPendingMessage(
-  filter: GroupsFilter,
-  options: FilterOption[],
-) {
-  const active = options.find((opt) => opt.value === filter) as FilterOption;
-  return `Getting ${active.label}`;
+export function createGroupFilterPendingMessage(filter: GroupFilterOptions) {
+  return `Getting ${filter.filter} groups`;
 }

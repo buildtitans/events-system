@@ -13,7 +13,6 @@ type GroupsInitialState = {
   groupNameLookup: NameSlugDescriptionLookup;
   popularCommunities: GroupsSchemaType;
   groupsDisplayed: GroupsFilter;
-  landingGroupsTab: LandingGroupsDisplayedState;
 };
 
 const initialState: GroupsInitialState = {
@@ -22,7 +21,6 @@ const initialState: GroupsInitialState = {
   groupNameLookup: {},
   popularCommunities: [],
   groupsDisplayed: "all",
-  landingGroupsTab: { status: "pending" },
 };
 
 const GroupsSlice = createSlice({
@@ -60,12 +58,6 @@ const GroupsSlice = createSlice({
     ) => {
       state.groupsDisplayed = action.payload;
     },
-    changeLandingGroupsTab: (
-      state: GroupsInitialState,
-      action: PayloadAction<LandingGroupsDisplayedState>,
-    ) => {
-      state.landingGroupsTab = action.payload;
-    },
   },
   extraReducers(builder) {
     builder.addCase(initializeDomains, (state, action) => {
@@ -84,7 +76,6 @@ export const {
   addGroup,
   paginateGroups,
   getNameLookup,
-  changeLandingGroupsTab,
   changeDisplayedGroupFilter,
 } = GroupsSlice.actions;
 

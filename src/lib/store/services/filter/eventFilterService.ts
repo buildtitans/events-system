@@ -1,6 +1,6 @@
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
-import { EventsPages } from "../slices/events/types";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { EventsPages } from "@/src/lib/store/slices/events/types";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 
 export type FilterResults =

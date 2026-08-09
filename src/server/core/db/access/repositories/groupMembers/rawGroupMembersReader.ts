@@ -1,6 +1,6 @@
 import { Kysely, Selectable } from "kysely";
-import { DB, GroupMembers } from "../../../types/db";
-import { GroupMemberSchemaType } from "../../../../../../schemas/groups/groupMembersSchema";
+import { DB, GroupMembers } from "@/src/server/core/db/types/db";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export class RawGroupMembersReader {
   constructor(private readonly db: Kysely<DB>) {}

@@ -3,7 +3,7 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
 
-export type GroupsFilter = "all" | "popular";
+export type GroupsFilter = "all" | "popular" | "category";
 
 export type LandingGroupsDisplayedState = AsyncState<
   GroupSchemaType[][],

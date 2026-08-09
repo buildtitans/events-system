@@ -23,6 +23,7 @@ export type ActiveDrawer =
   | "event drawer"
   | "new group"
   | "sign up drawer"
+  | "filter groups"
   | null;
 
 export type ActiveSidebar = "group" | "user" | null;

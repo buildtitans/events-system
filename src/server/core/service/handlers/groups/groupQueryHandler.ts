@@ -1,6 +1,9 @@
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import {
+  CategoriesSchemaType,
+  CategorySchemaType,
+} from "@/src/schemas/groups/categoriesSchema";
 import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 import { IGroupQueryHandler } from "./types";
@@ -20,6 +23,12 @@ export class GroupQueryHandler implements IGroupQueryHandler {
 
   async getAllGroups(): Promise<GroupSchemaType[]> {
     return await this.db.groups.select.all();
+  }
+
+  async byCategory(
+    categoryId: CategorySchemaType["id"],
+  ): Promise<GroupSchemaType[]> {
+    return await this.db.groups.select.byCategory(categoryId);
   }
 
   async searchGroups(query: string): Promise<GroupSchemaType[]> {

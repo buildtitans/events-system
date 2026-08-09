@@ -43,6 +43,10 @@ import {
   EmailSchemaType,
   TokenAndPasswordSchemaType,
 } from "@/src/schemas/auth/loginCredentialsSchema";
+import {
+  CategoryNameSchemaType,
+  CompiledCategoryNameSchema,
+} from "@/src/schemas/groups/categoriesSchema";
 
 export const NewEventInputValidator = typeboxInput<NewEventInputSchemaType>(
   NewEventInputSchemaValidator,
@@ -74,6 +78,9 @@ export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
 
 export const searchInputValidator =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);
+
+export const groupsByCategoryInputValidator =
+  typeboxInput<CategoryNameSchemaType>(CompiledCategoryNameSchema);
 
 export const newGroupInputValidator = typeboxInput<NewGroupInputSchemaType>(
   CompiledNewGroupInputSchema,

@@ -22,15 +22,10 @@ function HomePage(): JSX.Element {
       }}
     >
       <LandingContentContainer isMobile={isMobile}>
-      <Stack gap={4}>
-<HomeHeadSection  
-      isMobile={isMobile}
-      />
-      <HomeContent 
-      isMobile={isMobile}
-      />  
-      </Stack>
-      
+        <Stack gap={4}>
+          <HomeHeadSection isMobile={isMobile} />
+          <HomeContent isMobile={isMobile} />
+        </Stack>
       </LandingContentContainer>
     </Stack>
   );

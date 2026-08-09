@@ -6,7 +6,7 @@ import type { TrpcClientType } from "@/src/trpc/trpcClient";
 import {
   NextGroupEventLookupMapType,
   ParticipationsStatePayload,
-} from "../slices/user/types";
+} from "@/src/lib/store/slices/user/types";
 
 export type UserParticipationsResult = {
   participations: ParticipationsStatePayload;

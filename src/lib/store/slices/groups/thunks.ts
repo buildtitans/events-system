@@ -16,7 +16,7 @@ import {
   enqueueSnackbar,
 } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { HydrateOpenGroupService } from "../../services/hydrateOpenGroupService";
+import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 import { addGroup } from "./GroupsSlice";
 

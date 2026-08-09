@@ -1,20 +1,16 @@
 "use client";
-import { useState } from "react";
 import type {
   EventSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
+import type { AppDispatch } from "@/src/lib/store";
+import type { CancelEventHook } from "@/src/lib/types/hooks/types";
+import { useState } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import {
-  enqueueDrawer,
-  enqueueSnackbar,
-} from "../../store/slices/rendering/RenderingSlice";
-import { CancelEventHook } from "../../types/hooks/types";
-import { createScheduleNotification } from "../../utils/helpers/notifications/createScheduleNotification";
-import { getGroupEvents } from "../../store/slices/groups/OpenedGroupSlice";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { updateEventStatus } from "@/src/lib/store/slices/events/thunks";
+import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
+const service = new ScheduleNotificationService(trpcClient);
 
 export const useCancelEvent = (
   event: EventSchemaType,
@@ -28,12 +24,6 @@ export const useCancelEvent = (
   });
   const dispatch = useDispatch<AppDispatch>();
 
-  async function executeCreateNotifications(): Promise<void> {
-    const notification = createScheduleNotification(event, options);
-
-    await trpcClient.notifications.write.create.mutate(notification);
-  }
-
   const handleStatusChange = () => {
     setOptions((prev: UpdateEventArgsSchemaType) => ({
       ...prev,
@@ -41,54 +31,12 @@ export const useCancelEvent = (
     }));
   };
 
-  async function handleUpdateResult(
-    updateStatus: "success" | "failure" | undefined,
-  ): Promise<void> {
-    if (updateStatus === "success") {
-      void executeCreateNotifications();
-
-      dispatch(
-        enqueueSnackbar({
-          kind: "changeEventScheduling",
-          status: "success",
-        }),
-      );
-
-      dispatch(getGroupEvents({ status: "refreshing" }));
-    } else {
-      dispatch(
-        enqueueSnackbar({
-          kind: "changeEventScheduling",
-          status: "failed",
-        }),
-      );
-    }
-  }
-
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ): Promise<void> => {
     e.preventDefault();
-    dispatch(
-      enqueueSnackbar({ kind: "changeEventScheduling", status: "pending" }),
-    );
-
-    try {
-      const result = await trpcClient.events.write.update.mutate(options);
-      if (!result?.updateStatus) {
-        throw new Error(`Error attempting to cancel event`);
-      }
-      handleUpdateResult(result.updateStatus);
-      dispatch(
-        enqueueSnackbar({ kind: "changeEventScheduling", status: "success" }),
-      );
-      dispatch(enqueueDrawer(null));
-    } catch (err) {
-      logCaughtError("useCancelEvent.handleSubmit()", err);
-      dispatch(
-        enqueueSnackbar({ kind: "changeEventScheduling", status: "failed" }),
-      );
-    }
+    await dispatch(updateEventStatus(options));
+    await service.createScheduleNotification(event, options);
   };
 
   return {

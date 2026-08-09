@@ -12,7 +12,6 @@ import {
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import type { JSX } from "react";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import EventCancelledOverlay from "../../feedback/info/eventCancelledOverlay";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import {
