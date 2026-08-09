@@ -30,6 +30,10 @@ const alertMessages: AlertMessages = {
     success: "",
     error: "Invalid email submitted",
   },
+  leaveGroup: {
+    success: "Left group successfully",
+    error: "Failed to cancel membership",
+  },
 };
 
 export { alertMessages };

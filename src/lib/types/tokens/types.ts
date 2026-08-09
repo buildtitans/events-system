@@ -57,6 +57,7 @@ type AlertMessages = {
   resetLinkSent: Record<AlertKind, string>;
   passwordReset: Record<AlertKind, string>;
   invalidEmail: Record<AlertKind, string>;
+  leaveGroup: Record<AlertKind, string>;
 };
 
 type AlertMessagesType =

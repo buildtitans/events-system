@@ -5,10 +5,11 @@ import {
   createAsyncThunk,
   GetThunkAPI,
 } from "@reduxjs/toolkit";
-import { appendNewNotification } from "./notificationSlice";
+import { appendNewNotification, markSeen } from "./notificationSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { ScheduleNotificationService } from "../../services/notifications/scheduleNotificationService";
+import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
+import { NewAndSeenNotifications } from "./types";
 const service = new ScheduleNotificationService(trpcClient);
 
 type NotifyNewEventParams = {
@@ -41,6 +42,32 @@ export const notifyNewEvent = createAsyncThunk(
       return result;
     } catch (err) {
       logCaughtError("NotificationSlice.notifyNewEvent()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const markOpenedNotifications = createAsyncThunk(
+  "UserSlice/markOpenedNotifications",
+  async (
+    newNotifications: NewAndSeenNotifications["new"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    try {
+      const result =
+        await trpcClient.notifications.write.markOpened.mutate(
+          newNotifications,
+        );
+
+      if (!result.ok) {
+        throw new Error("Failed to mark opened notifications");
+      }
+
+      thunkAPI.dispatch(markSeen());
+
+      return result;
+    } catch (err) {
+      logCaughtError("UserSlice.markOpenedNotifications()", err);
       return thunkAPI.rejectWithValue(err);
     }
   },
