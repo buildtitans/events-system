@@ -1,0 +1,38 @@
+import { HydrateUserService } from "@/src/lib/store/services/hydration/hydrateUserService";
+import type { TrpcClientType } from "@/src/trpc/trpcClient";
+
+describe("HydrateUserService", () => {
+  it("returns new notifications", async () => {
+    const notifications = [{ id: "notification-1" }];
+    const query = jest.fn().mockResolvedValue(notifications);
+    const service = new HydrateUserService({
+      notifications: { select: { new: { query } } },
+    } as unknown as TrpcClientType);
+
+    await expect(service.notifications()).resolves.toBe(notifications);
+  });
+
+  it("hydrates participations and requests next events by membership group id", async () => {
+    const rsvps = [{ event_id: "event-1" }];
+    const memberships = [{ group_id: "group-1" }, { group_id: "group-2" }];
+    const lookup = { "group-1": { id: "event-2" } };
+    const nextEvents = jest.fn().mockResolvedValue(lookup);
+    const service = new HydrateUserService({
+      eventAttendants: {
+        select: { rsvps: { query: jest.fn().mockResolvedValue(rsvps) } },
+      },
+      users: {
+        select: {
+          memberships: { query: jest.fn().mockResolvedValue(memberships) },
+        },
+      },
+      groups: { lookup: { nextEvents: { query: nextEvents } } },
+    } as unknown as TrpcClientType);
+
+    await expect(service.participations()).resolves.toEqual({
+      participations: { rsvps, memberships },
+      lookup,
+    });
+    expect(nextEvents).toHaveBeenCalledWith(["group-1", "group-2"]);
+  });
+});
