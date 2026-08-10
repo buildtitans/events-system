@@ -1,5 +1,6 @@
 import { trpcClient } from "@/src/trpc/trpcClient";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { NewAndSeenNotifications } from "./types";
 import {
   AsyncThunkConfig,
   createAsyncThunk,
@@ -9,7 +10,6 @@ import { appendNewNotification, markSeen } from "./notificationSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
-import { NewAndSeenNotifications } from "./types";
 const service = new ScheduleNotificationService(trpcClient);
 
 type NotifyNewEventParams = {

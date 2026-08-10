@@ -200,9 +200,13 @@ function createMockAuthRepo() {
 
 function createMockNotificationsRepo() {
   return {
-    markOpenedNotifications: jest.fn(),
-    getUnseenNotifications: jest.fn(),
-    addNewNotifications: jest.fn(),
+    select: {
+      getUnseenNotifications: jest.fn(),
+    },
+    write: {
+      markOpenedNotifications: jest.fn(),
+      addNewNotifications: jest.fn(),
+    },
   } as unknown as NotificationsRepository;
 }
 

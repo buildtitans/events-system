@@ -1,7 +1,10 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import { EventAttendantsReader } from "./eventAttendantsReader";
+import {
+  EventAttendantsReader,
+  IEventAttendantsReader,
+} from "./eventAttendantsReader";
 import {
   EventAttendantsSelector,
   IEventAttendantsSelector,
@@ -20,7 +23,7 @@ export class EventAttendantsRepository implements IEventAttendantsRepository {
   public readonly select: IEventAttendantsSelector;
   public readonly write: IEventAttendantsWriter;
   private readonly validator: EventAttendantsValidator;
-  private readonly read: EventAttendantsReader;
+  private readonly read: IEventAttendantsReader;
 
   constructor(private readonly db: Kysely<DB>) {
     this.validator = new EventAttendantsValidator();

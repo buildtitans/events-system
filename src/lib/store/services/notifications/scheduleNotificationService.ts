@@ -6,6 +6,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { TrpcClientType } from "@/src/trpc/trpcClient";
 import { NotificationCreationProcedure } from "@/src/server/core/db/access/types/types";
+import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 
 export class ScheduleNotificationService {
   constructor(private readonly trpc: TrpcClientType) {}
@@ -21,7 +22,7 @@ export class ScheduleNotificationService {
       priority: "low",
       group_id: event.group_id,
       message: ` New event: ${event.title} scheduled for ${date}`,
-    };
+    } satisfies CreateNotificationSchemaType;
 
     return await this.trpc.notifications.write.create.mutate(notification);
   }
@@ -35,7 +36,7 @@ export class ScheduleNotificationService {
       group_id: event.group_id,
       subject: "Event Status Update",
       message: this.getScheduleNotificationMessage(event, updates),
-    };
+    } satisfies CreateNotificationSchemaType;
     return await this.trpc.notifications.write.create.mutate(notification);
   }
 

@@ -3,8 +3,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { enqueueAlert, enqueueSnackbar } from "../rendering/RenderingSlice";
+import {
+  enqueueAlert,
+  enqueueDrawer,
+  enqueueSnackbar,
+} from "../rendering/RenderingSlice";
 import { wait } from "@/src/lib/utils/rendering/wait";
+import { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
+import { resetPassword } from "./userSlice";
 
 export const leaveGroup = createAsyncThunk(
   "UserSlice/leaveGroup",
@@ -32,6 +38,41 @@ export const leaveGroup = createAsyncThunk(
     } catch (err) {
       logCaughtError("UserSlice.leaveGroup()", err);
       thunkAPI.dispatch(enqueueAlert({ action: "leaveGroup", kind: "error" }));
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const resetUserPassword = createAsyncThunk(
+  "AuthSlice/resetPassword",
+  async (
+    args: {
+      newPassword: LoginCredentialsSchemaType["password"];
+      token: string;
+    },
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(resetPassword({ status: "pending" }));
+
+    try {
+      const result = await trpcClient.users.credentials.resetPassword.mutate({
+        password: args.newPassword,
+        token: args.token,
+      });
+
+      thunkAPI.dispatch(resetPassword({ status: "ready", data: result }));
+      thunkAPI.dispatch(
+        enqueueAlert({ action: "passwordReset", kind: "success" }),
+      );
+      thunkAPI.dispatch(enqueueDrawer("sign in drawer"));
+
+      return result;
+    } catch (err) {
+      logCaughtError("AuthSlice.resetUserPassword()", err);
+      thunkAPI.dispatch(
+        enqueueAlert({ action: "passwordReset", kind: "error" }),
+      );
+
       return thunkAPI.rejectWithValue(err);
     }
   },

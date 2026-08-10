@@ -2,7 +2,28 @@ import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
 import { SelectedAttendant } from "../../types/types";
 
-export class EventAttendantsReader {
+export interface IEventAttendantsReader {
+  rawRsvp({
+    user_id,
+    event_id,
+  }: {
+    user_id: string;
+    event_id: string;
+  }): Promise<{ status: string } | undefined>;
+  allRawRecords(): Promise<Selectable<EventAttendants>[]>;
+  userRecords(user_id: string): Promise<Selectable<EventAttendants>[]>;
+  rawAttendant({
+    user_id,
+    event_id,
+  }: {
+    user_id: string;
+    event_id: string;
+  }): Promise<SelectedAttendant>;
+  allRawAttendants(event_id: string): Promise<Selectable<EventAttendants>[]>;
+  rawPastRecords(ids: string[]): Promise<Selectable<EventAttendants>[]>;
+}
+
+export class EventAttendantsReader implements IEventAttendantsReader {
   constructor(private readonly db: Kysely<DB>) {}
 
   async rawRsvp({
@@ -24,7 +45,7 @@ export class EventAttendantsReader {
     return await this.db.selectFrom("event_attendants").selectAll().execute();
   }
 
-  async userRecords(user_id: string) {
+  async userRecords(user_id: string): Promise<Selectable<EventAttendants>[]> {
     return await this.db
       .selectFrom("event_attendants")
       .selectAll()

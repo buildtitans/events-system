@@ -16,7 +16,7 @@ describe("NotificationService.createNotification", () => {
 
   const newNotification = {
     group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-    priority: "string",
+    priority: "high",
     message: "string",
     subject: "string",
   } satisfies NewNotification;
@@ -31,7 +31,8 @@ describe("NotificationService.createNotification", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    addNewNotificationsInDb = db.notifications.addNewNotifications as jest.Mock;
+    addNewNotificationsInDb = db.notifications.write
+      .addNewNotifications as jest.Mock;
     getMemberIdsInDb = db.groupMembers.select.memberIds as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
@@ -108,7 +109,7 @@ describe("NotificationService.getNewNotifications", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    getUnseenNotificationsInDb = db.notifications
+    getUnseenNotificationsInDb = db.notifications.select
       .getUnseenNotifications as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
@@ -160,7 +161,7 @@ describe("NotificationService.markSeen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    markOpenedNotificationsInDb = db.notifications
+    markOpenedNotificationsInDb = db.notifications.write
       .markOpenedNotifications as jest.Mock;
     service = new NotificationService(db, policyMock);
   });

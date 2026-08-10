@@ -1,13 +1,9 @@
-import { trpcClient } from "@/src/trpc/trpcClient";
+"use client";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/src/lib/store";
-import { resetPassword } from "@/src/lib/store/slices/user/userSlice";
 import React, { useMemo, useState } from "react";
-import {
-  enqueueAlert,
-  enqueueDrawer,
-} from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useRouter } from "next/navigation";
+import { resetUserPassword } from "@/src/lib/store/slices/user/thunks";
 
 type NewPasswordState = {
   password: string;
@@ -79,22 +75,12 @@ export const useResetPassword = (token: string): ResetPasswordHook => {
   const submitPwReset = async () => {
     if (!isSubmittable) return;
 
-    dispatch(resetPassword({ status: "pending" }));
+    const result = await dispatch(
+      resetUserPassword({ newPassword: newPassword.confirmPassword, token }),
+    ).unwrap();
 
-    try {
-      const res = await trpcClient.users.credentials.resetPassword.mutate({
-        password: newPassword.password,
-        token,
-      });
-
-      dispatch(resetPassword({ status: "ready", data: res }));
-      dispatch(enqueueAlert({ kind: "success", action: "passwordReset" }));
+    if (result.ok) {
       router.push("/");
-      dispatch(enqueueDrawer("sign in drawer"));
-    } catch (err) {
-      console.error(err);
-      dispatch(resetPassword({ status: "failed", error: `${err}` }));
-      dispatch(enqueueAlert({ kind: "error", action: "passwordReset" }));
     }
   };
 
