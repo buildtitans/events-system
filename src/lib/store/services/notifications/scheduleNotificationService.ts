@@ -8,7 +8,18 @@ import { TrpcClientType } from "@/src/trpc/trpcClient";
 import { NotificationCreationProcedure } from "@/src/server/core/db/access/types/types";
 import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 
-export class ScheduleNotificationService {
+interface IScheduleNotificationService {
+  createNewEventNotification(
+    event: EventSchemaType,
+    group: GroupSchemaType,
+  ): Promise<NotificationCreationProcedure>;
+  createScheduleNotification(
+    event: EventSchemaType,
+    updates: UpdateEventArgsSchemaType,
+  ): Promise<NotificationCreationProcedure>;
+}
+
+export class ScheduleNotificationService implements IScheduleNotificationService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   public async createNewEventNotification(

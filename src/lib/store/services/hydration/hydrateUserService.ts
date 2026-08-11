@@ -8,12 +8,17 @@ import {
   ParticipationsStatePayload,
 } from "@/src/lib/store/slices/user/types";
 
+interface IHydrateUserService {
+  notifications(): Promise<NotificationSchemaType[]>;
+  participations(): Promise<UserParticipationsResult>;
+}
+
 export type UserParticipationsResult = {
   participations: ParticipationsStatePayload;
   lookup: NextGroupEventLookupMapType;
 };
 
-export class HydrateUserService {
+export class HydrateUserService implements IHydrateUserService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   public async notifications(): Promise<NotificationSchemaType[]> {

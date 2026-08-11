@@ -3,7 +3,11 @@ import type { TrpcClientType } from "@/src/trpc/trpcClient";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import type { SyncOpenGroupPayload } from "@/src/lib/store/services/types";
 
-export class HydrateOpenGroupService {
+interface IHydrateOpenGroupService {
+  hydrate(slug: GroupSchemaType["slug"]): Promise<SyncOpenGroupPayload>;
+}
+
+export class HydrateOpenGroupService implements IHydrateOpenGroupService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   public async hydrate(

@@ -7,6 +7,7 @@ import {
   LocationType,
   SuggestAddressesResults,
 } from "./types";
+import { GEOAPIFY_DEFAULT_URL_PARAMS } from "../../lib/config/geoApifyUrlParamsConfig";
 
 export class GeoApifySearch implements IGeoApifySearch {
   private readonly apiKey: GeoapifyConfig["geoApifyKey"];
@@ -33,17 +34,23 @@ export class GeoApifySearch implements IGeoApifySearch {
     return await this.queryGeoApify(query);
   }
 
+  private getBaselineParameters(): URL {
+    const url = new URL(this.geoapifyUrl);
+
+    url.searchParams.set("filter", GEOAPIFY_DEFAULT_URL_PARAMS.filter);
+    url.searchParams.set("limit", GEOAPIFY_DEFAULT_URL_PARAMS.limit);
+    url.searchParams.set("lang", GEOAPIFY_DEFAULT_URL_PARAMS.lang);
+    url.searchParams.set("format", GEOAPIFY_DEFAULT_URL_PARAMS.format);
+    return url;
+  }
+
   private formQuery(
     address: string,
     locationKind: LocationType = "street",
   ): string {
-    const url = new URL(this.geoapifyUrl);
+    const url = this.getBaselineParameters();
     url.searchParams.set("text", address);
     url.searchParams.set("type", locationKind);
-    url.searchParams.set("filter", "countrycode:us");
-    url.searchParams.set("limit", "10");
-    url.searchParams.set("lang", "en");
-    url.searchParams.set("format", "json");
     url.searchParams.set("apiKey", this.apiKey);
 
     return url.toString();

@@ -3,12 +3,16 @@ import type { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
+interface IGroupFilterService {
+  filter(args: GroupFilterArgs): Promise<GroupSchemaType[]>;
+}
+
 export type GroupFilterArgs =
   | { filter: "popular" }
   | { filter: "all" }
   | { filter: "category"; categoryId: CategorySchemaType["id"] };
 
-export class GroupFilterService {
+export class GroupFilterService implements IGroupFilterService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   public async filter(args: GroupFilterArgs): Promise<GroupSchemaType[]> {

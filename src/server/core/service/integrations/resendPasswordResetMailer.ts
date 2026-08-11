@@ -1,8 +1,12 @@
 import { Resend } from "resend";
 import type { CreateEmailOptions, CreateEmailResponseSuccess } from "resend";
-import { ResendVariables } from "../../lib/init/resendSecrets";
+import { ResendVariables } from "@/src/server/core/lib/init/resendSecrets";
 
-export class ResendPasswordResetMailer {
+export interface IResendPasswordResetMailer {
+  sendEmail(token: string, email: string): Promise<CreateEmailResponseSuccess>;
+}
+
+export class ResendPasswordResetMailer implements IResendPasswordResetMailer {
   private readonly baseResetUrl: ResendVariables["resendUrl"];
   private readonly resendKey: ResendVariables["resendKey"];
   private readonly resend: Resend;

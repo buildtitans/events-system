@@ -1,18 +1,14 @@
-import { ResendVariables } from "../../lib/init/resendSecrets";
-import { ResendPasswordResetMailer } from "../integrations/resendPasswordResetMailer";
+import { IResendPasswordResetMailer } from "@/src/server/core/service/integrations/resendPasswordResetMailer";
 import {
   IPasswordResetEmailService,
   PasswordResetEmailServiceDB,
 } from "./types";
 
 export class PasswordResetEmailService implements IPasswordResetEmailService {
-  private readonly mailer: ResendPasswordResetMailer;
   constructor(
     private readonly db: PasswordResetEmailServiceDB,
-    private readonly resendSecrets: ResendVariables,
-  ) {
-    this.mailer = new ResendPasswordResetMailer(this.resendSecrets);
-  }
+    private readonly mailer: IResendPasswordResetMailer,
+  ) {}
 
   async request(email: string): Promise<{ ok: true }> {
     const result = await this.db.auth.requestPasswordReset(email);
