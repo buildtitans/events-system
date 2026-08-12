@@ -36,9 +36,9 @@ export default function SelectActiveGroupsFilter(): JSX.Element {
           <Chip
             key={option.filter}
             label={option.label}
-            variant="filled"
+            variant={"filled"}
             size={isMobile ? "small" : "medium"}
-            component="button"
+            component={"button"}
             onClick={() => selectFilter(option)}
             sx={getGroupsFilterChipSx(
               filterArgs.filter === option.filter,

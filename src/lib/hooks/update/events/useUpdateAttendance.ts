@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { UpdateAttendanceStatusHook } from "../../types/hooks/types";
+import { UpdateAttendanceStatusHook } from "@/src/lib/types/hooks/types";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import { AppDispatch } from "@/src/lib/store";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { updateRSVP } from "../../store/slices/events/thunks";
+import { updateRSVP } from "@/src/lib/store/slices/events/thunks";
 
 export type NewAttendanceStatus = EventAttendantStatusSchemaType | null;
 

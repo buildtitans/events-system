@@ -130,6 +130,7 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to refresh archived events",
       };
+      state.archivesAttendance = {};
     });
 
     builder.addCase(refreshArchivedEvents.pending, (state: InitialState) => {
@@ -145,8 +146,17 @@ const OpenedGroupSlice = createSlice({
           archivedAttendanceRecords: PastEventAttendanceLookup;
         }>,
       ) => {
-        state.archives = { status: "ready", data: action.payload.archives };
-        state.archivesAttendance = action.payload.archivedAttendanceRecords;
+        const payload = action.payload;
+        if (payload.archives.length > 0) {
+          state.archives = { status: "ready", data: payload.archives };
+          state.archivesAttendance = payload.archivedAttendanceRecords;
+        } else {
+          state.archives = {
+            status: "n/a",
+            message: "This group has no archived events",
+          };
+          state.archivesAttendance = {};
+        }
       },
     );
 

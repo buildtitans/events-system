@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import Box from "@mui/material/Box";
 import NotificationsList from "./notificationsList";
 import NotificationBadge from "../../../../ui/badges/notificationBadge";
-import { useNotificationsMenu } from "@/src/lib/hooks/update/useNotificationsMenu";
+import { useNotificationsMenu } from "@/src/lib/hooks/update/notifications/useNotificationsMenu";
 
 export default function Notifications() {
   const { notifications, newNotifications, props, handleOpen } =
@@ -25,10 +25,7 @@ export default function Notifications() {
         />
       </Box>
       {notifications.status === "ready" && (
-        <NotificationsList
-          props={props}
-          notifications={newNotifications}
-        />
+        <NotificationsList props={props} notifications={newNotifications} />
       )}
     </Fragment>
   );

@@ -24,12 +24,6 @@ type SnackbarMessages = {
 export type HTMLInputField = React.ChangeEvent<
   HTMLInputElement | HTMLTextAreaElement
 >;
-export interface ValidateCredentialsHookArgs {
-  credentials: LoginCredentials;
-  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>;
-  emailRef: RefObject<HTMLInputElement | null>;
-  passwordRef: RefObject<HTMLInputElement | null>;
-}
 
 type LoginCredentials = {
   email: string;

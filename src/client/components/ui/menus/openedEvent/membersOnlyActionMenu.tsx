@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { useLeaveGroup } from "@/src/lib/hooks/update/useLeaveGroup";
+import { useLeaveGroup } from "@/src/lib/hooks/update/memberships/useLeaveGroup";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import {
   groupSidebarActionCardSx,

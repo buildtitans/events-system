@@ -19,6 +19,12 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 import { addGroup } from "./GroupsSlice";
+import {
+  getGroupHistory,
+  getPastEventsAttendanceRecords,
+  populateGroupArchives,
+} from "./OpenedGroupSlice";
+import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
 
 export const hydrateGroup = createAsyncThunk(
   "OpenedGroup/hydrate",
@@ -42,6 +48,40 @@ export const hydrateGroup = createAsyncThunk(
       return results.data;
     } catch (err) {
       logCaughtError("OpenedGroupSlice.hydrateGroup()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const hydrateGroupHistory = createAsyncThunk(
+  "OpenedGroupSlice/hydrageGroupHistory",
+  async (
+    id: GroupSchemaType["id"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(getGroupHistory({ status: "pending" }));
+
+    try {
+      const { pastEventsRecords, history } =
+        await trpcClient.events.select.history.query(id);
+
+      if (history.length > 0) {
+        const sorted = sortByDate(history);
+        thunkAPI.dispatch(getGroupHistory({ status: "ready", data: sorted }));
+        thunkAPI.dispatch(getPastEventsAttendanceRecords(pastEventsRecords));
+      } else {
+        thunkAPI.dispatch(
+          getGroupHistory({ status: "n/a", message: "No history to display" }),
+        );
+      }
+    } catch (err) {
+      logCaughtError("OpenedGroupSlice.hydrageGroupHistory()", err);
+      thunkAPI.dispatch(
+        getGroupHistory({
+          status: "failed",
+          error: "Failed to hydrate group history",
+        }),
+      );
       return thunkAPI.rejectWithValue(err);
     }
   },
@@ -75,6 +115,8 @@ export const refreshArchivedEvents = createAsyncThunk(
     id: GroupSchemaType["id"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
+    thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
+
     try {
       const { archives, archivedAttendanceRecords } =
         await trpcClient.events.select.archives.query(id);
