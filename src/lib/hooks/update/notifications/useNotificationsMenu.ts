@@ -6,7 +6,7 @@ import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { markOpenedNotifications } from "@/src/lib/store/slices/notifications/thunks";
 import { useRouter } from "next/navigation";
-import { slugByGroupId } from "../../utils/rendering/slugByGroupId";
+import { slugByGroupId } from "../../../utils/rendering/slugByGroupId";
 
 export const useNotificationsMenu = () => {
   const router = useRouter();

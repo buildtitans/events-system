@@ -1,7 +1,6 @@
 import type { Dayjs } from "dayjs";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers";
 import type { DateTimeValidationError } from "@mui/x-date-pickers";
-import { OrganizerAndUserIdsType } from "@/src/lib/utils/parsing/getIdsBySlug";
 import type {
   EventsStateType,
   EventDisplayFilter,
@@ -18,7 +17,7 @@ import {
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import React from "react";
-import type { SyntheticEvent, ChangeEvent, RefObject } from "react";
+import type { SyntheticEvent } from "react";
 import type {
   AutocompleteInputChangeReason,
   AutocompleteChangeReason,
@@ -27,32 +26,7 @@ import type {
   AutoCompleteSearch,
   SuggestionType,
 } from "../../hooks/search/types";
-import { InputErrorsType } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import { LoginCredentials } from "../tokens/types";
-import { AuthenticationState } from "../../store/slices/auth/types";
-
-export type RBACType = Record<
-  GroupMemberSchemaType["group_id"],
-  GroupMemberSchemaType["role"]
->;
-
-export type ValidateSignupCredsHook = {
-  handleEmailInput: (
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => Promise<void>;
-  handlePasswordInput: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => Promise<void>;
-  handleConfirmingPassword: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => Promise<void>;
-  password: string;
-  email: string;
-  messages: { authState: AuthenticationState; inputErrors: InputErrorsType };
-  isValidated: boolean;
-  emailRef: RefObject<HTMLInputElement | null>;
-  passwordRef: RefObject<HTMLInputElement | null>;
-};
 
 export type NewEventInput = {
   title: EventSchemaType["title"];
@@ -125,35 +99,6 @@ export type CreateNewGroupHook = {
   ) => void;
 };
 
-export type CredentialsInputErrors = {
-  emailErrorMessage: string;
-  emailError: boolean;
-  passwordError: boolean;
-  passwordErrorMessage: string;
-};
-
-type CredentialsValidationErrors = {
-  authState: AuthenticationState;
-  inputErrors: CredentialsInputErrors;
-};
-
-type ValidateCredentialsHook = {
-  isSubmittable: boolean;
-  errors: CredentialsValidationErrors;
-  handleEmail: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  handlePassword: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-};
-
-type GetGroupRoleAndIdHook = {
-  groupID: OrganizerAndUserIdsType["groupId"];
-  roleType: GroupMemberSchemaType["role"];
-  groupName: GroupSchemaType["name"];
-};
-
 export type LoginResType =
   | {
       status: "ok";
@@ -195,23 +140,21 @@ type CancelEventHook = {
   handleSubmit: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
 };
 
-type RemoveUserFromGroupHook = {
+type LeaveGroupHook = {
   removeUserFromGroup: (
     group_id: GroupMemberSchemaType["user_id"],
   ) => Promise<void>;
 };
 
 export type {
-  GetGroupRoleAndIdHook,
   CreateEventHook,
   UseLoginHook,
   GetGroupMembersHook,
   JoinGroupHook,
   UpdateAttendanceStatusHook,
-  ValidateCredentialsHook,
   CancelEventHook,
   ChangeActiveCategoryHook,
   AppSearchSearchHook,
-  RemoveUserFromGroupHook,
+  LeaveGroupHook,
   NewUser,
 };

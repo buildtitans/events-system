@@ -11,7 +11,7 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import { createInitialNewEventState } from "@/src/lib/utils/newEvent/createInitialNewEventState";
 import { scheduleNewEvent } from "@/src/lib/store/slices/groups/thunks";
-import { useCreateNotifications } from "@/src/lib/hooks/update/useCreateNotifications";
+import { useCreateNotifications } from "@/src/lib/hooks/update/notifications/useCreateNotifications";
 import { assertSchema } from "@/src/lib/utils/assert/assertSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { disableCreateEventButton } from "@/src/lib/utils/helpers/rendering/disableCreateEventButton";

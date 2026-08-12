@@ -1,6 +1,6 @@
 "use client";
 import { Provider } from "react-redux";
-import { useEffect } from "react";
+import { JSX, useEffect } from "react";
 import { initializeDomains } from "@/src/lib/store/slices/rendering/RenderingSlice";
 import { useInitializeDomains } from "@/src/lib/hooks/hydration/domains/useInitializeDomains";
 import { useInitializeStore } from "@/src/lib/hooks/hydration/domains/useInitializeStore";
@@ -9,7 +9,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function ReduxProvider({ children }: Props) {
+export default function ReduxProvider({ children }: Props): JSX.Element {
   const { store, onStart, onFailure } = useInitializeStore();
   const { syncResult } = useInitializeDomains({ onStart, onFailure });
 

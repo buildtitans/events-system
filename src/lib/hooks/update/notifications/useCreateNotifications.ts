@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { notifyNewEvent } from "../../store/slices/notifications/thunks";
+import { notifyNewEvent } from "@/src/lib/store/slices/notifications/thunks";
 
 export const useCreateNotifications = () => {
   const group = useSelector((s: RootState) => s.openGroup.group);

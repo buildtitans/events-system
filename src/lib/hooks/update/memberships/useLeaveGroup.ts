@@ -2,10 +2,10 @@
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/lib/store";
-import { RemoveUserFromGroupHook } from "@/src/lib/types/hooks/types";
+import { LeaveGroupHook } from "@/src/lib/types/hooks/types";
 import { leaveGroup } from "@/src/lib/store/slices/user/thunks";
 
-export const useLeaveGroup = (): RemoveUserFromGroupHook => {
+export const useLeaveGroup = (): LeaveGroupHook => {
   const snackbarStatus = useSelector(
     (s: RootState) => s.rendering.snackbar.status,
   );
