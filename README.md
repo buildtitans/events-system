@@ -46,8 +46,14 @@ The client uses Redux Toolkit for shared application state and async workflow
 orchestration. Dynamic data is represented with discriminated unions so loading,
 ready, empty, and failed states are explicit and exhaustively rendered.
 
-React hooks remain focused on component interaction and local form state, while
-async thunks coordinate tRPC requests and related store updates.
+Authentication forms use React Hook Form with uncontrolled Material UI inputs.
+Focused form hooks own field registration, client-side validation, submission
+state, and validated submit handlers, while components own layout and error
+presentation. Authentication hooks receive validated values and remain focused
+on application actions. Server-side validation remains authoritative.
+
+Outside forms, React hooks remain focused on component interaction and local UI
+state, while async thunks coordinate tRPC requests and related store updates.
 
 ### Server
 

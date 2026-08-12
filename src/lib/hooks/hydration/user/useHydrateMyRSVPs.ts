@@ -12,7 +12,7 @@ import {
   ParticipationsStatePayload,
 } from "@/src/lib/store/slices/user/types";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { HydrateUserService } from "@/src/lib/store/services/hydrateUserService";
+import { HydrateUserService } from "@/src/lib/store/services/hydration/hydrateUserService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 type TrpcResults = {

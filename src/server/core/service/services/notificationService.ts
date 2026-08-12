@@ -17,7 +17,7 @@ export class NotificationService implements INotificationService {
     user_id: string | null | undefined,
   ): Promise<NotificationSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    return this.db.notifications.getUnseenNotifications(userId);
+    return this.db.notifications.select.getUnseenNotifications(userId);
   }
 
   async createNotification(
@@ -31,7 +31,7 @@ export class NotificationService implements INotificationService {
       notification.group_id,
     );
 
-    return await this.db.notifications.addNewNotifications(
+    return await this.db.notifications.write.addNewNotifications(
       notification,
       memberIds,
     );
@@ -47,7 +47,7 @@ export class NotificationService implements INotificationService {
 
     const ids = seenNotifications.map((notif) => notif.id);
 
-    const result = await this.db.notifications.markOpenedNotifications({
+    const result = await this.db.notifications.write.markOpenedNotifications({
       ids: ids,
       userId,
     });

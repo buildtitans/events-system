@@ -7,6 +7,7 @@ import {
   authFieldLabelSx,
 } from "@/src/client/styles/sx/authDrawer";
 import RenderEmailInputField from "@/src/client/components/pipelines/forms/renderEmailInputField";
+import type { RefObject } from "react";
 
 export type EmailInputProps = {
   emailErrorMessage: string;
@@ -15,6 +16,7 @@ export type EmailInputProps = {
   ) => void;
   emailError: boolean;
   authState: AuthenticationState;
+  emailRef: RefObject<HTMLInputElement | null>;
 };
 
 function Email({
@@ -22,6 +24,7 @@ function Email({
   handleEmail,
   emailError,
   authState,
+  emailRef,
 }: EmailInputProps): JSX.Element {
   return (
     <FormControl fullWidth sx={authFieldControlSx}>
@@ -33,6 +36,7 @@ function Email({
         handleEmail={handleEmail}
         emailError={emailError}
         authState={authState}
+        emailRef={emailRef}
       />
     </FormControl>
   );

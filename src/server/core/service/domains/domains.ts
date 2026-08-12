@@ -5,13 +5,12 @@ import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { SessionService } from "@/src/server/core/service/services/SessionService";
 import { EventService } from "@/src/server/core/service/services/EventService";
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
-import { ResendVariables } from "../../lib/init/resendSecrets";
-import { PasswordResetEmailService } from "../services/passwordResetEmailService";
 import {
   IEventService,
   IGroupService,
   INotificationService,
   IParticipationsService,
+  IPasswordResetEmailService,
   ISessionService,
   IUserService,
 } from "../services/types";
@@ -28,10 +27,9 @@ export class Domains implements IDomains {
   constructor(
     private readonly db: IDBClient,
     private readonly policy: IAuthorization,
-    private readonly resendSecrets: ResendVariables,
+    private readonly emailer: IPasswordResetEmailService,
   ) {
-    const emailer = new PasswordResetEmailService(this.db, this.resendSecrets);
-    this.session = new SessionService(this.db, this.policy, emailer);
+    this.session = new SessionService(this.db, this.policy, this.emailer);
     this.participations = new ParticipationsService(this.db, this.policy);
     this.users = new UserService(this.db, this.policy);
     this.groups = new GroupService(this.db, this.policy);

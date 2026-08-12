@@ -2,7 +2,6 @@ import type {
   EventSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import { toMonthDayYearHour } from "../../parsing/toMonthDayYearHour";
 
@@ -35,18 +34,4 @@ function getScheduleNotificationMessage(
       return `there was an update to the scheduling of "${event.title}"`;
     }
   }
-}
-
-export function createNewEventNotification(
-  event: EventSchemaType,
-  group: GroupSchemaType,
-): CreateNotificationSchemaType {
-  const date = toMonthDayYearHour(event.starts_at);
-
-  return {
-    subject: `${group.name} scheduled a new event`,
-    priority: "low",
-    group_id: event.group_id,
-    message: ` New event: ${event.title} scheduled for ${date}`,
-  };
 }

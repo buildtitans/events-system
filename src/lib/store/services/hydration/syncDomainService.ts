@@ -6,7 +6,11 @@ import type {
 } from "@/src/lib/types/server/types";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
-export class SyncDomainsService {
+interface ISyncDomainsService {
+  sync(): Promise<SyncDomainsType>;
+}
+
+export class SyncDomainsService implements ISyncDomainsService {
   constructor(private readonly client: TrpcClientType) {}
 
   async sync(): Promise<SyncDomainsType> {

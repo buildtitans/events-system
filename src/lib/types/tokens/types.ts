@@ -1,4 +1,4 @@
-import { SetStateAction } from "react";
+import type { RefObject, SetStateAction } from "react";
 
 type PromiseAllSettledResult<T> =
   | PromiseFulfilledResult<T>
@@ -27,6 +27,8 @@ export type HTMLInputField = React.ChangeEvent<
 export interface ValidateCredentialsHookArgs {
   credentials: LoginCredentials;
   setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>;
+  emailRef: RefObject<HTMLInputElement | null>;
+  passwordRef: RefObject<HTMLInputElement | null>;
 }
 
 type LoginCredentials = {
@@ -57,6 +59,7 @@ type AlertMessages = {
   resetLinkSent: Record<AlertKind, string>;
   passwordReset: Record<AlertKind, string>;
   invalidEmail: Record<AlertKind, string>;
+  leaveGroup: Record<AlertKind, string>;
 };
 
 type AlertMessagesType =

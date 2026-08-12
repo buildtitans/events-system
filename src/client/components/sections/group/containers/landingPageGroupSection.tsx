@@ -1,5 +1,4 @@
 "use client";
-import SelectActiveGroupsFilter from "@/src/client/features/group/selectActiveGroupsFilter";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import { JSX, useEffect } from "react";
@@ -9,10 +8,13 @@ import { changeDisplayedGroupFilter } from "@/src/lib/store/slices/groups/Groups
 import { AsyncStateRenderer } from "../../../pipelines/async/asyncStateRenderer";
 import AsyncFailedFallback from "../../../ui/feedback/failure/asyncFailedFallback";
 import GroupsPagesContainer from "./groupsPages";
+import FilterDisplayedGroups from "@/src/client/features/group/filterDisplayedGroups";
 
 export default function LandingPageGroupSection(): JSX.Element {
-  const landingGroupsTab = useSelector((s: RootState) => s.groups.landingGroupsTab);
+  const landingGroupsTab = useSelector((s: RootState) => s.rendering.groupsTab);
   const dispatch = useDispatch<AppDispatch>();
+
+  console.log(landingGroupsTab);
 
   useEffect(() => {
     return () => {
@@ -21,9 +23,7 @@ export default function LandingPageGroupSection(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <Container
-      disableGutters
-    >
+    <Container disableGutters>
       <Stack
         minHeight={800}
         gap={2}
@@ -31,13 +31,13 @@ export default function LandingPageGroupSection(): JSX.Element {
         alignItems={"start"}
         justifyContent={"start"}
       >
-        <SelectActiveGroupsFilter 
-        />
+        <FilterDisplayedGroups />
 
-        <AsyncStateRenderer state={landingGroupsTab} empty={(message) => <AsyncFailedFallback message={message} />}>
-        {(state) => (
-          <GroupsPagesContainer groupsPages={state}/>
-        )}
+        <AsyncStateRenderer
+          state={landingGroupsTab}
+          empty={(message) => <AsyncFailedFallback message={message} />}
+        >
+          {(state) => <GroupsPagesContainer groupsPages={state} />}
         </AsyncStateRenderer>
       </Stack>
     </Container>

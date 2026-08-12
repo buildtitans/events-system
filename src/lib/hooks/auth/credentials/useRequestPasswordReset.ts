@@ -1,40 +1,47 @@
+"use client";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import {
-  InputErrorsType,
-  SignupCredentialsType,
-} from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
+import { emailFormat } from "@/src/lib/utils/regex/regex";
 import { requestResetPassword } from "@/src/lib/store/slices/user/userSlice";
 import {
   enqueueAlert,
   enqueueSnackbar,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import React, { SetStateAction } from "react";
 
-type RequestPasswordResetHookParameters = {
-  emailError: InputErrorsType["invalidEmail"];
-  email: SignupCredentialsType["email"];
-  setOpen: React.Dispatch<SetStateAction<boolean>>;
+type RequestPasswordResetValues = {
+  email: string;
 };
 
-type RequestPasswordResetHook = {
-  submitPasswordResetRequest: () => Promise<void>;
+type UseRequestPasswordResetOptions = {
+  onSuccess?: () => void;
 };
 
 export const useRequestPasswordReset = ({
-  emailError,
-  email,
-  setOpen,
-}: RequestPasswordResetHookParameters): RequestPasswordResetHook => {
+  onSuccess,
+}: UseRequestPasswordResetOptions = {}) => {
   const dispatch = useDispatch<AppDispatch>();
+  const resetState = useSelector((state: RootState) => state.user.pwReset);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<RequestPasswordResetValues>({
+    mode: "onTouched",
+    defaultValues: { email: "" },
+  });
 
-  const submitPasswordResetRequest = async () => {
-    if (emailError === "Please enter a valid email") {
-      dispatch(enqueueAlert({ kind: "error", action: "invalidEmail" }));
-      return;
-    }
+  const { ref: emailInputRef, ...emailField } = register("email", {
+    required: "Email is required",
+    pattern: {
+      value: emailFormat,
+      message: "Please enter a valid email",
+    },
+  });
 
+  const requestReset = async ({ email }: RequestPasswordResetValues) => {
     dispatch(requestResetPassword({ status: "pending" }));
     dispatch(enqueueSnackbar({ kind: "pwResetEmail", status: "pending" }));
 
@@ -45,19 +52,27 @@ export const useRequestPasswordReset = ({
     if (result) {
       dispatch(requestResetPassword({ status: "ready", data: result }));
       dispatch(enqueueAlert({ kind: "success", action: "resetLinkSent" }));
-      setOpen(false);
-    } else {
-      dispatch(
-        requestResetPassword({
-          status: "failed",
-          error: "Couldn't send email for reset",
-        }),
-      );
-      dispatch(enqueueAlert({ kind: "error", action: "resetLinkSent" }));
+      reset();
+      onSuccess?.();
+      return;
     }
+
+    dispatch(
+      requestResetPassword({
+        status: "failed",
+        error: "Couldn't send email for reset",
+      }),
+    );
+    dispatch(enqueueAlert({ kind: "error", action: "resetLinkSent" }));
   };
 
   return {
-    submitPasswordResetRequest,
+    emailField: {
+      ...emailField,
+      inputRef: emailInputRef,
+    },
+    emailError: errors.email?.message,
+    isPending: isSubmitting || resetState.status === "pending",
+    onSubmit: handleSubmit(requestReset),
   };
 };

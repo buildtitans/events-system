@@ -2,7 +2,7 @@ import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsS
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import { EventAttendantsReader } from "./eventAttendantsReader";
+import { IEventAttendantsReader } from "./eventAttendantsReader";
 dayjs.extend(utc);
 
 export interface IEventAttendantsSelector {
@@ -23,7 +23,7 @@ export interface IEventAttendantsSelector {
 export class EventAttendantsSelector implements IEventAttendantsSelector {
   constructor(
     private readonly validator: EventAttendantsValidator,
-    private readonly read: EventAttendantsReader,
+    private readonly read: IEventAttendantsReader,
   ) {}
 
   async allRecords(): Promise<EventAttendantsSchemaType[]> {

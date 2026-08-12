@@ -1,11 +1,9 @@
 "use client";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
-import { enqueueSnackbar } from "../../store/slices/rendering/RenderingSlice";
-import { RemoveUserFromGroupHook } from "../../types/hooks/types";
-import { getCurrentRole } from "../../store/slices/viewer/ViewerSlice";
+import { AppDispatch, RootState } from "@/src/lib/store";
+import { RemoveUserFromGroupHook } from "@/src/lib/types/hooks/types";
+import { leaveGroup } from "@/src/lib/store/slices/user/thunks";
 
 export const useLeaveGroup = (): RemoveUserFromGroupHook => {
   const snackbarStatus = useSelector(
@@ -17,27 +15,8 @@ export const useLeaveGroup = (): RemoveUserFromGroupHook => {
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<void> => {
     if (snackbarStatus !== "idle") return;
-    dispatch(enqueueSnackbar({ kind: "leaveGroup", status: "pending" }));
 
-    try {
-      const result = await trpcClient.groupMembers.write.leave.mutate({
-        group_id,
-      });
-
-      dispatch(
-        enqueueSnackbar({
-          kind: "leaveGroup",
-          status: result === true ? "success" : "failed",
-        }),
-      );
-
-      if (result) {
-        dispatch(getCurrentRole("anonymous"));
-      }
-    } catch (err) {
-      dispatch(enqueueSnackbar({ kind: "leaveGroup", status: "failed" }));
-      console.error(err);
-    }
+    await dispatch(leaveGroup(group_id));
   };
 
   return {

@@ -1,17 +1,20 @@
 import { IAuthorization } from "../auth/authorization";
 import { validateLoginCredentials } from "../../lib/validation/validateLoginCredentials";
-import { PasswordResetEmailService } from "./passwordResetEmailService";
 import {
   AuthClientLoginResponse,
   StoredSession,
 } from "../../db/access/types/types";
-import { SessionServiceDb } from "./types";
+import {
+  IPasswordResetEmailService,
+  ISessionService,
+  SessionServiceDb,
+} from "./types";
 
-export class SessionService {
+export class SessionService implements ISessionService {
   constructor(
     private readonly db: SessionServiceDb,
     private readonly policy: IAuthorization,
-    private readonly emailer: PasswordResetEmailService,
+    private readonly emailer: IPasswordResetEmailService,
   ) {}
 
   async login(

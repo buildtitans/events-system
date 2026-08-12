@@ -7,9 +7,9 @@ import {
   IGroupQueryHandler,
   IMembershipHandler,
 } from "../handlers/groups/types";
-import { GroupServiceDb } from "./types";
+import { GroupServiceDb, IGroupService } from "./types";
 
-export class GroupService {
+export class GroupService implements IGroupService {
   public readonly groupLifecycle: IGroupLifecycleHandler;
   public readonly memberships: IMembershipHandler;
   public readonly query: IGroupQueryHandler;

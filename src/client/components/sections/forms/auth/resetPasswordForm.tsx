@@ -1,34 +1,22 @@
 "use client";
+
 import { useResetPassword } from "@/src/lib/hooks/auth/credentials/useResetPassword";
-import Password from "@/src/client/components/sections/inputs/auth/Password";
-import ConfirmPassword from "@/src/client/components/sections/inputs/auth/ConfirmPassword";
-import { RootState } from "@/src/lib/store";
+import { authTextFieldSx } from "@/src/client/styles/sx/authDrawer";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useSelector } from "react-redux";
 
 type ResetPasswordFormProps = {
   token: string | null;
 };
 
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
-  const resetState = useSelector((s: RootState) => s.user.pwReset);
-  const { getInput, submitPwReset, errors, isSubmittable } = useResetPassword(
-    token ?? "",
-  );
-  const authState = useSelector((s: RootState) => s.auth.authenticationState);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await submitPwReset();
-  };
-
-  const isPending = resetState.status === "pending";
-  const isReady = resetState.status === "ready";
+  const { fields, errors, isPending, isComplete, onSubmit } =
+    useResetPassword(token ?? "");
 
   return (
     <Container maxWidth="sm" sx={{ py: { xs: 8, md: 12 } }}>
@@ -57,28 +45,45 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          noValidate
+          onSubmit={onSubmit}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-          <Password
-            handlePassword={(e) => getInput("password", e)}
-            passwordError={errors.invalidPassword !== ""}
-            passwordErrorMessage={errors.invalidPassword}
-            authState={authState}
+          <TextField
+            {...fields.password}
+            inputRef={fields.password.inputRef}
+            id="reset-password"
+            label="New password"
+            placeholder="Enter a new password"
+            type="password"
+            autoComplete="new-password"
+            required
+            fullWidth
+            sx={authTextFieldSx}
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message}
           />
 
-          <ConfirmPassword
-            handleConfirmingPassword={(e) => getInput("confirmPassword", e)}
-            passwordError={errors.confirmPassword !== ""}
-            passwordErrorMessage={errors.confirmPassword}
-            authState={authState}
+          <TextField
+            {...fields.confirmation}
+            inputRef={fields.confirmation.inputRef}
+            id="confirm-reset-password"
+            label="Confirm password"
+            placeholder="Confirm your new password"
+            type="password"
+            autoComplete="new-password"
+            required
+            fullWidth
+            sx={authTextFieldSx}
+            error={Boolean(errors.confirmPassword)}
+            helperText={errors.confirmPassword?.message}
           />
 
           <Button
             type="submit"
             variant="contained"
             size="large"
-            disabled={!isSubmittable || isPending || isReady}
+            disabled={!token || isComplete}
             loading={isPending}
           >
             {isPending ? "Resetting password..." : "Reset password"}

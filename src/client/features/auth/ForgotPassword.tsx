@@ -1,14 +1,13 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
 import { useRequestPasswordReset } from "@/src/lib/hooks/auth/credentials/useRequestPasswordReset";
-import type { SetStateAction } from "react";
 import {
   authDialogActionsSx,
   authDialogContentSx,
@@ -22,21 +21,15 @@ import {
 
 interface ForgotPasswordProps {
   open: boolean;
-  setOpen: React.Dispatch<SetStateAction<boolean>>;
   handleClose: () => void;
 }
 
 export default function ForgotPassword({
   open,
   handleClose,
-  setOpen,
 }: ForgotPasswordProps) {
-  const { messages, handleEmailInput, email } = useValidateSignupCredentials();
-  const { submitPasswordResetRequest } = useRequestPasswordReset({
-    emailError: messages.inputErrors.invalidEmail,
-    email,
-    setOpen,
-  });
+  const { emailField, emailError, isPending, onSubmit } =
+    useRequestPasswordReset({ onSuccess: handleClose });
 
   return (
     <Dialog
@@ -45,10 +38,7 @@ export default function ForgotPassword({
       slotProps={{
         paper: {
           component: "form",
-          onSubmit: (event: React.SubmitEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            handleClose();
-          },
+          onSubmit,
           sx: authDialogPaperSx,
         },
       }}
@@ -59,29 +49,37 @@ export default function ForgotPassword({
           Enter your account&apos;s email address, and we&apos;ll send you a
           link to reset your password.
         </DialogContentText>
-        <OutlinedInput
-          onChange={handleEmailInput}
-          autoFocus
-          required
-          margin="dense"
-          id="email"
-          name="email"
-          label="Email address"
-          placeholder="Email address"
-          type="email"
-          fullWidth
-          sx={authDialogInputSx}
-        />
+        <FormControl error={Boolean(emailError)} fullWidth>
+          <OutlinedInput
+            {...emailField}
+            inputRef={emailField.inputRef}
+            autoFocus
+            required
+            margin="dense"
+            id="reset-email"
+            label="Email address"
+            placeholder="Email address"
+            type="email"
+            autoComplete="email"
+            fullWidth
+            sx={authDialogInputSx}
+          />
+          {emailError && <FormHelperText>{emailError}</FormHelperText>}
+        </FormControl>
       </DialogContent>
       <DialogActions sx={authDialogActionsSx}>
-        <Button onClick={handleClose} sx={authSecondaryButtonSx}>
+        <Button
+          onClick={handleClose}
+          sx={authSecondaryButtonSx}
+          type="button"
+        >
           Cancel
         </Button>
         <Button
-          onClick={submitPasswordResetRequest}
           variant="contained"
           sx={authPrimaryButtonSx}
-          type="button"
+          type="submit"
+          loading={isPending}
         >
           Continue
         </Button>

@@ -1,107 +1,72 @@
-import { trpcClient } from "@/src/trpc/trpcClient";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
-import { resetPassword } from "@/src/lib/store/slices/user/userSlice";
-import React, { useMemo, useState } from "react";
-import {
-  enqueueAlert,
-  enqueueDrawer,
-} from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { useRouter } from "next/navigation";
+"use client";
 
-type NewPasswordState = {
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import type { AppDispatch, RootState } from "@/src/lib/store";
+import { resetUserPassword } from "@/src/lib/store/slices/user/thunks";
+
+type ResetPasswordValues = {
   password: string;
   confirmPassword: string;
 };
 
-type ResetPasswordHook = {
-  errors: {
-    invalidPassword: "" | "Password must be at least 8 characters";
-    confirmPassword: "" | "Password must match";
-  };
-  isSubmittable: boolean;
-  submitPwReset: () => Promise<void>;
-  getInput: (
-    field: keyof NewPasswordState,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-};
-
-type ResetPasswordErrors = ResetPasswordHook["errors"];
-
 const MIN_PASSWORD_LENGTH = 8;
 
-export const useResetPassword = (token: string): ResetPasswordHook => {
-  const [newPassword, setNewPassword] = useState<NewPasswordState>({
-    password: "",
-    confirmPassword: "",
-  });
+export const useResetPassword = (token: string) => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const resetState = useSelector((state: RootState) => state.user.pwReset);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordValues>({
+    mode: "onTouched",
+    defaultValues: { password: "", confirmPassword: "" },
+  });
 
-  const errors = useMemo<ResetPasswordErrors>(
-    () => ({
-      invalidPassword:
-        newPassword.password !== "" &&
-        newPassword.password.length < MIN_PASSWORD_LENGTH
-          ? "Password must be at least 8 characters"
-          : "",
-      confirmPassword:
-        newPassword.confirmPassword !== "" &&
-        newPassword.password !== newPassword.confirmPassword
-          ? "Password must match"
-          : "",
-    }),
-    [newPassword.confirmPassword, newPassword.password],
+  const { ref: passwordInputRef, ...passwordField } = register("password", {
+    required: "Password is required",
+    minLength: {
+      value: MIN_PASSWORD_LENGTH,
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    },
+  });
+  const { ref: confirmationInputRef, ...confirmationField } = register(
+    "confirmPassword",
+    {
+      required: "Please confirm your password",
+      deps: ["password"],
+      validate: (confirmation, values) =>
+        confirmation === values.password || "Password must match",
+    },
   );
 
-  const isSubmittable =
-    token !== "" &&
-    newPassword.password !== "" &&
-    newPassword.confirmPassword !== "" &&
-    errors.invalidPassword === "" &&
-    errors.confirmPassword === "";
+  const resetPassword = async ({ password }: ResetPasswordValues) => {
+    if (!token) return;
 
-  const getInput = (
-    field: keyof NewPasswordState,
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const input = e.target.value;
-    const value = input.trim();
+    const result = await dispatch(
+      resetUserPassword({ newPassword: password, token }),
+    ).unwrap();
 
-    setNewPassword((prev: NewPasswordState) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const submitPwReset = async () => {
-    if (!isSubmittable) return;
-
-    dispatch(resetPassword({ status: "pending" }));
-
-    try {
-      const res = await trpcClient.users.credentials.resetPassword.mutate({
-        password: newPassword.password,
-        token,
-      });
-
-      dispatch(resetPassword({ status: "ready", data: res }));
-      dispatch(enqueueAlert({ kind: "success", action: "passwordReset" }));
-      router.push("/");
-      dispatch(enqueueDrawer("sign in drawer"));
-    } catch (err) {
-      console.error(err);
-      dispatch(resetPassword({ status: "failed", error: `${err}` }));
-      dispatch(enqueueAlert({ kind: "error", action: "passwordReset" }));
-    }
+    if (result.ok) router.push("/");
   };
 
   return {
-    submitPwReset,
-    getInput,
+    fields: {
+      password: {
+        ...passwordField,
+        inputRef: passwordInputRef,
+      },
+      confirmation: {
+        ...confirmationField,
+        inputRef: confirmationInputRef,
+      },
+    },
     errors,
-    isSubmittable,
+    isPending: isSubmitting || resetState.status === "pending",
+    isComplete: resetState.status === "ready",
+    onSubmit: handleSubmit(resetPassword),
   };
 };

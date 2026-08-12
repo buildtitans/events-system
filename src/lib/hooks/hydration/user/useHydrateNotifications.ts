@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "@/src/lib/store";
 import { populateNewNotifications } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { HydrateUserService } from "@/src/lib/store/services/hydrateUserService";
+import { HydrateUserService } from "@/src/lib/store/services/hydration/hydrateUserService";
 
 export const useHydrateNotifications = () => {
   const userKind = useSelector((s: RootState) => s.auth.userKind);

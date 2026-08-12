@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 import { fadeInOut } from "@/src/client/styles/motion/variants";
 import Snackbar from "@mui/material/Snackbar";
 import { JSX, useEffect } from "react";
-import type { RequestStatus, SnackbarMessages } from "@/src/lib/types/tokens/types";
+import type {
+  RequestStatus,
+  SnackbarMessages,
+} from "@/src/lib/types/tokens/types";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
 import { createSnackbarMessages } from "@/src/lib/utils/helpers/messages/createSnackbarMessage";
@@ -12,43 +15,42 @@ import { enqueueSnackbar } from "@/src/lib/store/slices/rendering/RenderingSlice
 const MotionSnackbar = motion(Snackbar);
 
 type AuthenticatonSnackbarProps = {
-    status: RequestStatus;
-    statusKind: keyof SnackbarMessages;
+  status: RequestStatus;
+  statusKind: keyof SnackbarMessages;
 };
 
 function AuthenticatonSnackbar({
-    status,
-    statusKind,
+  status,
+  statusKind,
 }: AuthenticatonSnackbarProps): JSX.Element {
-    const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        if (status === "pending") return;
+  useEffect(() => {
+    if (status === "pending") return;
 
-        const timer = window.setTimeout(() => {
-            dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
-        }, 1500);
+    const timer = window.setTimeout(() => {
+      dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
+    }, 1000);
 
-        return () => clearTimeout(timer);
-    }, [status, dispatch]);
+    return () => clearTimeout(timer);
+  }, [status, dispatch]);
 
-    return (
-        <MotionSnackbar
-            variants={fadeInOut}
-            open={status !== "idle"}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            ContentProps={{
-             sx: {
-                color: (status === 'failed') ? 'red' : 'black'
-             }
-            }}
-            
-            message={createSnackbarMessages(statusKind, status)}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        />
-    );
+  return (
+    <MotionSnackbar
+      variants={fadeInOut}
+      open={status !== "idle"}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      ContentProps={{
+        sx: {
+          color: status === "failed" ? "red" : "black",
+        },
+      }}
+      message={createSnackbarMessages(statusKind, status)}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    />
+  );
 }
 
 export default AuthenticatonSnackbar;

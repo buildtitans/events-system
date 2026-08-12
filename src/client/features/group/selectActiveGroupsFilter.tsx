@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import ShimmerText from "@/src/client/components/ui/feedback/pending/shimmerText";
 import { useFilterGroups } from "@/src/lib/hooks/filters/useFilterGroups";
 import { createGroupFilterPendingMessage } from "@/src/lib/utils/helpers/messages/createGroupFilterPendingMessage";
-import { options } from "@/src/lib/tokens/groupFilterTokens";
 import {
   getGroupsFilterChipSx,
   groupsFilterPendingWrapSx,
@@ -16,13 +15,14 @@ import {
   groupsFilterSurfaceSx,
 } from "@/src/client/styles/sx/groupFilter";
 import { useMinTimeVisible } from "@/src/lib/hooks/rendering/useMinTimeVisible";
+import { FILTER_OPTIONS } from "@/src/lib/tokens/categoryTokens";
 
 export default function SelectActiveGroupsFilter(): JSX.Element {
-  const status = useSelector((s: RootState) => s.groups.landingGroupsTab.status);
-  const visible = useMinTimeVisible((status === "pending"), 200, 600);
+  const status = useSelector((s: RootState) => s.rendering.groupsTab.status);
+  const visible = useMinTimeVisible(status === "pending", 200, 600);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { handleFilterSelect, filter } = useFilterGroups();
+  const { selectFilter, filterArgs } = useFilterGroups();
 
   return (
     <Stack
@@ -32,15 +32,18 @@ export default function SelectActiveGroupsFilter(): JSX.Element {
       sx={groupsFilterRootSx}
     >
       <Stack direction="row" sx={groupsFilterSurfaceSx}>
-        {options.map((option) => (
+        {FILTER_OPTIONS.map((option) => (
           <Chip
-            key={option.value}
+            key={option.filter}
             label={option.label}
             variant="filled"
             size={isMobile ? "small" : "medium"}
             component="button"
-            onClick={() => handleFilterSelect(option.value)}
-            sx={getGroupsFilterChipSx(filter === option.value, isMobile)}
+            onClick={() => selectFilter(option)}
+            sx={getGroupsFilterChipSx(
+              filterArgs.filter === option.filter,
+              isMobile,
+            )}
           />
         ))}
       </Stack>
@@ -48,7 +51,7 @@ export default function SelectActiveGroupsFilter(): JSX.Element {
       {visible && (
         <Stack sx={groupsFilterPendingWrapSx}>
           <ShimmerText
-            pendingMessage={createGroupFilterPendingMessage(filter, options)}
+            pendingMessage={createGroupFilterPendingMessage(filterArgs)}
           />
         </Stack>
       )}

@@ -1,4 +1,7 @@
-import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type {
+  CategoriesSchemaType,
+  CategorySchemaType,
+} from "@/src/schemas/groups/categoriesSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type {
   GroupSchemaType,
@@ -40,4 +43,7 @@ export interface IGroupQueryHandler {
   getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]>;
   getOrganizerEmail(group_id: string): Promise<{ email: string }>;
   getGroupFromSlug(slug: string): Promise<GroupSchemaType>;
+  byCategory(
+    categoryName: CategorySchemaType["name"],
+  ): Promise<GroupSchemaType[]>;
 }

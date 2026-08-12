@@ -17,8 +17,8 @@ import {
   EventSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import React, { type SetStateAction } from "react";
-import type { SyntheticEvent, ChangeEvent } from "react";
+import React from "react";
+import type { SyntheticEvent, ChangeEvent, RefObject } from "react";
 import type {
   AutocompleteInputChangeReason,
   AutocompleteChangeReason,
@@ -50,6 +50,8 @@ export type ValidateSignupCredsHook = {
   email: string;
   messages: { authState: AuthenticationState; inputErrors: InputErrorsType };
   isValidated: boolean;
+  emailRef: RefObject<HTMLInputElement | null>;
+  passwordRef: RefObject<HTMLInputElement | null>;
 };
 
 export type NewEventInput = {
@@ -165,9 +167,7 @@ export type LoginResType =
     };
 
 type UseLoginHook = {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  setCredentials: React.Dispatch<SetStateAction<LoginCredentials>>;
-  credentials: LoginCredentials;
+  login: (credentials: LoginCredentials) => Promise<void>;
 };
 
 type NewUser = {

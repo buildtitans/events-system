@@ -8,9 +8,16 @@ export const CategorySchema = Type.Object({
   slug: Type.String(),
 });
 
+export const CategoryNameSchema = Type.String({ minLength: 1 });
+
+export type CategoryNameSchemaType = Static<typeof CategoryNameSchema>;
+
+export const CompiledCategoryNameSchema =
+  TypeCompiler.Compile(CategoryNameSchema);
+
 export const CategoriesSchema = Type.Array(CategorySchema);
 
-export type CategorySchema = Static<typeof CategorySchema>;
+export type CategorySchemaType = Static<typeof CategorySchema>;
 
 export type CategoriesSchemaType = Static<typeof CategoriesSchema>;
 

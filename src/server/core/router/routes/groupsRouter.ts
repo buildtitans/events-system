@@ -9,6 +9,7 @@ import {
   searchInputValidator,
   newGroupInputValidator,
   groupSlugInputValidator,
+  groupsByCategoryInputValidator,
 } from "../inputValidators/inputValidation";
 
 const selectGroupsRouter = router({
@@ -22,6 +23,12 @@ const selectGroupsRouter = router({
       return await ctx.services.api.domains.groups.query.getGroupFromSlug(
         input,
       );
+    }),
+
+  byCategory: publicProcedure
+    .input(groupsByCategoryInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.groups.query.byCategory(input);
     }),
 
   popular: publicProcedure.query(async ({ ctx }) => {

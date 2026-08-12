@@ -1,26 +1,12 @@
-import { ResendVariables } from "@/src/server/core/lib/init/resendSecrets";
-import { ResendPasswordResetMailer } from "@/src/server/core/service/integrations/resendPasswordResetMailer";
+import type { IResendPasswordResetMailer } from "@/src/server/core/service/integrations/resendPasswordResetMailer";
 import { PasswordResetEmailService } from "@/src/server/core/service/services/passwordResetEmailService";
 import { createMockDb } from "@/src/server/core/service/tests/mockers/mocks";
 
 const sendEmailMock = jest.fn();
 
-jest.mock(
-  "@/src/server/core/service/integrations/resendPasswordResetMailer",
-  () => ({
-    ResendPasswordResetMailer: jest.fn().mockImplementation(() => ({
-      sendEmail: sendEmailMock,
-    })),
-  }),
-);
-
 describe("PasswordResetEmailService.request", () => {
-  const ResendPasswordResetMailerMock =
-    ResendPasswordResetMailer as unknown as jest.Mock;
-
-  const resendSecrets: ResendVariables = {
-    resendKey: "resend-key",
-    resendUrl: "https://events-system.dev/reset-password",
+  const mailer: IResendPasswordResetMailer = {
+    sendEmail: sendEmailMock,
   };
 
   let service: PasswordResetEmailService;
@@ -31,14 +17,7 @@ describe("PasswordResetEmailService.request", () => {
     jest.resetAllMocks();
     db = createMockDb();
     requestPasswordResetInDb = db.auth.requestPasswordReset as jest.Mock;
-    ResendPasswordResetMailerMock.mockImplementation(() => ({
-      sendEmail: sendEmailMock,
-    }));
-    service = new PasswordResetEmailService(db, resendSecrets);
-  });
-
-  it("creates the resend mailer with the provided secrets", () => {
-    expect(ResendPasswordResetMailerMock).toHaveBeenCalledWith(resendSecrets);
+    service = new PasswordResetEmailService(db, mailer);
   });
 
   it("returns ok true without sending an email when no reset token is created", async () => {

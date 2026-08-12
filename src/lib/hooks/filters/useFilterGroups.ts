@@ -1,69 +1,106 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import {
-  changeDisplayedGroupFilter,
-  changeLandingGroupsTab,
-} from "../../store/slices/groups/GroupsSlice";
-import type { GroupsFilter } from "../../store/slices/groups/types";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { chunkGroupsIntoPages } from "../../utils/helpers/chunk/chunkGroupsIntoPages";
+import {
+  GroupFilterArgs,
+  GroupFilterService,
+} from "@/src/lib/store/services/filter/groupFilterService";
+import { logCaughtError } from "../../utils/errors/logCaughtError";
+import type { GroupFilterOptions } from "@/src/lib/tokens/categoryTokens";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import {
+  enqueueDrawer,
+  updateGroupsDisplayed,
+} from "../../store/slices/rendering/RenderingSlice";
+const filterService = new GroupFilterService(trpcClient);
 
 type FilterGroupsHook = {
-  handleFilterSelect: (option: GroupsFilter) => void;
-  filter: GroupsFilter;
+  selectCategoryToFilter: (categoryID: string) => void;
+  selectFilter: (filterArgs: GroupFilterOptions) => void;
+  applyFilter: () => Promise<void>;
+  filterArgs: GroupFilterOptions;
 };
 
 export const useFilterGroups = (): FilterGroupsHook => {
-  const [filter, setFilter] = useState<GroupsFilter>("all");
+  const [filterArgs, setFilterArgs] = useState<GroupFilterOptions>({
+    filter: "all",
+    label: "All Groups",
+  });
+  const [categorySelected, setCategorySelected] =
+    useState<CategorySchemaType["id"]>("");
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleFilterSelect = (option: GroupsFilter) => {
-    setFilter((current) => (current === option ? current : option));
+  const getFilterArgs = (): GroupFilterArgs => {
+    switch (filterArgs.filter) {
+      case "all": {
+        return {
+          filter: filterArgs.filter,
+        };
+      }
+      case "popular": {
+        return {
+          filter: filterArgs.filter,
+        };
+      }
+      case "category": {
+        return {
+          filter: filterArgs.filter,
+          categoryId: categorySelected,
+        };
+      }
+    }
   };
 
-  useEffect(() => {
-    let cancelled = false;
+  const selectCategoryToFilter = useCallback(
+    (categoryID: CategorySchemaType["id"]) => {
+      setCategorySelected(categoryID);
+    },
+    [],
+  );
 
-    const executeFilterGroups = async () => {
-      dispatch(changeLandingGroupsTab({ status: "pending" }));
+  const applyFilter = async (): Promise<void> => {
+    dispatch(updateGroupsDisplayed({ status: "pending" }));
+    dispatch(enqueueDrawer(null));
 
-      try {
-        const groups =
-          filter === "all"
-            ? await trpcClient.groups.select.all.query()
-            : await trpcClient.groups.select.popular.query();
+    try {
+      const groups = await filterService.filter(getFilterArgs());
 
-        if (cancelled) return;
-
+      if (groups.length === 0) {
         dispatch(
-          changeLandingGroupsTab({
+          updateGroupsDisplayed({
+            status: "n/a",
+            message: "0 results for the applied filter",
+          }),
+        );
+      } else {
+        dispatch(
+          updateGroupsDisplayed({
             status: "ready",
             data: chunkGroupsIntoPages(groups),
           }),
         );
-
-        dispatch(changeDisplayedGroupFilter(filter));
-      } catch (err) {
-        console.error(err);
-        dispatch(
-          changeLandingGroupsTab({
-            status: "failed",
-            error: "Failed to retrieve groups",
-          }),
-        );
       }
-    };
+    } catch (err) {
+      logCaughtError("", err);
+      dispatch(
+        updateGroupsDisplayed({
+          status: "failed",
+          error: "Failed to retrieve groups",
+        }),
+      );
+    }
+  };
 
-    void executeFilterGroups();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filter, dispatch]);
+  const selectFilter = useCallback((option: GroupFilterOptions) => {
+    setFilterArgs(option);
+  }, []);
 
   return {
-    handleFilterSelect,
-    filter,
+    selectCategoryToFilter,
+    selectFilter,
+    applyFilter,
+    filterArgs,
   };
 };

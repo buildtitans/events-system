@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
+import { RefObject, useCallback, useMemo, useRef, useState } from "react";
 import { emailFormat } from "@/src/lib/utils/regex/regex";
 import { ValidateSignupCredsHook } from "@/src/lib/types/hooks/types";
 import { useSelector } from "react-redux";
@@ -20,6 +20,8 @@ export type InputErrorsType = {
 };
 
 export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const [credentials, setCredentials] = useState<SignupCredentialsType>({
     email: "",
     password: "",
@@ -177,5 +179,7 @@ export const useValidateSignupCredentials = (): ValidateSignupCredsHook => {
     email: credentials.email,
     messages,
     isValidated: isValidated,
+    emailRef,
+    passwordRef,
   };
 };

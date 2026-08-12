@@ -1,3 +1,4 @@
+import { CategorySchemaType } from "../../../../../../schemas/groups/categoriesSchema";
 import { GroupsValidator } from "./groupsValidator";
 import { RawGroupsReader } from "./rawGroupsReader";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
@@ -11,6 +12,9 @@ export interface IGroupsSelector {
     organizer_id: GroupSchemaType["organizer_id"],
   ): Promise<GroupSchemaType[]>;
   search(query: string): Promise<GroupSchemaType[]>;
+  byCategory(
+    category_id: CategorySchemaType["name"],
+  ): Promise<GroupSchemaType[]>;
 }
 
 export class GroupsSelector implements IGroupsSelector {
@@ -43,6 +47,13 @@ export class GroupsSelector implements IGroupsSelector {
     organizer_id: GroupSchemaType["organizer_id"],
   ): Promise<GroupSchemaType[]> {
     const raw = await this.read.rawByOrganizerId(organizer_id);
+    return this.validator.groups(raw);
+  }
+
+  async byCategory(
+    category_id: CategorySchemaType["name"],
+  ): Promise<GroupSchemaType[]> {
+    const raw = await this.read.rawByCategoryId(category_id);
     return this.validator.groups(raw);
   }
 

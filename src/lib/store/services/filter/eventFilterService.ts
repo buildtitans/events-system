@@ -1,7 +1,13 @@
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
-import { EventsPages } from "../slices/events/types";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
+import { EventsPages } from "@/src/lib/store/slices/events/types";
+import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+
+interface IEventFilterService {
+  all(): Promise<FilterResults>;
+  popular(): Promise<FilterResults>;
+  upcoming(): Promise<FilterResults>;
+}
 
 export type FilterResults =
   | { events: EventsPages; ok: true }
@@ -9,7 +15,7 @@ export type FilterResults =
 
 const WINDOW = 30 * 24 * 60 * 60 * 1000;
 
-export class EventFilterService {
+export class EventFilterService implements IEventFilterService {
   constructor(private readonly trpc: TrpcClientType) {}
 
   async all(): Promise<FilterResults> {

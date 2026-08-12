@@ -3,9 +3,12 @@ import { CensusHandler } from "../handlers/participations/censusHandler";
 import { ParticipationDtoHandler } from "../handlers/participations/participationDtoHandler";
 import { RsvpHandler } from "../handlers/participations/rsvpHandler";
 import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
-import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
+import type {
+  IParticipationsService,
+  ParticipationsServiceDb,
+} from "@/src/server/core/service/services/types";
 
-export class ParticipationsService {
+export class ParticipationsService implements IParticipationsService {
   public readonly census: ICensusHandler;
   public readonly rsvps: IRsvpHandler;
   constructor(

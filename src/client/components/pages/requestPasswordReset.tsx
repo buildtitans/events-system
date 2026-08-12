@@ -1,51 +1,66 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
-import { JSX } from "react";
-import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
-import Password from "../sections/inputs/auth/Password";
-import ConfirmPassword from "../sections/inputs/auth/ConfirmPassword";
+"use client";
 
-export default function ResetPasswordReset(): JSX.Element {
-  const { messages, handlePasswordInput, handleConfirmingPassword } =
-    useValidateSignupCredentials();
+import { useRequestPasswordReset } from "@/src/lib/hooks/auth/credentials/useRequestPasswordReset";
+import { authTextFieldSx } from "@/src/client/styles/sx/authDrawer";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+
+export default function RequestPasswordReset() {
+  const { emailField, emailError, isPending, onSubmit } =
+    useRequestPasswordReset();
 
   return (
-    <Container>
-      <Stack>
+    <Container maxWidth="sm" sx={{ py: { xs: 8, md: 12 } }}>
+      <Stack spacing={3}>
         <Box>
           <Typography
-            variant="body1"
-            color="textPrimary"
-            fontSize={"18px"}
-            textAlign={"center"}
+            component="h1"
+            variant="h3"
+            fontWeight="light"
+            gutterBottom
           >
             Reset your password
           </Typography>
-        </Box>
-        <Box>
-          <Password
-            handlePassword={handlePasswordInput}
-            passwordError={
-              messages.inputErrors.invalidPassword !==
-              "Password must be at least 8 characters"
-            }
-            passwordErrorMessage={messages.inputErrors.invalidPassword}
-            authState={messages.authState}
-          />
-        </Box>
-        <Box>
-          <ConfirmPassword
-            handleConfirmingPassword={handleConfirmingPassword}
-            passwordErrorMessage={messages.inputErrors.needPasswordConfirmation}
-            passwordError={
-              messages.inputErrors.needPasswordConfirmation !==
-              "Password must match"
-            }
-            authState={messages.authState}
-          />
+          <Typography color="text.secondary">
+            Enter your account email and we&apos;ll send you a secure password
+            reset link.
+          </Typography>
         </Box>
 
-        <Box>
-          <Button variant="contained" size="medium"></Button>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={onSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          <TextField
+            {...emailField}
+            inputRef={emailField.inputRef}
+            id="recovery-email"
+            label="Email address"
+            placeholder="your@email.com"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            required
+            fullWidth
+            sx={authTextFieldSx}
+            error={Boolean(emailError)}
+            helperText={emailError}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isPending}
+          >
+            Send reset link
+          </Button>
         </Box>
       </Stack>
     </Container>

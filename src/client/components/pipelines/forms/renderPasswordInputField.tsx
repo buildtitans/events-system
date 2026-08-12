@@ -14,11 +14,13 @@ export default function RenderPasswordInputField({
   passwordErrorMessage,
   handlePassword,
   authState,
+  passwordRef,
 }: RenderPasswordInputFieldProps): JSX.Element {
   switch (authState.status) {
     case "failed": {
       return (
         <TextField
+          inputRef={passwordRef}
           onChange={(e) => handlePassword(e)}
           error={authState.status === "failed"}
           helperText={authState.error}
@@ -39,6 +41,7 @@ export default function RenderPasswordInputField({
     case "n/a": {
       return (
         <TextField
+          inputRef={passwordRef}
           onChange={(e) => handlePassword(e)}
           error={authState.status === "n/a"}
           helperText={authState.message}
@@ -61,6 +64,7 @@ export default function RenderPasswordInputField({
     case "ready": {
       return (
         <TextField
+          inputRef={passwordRef}
           onChange={(e) => handlePassword(e)}
           error={passwordError}
           helperText={passwordErrorMessage}

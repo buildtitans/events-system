@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
 import { useSelectEvent } from "../hydration/event/useSelectEvent";
-import { AppSearchService } from "../../store/services/appSearchService";
+import { AppSearchService } from "../../store/services/search/appSearchService";
 import { logCaughtError } from "../../utils/errors/logCaughtError";
 import { assertNever } from "../../utils/assert/assertNever";
 import { useDebouncedCallback } from "./useDebounce";

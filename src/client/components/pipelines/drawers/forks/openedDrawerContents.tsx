@@ -7,6 +7,7 @@ import NewEventDrawerContents from "@/src/client/components/ui/containers/NewEve
 import CreateNewGroupForm from "@/src/client/components/sections/forms/group/createNewGroupForm";
 import SignUpCard from "@/src/client/components/sections/forms/auth/signUpCard";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
+import FilterGroupsOptionsDrawer from "@/src/client/components/ui/drawers/kind/filterGroupsOptionsDrawer";
 
 export const OpenedDrawerContents = ({
   drawerType,
@@ -29,6 +30,10 @@ export const OpenedDrawerContents = ({
 
     case "new group":
       return <CreateNewGroupForm />;
+
+    case "filter groups": {
+      return <FilterGroupsOptionsDrawer />;
+    }
 
     case null: {
       return null;
