@@ -1,47 +1,36 @@
 "use client";
-import type { ValidateCredentialsHook } from "@/src/lib/types/hooks/types";
-import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import type { UseLoginHook } from "@/src/lib/types/hooks/types";
 import {
   authCheckboxLabelSx,
   authCheckboxSx,
   authDrawerFormSx,
+  authFieldControlSx,
+  authFieldLabelSx,
+  authLinkSx,
   authPrimaryButtonSx,
+  authTextFieldSx,
 } from "@/src/client/styles/sx/authDrawer";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Email from "@/src/client/components/sections/inputs/auth/Email";
-import Password from "@/src/client/components/sections/inputs/auth/Password";
+import FormLabel from "@mui/material/FormLabel";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
 import ForgotPassword from "@/src/client/features/auth/ForgotPassword";
 import AuthDrawerShell from "@/src/client/components/ui/drawers/authDrawerShell";
+import { useSignInForm } from "@/src/lib/hooks/auth/credentials/useSignInForm";
 
-type SignInCardProps = Omit<ValidateCredentialsHook, "credentials"> & {
-  handleSubmit: UseLoginHook["handleSubmit"];
+type SignInCardProps = {
+  login: UseLoginHook["login"];
 };
 
-export default function SignInCard({
-  isSubmittable,
-  errors,
-  handleEmail,
-  handlePassword,
-  handleSubmit,
-}: SignInCardProps) {
-  const userKind = useSelector((s: RootState) => s.auth.userKind);
-  const [open, setOpen] = React.useState(false);
-
-  const { inputErrors, authState } = errors;
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+export default function SignInCard({ login }: SignInCardProps) {
+  const [forgotPasswordOpen, setForgotPasswordOpen] = React.useState(false);
+  const { fields, errors, authError, handleSubmit, isPending } =
+    useSignInForm();
 
   return (
     <AuthDrawerShell
@@ -53,38 +42,76 @@ export default function SignInCard({
         component="form"
         method="POST"
         noValidate
-        onSubmit={(e) => handleSubmit(e)}
+        onSubmit={handleSubmit(login)}
         sx={authDrawerFormSx}
       >
-        <Email
-          handleEmail={handleEmail}
-          emailError={inputErrors.emailError}
-          emailErrorMessage={inputErrors.emailErrorMessage}
-          authState={authState}
-        />
-        <Password
-          handlePassword={handlePassword}
-          passwordError={inputErrors.passwordError}
-          passwordErrorMessage={inputErrors.passwordErrorMessage}
-          handleClickOpen={handleClickOpen}
-          authState={authState}
-        />
+        <FormControl fullWidth sx={authFieldControlSx}>
+          <FormLabel htmlFor="email" sx={authFieldLabelSx}>
+            Email
+          </FormLabel>
+          <TextField
+            {...fields.email}
+            inputRef={fields.email.inputRef}
+            id="email"
+            type="email"
+            placeholder="your@email.com"
+            autoComplete="email"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            sx={authTextFieldSx}
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message}
+          />
+        </FormControl>
+
+        <FormControl fullWidth sx={authFieldControlSx}>
+          <FormLabel htmlFor="password" sx={authFieldLabelSx}>
+            Password
+          </FormLabel>
+          <TextField
+            {...fields.password}
+            inputRef={fields.password.inputRef}
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            required
+            fullWidth
+            variant="outlined"
+            sx={authTextFieldSx}
+            error={Boolean(errors.password) || Boolean(authError)}
+            helperText={errors.password?.message ?? authError}
+          />
+          <Box sx={{ display: "flex", justifyContent: "end", pt: 1 }}>
+            <Link
+              component="button"
+              type="button"
+              onClick={() => setForgotPasswordOpen(true)}
+              variant="body2"
+              sx={{ ...authLinkSx, alignSelf: "baseline" }}
+            >
+              Forgot your password?
+            </Link>
+          </Box>
+        </FormControl>
+
         <FormControlLabel
           sx={authCheckboxLabelSx}
           control={<Checkbox value="remember" sx={authCheckboxSx} />}
           label="Remember me"
         />
         <ForgotPassword
-          open={open}
-          handleClose={handleClose}
-          setOpen={setOpen}
+          open={forgotPasswordOpen}
+          handleClose={() => setForgotPasswordOpen(false)}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={authPrimaryButtonSx}
-          disabled={!isSubmittable || userKind === "authenticated"}
+          loading={isPending}
         >
           Sign in
         </Button>

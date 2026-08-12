@@ -1,93 +1,72 @@
 "use client";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/src/lib/store";
-import React, { useMemo, useState } from "react";
+
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import type { AppDispatch, RootState } from "@/src/lib/store";
 import { resetUserPassword } from "@/src/lib/store/slices/user/thunks";
 
-type NewPasswordState = {
+type ResetPasswordValues = {
   password: string;
   confirmPassword: string;
 };
 
-type ResetPasswordHook = {
-  errors: {
-    invalidPassword: "" | "Password must be at least 8 characters";
-    confirmPassword: "" | "Password must match";
-  };
-  isSubmittable: boolean;
-  submitPwReset: () => Promise<void>;
-  getInput: (
-    field: keyof NewPasswordState,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-};
-
-type ResetPasswordErrors = ResetPasswordHook["errors"];
-
 const MIN_PASSWORD_LENGTH = 8;
 
-export const useResetPassword = (token: string): ResetPasswordHook => {
-  const [newPassword, setNewPassword] = useState<NewPasswordState>({
-    password: "",
-    confirmPassword: "",
-  });
+export const useResetPassword = (token: string) => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const resetState = useSelector((state: RootState) => state.user.pwReset);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordValues>({
+    mode: "onTouched",
+    defaultValues: { password: "", confirmPassword: "" },
+  });
 
-  const errors = useMemo<ResetPasswordErrors>(
-    () => ({
-      invalidPassword:
-        newPassword.password !== "" &&
-        newPassword.password.length < MIN_PASSWORD_LENGTH
-          ? "Password must be at least 8 characters"
-          : "",
-      confirmPassword:
-        newPassword.confirmPassword !== "" &&
-        newPassword.password !== newPassword.confirmPassword
-          ? "Password must match"
-          : "",
-    }),
-    [newPassword.confirmPassword, newPassword.password],
+  const { ref: passwordInputRef, ...passwordField } = register("password", {
+    required: "Password is required",
+    minLength: {
+      value: MIN_PASSWORD_LENGTH,
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    },
+  });
+  const { ref: confirmationInputRef, ...confirmationField } = register(
+    "confirmPassword",
+    {
+      required: "Please confirm your password",
+      deps: ["password"],
+      validate: (confirmation, values) =>
+        confirmation === values.password || "Password must match",
+    },
   );
 
-  const isSubmittable =
-    token !== "" &&
-    newPassword.password !== "" &&
-    newPassword.confirmPassword !== "" &&
-    errors.invalidPassword === "" &&
-    errors.confirmPassword === "";
-
-  const getInput = (
-    field: keyof NewPasswordState,
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const input = e.target.value;
-    const value = input.trim();
-
-    setNewPassword((prev: NewPasswordState) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const submitPwReset = async () => {
-    if (!isSubmittable) return;
+  const resetPassword = async ({ password }: ResetPasswordValues) => {
+    if (!token) return;
 
     const result = await dispatch(
-      resetUserPassword({ newPassword: newPassword.confirmPassword, token }),
+      resetUserPassword({ newPassword: password, token }),
     ).unwrap();
 
-    if (result.ok) {
-      router.push("/");
-    }
+    if (result.ok) router.push("/");
   };
 
   return {
-    submitPwReset,
-    getInput,
+    fields: {
+      password: {
+        ...passwordField,
+        inputRef: passwordInputRef,
+      },
+      confirmation: {
+        ...confirmationField,
+        inputRef: confirmationInputRef,
+      },
+    },
     errors,
-    isSubmittable,
+    isPending: isSubmitting || resetState.status === "pending",
+    isComplete: resetState.status === "ready",
+    onSubmit: handleSubmit(resetPassword),
   };
 };

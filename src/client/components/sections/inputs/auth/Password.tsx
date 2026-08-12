@@ -10,6 +10,7 @@ import {
 } from "@/src/client/styles/sx/authDrawer";
 import { AuthenticationState } from "@/src/lib/store/slices/auth/types";
 import RenderPasswordInputField from "@/src/client/components/pipelines/forms/renderPasswordInputField";
+import type { RefObject } from "react";
 
 export type PasswordInputProps = {
   handleClickOpen?: () => void;
@@ -19,6 +20,7 @@ export type PasswordInputProps = {
   passwordError: boolean;
   passwordErrorMessage: string;
   authState: AuthenticationState;
+  passwordRef: RefObject<HTMLInputElement | null>;
 };
 
 function Password({
@@ -27,6 +29,7 @@ function Password({
   passwordError,
   passwordErrorMessage,
   authState,
+  passwordRef,
 }: PasswordInputProps): JSX.Element {
   return (
     <FormControl fullWidth sx={authFieldControlSx}>
@@ -38,6 +41,7 @@ function Password({
         passwordError={passwordError}
         passwordErrorMessage={passwordErrorMessage}
         authState={authState}
+        passwordRef={passwordRef}
       />
       {handleClickOpen && (
         <Box sx={{ display: "flex", justifyContent: "end", pt: 1 }}>

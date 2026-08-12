@@ -1,32 +1,25 @@
 "use client";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Email from "@/src/client/components/sections/inputs/auth/Email";
-import { useValidateSignupCredentials } from "@/src/lib/hooks/auth/credentials/useValidateSignupCredentials";
-import ConfirmPassword from "@/src/client/components/sections/inputs/auth/ConfirmPassword";
-import { useSignUp } from "@/src/lib/hooks/auth/authenticate/useJoin";
-import CreatePassword from "@/src/client/components/sections/inputs/auth/CreatePassword";
 import AuthDrawerShell from "@/src/client/components/ui/drawers/authDrawerShell";
 import {
   authCheckboxLabelSx,
   authCheckboxSx,
   authDrawerFormSx,
+  authFieldControlSx,
+  authFieldLabelSx,
   authPrimaryButtonSx,
+  authTextFieldSx,
 } from "@/src/client/styles/sx/authDrawer";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import TextField from "@mui/material/TextField";
+import { useSignUpForm } from "@/src/lib/hooks/auth/credentials/useSignUpForm";
 
 export default function SignUpCard() {
-  const {
-    email,
-    password,
-    handleEmailInput,
-    handlePasswordInput,
-    handleConfirmingPassword,
-    messages,
-    isValidated,
-  } = useValidateSignupCredentials();
-  const { handleSubmit } = useSignUp(email, password);
+  const { fields, errors, authError, isPending, onSubmit } = useSignUpForm();
 
   return (
     <AuthDrawerShell
@@ -34,24 +27,73 @@ export default function SignUpCard() {
       title="Sign up"
       description="Create an account to RSVP, join communities, and manage your event activity in one place."
     >
-      <Box component="form" method="POST" noValidate sx={authDrawerFormSx}>
-        <Email
-          handleEmail={handleEmailInput}
-          emailError={messages.inputErrors.invalidEmail !== ""}
-          emailErrorMessage={messages.inputErrors.invalidEmail}
-          authState={messages.authState}
-        />
-        <CreatePassword
-          handlePassword={handlePasswordInput}
-          passwordError={messages.inputErrors.invalidPassword !== ""}
-          passwordErrorMessage={messages.inputErrors.invalidPassword}
-        />
-        <ConfirmPassword
-          handleConfirmingPassword={handleConfirmingPassword}
-          passwordError={messages.inputErrors.needPasswordConfirmation !== ""}
-          passwordErrorMessage={messages.inputErrors.needPasswordConfirmation}
-          authState={messages.authState}
-        />
+      <Box
+        component="form"
+        method="POST"
+        noValidate
+        onSubmit={onSubmit}
+        sx={authDrawerFormSx}
+      >
+        <FormControl fullWidth sx={authFieldControlSx}>
+          <FormLabel htmlFor="signup-email" sx={authFieldLabelSx}>
+            Email
+          </FormLabel>
+          <TextField
+            {...fields.email}
+            inputRef={fields.email.inputRef}
+            id="signup-email"
+            type="email"
+            placeholder="your@email.com"
+            autoComplete="email"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            sx={authTextFieldSx}
+            error={Boolean(errors.email) || Boolean(authError)}
+            helperText={errors.email?.message ?? authError}
+          />
+        </FormControl>
+
+        <FormControl fullWidth sx={authFieldControlSx}>
+          <FormLabel htmlFor="signup-password" sx={authFieldLabelSx}>
+            Create Password
+          </FormLabel>
+          <TextField
+            {...fields.password}
+            inputRef={fields.password.inputRef}
+            id="signup-password"
+            type="password"
+            placeholder="Create a password"
+            autoComplete="new-password"
+            required
+            fullWidth
+            variant="outlined"
+            sx={authTextFieldSx}
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message}
+          />
+        </FormControl>
+
+        <FormControl fullWidth sx={authFieldControlSx}>
+          <FormLabel htmlFor="confirm-password" sx={authFieldLabelSx}>
+            Confirm Password
+          </FormLabel>
+          <TextField
+            {...fields.confirmation}
+            inputRef={fields.confirmation.inputRef}
+            id="confirm-password"
+            type="password"
+            placeholder="Confirm your password"
+            autoComplete="new-password"
+            required
+            fullWidth
+            variant="outlined"
+            sx={authTextFieldSx}
+            error={Boolean(errors.confirmPassword)}
+            helperText={errors.confirmPassword?.message}
+          />
+        </FormControl>
 
         <FormControlLabel
           sx={authCheckboxLabelSx}
@@ -59,12 +101,11 @@ export default function SignUpCard() {
           label="Remember me"
         />
         <Button
-          onClick={(e) => handleSubmit(e)}
           type="submit"
           fullWidth
           sx={authPrimaryButtonSx}
           variant="contained"
-          disabled={!isValidated}
+          loading={isPending}
         >
           Sign up
         </Button>
