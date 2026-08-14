@@ -6,11 +6,18 @@ export type NewAndSeenNotifications = {
   new: NotificationSchemaArrayType;
 };
 
-export type NotificationState = AsyncState<
+export type NotificationAsyncState = AsyncState<
   NewAndSeenNotifications,
   "No new notifications"
 >;
 export type ReadyNotificationState = Extract<
-  NotificationState,
+  NotificationAsyncState,
   { status: "ready" }
 >;
+
+export type NotificationState = {
+  notifications: NotificationAsyncState;
+  initialized: boolean;
+  isRefreshing: boolean;
+  refreshError?: string;
+};

@@ -10,6 +10,11 @@ const selectNotificationRouter = router({
       ctx.req.user?.id,
     );
   }),
+  newAndViewed: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.services.api.domains.notifications.getNotifications(
+      ctx.req.user?.id,
+    );
+  }),
 });
 
 const writeNotificationRouter = router({

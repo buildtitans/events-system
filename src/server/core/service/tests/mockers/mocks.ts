@@ -202,6 +202,7 @@ function createMockNotificationsRepo() {
   return {
     select: {
       getUnseenNotifications: jest.fn(),
+      getOpenedNotifications: jest.fn(),
     },
     write: {
       markOpenedNotifications: jest.fn(),

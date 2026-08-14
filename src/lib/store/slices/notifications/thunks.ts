@@ -6,16 +6,30 @@ import {
   createAsyncThunk,
   GetThunkAPI,
 } from "@reduxjs/toolkit";
-import { appendNewNotification, markSeen } from "./notificationSlice";
+import { appendNewNotifications, markSeen } from "./notificationSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
+import { HydrateUserService } from "../../services/hydration/hydrateUserService";
 const service = new ScheduleNotificationService(trpcClient);
+const hydrateUserService = new HydrateUserService(trpcClient);
 
 type NotifyNewEventParams = {
   event: EventSchemaType;
   group: GroupSchemaType;
 };
+
+export const hydrateNotifications = createAsyncThunk(
+  "NotificationSlice/hydrateNotifications",
+  async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+    try {
+      return await hydrateUserService.notifications();
+    } catch (err) {
+      logCaughtError("NotificationSlice.hydrateNotifications()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
 
 export const notifyNewEvent = createAsyncThunk(
   "NotificationSlice/notifyNewEvent",
@@ -24,24 +38,26 @@ export const notifyNewEvent = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const result = await service.createNewEventNotification(
+      const newNotifications = await service.createNewEventNotification(
         params.event,
         params.group,
       );
 
-      thunkAPI.dispatch(
-        appendNewNotification({
-          status: "ready",
-          data: {
-            new: [result.items[0]],
-            seen: [],
-          },
-        }),
-      );
-
-      return result;
+      thunkAPI.dispatch(appendNewNotifications(newNotifications.items));
     } catch (err) {
       logCaughtError("NotificationSlice.notifyNewEvent()", err);
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const refreshNotifications = createAsyncThunk(
+  "NotificationSlice/refreshNotifications",
+  async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+    try {
+      return await hydrateUserService.notifications();
+    } catch (err) {
+      logCaughtError("NotificationSlice/refreshNotifications", err);
       return thunkAPI.rejectWithValue(err);
     }
   },

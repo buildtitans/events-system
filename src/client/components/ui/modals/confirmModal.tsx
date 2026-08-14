@@ -28,6 +28,7 @@ import {
   confirmModalSecondaryButtonSx,
   confirmModalTitleSx,
 } from "@/src/client/styles/sx/confirmModal";
+import { clearNotificationSlice } from "@/src/lib/store/slices/notifications/notificationSlice";
 
 export default function ConfirmModal({
   activeModal,
@@ -41,6 +42,7 @@ export default function ConfirmModal({
     success: AuthenticationSchemaType["success"],
   ) {
     dispatch(logout());
+    dispatch(clearNotificationSlice());
     dispatch(
       enqueueSnackbar({
         kind: "logout",

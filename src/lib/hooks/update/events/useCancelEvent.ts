@@ -10,6 +10,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { useDispatch } from "react-redux";
 import { updateEventStatus } from "@/src/lib/store/slices/events/thunks";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
+import { refreshNotifications } from "@/src/lib/store/slices/notifications/thunks";
 const service = new ScheduleNotificationService(trpcClient);
 
 export const useCancelEvent = (
@@ -37,6 +38,7 @@ export const useCancelEvent = (
     e.preventDefault();
     await dispatch(updateEventStatus(options));
     await service.createScheduleNotification(event, options);
+    await dispatch(refreshNotifications());
   };
 
   return {

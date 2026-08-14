@@ -75,6 +75,10 @@ export interface IParticipationsService {
 }
 
 export interface INotificationService {
+  getNotifications(user_id: string | null | undefined): Promise<{
+    new: NotificationSchemaType[];
+    seen: NotificationSchemaType[];
+  }>;
   getNewNotifications(
     user_id: string | null | undefined,
   ): Promise<NotificationSchemaType[]>;

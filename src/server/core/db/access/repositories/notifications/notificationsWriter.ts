@@ -38,7 +38,10 @@ export class NotificationsWriter implements INotificationsWriter {
   }): Promise<UpdateResult> {
     return await this.db
       .updateTable("notifications")
-      .set({ status: "viewed" })
+      .set({
+        status: "viewed",
+        updated_at: new Date(),
+      })
       .where("id", "in", ids)
       .where("user_id", "=", userId)
       .executeTakeFirstOrThrow();
