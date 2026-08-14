@@ -5,6 +5,7 @@ import type { AppDispatch } from "@/src/lib/store";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { loginSuccess, logout } from "@/src/lib/store/slices/auth/AuthSlice";
 import { storeUserEmail } from "@/src/lib/store/slices/user/userSlice";
+import { clearNotificationSlice } from "@/src/lib/store/slices/notifications/notificationSlice";
 
 const useRecoverSession = (): void => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,9 +19,11 @@ const useRecoverSession = (): void => {
           dispatch(storeUserEmail({ status: "ready", data: result.email }));
         } else {
           dispatch(logout());
+          dispatch(clearNotificationSlice());
         }
       } catch {
         dispatch(logout());
+        dispatch(clearNotificationSlice());
       }
     };
 

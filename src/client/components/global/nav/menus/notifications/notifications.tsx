@@ -4,9 +4,12 @@ import Box from "@mui/material/Box";
 import NotificationsList from "./notificationsList";
 import NotificationBadge from "../../../../ui/badges/notificationBadge";
 import { useNotificationsMenu } from "@/src/lib/hooks/update/notifications/useNotificationsMenu";
+import { AsyncStateRenderer } from "@/src/client/components/pipelines/async/asyncStateRenderer";
+import NoPendingNotifications from "@/src/client/components/ui/feedback/fallbacks/noPendingNotifications";
+import NotificationsListSkeleton from "./notificationsListSkeleton";
 
 export default function Notifications() {
-  const { notifications, newNotifications, props, handleOpen } =
+  const { notifications, newAndSeen, props, handleOpen, unreadCount } =
     useNotificationsMenu();
 
   return (
@@ -20,13 +23,17 @@ export default function Notifications() {
         }}
       >
         <NotificationBadge
-          badgeContent={newNotifications.length}
+          badgeContent={unreadCount}
           handleClick={handleOpen}
         />
       </Box>
-      {notifications.status === "ready" && (
-        <NotificationsList props={props} notifications={newNotifications} />
-      )}
+      <AsyncStateRenderer
+        state={notifications}
+        empty={() => <NoPendingNotifications />}
+        pending={() => <NotificationsListSkeleton props={props} />}
+      >
+        {() => <NotificationsList props={props} notifications={newAndSeen} />}
+      </AsyncStateRenderer>
     </Fragment>
   );
 }

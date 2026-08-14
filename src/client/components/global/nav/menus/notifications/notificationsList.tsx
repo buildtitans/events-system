@@ -6,7 +6,6 @@ import type {
   NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
 import NotificationListItem from "./notificationListItem";
-import NoPendingNotifications from "../../../../ui/feedback/fallbacks/noPendingNotifications";
 import { navMenuListSx, navMenuPaperSx } from "@/src/client/styles/sx/nav";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
@@ -59,15 +58,13 @@ export default function NotificationsList({
       transformOrigin={{ horizontal: "right", vertical: "top" }}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
-      {notifications.length > 0 &&
-        notifications.map((notification: NotificationSchemaType) => (
-          <NotificationListItem
-            key={notification.id}
-            notification={notification}
-            handleClick={handleClick}
-          />
-        ))}
-      {notifications.length === 0 && <NoPendingNotifications />}
+      {notifications.map((notification: NotificationSchemaType) => (
+        <NotificationListItem
+          key={notification.id}
+          notification={notification}
+          handleClick={handleClick}
+        />
+      ))}
     </Menu>
   );
 }

@@ -9,7 +9,10 @@ import {
 } from "@/src/lib/store/slices/user/types";
 
 interface IHydrateUserService {
-  notifications(): Promise<NotificationSchemaType[]>;
+  notifications(): Promise<{
+    new: NotificationSchemaType[];
+    seen: NotificationSchemaType[];
+  }>;
   participations(): Promise<UserParticipationsResult>;
 }
 
@@ -21,8 +24,11 @@ export type UserParticipationsResult = {
 export class HydrateUserService implements IHydrateUserService {
   constructor(private readonly trpc: TrpcClientType) {}
 
-  public async notifications(): Promise<NotificationSchemaType[]> {
-    return await this.trpc.notifications.select.new.query();
+  public async notifications(): Promise<{
+    new: NotificationSchemaType[];
+    seen: NotificationSchemaType[];
+  }> {
+    return await this.trpc.notifications.select.newAndViewed.query();
   }
 
   public async participations(): Promise<UserParticipationsResult> {

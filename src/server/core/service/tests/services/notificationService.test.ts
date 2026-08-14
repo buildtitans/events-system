@@ -137,6 +137,58 @@ describe("NotificationService.getNewNotifications", () => {
   });
 });
 
+describe("NotificationService.getNotifications", () => {
+  let service: NotificationService;
+  let db: ReturnType<typeof createMockDb>;
+  let getUnseenNotificationsInDb: jest.Mock;
+  let getOpenedNotificationsInDb: jest.Mock;
+
+  const newNotifications = [
+    makeNotificationNewOrSeen({ id: "new-1", status: "new" }),
+  ];
+  const seenNotifications = [
+    makeNotificationNewOrSeen({
+      id: "seen-1",
+      status: "viewed",
+      updated_at: "2026-08-10T12:00:00.000Z",
+    }),
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    db = createMockDb();
+    getUnseenNotificationsInDb = db.notifications.select
+      .getUnseenNotifications as jest.Mock;
+    getOpenedNotificationsInDb = db.notifications.select
+      .getOpenedNotifications as jest.Mock;
+    service = new NotificationService(db, policyMock);
+  });
+
+  it("throws a 401 error before reading notifications when the user is not authenticated", async () => {
+    unauthenticated();
+
+    await expect(service.getNotifications(null)).rejects.toThrow("401");
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
+    expect(getUnseenNotificationsInDb).not.toHaveBeenCalled();
+    expect(getOpenedNotificationsInDb).not.toHaveBeenCalled();
+  });
+
+  it("returns new and viewed notifications for the authenticated user", async () => {
+    authenticateAs("user-1");
+    getUnseenNotificationsInDb.mockResolvedValue(newNotifications);
+    getOpenedNotificationsInDb.mockResolvedValue(seenNotifications);
+
+    await expect(service.getNotifications("user-1")).resolves.toEqual({
+      new: newNotifications,
+      seen: seenNotifications,
+    });
+
+    expect(getUnseenNotificationsInDb).toHaveBeenCalledWith("user-1");
+    expect(getOpenedNotificationsInDb).toHaveBeenCalledWith("user-1");
+  });
+});
+
 describe("NotificationService.markSeen", () => {
   const requireIsGroupMember = policyMock.requireIsGroupMember as jest.Mock;
   let service: NotificationService;

@@ -4,6 +4,7 @@ import { INotificationsParser } from "./notificationsParser";
 
 export interface INotificationsSelector {
   getUnseenNotifications(user_id: string): Promise<NotificationSchemaArrayType>;
+  getOpenedNotifications(user_id: string): Promise<NotificationSchemaArrayType>;
 }
 
 export class NotificationsSelector implements INotificationsSelector {
@@ -17,6 +18,13 @@ export class NotificationsSelector implements INotificationsSelector {
   ): Promise<NotificationSchemaArrayType> {
     const rows = await this.read.getRawNotifications(user_id);
 
+    return this.parse.parseRawNotifications(rows);
+  }
+
+  async getOpenedNotifications(
+    user_id: string,
+  ): Promise<NotificationSchemaArrayType> {
+    const rows = await this.read.getRawReadNotifications(user_id);
     return this.parse.parseRawNotifications(rows);
   }
 }

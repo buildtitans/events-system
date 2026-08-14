@@ -14,8 +14,6 @@ export default function LandingPageGroupSection(): JSX.Element {
   const landingGroupsTab = useSelector((s: RootState) => s.rendering.groupsTab);
   const dispatch = useDispatch<AppDispatch>();
 
-  console.log(landingGroupsTab);
-
   useEffect(() => {
     return () => {
       dispatch(changeDisplayedGroupFilter("all"));

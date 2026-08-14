@@ -4,6 +4,9 @@ import type { Selectable } from "kysely";
 
 export interface INotificationsReader {
   getRawNotifications(user_id: string): Promise<Selectable<Notifications>[]>;
+  getRawReadNotifications(
+    user_id: string,
+  ): Promise<Selectable<Notifications>[]>;
 }
 
 export class NotificationsReader implements INotificationsReader {
@@ -30,6 +33,19 @@ export class NotificationsReader implements INotificationsReader {
           .end(),
       )
       .orderBy("created_at", "desc")
+      .execute();
+  }
+
+  async getRawReadNotifications(
+    user_id: string,
+  ): Promise<Selectable<Notifications>[]> {
+    return await this.db
+      .selectFrom("notifications")
+      .selectAll()
+      .where("status", "=", "viewed")
+      .where("user_id", "=", user_id)
+      .orderBy("updated_at", "desc")
+      .limit(15)
       .execute();
   }
 }

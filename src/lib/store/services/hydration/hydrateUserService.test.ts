@@ -20,8 +20,8 @@ function createNotificationPlaceholder(
 }
 
 describe("HydrateUserService", () => {
-  it("returns new notifications in server-provided order", async () => {
-    const notifications = [
+  it("returns new and viewed notifications in server-provided order", async () => {
+    const newNotifications = [
       createNotificationPlaceholder({
         id: "00000000-0000-4000-8000-000000000001",
         priority: "low",
@@ -35,11 +35,22 @@ describe("HydrateUserService", () => {
         priority: "moderate",
       }),
     ] satisfies NotificationSchemaType[];
+    const viewedNotifications = [
+      createNotificationPlaceholder({
+        id: "00000000-0000-4000-8000-000000000004",
+        status: "viewed",
+        updated_at: "2026-08-10T12:00:00.000Z",
+      }),
+    ] satisfies NotificationSchemaType[];
+    const notifications = {
+      new: newNotifications,
+      seen: viewedNotifications,
+    };
 
     const service = new HydrateUserService({
       notifications: {
         select: {
-          new: {
+          newAndViewed: {
             query: jest.fn().mockResolvedValue(notifications),
           },
         },
