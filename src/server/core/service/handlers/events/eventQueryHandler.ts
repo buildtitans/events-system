@@ -3,6 +3,7 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events//eventAttendantsSchema";
 import { IEventQueryHandler } from "./types";
+import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
 
 export class EventQueryHandler implements IEventQueryHandler {
   constructor(
@@ -23,6 +24,12 @@ export class EventQueryHandler implements IEventQueryHandler {
 
   async getEventById(event_id: string): Promise<EventSchemaType> {
     return await this.db.events.select.byId(event_id);
+  }
+
+  async nextEventForGroup(
+    group_id: GroupSchemaType["id"],
+  ): Promise<EventSchemaType | undefined> {
+    return await this.db.events.select.nextEventByGroupId(group_id);
   }
 
   async getEventAttendants(

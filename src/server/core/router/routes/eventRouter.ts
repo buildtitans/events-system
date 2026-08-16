@@ -29,6 +29,14 @@ const selectEventsRouter = router({
       return await ctx.services.api.domains.events.query.searchEvents(input);
     }),
 
+  nextEventForGroup: publicProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.query.nextEventForGroup(
+        input,
+      );
+    }),
+
   byId: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {

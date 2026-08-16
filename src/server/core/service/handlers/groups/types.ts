@@ -37,6 +37,9 @@ export interface IMembershipHandler {
 
 export interface IGroupQueryHandler {
   getGroupCategories(): Promise<CategoriesSchemaType>;
+  getCategoryById(
+    id: CategorySchemaType["id"],
+  ): Promise<CategorySchemaType | undefined>;
   getGroupNameDictionary(): Promise<NameSlugDescriptionLookup>;
   getAllGroups(): Promise<GroupSchemaType[]>;
   searchGroups(query: string): Promise<GroupSchemaType[]>;

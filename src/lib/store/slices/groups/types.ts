@@ -2,6 +2,7 @@ import { AsyncState } from "@/src/lib/types/state/types";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 export type GroupsFilter = "all" | "popular" | "category";
 
@@ -20,9 +21,19 @@ export type FilterOption = {
   label: string;
 };
 
+export type GroupCategoryState = AsyncState<
+  CategorySchemaType,
+  "Could not find a valid category for this group"
+>;
+
 export type GroupEventsCalandarState = AsyncState<
   EventSchemaType[],
   "No Events held for this group"
+>;
+
+export type NextEventState = AsyncState<
+  EventSchemaType,
+  "This Group does not have any upcoming events"
 >;
 
 export type GroupHydrated = AsyncState<GroupSchemaType>;

@@ -1,16 +1,21 @@
 "use client";
+import type { JSX } from "react";
 import Box from "@mui/material/Box";
-import { JSX } from "react";
 import Typography from "@mui/material/Typography";
 import {
-  openedGroupHeroEyebrowSx,
   openedGroupHeroHeaderDescriptionSx,
   openedGroupHeroTitleSx,
 } from "@/src/client/styles/sx/openedGroupHero";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import GroupPanelEyebrow from "./groupPanelEyebrow";
 
-export default function GroupEventsHeader(
-  { groupName }: { groupName: string },
-): JSX.Element | null {
+export default function GroupPanelHead({
+  groupName,
+  category,
+}: {
+  groupName: string;
+  category: CategorySchemaType["name"];
+}): JSX.Element | null {
   return (
     <Box
       sx={{
@@ -20,9 +25,7 @@ export default function GroupEventsHeader(
         justifyContent: "center",
       }}
     >
-      <Typography component="span" sx={openedGroupHeroEyebrowSx}>
-        Community
-      </Typography>
+      <GroupPanelEyebrow category={category} />
       <Typography component="h1" sx={openedGroupHeroTitleSx}>
         {groupName}
       </Typography>

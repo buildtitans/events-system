@@ -97,10 +97,12 @@ export const refreshGroupEvents = createAsyncThunk(
       const refreshedEventsLayout =
         await trpcClient.events.layout.forGroup.query(id);
       const calandarEvents = await trpcClient.events.select.forGroup.query(id);
-
+      const nextEvent =
+        await trpcClient.events.select.nextEventForGroup.query(id);
       return {
         refreshedEventsLayout,
         calandarEvents,
+        nextEvent,
       };
     } catch (err) {
       logCaughtError("OpenedGroupSlice.refreshGroupEvents()", err);

@@ -26,8 +26,15 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
         throw new Error(`Failed to hydrate group by slug: ${slug}`);
       }
 
-      const { role, layout, calandar, members, organizerEmail } =
-        await this.getGroupMetaData(group.id);
+      const {
+        role,
+        layout,
+        calandar,
+        members,
+        organizerEmail,
+        nextEvent,
+        category,
+      } = await this.getGroupMetaData(group.id, group.category_id);
 
       const numMembers = members.length;
       return {
@@ -39,6 +46,8 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
           calandar,
           numMembers,
           organizerEmail,
+          nextEvent,
+          category,
         },
       };
     } catch (err) {
@@ -54,15 +63,27 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
     };
   }
 
-  private async getGroupMetaData(group_id: GroupSchemaType["id"]) {
-    const [role, layoutResult, calandar, members, organizer] =
-      await Promise.all([
-        this.trpc.groupMembers.select.role.query(group_id),
-        this.trpc.events.layout.forGroup.query(group_id),
-        this.trpc.events.select.forGroup.query(group_id),
-        this.trpc.groupMembers.select.forGroup.query(group_id),
-        this.trpc.groupMembers.select.organizerEmail.query(group_id),
-      ]);
+  private async getGroupMetaData(
+    group_id: GroupSchemaType["id"],
+    category_id: GroupSchemaType["category_id"],
+  ) {
+    const [
+      role,
+      layoutResult,
+      calandar,
+      members,
+      organizer,
+      nextEvent,
+      category,
+    ] = await Promise.all([
+      this.trpc.groupMembers.select.role.query(group_id),
+      this.trpc.events.layout.forGroup.query(group_id),
+      this.trpc.events.select.forGroup.query(group_id),
+      this.trpc.groupMembers.select.forGroup.query(group_id),
+      this.trpc.groupMembers.select.organizerEmail.query(group_id),
+      this.trpc.events.select.nextEventForGroup.query(group_id),
+      this.trpc.groups.select.categoryById.query(category_id ?? ""),
+    ]);
 
     return {
       role,
@@ -70,6 +91,8 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
       calandar,
       members,
       organizerEmail: organizer.email,
+      nextEvent,
+      category,
     };
   }
 }
