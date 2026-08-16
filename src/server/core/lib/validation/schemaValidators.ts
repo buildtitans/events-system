@@ -37,6 +37,7 @@ import {
 } from "@/src/schemas/groups/groupMembersSchema";
 import { GeoapifyGeocodingResponseSchema } from "@/src/schemas/geoapify/geoapifySchemas";
 import { GeoapifyAutocompleteJsonResponseSchema } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
+import { CategorySchema } from "../../../../schemas/groups/categoriesSchema";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -83,6 +84,11 @@ export function createValidator<T extends TSchema>(
     return data as Static<T>;
   };
 }
+
+export const CategorySchemaValidator = createValidator(
+  CategorySchema,
+  "CategorySchema",
+);
 
 const GroupMemberIdsSchemaValidator = createValidator(
   GroupMemberIdsSchema,

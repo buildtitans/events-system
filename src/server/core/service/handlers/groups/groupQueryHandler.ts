@@ -25,6 +25,12 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.groups.select.all();
   }
 
+  async getCategoryById(
+    id: CategorySchemaType["id"],
+  ): Promise<CategorySchemaType | undefined> {
+    return await this.db.categories.getCategoryById(id);
+  }
+
   async byCategory(
     categoryId: CategorySchemaType["id"],
   ): Promise<GroupSchemaType[]> {

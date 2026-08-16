@@ -18,6 +18,9 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 export interface IEventQueryHandler {
   getAllEvents(): Promise<EventSchemaType[]>;
   allActive(): Promise<EventSchemaType[]>;
+  nextEventForGroup(
+    group_id: GroupSchemaType["id"],
+  ): Promise<EventSchemaType | undefined>;
   searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
   getEventById(event_id: string): Promise<EventSchemaType>;
   getEventAttendants(event_id: string): Promise<EventAttendantsSchemaType[]>;

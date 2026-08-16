@@ -2,6 +2,7 @@ import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../slices/events/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 export type SyncOpenGroupPayload =
   | {
@@ -20,4 +21,6 @@ export type OpenedGroupPayload = {
   numMembers: number;
   organizerEmail: string;
   calandar: EventSchemaType[];
+  nextEvent: EventSchemaType | undefined;
+  category: CategorySchemaType | undefined;
 };

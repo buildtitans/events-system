@@ -1,7 +1,7 @@
 "use client";
 import { RenderEventsForGroup } from "../displays/renderEventsForGroup";
 import { JSX } from "react";
-import GroupCalandar from "@/src/client/features/group/groupCalandar";
+import GroupCalandar from "@/src/client/features/group/groupOverview";
 import type { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";

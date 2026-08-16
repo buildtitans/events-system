@@ -10,23 +10,26 @@ import ActiveDisplayHeader from "../head/activeDisplayHeader";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 type OpenedGroupContentProps = {
   group: GroupSchemaType;
   displayed: CurrentDisplay;
   isMobile: boolean;
+  category: CategorySchemaType["name"];
 };
 
 export default function OpenedGroupPanel({
   group,
   displayed,
   isMobile,
+  category,
 }: OpenedGroupContentProps) {
   return (
     <Container component="section">
       <Box minHeight={"100svh"} paddingY={4} sx={openedGroupHeroRootSx}>
         <Box sx={openedGroupHeroPanelSx}>
-          <OpenedGroupHero group={group} />
+          <OpenedGroupHero group={group} category={category} />
           <Container
             sx={{
               padding: 2,

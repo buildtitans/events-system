@@ -24,6 +24,19 @@ export class RawEventsReader {
       .execute();
   }
 
+  async rawNextEventByGroupId(
+    group_id: GroupSchemaType["id"],
+  ): Promise<Selectable<Events> | undefined> {
+    return await this.db
+      .selectFrom("events")
+      .selectAll()
+      .where("group_id", "=", group_id)
+      .where("status", "=", "scheduled")
+      .where("starts_at", ">=", new Date())
+      .orderBy("starts_at", "asc")
+      .executeTakeFirst();
+  }
+
   async rawById(id: EventSchemaType["id"]): Promise<Selectable<Events>> {
     return await this.db
       .selectFrom("events")
