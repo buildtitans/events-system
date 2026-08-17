@@ -2,7 +2,7 @@ import { Kysely, Selectable, sql } from "kysely";
 import { DB, Groups } from "@/src/server/core/db/types/db";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
-import { textSearchRelevance } from "../../../../lib/utils/queries/textSearchRelevance";
+import { textSearchRelevance } from "@/src/server/core/lib/utils/queries/textSearchRelevance";
 
 export class RawGroupsReader {
   constructor(private readonly db: Kysely<DB>) {}
@@ -58,6 +58,7 @@ export class RawGroupsReader {
       .orderBy(textSearchRelevance(sql.ref("groups.name"), query), "asc")
       .orderBy("name", "asc")
       .orderBy("id", "asc")
+      .limit(25)
       .execute();
   }
 

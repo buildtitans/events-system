@@ -8,6 +8,7 @@ import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 import { IGroupQueryHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
+import { ValidateEventSearchQuery } from "../../../lib/validation/schemaValidators";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
   constructor(private readonly db: GroupServiceDb) {}
@@ -38,11 +39,13 @@ export class GroupQueryHandler implements IGroupQueryHandler {
   }
 
   async suggestGroups(query: string): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.suggestByName(query);
+    const validatedQuery = ValidateEventSearchQuery(query);
+    return await this.db.groups.select.suggestByName(validatedQuery);
   }
 
   async searchGroups(query: string): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.search(query);
+    const validatedQuery = ValidateEventSearchQuery(query);
+    return await this.db.groups.select.search(validatedQuery);
   }
 
   async getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]> {

@@ -121,6 +121,7 @@ export class RawEventsReader {
       .orderBy("starts_at", "asc")
       .orderBy("title", "asc")
       .orderBy("id", "asc")
+      .limit(25)
       .execute();
   }
 }
