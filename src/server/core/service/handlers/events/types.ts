@@ -22,6 +22,7 @@ export interface IEventQueryHandler {
     group_id: GroupSchemaType["id"],
   ): Promise<EventSchemaType | undefined>;
   searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
+  suggestEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
   getEventById(event_id: string): Promise<EventSchemaType>;
   getEventAttendants(event_id: string): Promise<EventAttendantsSchemaType[]>;
   getGroupEvents(group_id: string): Promise<EventSchemaType[]>;

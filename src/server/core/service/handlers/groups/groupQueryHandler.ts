@@ -37,6 +37,10 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.groups.select.byCategory(categoryId);
   }
 
+  async suggestGroups(query: string): Promise<GroupSchemaType[]> {
+    return await this.db.groups.select.suggestByName(query);
+  }
+
   async searchGroups(query: string): Promise<GroupSchemaType[]> {
     return await this.db.groups.select.search(query);
   }

@@ -2,7 +2,7 @@
 import Autocomplete, {
   AutocompleteRenderInputParams,
 } from "@mui/material/Autocomplete";
-import { useAppSearch } from "@/src/lib/hooks/search/useAppSearch";
+import { useAppSearchSuggestions } from "@/src/lib/hooks/search/useAppSearchSuggestions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import type { HTMLAttributes } from "react";
@@ -18,7 +18,8 @@ import {
 
 export function Search(): JSX.Element {
   const appBoot = useSelector((s: RootState) => s.rendering.appBoot.status);
-  const { suggestions, input, onInputChange, selectOption } = useAppSearch();
+  const { input, onInputChange, selectOption } = useAppSearchSuggestions();
+  const suggestions = useSelector((s: RootState) => s.search.suggestions);
 
   return (
     <Autocomplete

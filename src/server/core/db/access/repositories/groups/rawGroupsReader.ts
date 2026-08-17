@@ -1,7 +1,8 @@
-import { Kysely, Selectable } from "kysely";
+import { Kysely, Selectable, sql } from "kysely";
 import { DB, Groups } from "@/src/server/core/db/types/db";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import { textSearchRelevance } from "../../../../lib/utils/queries/textSearchRelevance";
 
 export class RawGroupsReader {
   constructor(private readonly db: Kysely<DB>) {}
@@ -49,11 +50,26 @@ export class RawGroupsReader {
       .execute();
   }
 
-  async byName(query: string): Promise<Selectable<Groups>[]> {
+  async rawSearchByName(query: string): Promise<Selectable<Groups>[]> {
+    return this.db
+      .selectFrom("groups")
+      .selectAll()
+      .where("name", "ilike", `%${query}%`)
+      .orderBy(textSearchRelevance(sql.ref("groups.name"), query), "asc")
+      .orderBy("name", "asc")
+      .orderBy("id", "asc")
+      .execute();
+  }
+
+  async rawSuggestByName(query: string): Promise<Selectable<Groups>[]> {
     return await this.db
       .selectFrom("groups")
       .selectAll()
       .where("name", "ilike", `%${query}%`)
+      .orderBy(textSearchRelevance(sql.ref("groups.name"), query), "asc")
+      .orderBy("name", "asc")
+      .orderBy("id", "asc")
+      .limit(5)
       .execute();
   }
 

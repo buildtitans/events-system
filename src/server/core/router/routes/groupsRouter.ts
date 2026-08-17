@@ -47,6 +47,12 @@ const selectGroupsRouter = router({
     .query(async ({ ctx, input }) => {
       return await ctx.services.api.domains.groups.query.searchGroups(input);
     }),
+
+  suggest: publicProcedure
+    .input(searchInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.groups.query.suggestGroups(input);
+    }),
 });
 
 const lookupRouter = router({

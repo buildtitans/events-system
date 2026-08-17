@@ -29,6 +29,12 @@ const selectEventsRouter = router({
       return await ctx.services.api.domains.events.query.searchEvents(input);
     }),
 
+  suggest: publicProcedure
+    .input(searchInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.services.api.domains.events.query.suggestEvents(input);
+    }),
+
   nextEventForGroup: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {

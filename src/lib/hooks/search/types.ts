@@ -22,7 +22,7 @@ export type AddressSearchState = AsyncState<
   "No suggestions found"
 >;
 
-export type SearchResults =
+export type AddressSearchResults =
   | {
       status: "success";
       data: AddressSuggestion[];
@@ -93,4 +93,21 @@ export type GroupSuggestionOptionsAndSlugs = {
 export type AutoCompleteSearch = AsyncState<
   SuggestionOptions,
   "Your query had 0 Results"
+>;
+
+export type SearchResult =
+  | {
+      kind: "event";
+      data: EventSchemaType;
+    }
+  | {
+      kind: "group";
+      data: GroupSchemaType;
+    };
+
+export type SearchResults = SearchResult[];
+
+export type SearchResultState = AsyncState<
+  SearchResult[],
+  "0 results for submitted search terms"
 >;

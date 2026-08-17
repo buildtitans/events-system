@@ -2,20 +2,27 @@ import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type {
   GroupSlugsByIds,
+  SearchResult,
+  SearchResults,
   SuggestionOptions,
   SuggestionType,
 } from "@/src/lib/hooks/search/types";
 
 export interface ISearchResultsCompiler {
-  compileOptions(
+  compileSuggestionOptions(
     events: EventSchemaType[],
     groups: GroupSchemaType[],
     storedGroups: GroupSchemaType[],
   ): SuggestionOptions;
+  compileSearchResults(
+    events: EventSchemaType[],
+    groups: GroupSchemaType[],
+    query: string,
+  ): SearchResults;
 }
 
 export class SearchResultsCompiler implements ISearchResultsCompiler {
-  compileOptions(
+  compileSuggestionOptions(
     events: EventSchemaType[],
     groups: GroupSchemaType[],
     storedGroups: GroupSchemaType[],
@@ -28,6 +35,15 @@ export class SearchResultsCompiler implements ISearchResultsCompiler {
 
     options = [...eventSuggestions, ...groupSuggestions];
     return options;
+  }
+
+  compileSearchResults(
+    events: EventSchemaType[],
+    groups: GroupSchemaType[],
+    query: string,
+  ): SearchResults {
+    const results = this.toResultDTO(groups, events);
+    return this.sortSearchResults(results, query);
   }
 
   private mapEventSuggestions(
@@ -75,5 +91,53 @@ export class SearchResultsCompiler implements ISearchResultsCompiler {
       slugHash[group.id] = group.slug;
     }
     return slugHash;
+  }
+
+  private toResultDTO(
+    groups: GroupSchemaType[],
+    events: EventSchemaType[],
+  ): SearchResult[] {
+    return [
+      ...groups.map((group) => ({
+        kind: "group" as const,
+        data: group,
+      })),
+      ...events.map((event) => ({
+        kind: "event" as const,
+        data: event,
+      })),
+    ];
+  }
+
+  private sortSearchResults(
+    results: SearchResult[],
+    query: string,
+  ): SearchResult[] {
+    return results.sort((left, right) => {
+      const leftLabel =
+        left.kind === "group" ? left.data.name : left.data.title;
+      const rightLabel =
+        right.kind === "group" ? right.data.name : right.data.title;
+
+      const relevanceDifference =
+        this.relevance(leftLabel, query) - this.relevance(rightLabel, query);
+
+      if (relevanceDifference !== 0) return relevanceDifference;
+
+      if (left.kind !== right.kind) {
+        return left.kind === "group" ? -1 : 1;
+      }
+
+      return leftLabel.localeCompare(rightLabel);
+    });
+  }
+
+  private relevance(value: string, query: string): number {
+    const normalizedValue = value.toLocaleLowerCase();
+    const normalizedQuery = query.toLocaleLowerCase();
+
+    if (normalizedValue === normalizedQuery) return 0;
+    if (normalizedValue.startsWith(normalizedQuery)) return 1;
+    return 2;
   }
 }

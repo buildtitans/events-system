@@ -22,6 +22,10 @@ export class EventQueryHandler implements IEventQueryHandler {
     return await this.db.events.select.search(query);
   }
 
+  async suggestEvents(query: SearchSchemaType): Promise<EventSchemaType[]> {
+    return await this.db.events.select.suggest(query);
+  }
+
   async getEventById(event_id: string): Promise<EventSchemaType> {
     return await this.db.events.select.byId(event_id);
   }

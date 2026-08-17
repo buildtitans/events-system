@@ -9,6 +9,7 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 
 export interface IEventsSelector {
   search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
+  suggest(query: SearchSchemaType): Promise<EventSchemaType[]>;
   nextEventByGroupId(group_id: string): Promise<EventSchemaType | undefined>;
   allStatuses(): Promise<EventSchemaType[]>;
   allScheduled(): Promise<EventSchemaType[]>;
@@ -26,8 +27,13 @@ export class EventsSelector implements IEventsSelector {
   ) {}
 
   async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
-    const raw = await this.read.rawByTitle(query);
+    const raw = await this.read.rawSearchByTitle(query);
 
+    return this.validate.events(raw);
+  }
+
+  async suggest(query: SearchSchemaType): Promise<EventSchemaType[]> {
+    const raw = await this.read.rawSuggestByTitle(query);
     return this.validate.events(raw);
   }
 
