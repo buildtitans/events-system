@@ -1,12 +1,12 @@
 import {
-  AutoCompleteSearch,
+  AutoCompleteSuggestions,
   SearchResultState,
 } from "@/src/lib/hooks/search/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { querySuggestions, searchQuery } from "./thunks";
 
 interface InitialState {
-  suggestions: AutoCompleteSearch;
+  suggestions: AutoCompleteSuggestions;
   results: SearchResultState;
   suggestionsRequestId: string;
   searchRequestId: string;
@@ -25,7 +25,7 @@ const AppSearchSlice = createSlice({
   reducers: {
     getSuggestedItems: (
       state: InitialState,
-      action: PayloadAction<AutoCompleteSearch>,
+      action: PayloadAction<AutoCompleteSuggestions>,
     ) => {
       state.suggestions = action.payload;
       state.suggestionsRequestId = "";

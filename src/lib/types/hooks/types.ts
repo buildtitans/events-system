@@ -22,11 +22,7 @@ import type {
   AutocompleteInputChangeReason,
   AutocompleteChangeReason,
 } from "@mui/material/useAutocomplete";
-import type {
-  AutoCompleteSearch,
-  SearchResultState,
-  SuggestionType,
-} from "../../hooks/search/types";
+import type { SuggestionType } from "../../hooks/search/types";
 import { LoginCredentials } from "../tokens/types";
 
 export type NewEventInput = {

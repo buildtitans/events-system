@@ -12,7 +12,6 @@ import {
 import { PaginatedLayoutSchema } from "@/src/schemas/events/layoutSlotSchema";
 import { GroupSchema, GroupsSchema } from "@/src/schemas/groups/groupSchema";
 import { GroupIdSchema } from "@/src/schemas/events/eventSchema";
-import { EventSearchSchema } from "@/src/schemas/events/eventSchema";
 import {
   EventAttendantsSchema,
   EventAttendantStatusSchema,
@@ -38,6 +37,7 @@ import {
 import { GeoapifyGeocodingResponseSchema } from "@/src/schemas/geoapify/geoapifySchemas";
 import { GeoapifyAutocompleteJsonResponseSchema } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 import { CategorySchema } from "../../../../schemas/groups/categoriesSchema";
+import { SearchSchema } from "../../../../schemas/search/searchSchema";
 
 function preview(value: unknown, max = 160) {
   if (value == null) return String(value);
@@ -95,9 +95,9 @@ const GroupMemberIdsSchemaValidator = createValidator(
   "GroupMemberIdsSchema",
 );
 
-const ValidateEventSearchQuery = createValidator(
-  EventSearchSchema,
-  "EventSearchSchema",
+export const ValidateSearchQuery = createValidator(
+  SearchSchema,
+  "SearchSchema",
 );
 
 const AttendanceStatusValidator = createValidator(
@@ -211,7 +211,6 @@ export {
   GroupsSchemaValidator,
   NewEventSchemaValidator,
   eventValidator,
-  ValidateEventSearchQuery,
   ValidateGroupId,
   AttendanceStatusValidator,
   GroupMemberIdsSchemaValidator,

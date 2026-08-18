@@ -60,11 +60,7 @@ const UpdateEventArgsSchema = Type.Object({
   group_id: Type.String({ format: "uuid" }),
 });
 
-export const EventSearchSchema = Type.String();
-
 export type EventsByGroupIdSchemaType = Static<typeof EventsByGroupIdSchema>;
-
-export type EventSearchSchemaType = Static<typeof EventSearchSchema>;
 
 type UpdateEventArgsSchemaType = Static<typeof UpdateEventArgsSchema>;
 

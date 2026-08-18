@@ -90,7 +90,7 @@ export type GroupSuggestionOptionsAndSlugs = {
   slugsByIds: GroupSlugsByIds;
 };
 
-export type AutoCompleteSearch = AsyncState<
+export type AutoCompleteSuggestions = AsyncState<
   SuggestionOptions,
   "Your query had 0 Results"
 >;

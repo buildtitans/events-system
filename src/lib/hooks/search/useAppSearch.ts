@@ -23,7 +23,7 @@ export const useSubmitAppSearch = () => {
       await dispatch(searchQuery({ query: trimmedQuery }));
       router.push(`/${trimmedQuery}`);
     },
-    [dispatch],
+    [dispatch, router],
   );
 
   const resetResults = useCallback(() => {
