@@ -43,6 +43,7 @@ export interface IGroupQueryHandler {
   getGroupNameDictionary(): Promise<NameSlugDescriptionLookup>;
   getAllGroups(): Promise<GroupSchemaType[]>;
   searchGroups(query: string): Promise<GroupSchemaType[]>;
+  suggestGroups(query: string): Promise<GroupSchemaType[]>;
   getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]>;
   getOrganizerEmail(group_id: string): Promise<{ email: string }>;
   getGroupFromSlug(slug: string): Promise<GroupSchemaType>;

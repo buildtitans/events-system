@@ -15,6 +15,7 @@ export interface IGroupsSelector {
   byCategory(
     category_id: CategorySchemaType["name"],
   ): Promise<GroupSchemaType[]>;
+  suggestByName(query: string): Promise<GroupSchemaType[]>;
 }
 
 export class GroupsSelector implements IGroupsSelector {
@@ -57,8 +58,13 @@ export class GroupsSelector implements IGroupsSelector {
     return this.validator.groups(raw);
   }
 
+  async suggestByName(query: string): Promise<GroupSchemaType[]> {
+    const raw = await this.read.rawSuggestByName(query);
+    return this.validator.groups(raw);
+  }
+
   async search(query: string): Promise<GroupSchemaType[]> {
-    const raw = await this.read.byName(query);
+    const raw = await this.read.rawSearchByName(query);
     return this.validator.groups(raw);
   }
 }

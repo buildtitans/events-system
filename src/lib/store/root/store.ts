@@ -10,6 +10,7 @@ import NotificationSlice from "../slices/notifications/notificationSlice";
 import UserSlice from "@/src/lib/store/slices/user/userSlice";
 import ViewerSlice from "@/src/lib/store/slices/viewer/ViewerSlice";
 import BootStrapSlice from "@/src/lib/store/slices/bootstrap/bootstrapSlice";
+import AppSearchSlice from "@/src/lib/store/slices/search/appSearchSlice";
 
 export function makeStore() {
   return configureStore({
@@ -25,6 +26,7 @@ export function makeStore() {
       openGroup: OpenedGroupSlice,
       notifications: NotificationSlice,
       user: UserSlice,
+      search: AppSearchSlice,
     },
   });
 }

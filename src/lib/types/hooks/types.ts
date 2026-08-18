@@ -22,10 +22,7 @@ import type {
   AutocompleteInputChangeReason,
   AutocompleteChangeReason,
 } from "@mui/material/useAutocomplete";
-import type {
-  AutoCompleteSearch,
-  SuggestionType,
-} from "../../hooks/search/types";
+import type { SuggestionType } from "../../hooks/search/types";
 import { LoginCredentials } from "../tokens/types";
 
 export type NewEventInput = {
@@ -45,7 +42,7 @@ export type AttendanceDictionaryType = Record<
   EventAttendantsSchemaType["status"]
 >;
 
-type AppSearchSearchHook = {
+type AppSearchSuggestionsHook = {
   input: string;
   onInputChange: (
     _event: SyntheticEvent<Element, Event>,
@@ -57,7 +54,7 @@ type AppSearchSearchHook = {
     value: SuggestionType | null,
     reason: AutocompleteChangeReason,
   ) => void;
-  suggestions: AutoCompleteSearch;
+  resetSuggestions: () => void;
 };
 
 type ChangeActiveCategoryHook = {
@@ -154,7 +151,7 @@ export type {
   UpdateAttendanceStatusHook,
   CancelEventHook,
   ChangeActiveCategoryHook,
-  AppSearchSearchHook,
+  AppSearchSuggestionsHook,
   LeaveGroupHook,
   NewUser,
 };

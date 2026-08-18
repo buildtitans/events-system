@@ -1,72 +1,49 @@
 "use client";
-import { useState, useCallback, useRef } from "react";
-import { trpcClient } from "@/src/trpc/trpcClient";
+import { useState, useCallback } from "react";
 import type {
   AutocompleteChangeReason,
   AutocompleteInputChangeReason,
 } from "@mui/material/useAutocomplete";
-import type { AutoCompleteSearch, SuggestionType } from "./types";
-import type { AppSearchSearchHook } from "../../types/hooks/types";
+import type { SuggestionType } from "./types";
+import type { AppSearchSuggestionsHook } from "../../types/hooks/types";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
 import { useSelectEvent } from "../hydration/event/useSelectEvent";
-import { AppSearchService } from "../../store/services/search/appSearchService";
-import { logCaughtError } from "../../utils/errors/logCaughtError";
 import { assertNever } from "../../utils/assert/assertNever";
 import { useDebouncedCallback } from "./useDebounce";
-const service = new AppSearchService(trpcClient);
+import { getSuggestedItems } from "../../store/slices/search/appSearchSlice";
+import { querySuggestions } from "../../store/slices/search/thunks";
 
-export const useAppSearch = (): AppSearchSearchHook => {
+export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
   const dispatch = useDispatch<AppDispatch>();
   const storedGroups = useSelector((s: RootState) => s.groups.communities);
   const router = useRouter();
-  const requestIdRef = useRef<number>(0);
   const [input, setInput] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<AutoCompleteSearch>({
-    status: "initial",
-  });
+
   const { handleOpenEvent } = useSelectEvent();
 
-  const sendRequest = useCallback(
+  const getSuggestions = useCallback(
     async (query: string) => {
-      const requestId = ++requestIdRef.current;
       const trimmedQuery = query.trim();
 
       if (!trimmedQuery) {
-        setSuggestions({ status: "initial" });
+        dispatch(getSuggestedItems({ status: "initial" }));
         return;
       }
-      setSuggestions({ status: "pending" });
 
-      try {
-        const results = await service.search(trimmedQuery, storedGroups);
-
-        if (requestId !== requestIdRef.current) return;
-
-        setSuggestions({ status: "ready", data: results });
-      } catch (err) {
-        if (requestId !== requestIdRef.current) return;
-
-        logCaughtError("useDebouncedSearch.sendRequest()", err);
-        setSuggestions({
-          status: "failed",
-          error: `Unexpected error searching query ${trimmedQuery}`,
-        });
-      }
+      void dispatch(querySuggestions({ query: trimmedQuery, storedGroups }));
     },
-    [storedGroups],
+    [storedGroups, dispatch],
   );
 
   const { run: debounce, cancel: cancelDebounce } =
-    useDebouncedCallback(sendRequest);
+    useDebouncedCallback(getSuggestions);
 
-  const resetSearch = useCallback((): void => {
-    requestIdRef.current++;
+  const resetSuggestions = useCallback((): void => {
     cancelDebounce();
-    setSuggestions({ status: "initial" });
-  }, [cancelDebounce]);
+    dispatch(getSuggestedItems({ status: "initial" }));
+  }, [cancelDebounce, dispatch]);
 
   const onInputChange = useCallback(
     (
@@ -76,16 +53,16 @@ export const useAppSearch = (): AppSearchSearchHook => {
     ) => {
       if (reason === "input") {
         setInput(value);
-        requestIdRef.current++;
+        dispatch(getSuggestedItems({ status: "initial" }));
         debounce(value);
       }
 
       if (reason === "clear") {
         setInput("");
-        resetSearch();
+        resetSuggestions();
       }
     },
-    [debounce, resetSearch],
+    [debounce, resetSuggestions, dispatch],
   );
 
   const selectOption = useCallback(
@@ -96,7 +73,7 @@ export const useAppSearch = (): AppSearchSearchHook => {
     ) => {
       if (reason !== "selectOption" || value === null) return;
 
-      resetSearch();
+      resetSuggestions();
 
       switch (value.kind) {
         case "event": {
@@ -107,7 +84,6 @@ export const useAppSearch = (): AppSearchSearchHook => {
           setInput(value.label);
           const redirectRoute = `/group/${value.slug}`;
           router.push(redirectRoute);
-          dispatch(enqueueSidebar("group"));
           return;
         }
 
@@ -116,13 +92,13 @@ export const useAppSearch = (): AppSearchSearchHook => {
         }
       }
     },
-    [router, dispatch, handleOpenEvent, resetSearch],
+    [router, handleOpenEvent, resetSuggestions],
   );
 
   return {
     input,
     onInputChange,
     selectOption,
-    suggestions,
+    resetSuggestions,
   };
 };
