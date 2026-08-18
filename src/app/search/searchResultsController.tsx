@@ -9,6 +9,7 @@ import SearchResultsEmptyFallback from "@/src/client/features/search/searchResul
 import { Container, Stack } from "@mui/material";
 import { SearchResultState } from "@/src/lib/hooks/search/types";
 import { resetSearchResults } from "@/src/lib/store/slices/search/appSearchSlice";
+import ResultsForQuery from "./resultsFor";
 
 export default function SearchResultsController({ query }: { query: string }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +31,7 @@ export default function SearchResultsController({ query }: { query: string }) {
   return (
     <Container disableGutters>
       <Stack gap={2}>
+        {normalizedQuery && <ResultsForQuery query={normalizedQuery} />}
         <AsyncStateRenderer
           state={visibleResults}
           empty={() => <SearchResultsEmptyFallback query={query} />}

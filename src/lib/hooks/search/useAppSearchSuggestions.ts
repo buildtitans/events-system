@@ -9,7 +9,6 @@ import type { AppSearchSuggestionsHook } from "../../types/hooks/types";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { enqueueSidebar } from "../../store/slices/rendering/RenderingSlice";
 import { useSelectEvent } from "../hydration/event/useSelectEvent";
 import { assertNever } from "../../utils/assert/assertNever";
 import { useDebouncedCallback } from "./useDebounce";
@@ -85,7 +84,6 @@ export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
           setInput(value.label);
           const redirectRoute = `/group/${value.slug}`;
           router.push(redirectRoute);
-          dispatch(enqueueSidebar("group"));
           return;
         }
 
@@ -94,7 +92,7 @@ export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
         }
       }
     },
-    [router, dispatch, handleOpenEvent, resetSuggestions],
+    [router, handleOpenEvent, resetSuggestions],
   );
 
   return {

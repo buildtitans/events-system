@@ -9,6 +9,7 @@ import { clearOpenedGroupSlice } from "@/src/lib/store/slices/groups/OpenedGroup
 import { AsyncStateRenderer } from "../pipelines/async/asyncStateRenderer";
 import ViewGroupSection from "../sections/group/openedGroup/viewGroupSection";
 import SimpleBackdrop from "../ui/feedback/pending/backdrop";
+import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice";
 
 export default function OpenedGroup(): JSX.Element | null {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,11 +18,11 @@ export default function OpenedGroup(): JSX.Element | null {
   const showDesktopSidebar = sidebar === "group";
 
   useEffect(() => {
-
     return () => {
       dispatch(clearOpenedGroupSlice());
-    }
-  }, [dispatch])
+      dispatch(enqueueSidebar(null));
+    };
+  }, [dispatch]);
 
   return (
     <Container
@@ -34,10 +35,8 @@ export default function OpenedGroup(): JSX.Element | null {
       }}
     >
       <Box sx={{ width: "100%", height: "100%" }}>
-        <AsyncStateRenderer state={group} pending={() => (<SimpleBackdrop />)}>
-          {(state) => (
-            <ViewGroupSection group={state}/>
-          )}
+        <AsyncStateRenderer state={group} pending={() => <SimpleBackdrop />}>
+          {(state) => <ViewGroupSection group={state} />}
         </AsyncStateRenderer>
       </Box>
     </Container>

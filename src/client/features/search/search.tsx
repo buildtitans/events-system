@@ -39,7 +39,12 @@ export function Search(): JSX.Element {
   };
 
   return (
-    <Box component={"form"} role="search" onSubmit={handleSubmit}>
+    <Box
+      sx={{ minWidth: 0, maxWidth: { xs: "100%", md: 440 }, width: "100%" }}
+      component={"form"}
+      role="search"
+      onSubmit={handleSubmit}
+    >
       <Autocomplete
         sx={navSearchAutocompleteSx}
         open={open}
