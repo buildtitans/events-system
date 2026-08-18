@@ -54,6 +54,7 @@ type AppSearchSuggestionsHook = {
     value: SuggestionType | null,
     reason: AutocompleteChangeReason,
   ) => void;
+  resetSuggestions: () => void;
 };
 
 type ChangeActiveCategoryHook = {

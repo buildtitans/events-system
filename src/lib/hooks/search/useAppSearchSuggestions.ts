@@ -101,5 +101,6 @@ export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
     input,
     onInputChange,
     selectOption,
+    resetSuggestions,
   };
 };

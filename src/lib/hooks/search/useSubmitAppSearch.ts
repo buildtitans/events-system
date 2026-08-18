@@ -1,9 +1,8 @@
 "use client";
-import type { RootState, AppDispatch } from "../../store";
+import type { RootState, AppDispatch } from "@/src/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
-import { searchQuery } from "@/src/lib/store/slices/search/thunks";
-import { getSearchResults } from "../../store/slices/search/appSearchSlice";
+import { resetSearchResults } from "@/src/lib/store/slices/search/appSearchSlice";
 import { useRouter } from "next/navigation";
 
 export const useSubmitAppSearch = () => {
@@ -11,27 +10,24 @@ export const useSubmitAppSearch = () => {
   const results = useSelector((state: RootState) => state.search.results);
   const router = useRouter();
 
-  const search = useCallback(
+  const submitSearch = useCallback(
     async (query: string) => {
       const trimmedQuery = query.trim();
 
-      if (!trimmedQuery) {
-        dispatch(getSearchResults({ status: "initial" }));
-        return;
-      }
+      if (!trimmedQuery) return;
 
-      await dispatch(searchQuery({ query: trimmedQuery }));
-      router.push(`/${trimmedQuery}`);
+      const params = new URLSearchParams({ q: trimmedQuery });
+      router.push(`/search?${params.toString()}`);
     },
-    [dispatch, router],
+    [router],
   );
 
   const resetResults = useCallback(() => {
-    dispatch(getSearchResults({ status: "initial" }));
+    dispatch(resetSearchResults());
   }, [dispatch]);
 
   return {
-    search,
+    submitSearch,
     results,
     resetResults,
   };

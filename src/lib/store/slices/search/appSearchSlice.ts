@@ -7,6 +7,7 @@ import { querySuggestions, searchQuery } from "./thunks";
 
 interface InitialState {
   suggestions: AutoCompleteSuggestions;
+  resultsQuery: string;
   results: SearchResultState;
   suggestionsRequestId: string;
   searchRequestId: string;
@@ -15,6 +16,7 @@ interface InitialState {
 const initialState: InitialState = {
   suggestions: { status: "initial" },
   results: { status: "initial" },
+  resultsQuery: "",
   searchRequestId: "",
   suggestionsRequestId: "",
 };
@@ -28,7 +30,13 @@ const AppSearchSlice = createSlice({
       action: PayloadAction<AutoCompleteSuggestions>,
     ) => {
       state.suggestions = action.payload;
+
       state.suggestionsRequestId = "";
+    },
+    resetSearchResults: (state) => {
+      state.results = { status: "initial" };
+      state.resultsQuery = "";
+      state.searchRequestId = "";
     },
     getSearchResults: (
       state: InitialState,
@@ -74,6 +82,7 @@ const AppSearchSlice = createSlice({
     });
 
     builder.addCase(searchQuery.pending, (state, action) => {
+      state.resultsQuery = action.meta.arg.query.trim();
       state.results = { status: "pending" };
       state.searchRequestId = action.meta.requestId;
     });
@@ -109,6 +118,7 @@ const AppSearchSlice = createSlice({
   },
 });
 
-export const { getSearchResults, getSuggestedItems } = AppSearchSlice.actions;
+export const { getSearchResults, getSuggestedItems, resetSearchResults } =
+  AppSearchSlice.actions;
 
 export default AppSearchSlice.reducer;
