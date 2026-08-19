@@ -6,10 +6,11 @@ import { searchQuery } from "@/src/lib/store/slices/search/thunks";
 import { AsyncStateRenderer } from "@/src/client/components/pipelines/async/asyncStateRenderer";
 import RenderSearchResults from "@/src/client/components/pipelines/search/renderSearchResults";
 import SearchResultsEmptyFallback from "@/src/client/features/search/searchResultsEmptyFallback";
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, Box } from "@mui/material";
 import { SearchResultState } from "@/src/lib/hooks/search/types";
 import { resetSearchResults } from "@/src/lib/store/slices/search/appSearchSlice";
 import ResultsForQuery from "./resultsFor";
+import Spinner from "@/src/client/components/ui/feedback/pending/spinner";
 
 export default function SearchResultsController({ query }: { query: string }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,11 +30,22 @@ export default function SearchResultsController({ query }: { query: string }) {
   }, [dispatch, normalizedQuery]);
 
   return (
-    <Container disableGutters>
+    <Container disableGutters sx={{ minHeight: "100dvh" }}>
       <Stack gap={2}>
-        {normalizedQuery && <ResultsForQuery query={normalizedQuery} />}
+        <ResultsForQuery query={normalizedQuery} results={visibleResults} />
         <AsyncStateRenderer
           state={visibleResults}
+          pending={() => (
+            <Box
+              sx={{
+                minHeight: { xs: "45dvh", md: "55dvh" },
+                display: "grid",
+                placeItems: "center",
+              }}
+            >
+              <Spinner />
+            </Box>
+          )}
           empty={() => <SearchResultsEmptyFallback query={query} />}
         >
           {(state) => <RenderSearchResults results={state} />}
