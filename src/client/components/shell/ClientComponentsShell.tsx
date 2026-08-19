@@ -35,7 +35,7 @@ export default function ClientComponentsShell({
             key="content_container"
             maxWidth={false}
             component="main"
-            sx={{ py: 2 }}
+            sx={{ py: 2, minHeight: "100dvh" }}
           >
             <TopNav />
             <TopLayerHost />
