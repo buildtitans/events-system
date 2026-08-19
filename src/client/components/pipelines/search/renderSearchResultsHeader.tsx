@@ -1,5 +1,6 @@
-import { SearchResultState } from "@/src/lib/hooks/search/types";
+import type { SearchResultState } from "@/src/lib/hooks/search/types";
 import { Box, Typography } from "@mui/material";
+import { getSearchResultsHeaderCopy } from "./getSearchResultsHeaderCopy";
 
 const headingSx = {
   pt: { xs: 2, sm: 2.5 },
@@ -26,75 +27,16 @@ export default function RenderSearchResultsHeader({
   query,
   results,
 }: RenderSearchResultsHeaderProps) {
-  switch (results.status) {
-    case "ready": {
-      return <ResultsHeader query={query} numResults={results.data.length} />;
-    }
-    case "n/a": {
-      return (
-        <ResultsHeaderFallback
-          fallbackHeader={"0 results for submitted search terms"}
-        />
-      );
-    }
-    case "initial": {
-      return (
-        <ResultsHeaderFallback
-          fallbackHeader={"Search for events and communities"}
-        />
-      );
-    }
-    case "pending": {
-      return <ResultsHeaderFallback fallbackHeader={"Search Pending..."} />;
-    }
+  const copy = getSearchResultsHeaderCopy(query, results);
 
-    case "failed": {
-      return (
-        <ResultsHeaderFallback fallbackHeader={"Failed to retrieve results"} />
-      );
-    }
-  }
-}
-
-function ResultsHeader({
-  query,
-  numResults,
-}: {
-  query: string;
-  numResults: number;
-}) {
   return (
     <Typography component="h1" sx={headingSx}>
-      {getQueryHeaderPrefix(numResults)}
-      <Box component="span" sx={querySx}>
-        {` “${query}”`}
-      </Box>
+      {copy.heading}
+      {copy.emphasizedQuery && (
+        <Box component="span" sx={querySx}>
+          {` “${copy.emphasizedQuery}”`}
+        </Box>
+      )}
     </Typography>
   );
-}
-
-function ResultsHeaderFallback({
-  fallbackHeader,
-}: {
-  fallbackHeader:
-    | Extract<SearchResultState, { status: "n/a" }>["message"]
-    | "Search for events and communities"
-    | "Failed to retrieve results"
-    | "Search Pending...";
-}) {
-  return (
-    <Typography component="h1" sx={headingSx}>
-      {fallbackHeader}
-    </Typography>
-  );
-}
-
-function getQueryHeaderPrefix(numResults: number): string {
-  if (numResults === 0) {
-    return "0 results for submitted search terms";
-  } else if (numResults === 1) {
-    return `1 Result for`;
-  } else {
-    return `${numResults} Results for`;
-  }
 }
