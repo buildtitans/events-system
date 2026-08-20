@@ -10,7 +10,8 @@ workflows.
 
 ## Features
 
-- Discover and search communities and upcoming events
+- Navigate directly through focused event and community suggestions
+- Run full searches across communities and upcoming events at `/search`
 - Filter events by category and popularity
 - Create communities and manage group membership
 - Schedule, reschedule, cancel, and archive events
@@ -213,7 +214,8 @@ pnpm docker:down
 
 ## Testing
 
-The test suite focuses on server-side application behavior, including:
+The test suite covers application behavior across the client and server,
+including:
 
 - Authentication and authorization branches
 - Role-based permissions
@@ -222,6 +224,8 @@ The test suite focuses on server-side application behavior, including:
 - RSVP updates, attendance aggregation, and DTO shaping
 - Notifications and password-reset orchestration
 - Event layout composition
+- Search service orchestration and relevance-ranked result compilation
+- Search request ownership, stale-response protection, and header-state copy
 
 Run the suite with:
 

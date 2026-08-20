@@ -273,15 +273,15 @@ substantial than a single request but does not itself own Redux state.
 
 Current examples include:
 
-- `AppSearchService`, which queries events and groups and compiles unified
-  search suggestions;
+- `AppSearchService`, which queries events and groups concurrently for focused
+  suggestions and full search results;
 - `EventFilterService`, which resolves filters into event layouts;
 - `HydrateOpenGroupService`, which loads a group and its related metadata;
 - `HydrateUserService`, which retrieves user dashboard data;
 - `SyncDomainsService`, which initializes independent application domains with
   partial-failure handling;
-- `SearchResultsCompiler`, which transforms server results into client
-  suggestion shapes.
+- `SearchResultsCompiler`, which transforms server responses into suggestion
+  shapes and relevance-ranked, unified event and group results.
 
 Services commonly receive the typed tRPC client through their constructor:
 
@@ -331,11 +331,42 @@ Hooks should not duplicate shared async workflows. When an operation changes
 shared state or triggers global feedback, the hook dispatches the appropriate
 thunk.
 
-Some async behavior correctly remains local. Application search keeps
-suggestions in the hook because they are short-lived UI state. The hook also
-owns debouncing and a request counter that prevents an older response from
-overwriting newer suggestions. `AppSearchService` owns the reusable query and
-compilation work underneath it.
+Some async behavior correctly remains local. Application search keeps the
+controlled input and debounce timer in its hook, while Redux owns suggestion
+and full-result lifecycles. Request IDs stored in the search slice prevent an
+older response from overwriting newer suggestions or results.
+
+## Application Search
+
+Application search separates quick navigation from exploratory search so the
+navigation autocomplete can remain focused without limiting the number or
+context of results available elsewhere.
+
+The navigation suggestion workflow is:
+
+1. `useAppSearchSuggestions` owns the controlled input and debounces changes.
+2. `querySuggestions` asks `AppSearchService` for limited event and group
+   suggestions.
+3. The search slice records the active suggestion request ID and ignores stale
+   responses.
+4. Selecting a suggestion opens the event or navigates directly to the group.
+
+The full-search workflow is:
+
+1. A free-text submission navigates to `/search?q=...` with an encoded query.
+2. The search controller normalizes the query and dispatches `searchQuery`.
+3. `AppSearchService` queries event and group search procedures concurrently.
+4. `SearchResultsCompiler` merges and globally ranks the results by relevance.
+5. The search slice stores the normalized `resultsQuery`, request ID, and
+   explicit pending, ready, empty, or failed state.
+6. The controller renders results only when `resultsQuery` matches the active
+   route query, preventing results from a previous search from flashing while
+   a newer request begins.
+
+Search UI follows the same explicit lifecycle as the store. Network loading,
+lazy result-card loading, ready results, empty results, and failures each have
+distinct rendering behavior. Header copy is derived by a pure helper so all
+states and singular/plural result counts remain exhaustively testable.
 
 ## Application Bootstrap
 
