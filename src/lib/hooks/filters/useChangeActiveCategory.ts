@@ -11,7 +11,7 @@ import type { ChangeActiveCategoryHook } from "@/src/lib/types/hooks/types";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import {
   EventFilterService,
-  FilterResults,
+  type FilterResults,
 } from "@/src/lib/store/services/filter/eventFilterService";
 import { EventDisplayFilter } from "@/src/lib/store/slices/events/types";
 
