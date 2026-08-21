@@ -1,4 +1,3 @@
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   EventsByGroupIdSchemaType,
   EventSchemaType,
@@ -13,12 +12,12 @@ import {
 import { EventsByGroupIdSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import { IAuthorization } from "@/src/server/core/service/auth/authorization";
-import { IEventTimelineHandler } from "./types";
+import type { IAuthorization } from "@/src/server/core/service/auth/authorization";
+import type { EventTimelineDb, IEventTimelineHandler } from "./types";
 
 export class EventTimelineHandler implements IEventTimelineHandler {
   constructor(
-    private readonly db: Pick<IDBClient, "events" | "eventAttendants">,
+    private readonly db: EventTimelineDb,
     private readonly policy: IAuthorization,
   ) {}
 

@@ -20,6 +20,42 @@ function createNotificationPlaceholder(
 }
 
 describe("HydrateUserService", () => {
+  it("recovers the current session", async () => {
+    const recoveredSession = {
+      session: {
+        id: "session-1",
+        expires_at: new Date("2026-08-21T12:00:00.000Z"),
+        user_id: "user-1",
+      },
+      email: "viewer@example.com",
+    };
+    const recover = jest.fn().mockResolvedValue(recoveredSession);
+    const service = new HydrateUserService({
+      auth: { status: { recover: { query: recover } } },
+    } as unknown as TrpcClientType);
+
+    await expect(service.recoverSession()).resolves.toEqual(recoveredSession);
+    expect(recover).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns the viewer attendance dictionary", async () => {
+    const attendance = {
+      "event-1": "going",
+      "event-2": "not_going",
+    };
+    const getAttendance = jest.fn().mockResolvedValue(attendance);
+    const service = new HydrateUserService({
+      users: {
+        select: {
+          attendanceDictionary: { query: getAttendance },
+        },
+      },
+    } as unknown as TrpcClientType);
+
+    await expect(service.attendance()).resolves.toEqual(attendance);
+    expect(getAttendance).toHaveBeenCalledTimes(1);
+  });
+
   it("returns new and viewed notifications in server-provided order", async () => {
     const newNotifications = [
       createNotificationPlaceholder({

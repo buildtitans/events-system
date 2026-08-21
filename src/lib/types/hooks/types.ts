@@ -96,18 +96,6 @@ export type CreateNewGroupHook = {
   ) => void;
 };
 
-export type LoginResType =
-  | {
-      status: "ok";
-      email: string;
-      attendanceDictionary: AttendanceDictionaryType;
-    }
-  | {
-      status: "failed";
-      email: undefined;
-      attendanceDictionary: undefined;
-    };
-
 type UseLoginHook = {
   login: (credentials: LoginCredentials) => Promise<void>;
 };

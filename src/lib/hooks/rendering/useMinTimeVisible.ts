@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 
 export function useMinTimeVisible(
   showTarget: boolean,
-  delayIn: number = 150,
+  delayIn: number = 100,
   minVisible: number = 600,
 ) {
   const [visible, setVisible] = useState<boolean>();

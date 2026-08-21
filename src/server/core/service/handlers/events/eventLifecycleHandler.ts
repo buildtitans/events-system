@@ -3,13 +3,12 @@ import {
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { IAuthorization } from "@/src/server/core/service/auth/authorization";
-import { IEventLifecycleHandler } from "./types";
+import { EventLifecycleDb, IEventLifecycleHandler } from "./types";
 
 export class EventLifecycleHandler implements IEventLifecycleHandler {
   constructor(
-    private readonly db: Pick<IDBClient, "events">,
+    private readonly db: EventLifecycleDb,
     private readonly policy: IAuthorization,
   ) {}
 

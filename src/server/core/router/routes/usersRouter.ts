@@ -19,6 +19,12 @@ const selectUserRouter = router({
     );
   }),
 
+  attendanceDictionary: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.services.api.domains.participations.rsvps.getAttendanceDictionary(
+      ctx.req.user?.id,
+    );
+  }),
+
   rsvps: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,

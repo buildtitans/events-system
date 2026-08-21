@@ -13,7 +13,20 @@ import {
   UpComingEventsLookup,
 } from "@/src/server/core/service/types";
 import { GroupSchemaType } from "@/src/schemas//groups/groupSchema";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { IDBClient } from "../../../db/access/client/dbClient";
+
+export type EventHydrationDb = Pick<
+  IDBClient,
+  "events" | "groupMembers" | "groups" | "eventAttendants"
+>;
+
+export type EventQueryDb = Pick<IDBClient, "events" | "eventAttendants">;
+
+export type EventLayoutDb = Pick<IDBClient, "events">;
+
+export type EventTimelineDb = Pick<IDBClient, "events" | "eventAttendants">;
+
+export type EventLifecycleDb = Pick<IDBClient, "events">;
 
 export interface IEventQueryHandler {
   getAllEvents(): Promise<EventSchemaType[]>;
@@ -49,6 +62,10 @@ export interface IEventLayoutHandler {
   forGroup(groupId: string): Promise<PaginatedLayoutSchemaType>;
 }
 
+export interface IEventLayoutComposer {
+  compileLayout(events: EventSchemaType[]): PaginatedLayoutSchemaType;
+}
+
 export interface IEventTimelineHandler {
   getPastEventsForGroup(group_id: string): Promise<PastEventsResults>;
   getAttendantsOfPastEvents(ids: string[]): Promise<PastEventAttendanceLookup>;
@@ -67,8 +84,4 @@ export interface IEventHydrationHandler {
     user_id: string | undefined | null,
     event_id: string,
   ): Promise<HydratedEvent>;
-  getUserRoleInGroup(
-    user_id: string | undefined | null,
-    event_id: string,
-  ): Promise<GroupMemberSchemaType["role"]>;
 }

@@ -109,31 +109,4 @@ describe("EventHydrationHandler", () => {
       expect(getMembershipRoleInDb).not.toHaveBeenCalled();
     });
   });
-
-  describe("getUserRoleInGroup", () => {
-    it("returns the membership role when the user and event exist", async () => {
-      getEventInDb.mockResolvedValue(
-        makeEvent({ id: eventId, group_id: groupId }),
-      );
-      getMembershipRoleInDb.mockResolvedValue("member");
-
-      await expect(handler.getUserRoleInGroup(userId, eventId)).resolves.toBe(
-        "member",
-      );
-
-      expect(getEventInDb).toHaveBeenCalledWith(eventId);
-      expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
-    });
-
-    it("returns anonymous when the event cannot be found", async () => {
-      getEventInDb.mockResolvedValue(null);
-
-      await expect(handler.getUserRoleInGroup(userId, eventId)).resolves.toBe(
-        "anonymous",
-      );
-
-      expect(getEventInDb).toHaveBeenCalledWith(eventId);
-      expect(getMembershipRoleInDb).not.toHaveBeenCalled();
-    });
-  });
 });

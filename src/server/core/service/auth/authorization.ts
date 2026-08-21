@@ -1,4 +1,4 @@
-import { IRoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import { IRoleBasedAccessHandler } from "@/src/server/core/service/auth/types";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 
 export interface IAuthorization {

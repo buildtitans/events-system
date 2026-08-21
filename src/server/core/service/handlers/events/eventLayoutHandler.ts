@@ -2,12 +2,11 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { filterActiveEvents } from "@/src/server/core/lib/utils/filterActiveEvents";
 import { EventLayoutComposer } from "./eventLayoutComposer";
-import { IEventLayoutHandler } from "./types";
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
+import { IEventLayoutHandler, EventLayoutDb } from "./types";
 
 export class EventLayoutHandler implements IEventLayoutHandler {
   constructor(
-    private readonly db: Pick<IDBClient, "events">,
+    private readonly db: EventLayoutDb,
     private readonly composer: EventLayoutComposer,
   ) {}
 

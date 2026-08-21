@@ -12,7 +12,6 @@ import {
   enqueueSnackbar,
 } from "../rendering/RenderingSlice";
 import { storeUserEmail } from "../user/userSlice";
-import { getAttendanceDictionary } from "../viewer/ViewerSlice";
 
 export const authenticateUser = createAsyncThunk(
   "AuthSlice/authenticateUser",
@@ -26,14 +25,9 @@ export const authenticateUser = createAsyncThunk(
     try {
       const request = await trpcClient.auth.session.login.mutate(credentials);
 
-      if (request.status === "failed") {
-        throw new Error(`Failed to log in user @${credentials.email}`);
-      }
-
-      const { attendanceDictionary, email } = request;
-
-      thunkAPI.dispatch(getAttendanceDictionary(attendanceDictionary));
-      thunkAPI.dispatch(storeUserEmail({ status: "ready", data: email }));
+      thunkAPI.dispatch(
+        storeUserEmail({ status: "ready", data: request.email }),
+      );
       thunkAPI.dispatch(enqueueSnackbar({ status: "success", kind: "login" }));
       thunkAPI.dispatch(enqueueDrawer(null));
 
