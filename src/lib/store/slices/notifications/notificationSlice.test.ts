@@ -1,5 +1,7 @@
 jest.mock("./thunks", () => {
-  const { createAsyncThunk } = jest.requireActual("@reduxjs/toolkit") as typeof import("@reduxjs/toolkit");
+  const { createAsyncThunk } = jest.requireActual(
+    "@reduxjs/toolkit",
+  ) as typeof import("@reduxjs/toolkit");
 
   return {
     hydrateNotifications: createAsyncThunk(
@@ -14,7 +16,7 @@ jest.mock("./thunks", () => {
 });
 
 import notificationReducer, {
-  appendNewNotifications,
+  appendNewNotification,
   clearNotificationSlice,
   markSeen,
 } from "./notificationSlice";
@@ -113,7 +115,7 @@ describe("NotificationSlice", () => {
 
     const state = notificationReducer(
       readyState,
-      appendNewNotifications([createdNotification]),
+      appendNewNotification(createdNotification),
     );
 
     expect(state.notifications).toEqual({

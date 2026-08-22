@@ -81,7 +81,7 @@ describe("NotificationService.createNotification", () => {
 
     await expect(
       service.createNotification(newNotification, "user-1"),
-    ).resolves.toMatchObject(notificationResponse);
+    ).resolves.toEqual(notificationResponse.items[0]);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
     expect(requireOrganizer).toHaveBeenCalledWith(

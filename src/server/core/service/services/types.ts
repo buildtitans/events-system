@@ -1,14 +1,13 @@
-import { DbUserSchemaType } from "../../../../schemas/auth/userSchema";
-import { GroupSchemaType } from "../../../../schemas/groups/groupSchema";
-import { UserMembershipSchemaType } from "../../../../schemas/groups/userMembershipSchema";
-import { NotificationSchemaType } from "../../../../schemas/notifications/notificationsSchema";
-import { IDBClient } from "../../db/access/client/dbClient";
+import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   AuthClientLoginResponse,
   NewUserResponse,
-  NotificationCreationProcedure,
   StoredSession,
-} from "../../db/access/types/types";
+} from "@/src/server/core/db/access/types/types";
 import {
   IEventHydrationHandler,
   IEventLayoutHandler,
@@ -85,7 +84,7 @@ export interface INotificationService {
   createNotification(
     notification: NewNotification,
     user_id: string | undefined | null,
-  ): Promise<NotificationCreationProcedure>;
+  ): Promise<NotificationSchemaType | undefined>;
   markSeen(
     user_id: string | null | undefined,
     seenNotifications: NotificationSchemaType[],

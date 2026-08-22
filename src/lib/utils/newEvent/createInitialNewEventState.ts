@@ -12,6 +12,6 @@ export function createInitialNewEventState(
     group_id: group_id,
     img: `https://picsum.photos/800/450?random=${getPicDate()}`,
     meeting_location: "",
-    tag: "",
+    tag: null,
   };
 }

@@ -1,5 +1,4 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import type { NotificationCreationProcedure } from "../../db/access/types/types";
 import { IAuthorization } from "../auth/authorization";
 import {
   INotificationService,
@@ -13,9 +12,7 @@ export class NotificationService implements INotificationService {
     private readonly policy: IAuthorization,
   ) {}
 
-  async getNotifications(
-    user_id: string | null | undefined,
-  ): Promise<{
+  async getNotifications(user_id: string | null | undefined): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }> {
@@ -41,7 +38,7 @@ export class NotificationService implements INotificationService {
   async createNotification(
     notification: NewNotification,
     user_id: string | undefined | null,
-  ): Promise<NotificationCreationProcedure> {
+  ): Promise<NotificationSchemaType | undefined> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, notification.group_id);
 
@@ -49,10 +46,16 @@ export class NotificationService implements INotificationService {
       notification.group_id,
     );
 
-    return await this.db.notifications.write.addNewNotifications(
+    const notifications = await this.db.notifications.write.addNewNotifications(
       notification,
       memberIds,
     );
+
+    const { items } = notifications;
+
+    const notificationForUser = items.find((item) => item.user_id === userId);
+
+    return notificationForUser ?? undefined;
   }
 
   async markSeen(

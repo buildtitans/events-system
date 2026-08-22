@@ -1,6 +1,16 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 
+const EVENT_TAG_MAX_LENGTH = 24;
+
+const EventTagSchema = Type.Union([
+  Type.String({
+    maxLength: EVENT_TAG_MAX_LENGTH,
+    pattern: "^\\s*\\S+(?:\\s+\\S+)?\\s*$",
+  }),
+  Type.Null(),
+]);
+
 export const EventStatusSchema = Type.Union([
   Type.Literal("scheduled"),
   Type.Literal("cancelled"),
@@ -13,7 +23,7 @@ const EventSchema = Type.Object({
   starts_at: Type.String(),
   starts_at_ms: Type.Integer({ minimum: 0 }),
   img: Type.String(),
-  tag: Type.Union([Type.String(), Type.Null()]),
+  tag: EventTagSchema,
   title: Type.String(),
   description: Type.String(),
   meeting_location: Type.String(),
@@ -36,7 +46,7 @@ const NewEventInputSchema = Type.Object({
   description: Type.String(),
   meeting_location: Type.String(),
   img: Type.Union([NonEmptyString, Type.Null()]),
-  tag: Type.Union([Type.String(), Type.Null()]),
+  tag: EventTagSchema,
 });
 
 const EventsArraySchema = Type.Array(EventSchema);

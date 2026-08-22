@@ -5,18 +5,20 @@ import type {
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { TrpcClientType } from "@/src/trpc/trpcClient";
-import { NotificationCreationProcedure } from "@/src/server/core/db/access/types/types";
-import { CreateNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import {
+  CreateNotificationSchemaType,
+  NotificationSchemaType,
+} from "@/src/schemas/notifications/notificationsSchema";
 
 interface IScheduleNotificationService {
   createNewEventNotification(
     event: EventSchemaType,
     group: GroupSchemaType,
-  ): Promise<NotificationCreationProcedure>;
+  ): Promise<NotificationSchemaType | undefined>;
   createScheduleNotification(
     event: EventSchemaType,
     updates: UpdateEventArgsSchemaType,
-  ): Promise<NotificationCreationProcedure>;
+  ): Promise<NotificationSchemaType | undefined>;
 }
 
 export class ScheduleNotificationService implements IScheduleNotificationService {
@@ -25,7 +27,7 @@ export class ScheduleNotificationService implements IScheduleNotificationService
   public async createNewEventNotification(
     event: EventSchemaType,
     group: GroupSchemaType,
-  ): Promise<NotificationCreationProcedure> {
+  ): Promise<NotificationSchemaType | undefined> {
     const date = toMonthDayYearHour(event.starts_at);
 
     const notification = {
@@ -41,7 +43,7 @@ export class ScheduleNotificationService implements IScheduleNotificationService
   public async createScheduleNotification(
     event: EventSchemaType,
     updates: UpdateEventArgsSchemaType,
-  ): Promise<NotificationCreationProcedure> {
+  ): Promise<NotificationSchemaType | undefined> {
     const notification = {
       priority: "high",
       group_id: event.group_id,

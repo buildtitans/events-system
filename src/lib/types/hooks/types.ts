@@ -69,12 +69,13 @@ type CreateEventHook = {
     context: PickerChangeHandlerContext<DateTimeValidationError>,
   ) => void;
   handleLocation: (input: string) => void;
-  schedule: (e: React.FormEvent<HTMLFormElement>) => void;
+  schedule: () => Promise<void>;
   isDisabled: boolean;
   getInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     field: keyof NewEventInput,
   ) => void;
+  getEventTagError(value: NewEventInput["tag"]): string | true;
 };
 
 export type NewGroupInputType = {

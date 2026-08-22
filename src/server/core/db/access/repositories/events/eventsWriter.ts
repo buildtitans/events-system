@@ -52,11 +52,11 @@ export class EventsWriter implements IEventsWriter {
     return {
       title: newEvent.title,
       description: newEvent.description,
-      img: "https://picsum.photos/800/450?random=2",
+      img: newEvent.img ?? "https://picsum.photos/800/450?random=2",
       group_id: newEvent.group_id,
       starts_at: start_time,
       created_at: new Date(),
-      tag: "placeholder tag",
+      tag: newEvent.tag ?? null,
       meeting_location: newEvent.meeting_location,
       status: "scheduled",
     };

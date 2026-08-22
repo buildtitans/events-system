@@ -35,7 +35,7 @@ export interface Events {
   meeting_location: string;
   starts_at: Timestamp;
   status: string;
-  tag: string;
+  tag: string | null;
   title: string;
   updated_at: Generated<Timestamp>;
 }

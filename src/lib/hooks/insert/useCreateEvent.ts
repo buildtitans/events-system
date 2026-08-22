@@ -15,6 +15,10 @@ import { useCreateNotifications } from "@/src/lib/hooks/update/notifications/use
 import { assertSchema } from "@/src/lib/utils/assert/assertSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { disableCreateEventButton } from "@/src/lib/utils/helpers/rendering/disableCreateEventButton";
+import {
+  EVENT_TAG_MAX_LENGTH,
+  EVENT_TAG_MAX_WORDS,
+} from "@/src/lib/tokens/eventTagTokens";
 
 export const useCreateEvent = (
   group_id: EventSchemaType["group_id"],
@@ -29,6 +33,24 @@ export const useCreateEvent = (
   const { createEventScheduledNotifications } = useCreateNotifications();
   const dispatch = useDispatch<AppDispatch>();
 
+  function getEventTagError(value: NewEventInput["tag"]): string | true {
+    const normalized = value?.trim() ?? "";
+
+    if (!normalized) return true;
+
+    if (normalized.length > EVENT_TAG_MAX_LENGTH) {
+      return `Tag must be ${EVENT_TAG_MAX_LENGTH} characters or fewer`;
+    }
+
+    const words = normalized.split(/\s+/);
+
+    if (words.length > EVENT_TAG_MAX_WORDS) {
+      return `Tag can contain no more than ${EVENT_TAG_MAX_WORDS} words`;
+    }
+
+    return true;
+  }
+
   const getInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     field: keyof NewEventInput,
@@ -37,7 +59,7 @@ export const useCreateEvent = (
 
     setNewEvent((prev: NewEventInput) => ({
       ...prev,
-      [field]: value,
+      [field]: value.trim(),
     }));
   };
 
@@ -56,11 +78,15 @@ export const useCreateEvent = (
     }));
   };
 
-  const schedule = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const schedule = async () => {
     try {
-      const validatedEvent = assertSchema(newEvent, NewEventInputSchema);
+      const input = {
+        ...newEvent,
+        tag: newEvent.tag?.trim() || null,
+      } satisfies NewEventInput;
+
+      const validatedEvent = assertSchema(input, NewEventInputSchema);
+
       const scheduledEvent = await dispatch(
         scheduleNewEvent(validatedEvent),
       ).unwrap();
@@ -76,6 +102,7 @@ export const useCreateEvent = (
     handleStartsAt,
     handleLocation,
     getInput,
+    getEventTagError,
     isDisabled,
   };
 };
