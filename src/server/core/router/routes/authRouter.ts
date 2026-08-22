@@ -2,35 +2,39 @@ import { router, publicProcedure } from "@/src/server/core/context/init";
 import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
 import { typeboxInput } from "../adaptors/typeBoxValidation";
+import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
+import { TRPCError } from "@trpc/server";
 
 const sessionRouter = router({
   login: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      const result = await ctx.services.api.domains.session.login(
-        input.email,
-        input.password,
-      );
+      let result: Awaited<
+        ReturnType<typeof ctx.services.api.domains.session.login>
+      >;
 
-      if (result.status === "ok") {
-        ctx.session.setCookieHeader(result.session, result.user);
+      try {
+        result = await ctx.services.api.domains.session.login(
+          input.email,
+          input.password,
+        );
+      } catch (error) {
+        if (error instanceof InvalidCredentialsError) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Invalid email or password",
+            cause: error,
+          });
+        }
 
-        const attendanceDictionary =
-          await ctx.services.api.domains.participations.rsvps.getAttendanceDictionary(
-            result.user.id,
-          );
-
-        return {
-          status: result.status,
-          email: result.user.email,
-          attendanceDictionary,
-        };
+        throw error;
       }
+
+      ctx.session.setCookieHeader(result.session, result.user);
 
       return {
         status: result.status,
-        email: undefined,
-        attendanceDictionary: undefined,
+        email: result.user.email,
       };
     }),
 

@@ -1,15 +1,12 @@
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events//eventAttendantsSchema";
-import { IEventQueryHandler } from "./types";
-import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
-import { ValidateSearchQuery } from "../../../lib/validation/schemaValidators";
+import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { ValidateSearchQuery } from "@/src/server/core/lib/validation/schemaValidators";
+import type { IEventQueryHandler, EventQueryDb } from "./types";
 
 export class EventQueryHandler implements IEventQueryHandler {
-  constructor(
-    private readonly db: Pick<IDBClient, "events" | "eventAttendants">,
-  ) {}
+  constructor(private readonly db: EventQueryDb) {}
 
   async getAllEvents(): Promise<EventSchemaType[]> {
     return await this.db.events.select.allStatuses();

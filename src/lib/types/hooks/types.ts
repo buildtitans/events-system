@@ -69,12 +69,13 @@ type CreateEventHook = {
     context: PickerChangeHandlerContext<DateTimeValidationError>,
   ) => void;
   handleLocation: (input: string) => void;
-  schedule: (e: React.FormEvent<HTMLFormElement>) => void;
+  schedule: () => Promise<void>;
   isDisabled: boolean;
   getInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     field: keyof NewEventInput,
   ) => void;
+  getEventTagError(value: NewEventInput["tag"]): string | true;
 };
 
 export type NewGroupInputType = {
@@ -95,18 +96,6 @@ export type CreateNewGroupHook = {
     field: keyof NewGroupInputType,
   ) => void;
 };
-
-export type LoginResType =
-  | {
-      status: "ok";
-      email: string;
-      attendanceDictionary: AttendanceDictionaryType;
-    }
-  | {
-      status: "failed";
-      email: undefined;
-      attendanceDictionary: undefined;
-    };
 
 type UseLoginHook = {
   login: (credentials: LoginCredentials) => Promise<void>;

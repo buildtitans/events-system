@@ -1,8 +1,6 @@
 import { db, DBClient } from "@/src/server/core/db";
-import {
-  IRoleBasedAccessHandler,
-  RoleBasedAccessHandler,
-} from "@/src/server/core/service/auth/roleBasedAccessHandler";
+import type { IRoleBasedAccessHandler } from "../auth/types";
+import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
 import {
   Authorization,
   IAuthorization,

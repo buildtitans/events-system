@@ -1,17 +1,12 @@
-import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpStatusSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { HydratedEvent } from "@/src/server/core/service/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import type { IEventHydrationHandler, EventHydrationDb } from "./types";
 
-export class EventHydrationHandler {
-  constructor(
-    private readonly db: Pick<
-      IDBClient,
-      "events" | "groupMembers" | "groups" | "eventAttendants"
-    >,
-  ) {}
+export class EventHydrationHandler implements IEventHydrationHandler {
+  constructor(private readonly db: EventHydrationDb) {}
 
   async openedEvent(
     user_id: string | undefined | null,
@@ -34,7 +29,7 @@ export class EventHydrationHandler {
     };
   }
 
-  async getUserRoleInGroup(
+  private async getUserRoleInGroup(
     user_id: string | undefined | null,
     event_id: string,
   ): Promise<GroupMemberSchemaType["role"]> {

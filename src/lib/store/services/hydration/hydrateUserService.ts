@@ -7,13 +7,23 @@ import {
   NextGroupEventLookupMapType,
   ParticipationsStatePayload,
 } from "@/src/lib/store/slices/user/types";
+import { AttendanceDictionaryType } from "@/src/lib/types/hooks/types";
 
 interface IHydrateUserService {
+  recoverSession(): Promise<{
+    session: {
+      id: string;
+      expires_at: Date;
+      user_id: string;
+    };
+    email: string;
+  } | null>;
   notifications(): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }>;
   participations(): Promise<UserParticipationsResult>;
+  attendance(): Promise<AttendanceDictionaryType>;
 }
 
 export type UserParticipationsResult = {
@@ -23,6 +33,17 @@ export type UserParticipationsResult = {
 
 export class HydrateUserService implements IHydrateUserService {
   constructor(private readonly trpc: TrpcClientType) {}
+
+  public async recoverSession(): Promise<{
+    session: {
+      id: string;
+      expires_at: Date;
+      user_id: string;
+    };
+    email: string;
+  } | null> {
+    return await this.trpc.auth.status.recover.query();
+  }
 
   public async notifications(): Promise<{
     new: NotificationSchemaType[];
@@ -40,6 +61,10 @@ export class HydrateUserService implements IHydrateUserService {
       participations: { rsvps, memberships },
       lookup,
     };
+  }
+
+  public async attendance(): Promise<AttendanceDictionaryType> {
+    return await this.trpc.users.select.attendanceDictionary.query();
   }
 
   private async rsvps(): Promise<RsvpSchemaType[]> {

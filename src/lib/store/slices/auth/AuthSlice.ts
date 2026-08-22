@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AttendanceDictionaryType } from "@/src/lib/types/hooks/types";
+import { createSlice } from "@reduxjs/toolkit";
 import type { AuthenticationState, UserKind } from "./types";
 import { authenticateUser } from "./thunks";
 
@@ -32,23 +31,13 @@ const AuthSlice = createSlice({
       };
       state.userKind = "anonymous";
     });
-    builder.addCase(
-      authenticateUser.fulfilled,
-      (
-        state: AuthInitialState,
-        action: PayloadAction<{
-          status: "ok";
-          email: string;
-          attendanceDictionary: AttendanceDictionaryType;
-        }>,
-      ) => {
-        state.authenticationState = {
-          status: "ready",
-          data: action.payload.status,
-        };
-        state.userKind = "authenticated";
-      },
-    );
+    builder.addCase(authenticateUser.fulfilled, (state, action) => {
+      state.authenticationState = {
+        status: "ready",
+        data: action.payload.email,
+      };
+      state.userKind = "authenticated";
+    });
     builder.addCase(authenticateUser.pending, (state: AuthInitialState) => {
       state.authenticationState = { status: "pending" };
     });

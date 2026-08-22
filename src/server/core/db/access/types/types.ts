@@ -29,13 +29,11 @@ type SessionType =
     }
   | undefined;
 
-type AuthClientLoginResponse =
-  | {
-      status: "ok";
-      user: PublicUserSchemaType;
-      session: StoredSession;
-    }
-  | { status: "failed" };
+type AuthClientLoginResponse = {
+  status: "ok";
+  user: PublicUserSchemaType;
+  session: StoredSession;
+};
 
 type NotificationCreationProcedure = {
   ok: boolean;

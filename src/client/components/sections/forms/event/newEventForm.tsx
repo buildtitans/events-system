@@ -16,21 +16,37 @@ import {
   createEventPrimaryButtonSx,
   createEventTextFieldSx,
 } from "@/src/client/styles/sx/createEventDrawer";
+import EventTagInput from "../../inputs/event/eventTagInput";
 
 export default function NewEventForm({
   group_id,
 }: {
   group_id: string;
 }): JSX.Element {
-  const { control } = useForm<NewEventInput>();
-  const { handleStartsAt, schedule, handleLocation, getInput, isDisabled } =
-    useCreateEvent(group_id);
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<NewEventInput>({
+    mode: "onChange",
+    defaultValues: {
+      tag: "",
+    },
+  });
+  const {
+    handleStartsAt,
+    schedule,
+    handleLocation,
+    getInput,
+    getEventTagError,
+    isDisabled,
+  } = useCreateEvent(group_id);
 
   return (
     <Box
       component="form"
       sx={createEventDrawerFormSx}
-      onSubmit={(e) => schedule(e)}
+      onSubmit={handleSubmit(() => schedule())}
     >
       <Controller
         name="title"
@@ -62,6 +78,12 @@ export default function NewEventForm({
         )}
       />
 
+      <EventTagInput
+        control={control}
+        getEventTagError={getEventTagError}
+        getInput={getInput}
+      />
+
       <EventLocationInput
         control={control}
         handleLocation={handleLocation}
@@ -79,7 +101,7 @@ export default function NewEventForm({
       />
       <FormControl>
         <Button
-          disabled={isDisabled}
+          disabled={isDisabled || !isValid}
           variant="contained"
           type="submit"
           startIcon={<AddIcon />}

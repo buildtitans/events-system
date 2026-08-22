@@ -6,7 +6,7 @@ import {
   createAsyncThunk,
   GetThunkAPI,
 } from "@reduxjs/toolkit";
-import { appendNewNotifications, markSeen } from "./notificationSlice";
+import { appendNewNotification, markSeen } from "./notificationSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
@@ -38,12 +38,18 @@ export const notifyNewEvent = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const newNotifications = await service.createNewEventNotification(
+      const notification = await service.createNewEventNotification(
         params.event,
         params.group,
       );
 
-      thunkAPI.dispatch(appendNewNotifications(newNotifications.items));
+      if (!notification) {
+        throw new Error(
+          `Failed to create new event notification for ${params.event.title}`,
+        );
+      }
+
+      thunkAPI.dispatch(appendNewNotification(notification));
     } catch (err) {
       logCaughtError("NotificationSlice.notifyNewEvent()", err);
       return thunkAPI.rejectWithValue(err);

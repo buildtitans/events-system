@@ -9,8 +9,9 @@ import {
 } from "@/src/schemas/events/layoutSlotSchema";
 import { LayoutSlot } from "../../../lib/types";
 import { cardSizingConfig } from "../../../lib/config/cardSizingConfig";
+import { IEventLayoutComposer } from "./types";
 
-export class EventLayoutComposer {
+export class EventLayoutComposer implements IEventLayoutComposer {
   constructor() {}
 
   public compileLayout(events: EventSchemaType[]): PaginatedLayoutSchemaType {
