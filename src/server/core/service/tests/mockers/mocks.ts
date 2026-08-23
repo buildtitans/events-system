@@ -1,7 +1,6 @@
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import type { NotificationCreationProcedure } from "@/src/server/core/db/access/types/types";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
@@ -286,23 +285,18 @@ export function makeNotificationNewOrSeen(
 
 export function makeNotification(
   overrides: Partial<NotificationSchemaType> = {},
-): NotificationCreationProcedure {
+): NotificationSchemaType {
   return {
-    ok: true,
-    items: [
-      {
-        created_at: "2026-04-01T19:57:58.721Z",
-        updated_at: "2026-04-01T19:57:58.721Z",
-        group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
-        id: "new-notification-1-id",
-        subject: "new-notification-1 subject",
-        message: "new-notification-1-message",
-        priority: "high",
-        status: "new",
-        user_id: "user-1",
-        ...overrides,
-      },
-    ],
+    created_at: "2026-04-01T19:57:58.721Z",
+    updated_at: "2026-04-01T19:57:58.721Z",
+    group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
+    id: "new-notification-1-id",
+    subject: "new-notification-1 subject",
+    message: "new-notification-1-message",
+    priority: "high",
+    status: "new",
+    user_id: "user-1",
+    ...overrides,
   };
 }
 

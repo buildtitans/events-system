@@ -26,6 +26,18 @@ export const CreateNotificationSchema = Type.Object({
   subject: Type.String(),
 });
 
+export const NotificationIdsSchema = Type.Array(Type.String({ minLength: 1 }), {
+  minItems: 1,
+  maxItems: 100,
+  uniqueItems: true,
+});
+
+export type NotificationIdsSchemaType = Static<typeof NotificationIdsSchema>;
+
+export const CompiledNotificationIdsSchema = TypeCompiler.Compile(
+  NotificationIdsSchema,
+);
+
 const ViewedNotificationsIdsSchema = Type.Array(Type.String());
 
 export type ViewedNotificationsIdsSchemaType = Static<

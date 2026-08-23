@@ -81,7 +81,7 @@ describe("NotificationService.createNotification", () => {
 
     await expect(
       service.createNotification(newNotification, "user-1"),
-    ).resolves.toEqual(notificationResponse.items[0]);
+    ).resolves.toEqual(notificationResponse);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
     expect(requireOrganizer).toHaveBeenCalledWith(
@@ -92,6 +92,7 @@ describe("NotificationService.createNotification", () => {
     expect(addNewNotificationsInDb).toHaveBeenCalledWith(
       newNotification,
       memberIds,
+      "user-1",
     );
   });
 });
@@ -190,25 +191,11 @@ describe("NotificationService.getNotifications", () => {
 });
 
 describe("NotificationService.markSeen", () => {
-  const requireIsGroupMember = policyMock.requireIsGroupMember as jest.Mock;
   let service: NotificationService;
   let db: ReturnType<typeof createMockDb>;
   let markOpenedNotificationsInDb: jest.Mock;
 
-  const seenNotifications = [
-    makeNotificationNewOrSeen({
-      id: "1",
-      user_id: "user-1",
-      group_id: "group-1",
-      status: "new",
-    }),
-    makeNotificationNewOrSeen({
-      id: "2",
-      user_id: "user-1",
-      group_id: "group-1",
-      status: "new",
-    }),
-  ];
+  const seenNotificationIds = ["notification-1", "notification2"];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -221,49 +208,30 @@ describe("NotificationService.markSeen", () => {
   it("throws a 401 error when the user is not authenticated", async () => {
     unauthenticated();
 
-    await expect(service.markSeen(null, seenNotifications)).rejects.toThrow(
+    await expect(service.markSeen(null, seenNotificationIds)).rejects.toThrow(
       "401",
     );
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
-    expect(requireIsGroupMember).not.toHaveBeenCalled();
     expect(markOpenedNotificationsInDb).not.toHaveBeenCalled();
   });
 
-  it("throws a 403 error when the authenticated user is not allowed to read notifications for the group", async () => {
+  it("marks notifications as seen for the authenticated user", async () => {
     authenticateAs();
-    requireIsGroupMember.mockImplementation(() => {
-      throw new Error("403");
-    });
-
-    await expect(service.markSeen("user-1", seenNotifications)).rejects.toThrow(
-      "403",
-    );
-
-    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(requireIsGroupMember).toHaveBeenCalledWith("user-1", "group-1");
-    expect(markOpenedNotificationsInDb).not.toHaveBeenCalled();
-  });
-
-  it("marks notifications as seen for an authenticated group member", async () => {
-    authenticateAs();
-    requireIsGroupMember.mockResolvedValue(undefined);
     markOpenedNotificationsInDb.mockResolvedValue({
       numUpdatedRows: BigInt(2),
     });
 
     await expect(
-      service.markSeen("user-1", seenNotifications),
+      service.markSeen("user-1", seenNotificationIds),
     ).resolves.toEqual({
       ok: true,
       numUpdated: 2,
     });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(requireIsGroupMember).toHaveBeenCalledTimes(1);
-    expect(requireIsGroupMember).toHaveBeenCalledWith("user-1", "group-1");
     expect(markOpenedNotificationsInDb).toHaveBeenCalledWith({
-      ids: ["1", "2"],
+      ids: seenNotificationIds,
       userId: "user-1",
     });
   });

@@ -31,9 +31,11 @@ import {
 } from "@/src/schemas/groups/groupSchema";
 import {
   CompiledCreateNotificationSchema,
+  CompiledNotificationIdsSchema,
   CompiledNotificationSchemaArray,
   CompiledViewedNotificationsIdsSchema,
   CreateNotificationSchemaType,
+  NotificationIdsSchemaType,
   NotificationSchemaArrayType,
   ViewedNotificationsIdsSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
@@ -109,3 +111,7 @@ export const TokenAndPasswordValidator =
 
 export const GeoApifySearchInput =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);
+
+export const SeenNotificationsInput = typeboxInput<NotificationIdsSchemaType>(
+  CompiledNotificationIdsSchema,
+);

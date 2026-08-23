@@ -1,7 +1,7 @@
 import { router, protectedProcedure } from "@/src/server/core/context/init";
 import {
   createNotificationInput,
-  NotificationArrayInputValidator,
+  SeenNotificationsInput,
 } from "../inputValidators/inputValidation";
 
 const selectNotificationRouter = router({
@@ -28,7 +28,7 @@ const writeNotificationRouter = router({
     }),
 
   markOpened: protectedProcedure
-    .input(NotificationArrayInputValidator)
+    .input(SeenNotificationsInput)
     .mutation(async ({ ctx, input }) => {
       return await ctx.services.api.domains.notifications.markSeen(
         ctx.req.user?.id,

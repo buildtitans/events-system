@@ -6,7 +6,6 @@ import {
   NotificationSchemaArrayType,
   NotificationSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { NotificationCreationProcedure } from "../../types/types";
 import { INotificationsParser } from "./notificationsParser";
 
 export interface INotificationsWriter {
@@ -20,7 +19,8 @@ export interface INotificationsWriter {
   addNewNotifications(
     notification: CreateNotificationSchemaType,
     memberIds: string[],
-  ): Promise<NotificationCreationProcedure>;
+    user_id: string,
+  ): Promise<NotificationSchemaType | undefined>;
 }
 
 export class NotificationsWriter implements INotificationsWriter {
@@ -50,15 +50,13 @@ export class NotificationsWriter implements INotificationsWriter {
   async addNewNotifications(
     notification: CreateNotificationSchemaType,
     memberIds: string[],
-  ): Promise<NotificationCreationProcedure> {
+    userId: string,
+  ): Promise<NotificationSchemaType | undefined> {
     const rows = this.parse.toInsertableNotifications(notification, memberIds);
 
     const createdNotifications = await this.insertNotifications(rows);
 
-    return {
-      ok: createdNotifications.length > 0,
-      items: createdNotifications,
-    };
+    return this.findByUserId(userId, createdNotifications);
   }
 
   private async insertNotifications(
@@ -71,5 +69,15 @@ export class NotificationsWriter implements INotificationsWriter {
       .execute();
 
     return this.parse.parseRawNotifications(notifications);
+  }
+
+  private findByUserId(
+    userId: string,
+    inserted: NotificationSchemaType[],
+  ): NotificationSchemaType | undefined {
+    for (const notification of inserted) {
+      if (notification.user_id === userId) return notification;
+    }
+    return undefined;
   }
 }

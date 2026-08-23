@@ -2,7 +2,6 @@ import type {
   PublicUserSchemaType,
   DbUserSchemaType,
 } from "@/src/schemas/auth/userSchema";
-import type { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { EventAttendants } from "@/src/server/core/db/types/db";
@@ -35,11 +34,6 @@ type AuthClientLoginResponse = {
   session: StoredSession;
 };
 
-type NotificationCreationProcedure = {
-  ok: boolean;
-  items: NotificationSchemaArrayType;
-};
-
 type NewUserResponse = Pick<DbUserSchemaType, "email" | "id">;
 
 type RBACType = Record<
@@ -61,7 +55,6 @@ export type {
   StoredSession,
   SessionType,
   AuthClientLoginResponse,
-  NotificationCreationProcedure,
   NewUserResponse,
   RBACType,
   PasswordResetRequestResult,
