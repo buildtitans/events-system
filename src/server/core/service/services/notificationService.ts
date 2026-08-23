@@ -17,15 +17,7 @@ export class NotificationService implements INotificationService {
     seen: NotificationSchemaType[];
   }> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const newNotifications =
-      await this.db.notifications.select.getUnseenNotifications(userId);
-    const readNotifications =
-      await this.db.notifications.select.getOpenedNotifications(userId);
-
-    return {
-      new: newNotifications,
-      seen: readNotifications,
-    };
+    return await this.getNewAndSeenNotifications(userId);
   }
 
   async getNewNotifications(
@@ -41,33 +33,21 @@ export class NotificationService implements INotificationService {
   ): Promise<NotificationSchemaType | undefined> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, notification.group_id);
-
-    const memberIds = await this.db.groupMembers.select.memberIds(
-      notification.group_id,
-    );
-
-    const notifications = await this.db.notifications.write.addNewNotifications(
-      notification,
-      memberIds,
-    );
-
-    const { items } = notifications;
-
-    const notificationForUser = items.find((item) => item.user_id === userId);
-
-    return notificationForUser ?? undefined;
+    return await this.executeCreateNotifications(notification, userId);
   }
 
   async markSeen(
     user_id: string | null | undefined,
-    seenNotifications: NotificationSchemaType[],
+    ids: NotificationSchemaType["id"][],
   ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }> {
     const userId = this.policy.requireAuthenticated(user_id);
+    return await this.executeMarkSeenNotifications(ids, userId);
+  }
 
-    await this.checkSeenNotifications(seenNotifications, userId);
-
-    const ids = seenNotifications.map((notif) => notif.id);
-
+  private async executeMarkSeenNotifications(
+    ids: NotificationSchemaType["id"][],
+    userId: string,
+  ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }> {
     const result = await this.db.notifications.write.markOpenedNotifications({
       ids: ids,
       userId,
@@ -88,16 +68,28 @@ export class NotificationService implements INotificationService {
     }
   }
 
-  private async checkSeenNotifications(
-    seenNotifications: NotificationSchemaType[],
+  private async executeCreateNotifications(
+    notification: NewNotification,
     userId: string,
-  ): Promise<void> {
-    const uniqueGroupIds = new Set(
-      seenNotifications.map((notif) => notif.group_id),
+  ): Promise<NotificationSchemaType | undefined> {
+    const memberIds = await this.db.groupMembers.select.memberIds(
+      notification.group_id,
     );
 
-    for (const groupId of uniqueGroupIds) {
-      await this.policy.requireIsGroupMember(userId, groupId);
-    }
+    return await this.db.notifications.write.addNewNotifications(
+      notification,
+      memberIds,
+      userId,
+    );
+  }
+
+  private async getNewAndSeenNotifications(userId: string): Promise<{
+    new: NotificationSchemaType[];
+    seen: NotificationSchemaType[];
+  }> {
+    return {
+      new: await this.db.notifications.select.getUnseenNotifications(userId),
+      seen: await this.db.notifications.select.getOpenedNotifications(userId),
+    };
   }
 }

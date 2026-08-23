@@ -75,11 +75,10 @@ export const markOpenedNotifications = createAsyncThunk(
     newNotifications: NewAndSeenNotifications["new"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
+    const ids = newNotifications.map((notification) => notification.id);
     try {
       const result =
-        await trpcClient.notifications.write.markOpened.mutate(
-          newNotifications,
-        );
+        await trpcClient.notifications.write.markOpened.mutate(ids);
 
       if (!result.ok) {
         throw new Error("Failed to mark opened notifications");

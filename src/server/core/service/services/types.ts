@@ -87,7 +87,7 @@ export interface INotificationService {
   ): Promise<NotificationSchemaType | undefined>;
   markSeen(
     user_id: string | null | undefined,
-    seenNotifications: NotificationSchemaType[],
+    ids: NotificationSchemaType["id"][],
   ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }>;
 }
 

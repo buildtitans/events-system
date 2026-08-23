@@ -59,7 +59,7 @@ export const useCreateEvent = (
 
     setNewEvent((prev: NewEventInput) => ({
       ...prev,
-      [field]: value.trim(),
+      [field]: value,
     }));
   };
 
