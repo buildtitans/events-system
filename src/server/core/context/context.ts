@@ -1,5 +1,5 @@
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
-import { AppServices } from "@/src/server/core/service/appServices";
+import { ApplicationAPI } from "../service/applicationApi";
 import { SessionHandler } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { TRPCContext, InnerContext } from "@/src/server/core/context/types";
 
@@ -16,5 +16,5 @@ export function createContext({
 }
 
 export function createContextInner(): InnerContext {
-  return { services: new AppServices() };
+  return { api: new ApplicationAPI() };
 }

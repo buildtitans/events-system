@@ -20,25 +20,25 @@ import {
 
 const selectEventsRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.events.query.allActive();
+    return await ctx.api.services.domains.events.query.allActive();
   }),
 
   search: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.searchEvents(input);
+      return await ctx.api.services.domains.events.query.searchEvents(input);
     }),
 
   suggest: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.suggestEvents(input);
+      return await ctx.api.services.domains.events.query.suggestEvents(input);
     }),
 
   nextEventForGroup: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.nextEventForGroup(
+      return await ctx.api.services.domains.events.query.nextEventForGroup(
         input,
       );
     }),
@@ -46,13 +46,13 @@ const selectEventsRouter = router({
   byId: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.getEventById(input);
+      return await ctx.api.services.domains.events.query.getEventById(input);
     }),
 
   archives: protectedProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.timeline.getArchivedGroupEvents(
+      return await ctx.api.services.domains.events.timeline.getArchivedGroupEvents(
         ctx.req.user?.id,
         input,
       );
@@ -61,7 +61,7 @@ const selectEventsRouter = router({
   history: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.timeline.getPastEventsForGroup(
+      return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
         input,
       );
     }),
@@ -69,13 +69,13 @@ const selectEventsRouter = router({
   forGroup: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.getGroupEvents(input);
+      return await ctx.api.services.domains.events.query.getGroupEvents(input);
     }),
 
   hydrateEvent: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.hydrate.openedEvent(
+      return await ctx.api.services.domains.events.hydrate.openedEvent(
         ctx.req.user?.id,
         input,
       );
@@ -84,23 +84,23 @@ const selectEventsRouter = router({
 
 const layoutRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.events.layout.all();
+    return await ctx.api.services.domains.events.layout.all();
   }),
 
   allActive: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.events.layout.active();
+    return await ctx.api.services.domains.events.layout.active();
   }),
 
   byIds: publicProcedure
     .input(EventIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.layout.byIds(input);
+      return await ctx.api.services.domains.events.layout.byIds(input);
     }),
 
   forGroup: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.layout.forGroup(input);
+      return await ctx.api.services.domains.events.layout.forGroup(input);
     }),
 });
 
@@ -108,7 +108,7 @@ const writeEventsRouter = router({
   create: protectedProcedure
     .input(NewEventInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return ctx.services.api.domains.events.lifecycle.createEvent(
+      return ctx.api.services.domains.events.lifecycle.createEvent(
         input,
         input.group_id,
         ctx.req.user?.id,
@@ -120,7 +120,7 @@ const writeEventsRouter = router({
       typeboxInput<UpdateEventArgsSchemaType>(UpdateEventArgsSchemaValidator),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.lifecycle.updateEventStatus(
+      return await ctx.api.services.domains.events.lifecycle.updateEventStatus(
         ctx.req.user?.id,
         input,
       );

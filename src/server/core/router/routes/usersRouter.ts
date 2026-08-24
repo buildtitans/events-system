@@ -10,29 +10,29 @@ import {
 
 const selectUserRouter = router({
   email: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.users.getEmailById(ctx.req.user?.id);
+    return await ctx.api.services.domains.users.getEmailById(ctx.req.user?.id);
   }),
 
   memberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.users.getMemberships(
+    return await ctx.api.services.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
 
   attendanceDictionary: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.rsvps.getAttendanceDictionary(
+    return await ctx.api.services.domains.participations.rsvps.getAttendanceDictionary(
       ctx.req.user?.id,
     );
   }),
 
   rsvps: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
+    return await ctx.api.services.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),
 
   createdGroups: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.users.getGroupsCreated(
+    return await ctx.api.services.domains.users.getGroupsCreated(
       ctx.req.user?.id,
     );
   }),
@@ -42,13 +42,13 @@ const userCredentialsRouter = router({
   requestPasswordReset: publicProcedure
     .input(UserEmailInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.session.emailForPwReset(input);
+      return await ctx.api.services.domains.session.emailForPwReset(input);
     }),
 
   resetPassword: publicProcedure
     .input(TokenAndPasswordValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.session.resetPassword(
+      return await ctx.api.services.domains.session.resetPassword(
         input.token,
         input.password,
       );

@@ -22,12 +22,12 @@ and persisted**.
 ```mermaid
 flowchart LR
     Request["Fastify request"] --> Context["tRPC context"]
-    Context --> AppServices
-    AppServices --> ContextApi
-    AppServices --> Integrations
-    ContextApi --> Domains
-    ContextApi --> Authorization
-    Domains --> Services
+    Context --> ApplicationAPI
+    ApplicationAPI --> ApplicationServices
+    ApplicationAPI --> Integrations
+    ApplicationServices --> ServiceDomains
+    ApplicationServices --> Authorization
+    ServiceDomains --> Services
     Services --> Handlers
     Services --> Authorization
     Handlers --> Authorization
@@ -51,33 +51,34 @@ Fastify request
 ```
 
 External operations use a parallel path through
-`ctx.services.integrations`.
+`ctx.api.integrations`.
 
 ## Composition Root
 
-The service graph is assembled in three steps.
+The service graph is assembled in three layers, with integrations exposed as a
+parallel branch of the application API.
 
-### `appServices.ts`
+### `applicationApi.ts`
 
-`AppServices` is attached to each tRPC context and exposes:
+`ApplicationAPI` is attached to each tRPC context as `ctx.api` and exposes:
 
-- `api`, the internal application API
+- `services`, application-owned behavior grouped by domain
 - `integrations`, adapters for external services
 
-### `api/contextApi.ts`
+### `applicationServices.ts`
 
-`ContextApi` creates the shared application dependencies:
+`ApplicationServices` creates the shared application dependencies:
 
 1. `DBClient`
 2. `RoleBasedAccessHandler`
 3. `Authorization`
-4. `Domains`
+4. `ServiceDomains`
 
 This is the main composition root for database-backed application behavior.
 
-### `domains/domains.ts`
+### `domains/serviceDomains.ts`
 
-`Domains` constructs and exposes the domain entry points:
+`ServiceDomains` constructs and exposes the domain entry points:
 
 - `session`
 - `users`
@@ -86,20 +87,21 @@ This is the main composition root for database-backed application behavior.
 - `participations`
 - `notifications`
 
-Routers access them through `ctx.services.api.domains`.
+Routers access them through `ctx.api.services.domains`.
 
 ## Directory Layout
 
 ```text
 service/
-├── api/             # Internal application API composition
 ├── auth/            # Authentication and role-based policy guards
-├── domains/         # Domain registry exposed to routers
+├── domains/         # ServiceDomains registry and its contract
 ├── handlers/        # Focused application workflows and transformations
-├── integrations/    # External-service adapters
+├── integrations/    # External-service adapters and contracts
 ├── services/        # Domain entry points and service contracts
 ├── tests/           # Unit tests organized by responsibility
-├── appServices.ts   # Root service container attached to tRPC context
+├── applicationApi.ts      # Context-facing API facade
+├── applicationServices.ts # Database-backed application composition
+├── integrations.ts        # Integration registry exposed by ApplicationAPI
 └── types.ts         # Shared service-layer types
 ```
 
@@ -234,7 +236,7 @@ and membership facets collectively use most of the group-related repositories.
 External services are exposed separately from the database-backed domains:
 
 - `GeoApifySearch` provides city and street address suggestions through
-  `ctx.services.integrations.geoApify`.
+  `ctx.api.integrations.geoApify`.
 - `ResendPasswordResetMailer` sends password-reset email behind
   `PasswordResetEmailService`.
 

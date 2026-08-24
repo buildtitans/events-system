@@ -15,13 +15,13 @@ import {
 
 const selectGroupsRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.groups.query.getAllGroups();
+    return await ctx.api.services.domains.groups.query.getAllGroups();
   }),
 
   bySlug: publicProcedure
     .input(groupSlugInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.getGroupFromSlug(
+      return await ctx.api.services.domains.groups.query.getGroupFromSlug(
         input,
       );
     }),
@@ -29,41 +29,41 @@ const selectGroupsRouter = router({
   categoryById: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.getCategoryById(input);
+      return await ctx.api.services.domains.groups.query.getCategoryById(input);
     }),
 
   byCategory: publicProcedure
     .input(groupsByCategoryInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.byCategory(input);
+      return await ctx.api.services.domains.groups.query.byCategory(input);
     }),
 
   popular: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.census.getPopularGroups();
+    return await ctx.api.services.domains.participations.census.getPopularGroups();
   }),
 
   search: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.searchGroups(input);
+      return await ctx.api.services.domains.groups.query.searchGroups(input);
     }),
 
   suggest: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.suggestGroups(input);
+      return await ctx.api.services.domains.groups.query.suggestGroups(input);
     }),
 });
 
 const lookupRouter = router({
   groupNames: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.groups.query.getGroupNameDictionary();
+    return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
   }),
 
   nextEvents: publicProcedure
     .input(typeboxInputV2<GroupIdArraySchema>(GroupIdArraySchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.timeline.getNextEventMap(
+      return await ctx.api.services.domains.events.timeline.getNextEventMap(
         input,
       );
     }),
@@ -73,7 +73,7 @@ const writeGroupsRouter = router({
   newGroup: protectedProcedure
     .input(newGroupInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.groupLifecycle.createNewGroup(
+      return await ctx.api.services.domains.groups.groupLifecycle.createNewGroup(
         ctx.req.user?.id,
         input,
       );

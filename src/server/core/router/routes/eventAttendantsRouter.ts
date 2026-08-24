@@ -12,7 +12,7 @@ const selectAttendantsRouter = router({
   attendants: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.events.query.getEventAttendants(
+      return await ctx.api.services.domains.events.query.getEventAttendants(
         input,
       );
     }),
@@ -20,7 +20,7 @@ const selectAttendantsRouter = router({
   userStatus: protectedProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.rsvps.getUserRsvpToEvent(
+      return await ctx.api.services.domains.participations.rsvps.getUserRsvpToEvent(
         ctx.req.user?.id,
         input,
       );
@@ -29,19 +29,19 @@ const selectAttendantsRouter = router({
   headCount: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.census.getNumberOfAttendantsForEvent(
+      return await ctx.api.services.domains.participations.census.getNumberOfAttendantsForEvent(
         input,
       );
     }),
 
   rsvps: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.participations.rsvps.getRsvpdEvents(
+    return await ctx.api.services.domains.participations.rsvps.getRsvpdEvents(
       ctx.req.user?.id,
     );
   }),
 
   popular: publicProcedure.query(async ({ ctx }) => {
-    return ctx.services.api.domains.participations.census.getPopularEventsIds();
+    return ctx.api.services.domains.participations.census.getPopularEventsIds();
   }),
 });
 
@@ -49,7 +49,7 @@ const writeAttendantsRouter = router({
   rsvp: protectedProcedure
     .input(UpdateAttendanceInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.participations.rsvps.updateRsvpStatus(
+      return await ctx.api.services.domains.participations.rsvps.updateRsvpStatus(
         ctx.req.user?.id,
         input.event_id,
         input.newStatus,
