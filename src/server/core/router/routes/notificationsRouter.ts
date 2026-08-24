@@ -6,12 +6,12 @@ import {
 
 const selectNotificationRouter = router({
   new: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.notifications.getNewNotifications(
+    return await ctx.api.services.domains.notifications.getNewNotifications(
       ctx.req.user?.id,
     );
   }),
   newAndViewed: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.notifications.getNotifications(
+    return await ctx.api.services.domains.notifications.getNotifications(
       ctx.req.user?.id,
     );
   }),
@@ -21,7 +21,7 @@ const writeNotificationRouter = router({
   create: protectedProcedure
     .input(createNotificationInput)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.notifications.createNotification(
+      return await ctx.api.services.domains.notifications.createNotification(
         input,
         ctx.req.user?.id,
       );
@@ -30,7 +30,7 @@ const writeNotificationRouter = router({
   markOpened: protectedProcedure
     .input(SeenNotificationsInput)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.notifications.markSeen(
+      return await ctx.api.services.domains.notifications.markSeen(
         ctx.req.user?.id,
         input,
       );

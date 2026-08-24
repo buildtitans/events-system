@@ -12,7 +12,7 @@ const selectMembersRouter = router({
   forGroup: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.getAllGroupMembers(
+      return await ctx.api.services.domains.groups.query.getAllGroupMembers(
         input,
       );
     }),
@@ -20,14 +20,14 @@ const selectMembersRouter = router({
   role: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.memberships.getRoleInGroup(
+      return await ctx.api.services.domains.groups.memberships.getRoleInGroup(
         ctx.req.user?.id,
         input,
       );
     }),
 
   userMemberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.users.getMemberships(
+    return await ctx.api.services.domains.users.getMemberships(
       ctx.req.user?.id,
     );
   }),
@@ -35,7 +35,7 @@ const selectMembersRouter = router({
   organizerEmail: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.query.getOrganizerEmail(
+      return await ctx.api.services.domains.groups.query.getOrganizerEmail(
         input,
       );
     }),
@@ -45,7 +45,7 @@ const writeMembersRouter = router({
   join: protectedProcedure
     .input(groupIdInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.memberships.addMember(
+      return await ctx.api.services.domains.groups.memberships.addMember(
         ctx.req.user?.id,
         input,
       );
@@ -54,7 +54,7 @@ const writeMembersRouter = router({
   leave: publicProcedure
     .input(MemberToRemoveInputValidator)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.groups.memberships.leaveGroup(
+      return await ctx.api.services.domains.groups.memberships.leaveGroup(
         input.group_id,
         ctx.req.user?.id,
       );

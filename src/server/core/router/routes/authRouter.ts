@@ -10,11 +10,11 @@ const sessionRouter = router({
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
       let result: Awaited<
-        ReturnType<typeof ctx.services.api.domains.session.login>
+        ReturnType<typeof ctx.api.services.domains.session.login>
       >;
 
       try {
-        result = await ctx.services.api.domains.session.login(
+        result = await ctx.api.services.domains.session.login(
           input.email,
           input.password,
         );
@@ -39,7 +39,7 @@ const sessionRouter = router({
     }),
 
   signout: publicProcedure.mutation(async ({ ctx }) => {
-    const res = await ctx.services.api.domains.session.logout(
+    const res = await ctx.api.services.domains.session.logout(
       ctx.req.cookies.session,
     );
 
@@ -53,7 +53,7 @@ const writeAuthRouter = router({
   signup: publicProcedure
     .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.services.api.domains.users.createNewUser(
+      return await ctx.api.services.domains.users.createNewUser(
         input.email,
         input.password,
       );
@@ -62,7 +62,7 @@ const writeAuthRouter = router({
 
 const statusRouter = router({
   recover: publicProcedure.query(async ({ ctx }) => {
-    const session = await ctx.services.api.domains.session.recoverSession(
+    const session = await ctx.api.services.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
 
@@ -71,7 +71,7 @@ const statusRouter = router({
       return null;
     }
 
-    const email = await ctx.services.api.domains.users.getEmailById(
+    const email = await ctx.api.services.domains.users.getEmailById(
       session.user_id,
     );
 
@@ -82,7 +82,7 @@ const statusRouter = router({
   }),
 
   checkSession: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.services.api.domains.session.recoverSession(
+    return await ctx.api.services.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
   }),

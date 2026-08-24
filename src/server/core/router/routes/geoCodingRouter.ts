@@ -5,13 +5,13 @@ export const geoCodingRouter = router({
   addressSuggestions: publicProcedure
     .input(GeoApifySearchInput)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.integrations.geoApify.suggestAddresses(input);
+      return await ctx.api.integrations.geoApify.suggestAddresses(input);
     }),
 
   citySearchSuggestions: publicProcedure
     .input(GeoApifySearchInput)
     .query(async ({ ctx, input }) => {
-      return await ctx.services.integrations.geoApify.suggestAddresses(
+      return await ctx.api.integrations.geoApify.suggestAddresses(
         input,
         "city",
       );

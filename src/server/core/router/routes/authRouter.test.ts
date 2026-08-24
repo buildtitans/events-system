@@ -19,8 +19,8 @@ const credentials = {
 function createLoginCaller(login: jest.Mock) {
   const setCookieHeader = jest.fn();
   const caller = authRouter.createCaller({
-    services: {
-      api: {
+    api: {
+      services: {
         domains: {
           session: { login },
         },

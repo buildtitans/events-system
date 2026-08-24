@@ -14,10 +14,10 @@ import {
   ISessionService,
   IUserService,
 } from "../services/types";
-import { IDomains } from "./types";
+import { IServiceDomains } from "./types";
 import { IDBClient } from "../../db/access/client/dbClient";
 
-export class Domains implements IDomains {
+export class ServiceDomains implements IServiceDomains {
   public readonly participations: IParticipationsService;
   public readonly users: IUserService;
   public readonly session: ISessionService;

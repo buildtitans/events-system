@@ -5,6 +5,11 @@ import {
   EventAttendantsSchemaType,
   EventAttendantStatusSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
+import { IServiceDomains } from "./domains/types";
+
+export interface IApplicationServices {
+  domains: IServiceDomains;
+}
 
 export type AttendantCountType = {
   numGoing: number;

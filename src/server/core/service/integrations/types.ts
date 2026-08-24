@@ -37,6 +37,6 @@ export interface IGeoApifySearch {
   >;
 }
 
-export interface IntegrationsAPI {
+export interface IIntegrationsAPI {
   readonly geoApify: IGeoApifySearch;
 }
