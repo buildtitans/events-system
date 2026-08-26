@@ -7,18 +7,20 @@ import {
 import { createContext } from "@/src/server/core/context/context";
 import { appRouter } from "@/src/server/core/router/router";
 import { TRPCErrorLogging } from "@/src/server/core/bootstrap/fastify/types";
+import { IApplicationAPI } from "../../service/applicationApi";
 
-export function registerTRPC(app: FastifyInstance): void {
+export function registerTRPC(app: FastifyInstance, api: IApplicationAPI): void {
   app.register(fastifyTRPCPlugin, {
     prefix: "/api/trpc",
-    trpcOptions: createTRPCOptions(app),
+    trpcOptions: createTRPCOptions(app, api),
   });
 }
 
-function createTRPCOptions(app: FastifyInstance) {
+function createTRPCOptions(app: FastifyInstance, api: IApplicationAPI) {
   return {
     router: appRouter,
-    createContext,
+    createContext: ({ req, res, info }) =>
+      createContext({ req, res, info }, api),
     onError: handleTRPCError(app),
   } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"];
 }

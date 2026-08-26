@@ -8,9 +8,11 @@ import { registerRequestHook } from "@/src/server/core/hooks/registerRequestHook
 import { db, DBClient } from "@/src/server/core/db";
 import { getEnv } from "@/src/server/core/lib/init/getEnv";
 import { createLoggerOptions } from "@/src/server/core/lib/config/createLoggerOptions";
+import { ApplicationAPI } from "../service/applicationApi";
 
 function buildServer() {
   const nodeEnv = process.env.NODE_ENV;
+
   const app = Fastify({
     trustProxy: true,
     logger: createLoggerOptions(nodeEnv),
@@ -18,6 +20,7 @@ function buildServer() {
       maxParamLength: 1000,
     },
   });
+  const api = new ApplicationAPI();
 
   registerDevelopmentCors(app, nodeEnv);
 
@@ -25,7 +28,7 @@ function buildServer() {
     secret: getEnv("cookies_secret"),
   });
   registerRequestHook({ db: new DBClient(db), app });
-  registerTRPC(app);
+  registerTRPC(app, api);
 
   return app;
 }
