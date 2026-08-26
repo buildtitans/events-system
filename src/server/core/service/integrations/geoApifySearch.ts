@@ -1,20 +1,29 @@
 import { GeoapifyConfig } from "../../lib/init/geoApifyConfig";
-import { GeoapifyAutocompleteValidator } from "../../lib/validation/schemaValidators";
-import type { GeoapifyAutocompleteJsonResponse } from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 import {
   IGeoApifySearch,
   AddressSuggestion,
   LocationType,
   SuggestAddressesResults,
 } from "./types";
-import { GEOAPIFY_DEFAULT_URL_PARAMS } from "../../lib/config/geoApifyUrlParamsConfig";
+import {
+  GeoApifyQueryComposer,
+  IGeoApifyQueryComposer,
+} from "./geoApify/queryComposer";
+import {
+  AddressSuggestionParser,
+  IAddressSuggestionParser,
+} from "./geoApify/addressSuggestionParser";
 
 export class GeoApifySearch implements IGeoApifySearch {
   private readonly apiKey: GeoapifyConfig["geoApifyKey"];
   private readonly geoapifyUrl: GeoapifyConfig["geoApifyUrl"];
+  private readonly composer: IGeoApifyQueryComposer;
+  private readonly parser: IAddressSuggestionParser;
   constructor(private readonly config: GeoapifyConfig) {
     this.apiKey = this.config.geoApifyKey;
     this.geoapifyUrl = this.config.geoApifyUrl;
+    this.parser = new AddressSuggestionParser();
+    this.composer = new GeoApifyQueryComposer(this.geoapifyUrl, this.apiKey);
   }
 
   public async suggestAddresses(
@@ -30,30 +39,8 @@ export class GeoApifySearch implements IGeoApifySearch {
         message: string;
       }
   > {
-    const query = this.formQuery(address, locationKind);
+    const query = this.composer.formQuery(address, locationKind);
     return await this.queryGeoApify(query);
-  }
-
-  private getBaselineParameters(): URL {
-    const url = new URL(this.geoapifyUrl);
-
-    url.searchParams.set("filter", GEOAPIFY_DEFAULT_URL_PARAMS.filter);
-    url.searchParams.set("limit", GEOAPIFY_DEFAULT_URL_PARAMS.limit);
-    url.searchParams.set("lang", GEOAPIFY_DEFAULT_URL_PARAMS.lang);
-    url.searchParams.set("format", GEOAPIFY_DEFAULT_URL_PARAMS.format);
-    return url;
-  }
-
-  private formQuery(
-    address: string,
-    locationKind: LocationType = "street",
-  ): string {
-    const url = this.getBaselineParameters();
-    url.searchParams.set("text", address);
-    url.searchParams.set("type", locationKind);
-    url.searchParams.set("apiKey", this.apiKey);
-
-    return url.toString();
   }
 
   private async queryGeoApify(query: string): SuggestAddressesResults {
@@ -71,24 +58,11 @@ export class GeoApifySearch implements IGeoApifySearch {
     }
     const result = await request.json();
 
-    const parsed = GeoapifyAutocompleteValidator(result);
+    const parsed = this.parser.parse(result);
 
     return {
       status: "success",
-      data: this.toSuggestions(parsed),
+      data: parsed,
     };
-  }
-
-  private toSuggestions(
-    data: GeoapifyAutocompleteJsonResponse,
-  ): AddressSuggestion[] {
-    return data.results.map((result) => ({
-      label: result.formatted ?? "",
-      sublabel: result.county ?? "",
-      country: result.country ?? "",
-      city: result.city ?? "",
-      state: result.state ?? "",
-      street: result.street ?? "",
-    }));
   }
 }
