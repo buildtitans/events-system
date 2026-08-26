@@ -1,20 +1,16 @@
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
-import { ApplicationAPI } from "../service/applicationApi";
+import { IApplicationAPI } from "../service/applicationApi";
 import { SessionHandler } from "@/src/server/core/service/handlers/session/SessionHandler";
-import { TRPCContext, InnerContext } from "@/src/server/core/context/types";
+import { TRPCContext } from "@/src/server/core/context/types";
 
-export function createContext({
-  req,
-  res,
-}: CreateFastifyContextOptions): TRPCContext {
+export function createContext(
+  { req, res }: CreateFastifyContextOptions,
+  api: IApplicationAPI,
+): TRPCContext {
   return {
     req,
     res,
+    api,
     session: new SessionHandler(req, res),
-    ...createContextInner(),
   };
-}
-
-export function createContextInner(): InnerContext {
-  return { api: new ApplicationAPI() };
 }

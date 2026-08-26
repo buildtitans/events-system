@@ -17,50 +17,72 @@ and persisted**.
 - Expose stable interfaces between architectural layers.
 - Give each service only the database capabilities it consumes.
 
-## Request and Dependency Flow
+## Server Composition and Dependencies
 
 ```mermaid
-flowchart LR
-    Request["Fastify request"] --> Context["tRPC context"]
-    Context --> ApplicationAPI
+flowchart TB
+    BuildServer["buildServer()"] -->|creates| Fastify["Fastify server"]
+    BuildServer -->|constructs once| ApplicationAPI
+    BuildServer -->|passes app and API| TRPC["registerTRPC()"]
     ApplicationAPI --> ApplicationServices
     ApplicationAPI --> Integrations
+    TRPC -->|registers plugin on| Fastify
     ApplicationServices --> ServiceDomains
     ApplicationServices --> Authorization
+    ApplicationServices --> DBClient
     ServiceDomains --> Services
     Services --> Handlers
     Services --> Authorization
     Handlers --> Authorization
     Services --> DB["IDBClient subsets"]
     Handlers --> DB
+    DBClient --> Repositories
     DB --> Repositories
     Repositories --> PostgreSQL[(PostgreSQL)]
 ```
 
-The common runtime path is:
+This diagram describes startup ownership and dependency construction. It is not
+the per-request execution sequence.
 
-```text
-Fastify request
-  -> session detection
-  -> tRPC context
-  -> router
-  -> domain service or handler facet
-  -> authorization policy
-  -> repository interface
-  -> PostgreSQL
+## Request Control Flow
+
+```mermaid
+flowchart LR
+    Request["Fastify request"] --> Hook["onRequest session detection"]
+    Hook -->|sets req.user| TRPC["tRPC request handler"]
+    TRPC -->|calls per request| Context["createContext()"]
+    TRPC -->|invokes| Procedure["router procedure"]
+    Context -.->|returned context supplied to| Procedure
+    Procedure --> Services["ctx.api.services.domains"]
+    Procedure --> Integrations["ctx.api.integrations"]
+    Services --> UseCase["domain service or handler"]
+    UseCase --> Authorization
+    UseCase --> Repositories["repository contracts"]
+    Repositories --> PostgreSQL[(PostgreSQL)]
+    Integrations --> External["third-party APIs"]
 ```
 
-External operations use a parallel path through
-`ctx.api.integrations`.
+The Fastify request hook authenticates the session before tRPC creates the
+request context. The tRPC handler then invokes the selected procedure with that
+context. Application behavior flows through `ctx.api.services.domains`, while
+external operations use the parallel `ctx.api.integrations` branch.
 
 ## Composition Root
 
-The service graph is assembled in three layers, with integrations exposed as a
-parallel branch of the application API.
+`buildServer()` is the application composition root. It creates one
+`ApplicationAPI` for the lifetime of the Fastify server and injects it into
+`registerTRPC()`. The service graph is assembled beneath that API in three
+layers, with integrations exposed as a parallel branch.
+
+Each request context reuses the server-scoped API while constructing only its
+request-scoped dependencies: the Fastify request, reply, and `SessionHandler`.
+This keeps application services stateless and avoids rebuilding repositories,
+handlers, integrations, and SDK clients for every request.
 
 ### `applicationApi.ts`
 
-`ApplicationAPI` is attached to each tRPC context as `ctx.api` and exposes:
+`ApplicationAPI` is constructed once by `buildServer()`, passed through tRPC
+registration, and attached to each request context as `ctx.api`. It exposes:
 
 - `services`, application-owned behavior grouped by domain
 - `integrations`, adapters for external services
@@ -74,7 +96,7 @@ parallel branch of the application API.
 3. `Authorization`
 4. `ServiceDomains`
 
-This is the main composition root for database-backed application behavior.
+This assembles the database-backed portion of the application graph.
 
 ### `domains/serviceDomains.ts`
 
@@ -88,6 +110,17 @@ This is the main composition root for database-backed application behavior.
 - `notifications`
 
 Routers access them through `ctx.api.services.domains`.
+
+### Dependency Lifetimes
+
+| Scope | Dependencies | Lifetime rule |
+| --- | --- | --- |
+| Server | `ApplicationAPI`, application services, domain services, repositories, and integrations | Constructed once by `buildServer()` and shared by requests handled by that server instance |
+| Request | Fastify `req`, `res`, and `SessionHandler` | Constructed for each request because these dependencies contain request-specific state |
+
+Server-scoped services must remain stateless and safe to use across concurrent
+requests. Request-specific data should be passed into service methods or kept in
+request-scoped collaborators rather than stored on shared service instances.
 
 ## Directory Layout
 
