@@ -12,6 +12,13 @@ export class EventHydrationHandler implements IEventHydrationHandler {
     user_id: string | undefined | null,
     event_id: string,
   ): Promise<HydratedEvent> {
+    return await this.hydrateSelectedEvent(user_id, event_id);
+  }
+
+  private async hydrateSelectedEvent(
+    user_id: string | undefined | null,
+    event_id: string,
+  ): Promise<HydratedEvent> {
     const event = await this.db.events.select.byId(event_id);
     const rsvpStatus = await this.getEventRsvp(user_id, event_id);
     const attendants = await this.getAttendingAndInterested(event_id);

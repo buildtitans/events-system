@@ -20,7 +20,7 @@ type TrpcResults = {
   lookup: NextGroupEventLookupMapType;
 };
 
-export const useHydrateMyRsvps = () => {
+export const useHydrateUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const service = useMemo(() => new HydrateUserService(trpcClient), []);
 

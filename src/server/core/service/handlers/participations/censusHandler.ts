@@ -29,10 +29,7 @@ export class CensusHandler implements ICensusHandler {
   }
 
   async getPopularEventsIds(): Promise<PopularEventsIds> {
-    const records = await this.api.eventAttendants.select.allRecords();
-    const events = await this.api.events.select.allScheduled();
-    const activeRecords = this.filterActiveRecords(events, records);
-    return curatePopularEventsIds(activeRecords);
+    return await this.mostPopularEventIds();
   }
 
   async getPopularGroups(): Promise<GroupSchemaType[]> {
@@ -41,6 +38,13 @@ export class CensusHandler implements ICensusHandler {
     const popularGroupIds = this.filterPopularGroupIds(records);
 
     return await this.api.groups.select.byIds(popularGroupIds);
+  }
+
+  private async mostPopularEventIds(): Promise<PopularEventsIds> {
+    const records = await this.api.eventAttendants.select.allRecords();
+    const events = await this.api.events.select.allScheduled();
+    const activeRecords = this.filterActiveRecords(events, records);
+    return curatePopularEventsIds(activeRecords);
   }
 
   private filterActiveRecords(

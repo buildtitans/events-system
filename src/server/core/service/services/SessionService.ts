@@ -39,16 +39,7 @@ export class SessionService implements ISessionService {
     token: string | undefined | null,
   ): Promise<StoredSession | undefined> {
     const cookie = this.policy.requireToken(token);
-
-    const session = await this.db.auth.getSession(cookie);
-
-    if (!session) return undefined;
-
-    if (session?.expires_at <= new Date()) {
-      return undefined;
-    }
-
-    return session;
+    return await this.retrieveSession(cookie);
   }
 
   async resetPassword(token: string, password: string): Promise<{ ok: true }> {
@@ -65,5 +56,19 @@ export class SessionService implements ISessionService {
     ok: true;
   }> {
     return await this.emailer.request(email);
+  }
+
+  private async retrieveSession(
+    cookie: string,
+  ): Promise<StoredSession | undefined> {
+    const session = await this.db.auth.getSession(cookie);
+
+    if (!session) return undefined;
+
+    if (session?.expires_at <= new Date()) {
+      return undefined;
+    }
+
+    return session;
   }
 }

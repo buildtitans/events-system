@@ -4,7 +4,10 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { NewOrganizerInput } from "../../types";
-import { IAuthorization } from "../../auth/authorization";
+import {
+  AuthenticatedUserId,
+  IAuthorization,
+} from "../../auth/authorization";
 import { IGroupLifecycleHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
 
@@ -20,12 +23,23 @@ export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   ): Promise<
     { ok: true; data: GroupSchemaType } | { ok: false; error: string }
   > {
-    const id = this.policy.requireAuthenticated(user_id);
+    const userId = this.policy.requireAuthenticated(user_id);
+    return await this.persistNewGroup(userId, newGroupInput);
+  }
 
+  private async persistNewGroup(
+    userId: AuthenticatedUserId,
+    newGroupInput: NewGroupInputSchemaType,
+  ): Promise<
+    { ok: true; data: GroupSchemaType } | { ok: false; error: string }
+  > {
     try {
-      const group = await this.api.groups.write.createGroup(newGroupInput, id);
+      const group = await this.api.groups.write.createGroup(
+        newGroupInput,
+        userId,
+      );
 
-      await this.assignOrganizerToNewGroup({
+      await this.addOrganizerAsMember({
         user_id: group.organizer_id,
         group_id: group.id,
       });
@@ -40,7 +54,7 @@ export class GroupLifecycleHandler implements IGroupLifecycleHandler {
     }
   }
 
-  private async assignOrganizerToNewGroup(
+  private async addOrganizerAsMember(
     organizer: NewOrganizerInput,
   ): Promise<GroupMemberSchemaType> {
     return await this.api.groupMembers.write.addOrganizer(organizer);

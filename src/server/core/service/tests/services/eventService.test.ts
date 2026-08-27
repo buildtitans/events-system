@@ -314,6 +314,7 @@ describe("EventService.timeline.getNextEventMap", () => {
   let service: EventService;
   let db: ReturnType<typeof createMockDb>;
   let getEventsByGroupIds: jest.Mock;
+  let getMembershipsByUserId: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -321,6 +322,9 @@ describe("EventService.timeline.getNextEventMap", () => {
     jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
     db = createMockDb();
     getEventsByGroupIds = db.events.select.byGroupIds as jest.Mock;
+    getMembershipsByUserId = db.groupMembers.select.byUserId as jest.Mock;
+    authenticateAs("user-1");
+    getMembershipsByUserId.mockResolvedValue([{ group_id: "group-1" }]);
     service = new EventService(db, policyMock);
   });
 
@@ -331,10 +335,22 @@ describe("EventService.timeline.getNextEventMap", () => {
   it("returns an empty lookup when no events are found", async () => {
     getEventsByGroupIds.mockResolvedValue([]);
 
-    const result = await service.timeline.getNextEventMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap("user-1");
 
     expect(result).toEqual({});
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
+    expect(getMembershipsByUserId).toHaveBeenCalledWith("user-1");
     expect(getEventsByGroupIds).toHaveBeenCalledWith(["group-1"]);
+  });
+
+  it("rejects unauthenticated requests before querying memberships", async () => {
+    unauthenticated();
+
+    await expect(service.timeline.getNextEventMap(undefined)).rejects.toThrow(
+      "401",
+    );
+    expect(getMembershipsByUserId).not.toHaveBeenCalled();
+    expect(getEventsByGroupIds).not.toHaveBeenCalled();
   });
 
   it("returns the nearest future event when a group has both past and future events", async () => {
@@ -359,7 +375,7 @@ describe("EventService.timeline.getNextEventMap", () => {
       }),
     ]);
 
-    const result = await service.timeline.getNextEventMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap("user-1");
 
     expect(result).toEqual({
       "group-1": "2026-04-05T12:00:00.000Z",
@@ -382,7 +398,7 @@ describe("EventService.timeline.getNextEventMap", () => {
       }),
     ]);
 
-    const result = await service.timeline.getNextEventMap(["group-1"]);
+    const result = await service.timeline.getNextEventMap("user-1");
 
     expect(result).toEqual({
       "group-1": "2026-03-30T12:00:00.000Z",
@@ -390,6 +406,10 @@ describe("EventService.timeline.getNextEventMap", () => {
   });
 
   it("builds the lookup independently for multiple groups", async () => {
+    getMembershipsByUserId.mockResolvedValue([
+      { group_id: "group-1" },
+      { group_id: "group-2" },
+    ]);
     getEventsByGroupIds.mockResolvedValue([
       makeEvent({
         id: "g1-future",
@@ -405,15 +425,13 @@ describe("EventService.timeline.getNextEventMap", () => {
       }),
     ]);
 
-    const result = await service.timeline.getNextEventMap([
-      "group-1",
-      "group-2",
-    ]);
+    const result = await service.timeline.getNextEventMap("user-1");
 
     expect(result).toEqual({
       "group-1": "2026-04-08T12:00:00.000Z",
       "group-2": "2026-03-28T12:00:00.000Z",
     });
+    expect(getEventsByGroupIds).toHaveBeenCalledWith(["group-1", "group-2"]);
   });
 });
 

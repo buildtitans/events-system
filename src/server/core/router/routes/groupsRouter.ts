@@ -3,8 +3,6 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
-import { typeboxInputV2 } from "../adaptors/typeBoxValidation";
-import { GroupIdArraySchema } from "@/src/schemas/events/eventSchema";
 import {
   searchInputValidator,
   newGroupInputValidator,
@@ -60,13 +58,11 @@ const lookupRouter = router({
     return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
   }),
 
-  nextEvents: publicProcedure
-    .input(typeboxInputV2<GroupIdArraySchema>(GroupIdArraySchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.timeline.getNextEventMap(
-        input,
-      );
-    }),
+  nextEvents: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.events.timeline.getNextEventMap(
+      ctx.req.user?.id,
+    );
+  }),
 });
 
 const writeGroupsRouter = router({

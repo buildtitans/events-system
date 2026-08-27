@@ -1,13 +1,18 @@
-import { Authorization } from "@/src/server/core/service/auth/authorization";
+import {
+  AuthenticatedUserId,
+  Authorization,
+} from "@/src/server/core/service/auth/authorization";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 import { authMock } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("Authorization", () => {
   let policy: Authorization;
+  let actor: AuthenticatedUserId;
 
   beforeEach(() => {
     jest.resetAllMocks();
     policy = new Authorization(authMock);
+    actor = policy.requireAuthenticated("user-1");
   });
 
   describe("requireAuthenticated", () => {
@@ -41,7 +46,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
-        policy.requireOrganizer("user-1", "group-1"),
+        policy.requireOrganizer(actor, "group-1"),
       ).resolves.toBeUndefined();
 
       expect(authMock.can).toHaveBeenCalledWith(
@@ -55,7 +60,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
-        policy.requireOrganizer("user-1", "group-1"),
+        policy.requireOrganizer(actor, "group-1"),
       ).rejects.toThrow("Permission to manage this group denied");
     });
   });
@@ -65,7 +70,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
-        policy.requireOrganizer("user-1", "group-1"),
+        policy.requireOrganizer(actor, "group-1"),
       ).resolves.toBeUndefined();
 
       expect(authMock.can).toHaveBeenCalledWith(
@@ -79,7 +84,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
-        policy.requireOrganizer("user-1", "group-1"),
+        policy.requireOrganizer(actor, "group-1"),
       ).rejects.toThrow("Permission to manage this group denied");
     });
   });
@@ -89,7 +94,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
-        policy.requireCanChangeMembership("user-1", "group-1"),
+        policy.requireCanChangeMembership(actor, "group-1"),
       ).resolves.toBeUndefined();
 
       expect(authMock.can).toHaveBeenCalledWith(
@@ -103,7 +108,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
-        policy.requireCanChangeMembership("user-1", "group-1"),
+        policy.requireCanChangeMembership(actor, "group-1"),
       ).rejects.toThrow("Permission to manage this group denied");
     });
   });
@@ -113,7 +118,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(true);
 
       await expect(
-        policy.requireIsGroupMember("user-1", "group-1"),
+        policy.requireIsGroupMember(actor, "group-1"),
       ).resolves.toBeUndefined();
 
       expect(authMock.can).toHaveBeenCalledWith(
@@ -127,7 +132,7 @@ describe("Authorization", () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
       await expect(
-        policy.requireIsGroupMember("user-1", "group-1"),
+        policy.requireIsGroupMember(actor, "group-1"),
       ).rejects.toThrow(
         "Permission to read notifications for this group denied",
       );

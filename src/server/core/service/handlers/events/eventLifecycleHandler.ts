@@ -30,9 +30,15 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   > {
     const userId = this.policy.requireAuthenticated(user_id);
-
     await this.policy.requireOrganizer(userId, group_id);
+    return await this.persistNewEvent(newEvent);
+  }
 
+  private async persistNewEvent(
+    newEvent: NewEventInputSchemaType,
+  ): Promise<
+    { ok: true; data: EventSchemaType } | { ok: false; error: string }
+  > {
     try {
       const result = await this.db.events.write.create(newEvent);
 

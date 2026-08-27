@@ -3,7 +3,10 @@ import {
   GroupSchemaType,
   GroupsSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { IAuthorization } from "../auth/authorization";
+import {
+  AuthenticatedUserId,
+  IAuthorization,
+} from "../auth/authorization";
 import { chunkUserGroupsIntoPages } from "@/src/server/core/lib/utils/chunkUserGroupsToPages";
 import { validateLoginCredentials } from "@/src/server/core/lib/validation/validateLoginCredentials";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
@@ -38,10 +41,7 @@ export class UserService implements IUserService {
     user_id: string | null | undefined,
   ): Promise<GroupSchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
-
-    const createdGroups = await this.db.groups.select.byOrganizerId(userId);
-
-    return chunkUserGroupsIntoPages(createdGroups);
+    return await this.groupsOrganized(userId);
   }
 
   async getEmailById(
@@ -56,7 +56,19 @@ export class UserService implements IUserService {
     user_id: string | null | undefined,
   ): Promise<UserMembershipSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
+    return await this.membershipsOfUser(userId);
+  }
 
+  private async groupsOrganized(
+    userId: AuthenticatedUserId,
+  ): Promise<GroupSchemaType[][]> {
+    const createdGroups = await this.db.groups.select.byOrganizerId(userId);
+    return chunkUserGroupsIntoPages(createdGroups);
+  }
+
+  private async membershipsOfUser(
+    userId: AuthenticatedUserId,
+  ): Promise<UserMembershipSchemaType[]> {
     const rawGroups = await this.db.groups.select.all();
     const rawMemberships = await this.db.groupMembers.select.byUserId(userId);
 
