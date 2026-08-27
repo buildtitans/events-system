@@ -2,22 +2,34 @@ import { IRoleBasedAccessHandler } from "@/src/server/core/service/auth/types";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 
 export interface IAuthorization {
-  requireAuthenticated(userId: string | undefined | null): string;
+  requireAuthenticated(userId: string | undefined | null): AuthenticatedUserId;
   requireToken(token: string | undefined | null): string;
-  requireOrganizer(userId: string, groupId: string): Promise<void>;
-  requireIsGroupMember(userId: string, groupId: string): Promise<void>;
-  requireCanChangeMembership(userId: string, groupId: string): Promise<void>;
+  requireOrganizer(userId: AuthenticatedUserId, groupId: string): Promise<void>;
+  requireIsGroupMember(
+    userId: AuthenticatedUserId,
+    groupId: string,
+  ): Promise<void>;
+  requireCanChangeMembership(
+    userId: AuthenticatedUserId,
+    groupId: string,
+  ): Promise<void>;
 }
+
+declare const authenticatedUser: unique symbol;
+
+export type AuthenticatedUserId = string & {
+  readonly [authenticatedUser]: true;
+};
 
 export class Authorization implements IAuthorization {
   constructor(private readonly auth: IRoleBasedAccessHandler) {}
 
-  requireAuthenticated(userId: string | undefined | null): string {
+  requireAuthenticated(userId: string | undefined | null): AuthenticatedUserId {
     if (!userId) {
       throw new TRPCResolverError(401, "Authentication required");
     }
 
-    return userId;
+    return userId as AuthenticatedUserId;
   }
 
   requireToken(token: string | undefined | null) {
@@ -28,7 +40,10 @@ export class Authorization implements IAuthorization {
     return token;
   }
 
-  async requireOrganizer(userId: string, groupId: string): Promise<void> {
+  async requireOrganizer(
+    userId: AuthenticatedUserId,
+    groupId: string,
+  ): Promise<void> {
     const permitted = await this.auth.can(userId, groupId, "manage group");
 
     if (!permitted) {
@@ -39,7 +54,10 @@ export class Authorization implements IAuthorization {
     }
   }
 
-  async requireIsGroupMember(userId: string, groupId: string): Promise<void> {
+  async requireIsGroupMember(
+    userId: AuthenticatedUserId,
+    groupId: string,
+  ): Promise<void> {
     const permitted = await this.auth.can(
       userId,
       groupId,
@@ -55,7 +73,7 @@ export class Authorization implements IAuthorization {
   }
 
   async requireCanChangeMembership(
-    userId: string,
+    userId: AuthenticatedUserId,
     groupId: string,
   ): Promise<void> {
     const permitted = await this.auth.can(userId, groupId, "change membership");

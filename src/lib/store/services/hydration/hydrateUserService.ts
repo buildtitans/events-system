@@ -53,18 +53,24 @@ export class HydrateUserService implements IHydrateUserService {
   }
 
   public async participations(): Promise<UserParticipationsResult> {
-    const rsvps = await this.rsvps();
-    const memberships = await this.memberships();
-    const lookup = await this.nextEventsLookup(memberships);
+    return this.participationsMetaData();
+  }
+
+  public async attendance(): Promise<AttendanceDictionaryType> {
+    return await this.trpc.users.select.attendanceDictionary.query();
+  }
+
+  private async participationsMetaData(): Promise<UserParticipationsResult> {
+    const [rsvps, lookup, memberships] = await Promise.all([
+      this.rsvps(),
+      this.nextEventsLookup(),
+      this.memberships(),
+    ]);
 
     return {
       participations: { rsvps, memberships },
       lookup,
     };
-  }
-
-  public async attendance(): Promise<AttendanceDictionaryType> {
-    return await this.trpc.users.select.attendanceDictionary.query();
   }
 
   private async rsvps(): Promise<RsvpSchemaType[]> {
@@ -75,10 +81,7 @@ export class HydrateUserService implements IHydrateUserService {
     return await this.trpc.users.select.memberships.query();
   }
 
-  private async nextEventsLookup(
-    memberships: UserMembershipSchemaType[],
-  ): Promise<UpComingEventsLookup> {
-    const ids = memberships.map((m) => m.group_id);
-    return await this.trpc.groups.lookup.nextEvents.query(ids);
+  private async nextEventsLookup(): Promise<UpComingEventsLookup> {
+    return await this.trpc.groups.lookup.nextEvents.query();
   }
 }

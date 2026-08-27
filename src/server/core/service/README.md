@@ -160,6 +160,45 @@ and domain composition depend on contracts rather than concrete classes.
 Handlers contain application logic that is narrower than an entire domain
 service.
 
+### Handler Method Boundaries
+
+Public handler and service methods define the application-facing operation.
+They keep entry concerns visible, including authentication, authorization, and
+input validation. Callers can therefore understand the operation's contract
+without reading its implementation details.
+
+When an operation requires more than a single database call, or includes
+meaningful orchestration, branching, error translation, or data shaping, the
+public method delegates that work to a descriptively named private method. The
+private method owns the workflow and receives values that have already passed
+the public entry checks.
+
+```ts
+async createEvent(input, groupId, userId) {
+  const authenticatedId = this.policy.requireAuthenticated(userId);
+  await this.policy.requireOrganizer(authenticatedId, groupId);
+
+  return await this.persistNewEvent(input);
+}
+```
+
+This boundary keeps security requirements prominent while allowing the
+underlying workflow to evolve without making the public API describe each
+repository interaction.
+
+A public method that only forwards one database call does not need a private
+wrapper:
+
+```ts
+async getEventById(eventId) {
+  return await this.db.events.select.byId(eventId);
+}
+```
+
+The goal is to hide substantial implementation work, not to require delegation
+for its own sake. Mapper and composer classes may further encapsulate cohesive,
+reusable transformations that support a handler's private workflow.
+
 ### Events
 
 - `EventQueryHandler` performs event reads and search.
@@ -205,6 +244,43 @@ again in this layer.
 - `requireOrganizer`
 - `requireIsGroupMember`
 - `requireCanChangeMembership`
+
+### Authenticated User IDs
+
+`requireAuthenticated()` performs the runtime authentication check and returns
+an `AuthenticatedUserId`. This branded string records, in the type system, that
+the application has already established the authentication invariant.
+
+```text
+string | null | undefined
+        ↓ requireAuthenticated()
+AuthenticatedUserId
+        ↓
+authenticated private workflow
+```
+
+Public service and handler methods accept raw request IDs and call
+`requireAuthenticated()` at the application boundary. Private workflows that
+require an authenticated actor accept `AuthenticatedUserId` rather than a
+plain `string`:
+
+```ts
+async getMemberships(userId: string | null | undefined) {
+  const actor = this.policy.requireAuthenticated(userId);
+  return await this.membershipsOfUser(actor);
+}
+
+private async membershipsOfUser(actor: AuthenticatedUserId) {
+  return await this.db.groupMembers.select.byUserId(actor);
+}
+```
+
+The brand prevents accidental use of an unchecked ID inside authenticated
+workflows. It does not replace runtime authorization: TypeScript types are not
+present when the server executes. The cast that creates an
+`AuthenticatedUserId` remains centralized inside `Authorization`, immediately
+after the runtime check; application code should obtain the type through
+`requireAuthenticated()` rather than casting IDs directly.
 
 `RoleBasedAccessHandler` resolves the user's group role through the
 `groupMembers` repository and evaluates it against the centralized permissions

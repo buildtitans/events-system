@@ -1,7 +1,10 @@
 import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
-import { IAuthorization } from "@/src/server/core/service/auth/authorization";
+import {
+  AuthenticatedUserId,
+  IAuthorization,
+} from "@/src/server/core/service/auth/authorization";
 import { ParticipationDtoHandler } from "./participationDtoHandler";
 import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import {
@@ -51,16 +54,19 @@ export class RsvpHandler {
     user_id: string | null | undefined,
   ): Promise<RsvpSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const { keys, filtered } = await this.getUserRecords(userId);
-    if (keys.length === 0) return [];
-    return await this.toRsvps(keys, filtered);
+    return await this.rsvpdEvents(userId);
   }
 
   async getAttendanceDictionary(
     user_id: string | undefined | null,
   ): Promise<AttendanceDictionaryType> {
     const userId = this.policy.requireAuthenticated(user_id);
+    return await this.attendanceDictionary(userId);
+  }
 
+  private async attendanceDictionary(
+    userId: AuthenticatedUserId,
+  ): Promise<AttendanceDictionaryType> {
     const ids = (await this.db.events.select.allScheduled()).map(
       (event) => event.id,
     );
@@ -71,8 +77,16 @@ export class RsvpHandler {
     return mapAttendanceDictionary(ids, userAttendanceRecords);
   }
 
+  private async rsvpdEvents(
+    userId: AuthenticatedUserId,
+  ): Promise<RsvpSchemaType[]> {
+    const { keys, filtered } = await this.getUserRecords(userId);
+    if (keys.length === 0) return [];
+    return await this.toRsvps(keys, filtered);
+  }
+
   private async getUserRecords(
-    userId: string,
+    userId: AuthenticatedUserId,
   ): Promise<{ keys: string[]; filtered: StatusLookupType }> {
     const activeUserRecords = await this.getUserAttendance(userId);
     const filtered = filterUserRsvps(activeUserRecords);
@@ -93,7 +107,7 @@ export class RsvpHandler {
   }
 
   private async getUserAttendance(
-    userId: string,
+    userId: AuthenticatedUserId,
   ): Promise<EventAttendantsSchemaType[]> {
     const userRecords =
       await this.db.eventAttendants.select.userRecords(userId);

@@ -24,7 +24,10 @@ export type EventQueryDb = Pick<IDBClient, "events" | "eventAttendants">;
 
 export type EventLayoutDb = Pick<IDBClient, "events">;
 
-export type EventTimelineDb = Pick<IDBClient, "events" | "eventAttendants">;
+export type EventTimelineDb = Pick<
+  IDBClient,
+  "events" | "eventAttendants" | "groupMembers"
+>;
 
 export type EventLifecycleDb = Pick<IDBClient, "events">;
 
@@ -76,7 +79,9 @@ export interface IEventTimelineHandler {
     archives: EventSchemaType[];
     archivedAttendanceRecords: PastEventAttendanceLookup;
   }>;
-  getNextEventMap(ids: GroupSchemaType["id"][]): Promise<UpComingEventsLookup>;
+  getNextEventMap(
+    user_id: string | null | undefined,
+  ): Promise<UpComingEventsLookup>;
 }
 
 export interface IEventHydrationHandler {

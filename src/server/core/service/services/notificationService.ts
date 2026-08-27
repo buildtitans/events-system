@@ -1,5 +1,8 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import { IAuthorization } from "../auth/authorization";
+import {
+  AuthenticatedUserId,
+  IAuthorization,
+} from "../auth/authorization";
 import {
   INotificationService,
   NotificationServiceDB,
@@ -46,7 +49,7 @@ export class NotificationService implements INotificationService {
 
   private async executeMarkSeenNotifications(
     ids: NotificationSchemaType["id"][],
-    userId: string,
+    userId: AuthenticatedUserId,
   ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }> {
     const result = await this.db.notifications.write.markOpenedNotifications({
       ids: ids,
@@ -70,7 +73,7 @@ export class NotificationService implements INotificationService {
 
   private async executeCreateNotifications(
     notification: NewNotification,
-    userId: string,
+    userId: AuthenticatedUserId,
   ): Promise<NotificationSchemaType | undefined> {
     const memberIds = await this.db.groupMembers.select.memberIds(
       notification.group_id,
@@ -83,7 +86,9 @@ export class NotificationService implements INotificationService {
     );
   }
 
-  private async getNewAndSeenNotifications(userId: string): Promise<{
+  private async getNewAndSeenNotifications(
+    userId: AuthenticatedUserId,
+  ): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }> {

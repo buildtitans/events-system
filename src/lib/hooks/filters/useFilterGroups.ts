@@ -83,7 +83,7 @@ export const useFilterGroups = (): FilterGroupsHook => {
         );
       }
     } catch (err) {
-      logCaughtError("", err);
+      logCaughtError("useFilterGroups.applyFilter()", err);
       dispatch(
         updateGroupsDisplayed({
           status: "failed",

@@ -96,7 +96,7 @@ describe("HydrateUserService", () => {
     await expect(service.notifications()).resolves.toStrictEqual(notifications);
   });
 
-  it("hydrates participations and requests next events by membership group id", async () => {
+  it("hydrates participations and requests next events for the authenticated user", async () => {
     const rsvps = [{ event_id: "event-1" }];
     const memberships = [{ group_id: "group-1" }, { group_id: "group-2" }];
     const lookup = { "group-1": { id: "event-2" } };
@@ -117,6 +117,6 @@ describe("HydrateUserService", () => {
       participations: { rsvps, memberships },
       lookup,
     });
-    expect(nextEvents).toHaveBeenCalledWith(["group-1", "group-2"]);
+    expect(nextEvents).toHaveBeenCalledWith();
   });
 });
