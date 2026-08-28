@@ -102,6 +102,12 @@ const layoutRouter = router({
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.layout.forGroup(input);
     }),
+  popular: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.events.layout.popular();
+  }),
+  upcoming: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.events.layout.upcoming();
+  }),
 });
 
 const writeEventsRouter = router({

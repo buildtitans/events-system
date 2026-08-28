@@ -3,9 +3,7 @@ import { useCancelEvent } from "@/src/lib/hooks/update/events/useCancelEvent";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import Button from "@mui/material/Button";
 import { CheckCancelEventButton } from "@/src/client/components/ui/buttons/CheckCancelEventButton";
-import { JSX, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import { JSX, useState } from "react";
 import Container from "@mui/material/Container";
 import ConfirmCancelEventPopover from "@/src/client/components/ui/modals/confirmCancelEventPopover";
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore";
@@ -30,16 +28,7 @@ export default function RescheduleEventForm({
   event,
 }: RescheduleEventFormProps): JSX.Element | null {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const groups = useSelector((s: RootState) => s.groups.communities);
-  const organizer_id = useMemo(() => {
-    const currentGroup = groups.find((grp) => grp.id === event.group_id);
-    if (!currentGroup) return;
-    return currentGroup?.organizer_id;
-  }, [groups, event.group_id]);
-  const { handleStatusChange, handleSubmit, options } = useCancelEvent(
-    event,
-    organizer_id,
-  );
+  const { handleStatusChange, handleSubmit, options } = useCancelEvent(event);
   const isCurrent = isFutureOrNow(new Date(event.starts_at));
 
   if (!isCurrent) return null;

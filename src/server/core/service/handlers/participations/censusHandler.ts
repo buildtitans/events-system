@@ -2,10 +2,6 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { AttendantCountType } from "@/src/server/core/service/types";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import {
-  curatePopularEventsIds,
-  PopularEventsIds,
-} from "@/src/server/core/lib/utils/curatePopularEventsIds";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { ICensusHandler } from "./types";
 import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
@@ -28,52 +24,12 @@ export class CensusHandler implements ICensusHandler {
     return members.length;
   }
 
-  async getPopularEventsIds(): Promise<PopularEventsIds> {
-    return await this.mostPopularEventIds();
-  }
-
   async getPopularGroups(): Promise<GroupSchemaType[]> {
     const records = await this.api.groupMembers.select.all();
 
     const popularGroupIds = this.filterPopularGroupIds(records);
 
     return await this.api.groups.select.byIds(popularGroupIds);
-  }
-
-  private async mostPopularEventIds(): Promise<PopularEventsIds> {
-    const records = await this.api.eventAttendants.select.allRecords();
-    const events = await this.api.events.select.allScheduled();
-    const activeRecords = this.filterActiveRecords(events, records);
-    return curatePopularEventsIds(activeRecords);
-  }
-
-  private filterActiveRecords(
-    events: EventSchemaType[],
-    records: EventAttendantsSchemaType[],
-  ): EventAttendantsSchemaType[] {
-    const activeEvents: EventSchemaType[] = [];
-    const activeRecords: EventAttendantsSchemaType[] = [];
-
-    for (const event of events) {
-      const startsAt = new Date(event.starts_at).getTime();
-      const now = Date.now();
-
-      if (startsAt > now) {
-        activeEvents.push(event);
-      }
-    }
-
-    for (const record of records) {
-      const activeId: EventSchemaType | undefined = activeEvents.find(
-        (event) => event.id === record.event_id,
-      );
-
-      if (activeId) {
-        activeRecords.push(record);
-      }
-    }
-
-    return activeRecords;
   }
 
   private filterPopularGroupIds(

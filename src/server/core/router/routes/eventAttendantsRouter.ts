@@ -39,10 +39,6 @@ const selectAttendantsRouter = router({
       ctx.req.user?.id,
     );
   }),
-
-  popular: publicProcedure.query(async ({ ctx }) => {
-    return ctx.api.services.domains.participations.census.getPopularEventsIds();
-  }),
 });
 
 const writeAttendantsRouter = router({

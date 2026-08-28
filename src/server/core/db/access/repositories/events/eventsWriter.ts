@@ -1,4 +1,4 @@
-import type { Insertable, Kysely } from "kysely";
+import type { Insertable, Kysely, UpdateResult } from "kysely";
 import { EventsValidator } from "./eventsValidator";
 import type {
   NewEventInputSchemaType,
@@ -27,15 +27,17 @@ export class EventsWriter implements IEventsWriter {
   async update(
     eventUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }> {
-    const update = await this.db
+    const update: UpdateResult = await this.db
       .updateTable("events")
       .set({
         status: eventUpdate.status,
       })
       .where("id", "=", eventUpdate.event_id)
+      .where("group_id", "=", eventUpdate.group_id)
+
       .executeTakeFirstOrThrow();
 
-    return { updateStatus: update ? "success" : "failure" };
+    return { updateStatus: update.numUpdatedRows > 0 ? "success" : "failure" };
   }
 
   async create(newEvent: NewEventInputSchemaType): Promise<EventSchemaType> {
