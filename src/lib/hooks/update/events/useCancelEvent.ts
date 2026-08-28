@@ -13,15 +13,11 @@ import { ScheduleNotificationService } from "@/src/lib/store/services/notificati
 import { refreshNotifications } from "@/src/lib/store/slices/notifications/thunks";
 const service = new ScheduleNotificationService(trpcClient);
 
-export const useCancelEvent = (
-  event: EventSchemaType,
-  organizer_id: string | null | undefined,
-): CancelEventHook => {
+export const useCancelEvent = (event: EventSchemaType): CancelEventHook => {
   const [options, setOptions] = useState<UpdateEventArgsSchemaType>({
     status: event.status,
     event_id: event.id,
     group_id: event.group_id,
-    organizer_id: organizer_id ?? "",
   });
   const dispatch = useDispatch<AppDispatch>();
 

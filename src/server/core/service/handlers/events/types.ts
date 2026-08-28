@@ -22,7 +22,7 @@ export type EventHydrationDb = Pick<
 
 export type EventQueryDb = Pick<IDBClient, "events" | "eventAttendants">;
 
-export type EventLayoutDb = Pick<IDBClient, "events">;
+export type EventLayoutDb = Pick<IDBClient, "events" | "eventAttendants">;
 
 export type EventTimelineDb = Pick<
   IDBClient,
@@ -63,6 +63,8 @@ export interface IEventLayoutHandler {
   all(): Promise<PaginatedLayoutSchemaType>;
   active(): Promise<PaginatedLayoutSchemaType>;
   forGroup(groupId: string): Promise<PaginatedLayoutSchemaType>;
+  popular(): Promise<PaginatedLayoutSchemaType>;
+  upcoming(): Promise<PaginatedLayoutSchemaType>;
 }
 
 export interface IEventLayoutComposer {

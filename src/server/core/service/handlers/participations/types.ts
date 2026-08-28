@@ -2,7 +2,6 @@ import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsS
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { PopularEventsIds } from "@/src/server/core/lib/utils/curatePopularEventsIds";
 import { AttendanceDictionaryType } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
 import { AttendantCountType } from "@/src/server/core/service/types";
 
@@ -11,7 +10,6 @@ export interface ICensusHandler {
     event_id: EventSchemaType["id"],
   ): Promise<AttendantCountType>;
   getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number>;
-  getPopularEventsIds(): Promise<PopularEventsIds>;
   getPopularGroups(): Promise<GroupSchemaType[]>;
 }
 
