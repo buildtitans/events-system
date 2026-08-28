@@ -82,13 +82,11 @@ jobs:
           PGPASSWORD=events_ci
           PGMAX=10
           COOKIES_SECRET=ci-cookie-secret
-          DEV_CLIENT_URL=http://localhost:3000
-          PROD_FASTIFY_HOST=127.0.0.1
-          PROD_FASTIFY_PORT=3001
-          DEV_PW_RESET_URL=http://localhost:3000/reset-password
-          PROD_PW_RESET_URL=https://events-system.dev/reset-password
+          CLIENT_URL=http://localhost:3000
+          FASTIFY_HOST=127.0.0.1
+          FASTIFY_PORT=3001
+          PW_RESET_URL=http://localhost:3000/reset-password
           RESEND_API_KEY=ci_resend_key
-          RESEND_DEV_API_KEY=ci_resend_dev_key
           GEOAPIFY_API_KEY=ci_geoapify_key
           GEOAPIFY_REQ_BASE_URL=https://api.geoapify.com/v1/geocode/autocomplete
           NEXT_PUBLIC_DEV_API_URL=http://localhost:3001/api/trpc
