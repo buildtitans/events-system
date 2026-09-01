@@ -25,7 +25,7 @@ import {
 type FooterLinkType = {
   href:
     | "https://github.com/buildtitans/events-system"
-    | "https://www.linkedin.com/in/trentirvin/";
+    | "https://www.linkedin.com/company/buildtitans/";
   label: "GitHub" | "LinkedIn";
 };
 
@@ -35,7 +35,7 @@ const footerLinks = [
     label: "GitHub",
   },
   {
-    href: "https://www.linkedin.com/in/trentirvin/",
+    href: "https://www.linkedin.com/company/buildtitans/",
     label: "LinkedIn",
   },
 ] satisfies FooterLinkType[];
