@@ -125,7 +125,8 @@ src/
 
 More detail is available in the
 [client-state architecture](src/lib/store/README.md) and
-[server service-layer documentation](src/server/core/service/README.md).
+[server-core architecture](src/server/core/README.md). The core guide links to
+the more detailed service-layer documentation.
 
 ## Local Development
 
