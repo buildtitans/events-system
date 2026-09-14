@@ -1,0 +1,33 @@
+name: events-system
+
+services:
+  fastify:
+    image: ${ECR_REGISTRY}/events-fastify:${EVENTS_VERSION}
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      FASTIFY_HOST: 0.0.0.0
+      FASTIFY_PORT: "3001"
+
+    env_file:
+      - /etc/events-system/server.env
+
+    ports:
+      - "127.0.0.1:3001:3001"
+
+  nextjs:
+    image: ${ECR_REGISTRY}/events-next:${EVENTS_VERSION}
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+
+    env_file:
+      - /etc/events-system/client.env
+
+    ports:
+      - "127.0.0.1:3000:3000"
+
+    depends_on:
+      - fastify
