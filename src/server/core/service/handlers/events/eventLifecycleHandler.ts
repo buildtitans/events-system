@@ -16,22 +16,37 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
     user_id: string | null | undefined,
     statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }> {
-    const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireOrganizer(userId, statusUpdate.group_id);
-
-    return await this.db.events.write.update(statusUpdate);
+    return await this.executeUpdateEventStatus(user_id, statusUpdate);
   }
 
   async createEvent(
     newEvent: NewEventInputSchemaType,
-    group_id: EventSchemaType["group_id"],
+    user_id: string | undefined,
+  ): Promise<
+    { ok: true; data: EventSchemaType } | { ok: false; error: string }
+  > {
+    return await this.executeCreateEvent(newEvent, user_id);
+  }
+
+  private async executeCreateEvent(
+    newEvent: NewEventInputSchemaType,
     user_id: string | undefined,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   > {
     const userId = this.policy.requireAuthenticated(user_id);
-    await this.policy.requireOrganizer(userId, group_id);
+    await this.policy.requireOrganizer(userId, newEvent.group_id);
     return await this.persistNewEvent(newEvent);
+  }
+
+  private async executeUpdateEventStatus(
+    user_id: string | null | undefined,
+    statusUpdate: UpdateEventArgsSchemaType,
+  ): Promise<{ updateStatus: "success" | "failure" }> {
+    const userId = this.policy.requireAuthenticated(user_id);
+    await this.policy.requireOrganizer(userId, statusUpdate.group_id);
+
+    return await this.db.events.write.update(statusUpdate);
   }
 
   private async persistNewEvent(

@@ -116,7 +116,6 @@ const writeEventsRouter = router({
     .mutation(async ({ ctx, input }) => {
       return ctx.api.services.domains.events.lifecycle.createEvent(
         input,
-        input.group_id,
         ctx.req.user?.id,
       );
     }),

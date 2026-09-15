@@ -601,7 +601,7 @@ describe("EventService.lifecycle.createEvent", () => {
     unauthenticated();
 
     await expect(
-      service.lifecycle.createEvent(createEventInput, groupId, undefined),
+      service.lifecycle.createEvent(createEventInput, undefined),
     ).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
@@ -616,7 +616,7 @@ describe("EventService.lifecycle.createEvent", () => {
     });
 
     await expect(
-      service.lifecycle.createEvent(createEventInput, groupId, "user-1"),
+      service.lifecycle.createEvent(createEventInput, "user-1"),
     ).rejects.toThrow("403");
 
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
@@ -634,7 +634,7 @@ describe("EventService.lifecycle.createEvent", () => {
     createNewEventInDb.mockResolvedValue(createdEvent);
 
     await expect(
-      service.lifecycle.createEvent(createEventInput, groupId, "user-1"),
+      service.lifecycle.createEvent(createEventInput, "user-1"),
     ).resolves.toEqual({ ok: true, data: createdEvent });
 
     expect(policyMock.requireOrganizer).toHaveBeenCalledWith("user-1", groupId);
