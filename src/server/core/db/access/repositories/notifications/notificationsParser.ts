@@ -1,10 +1,11 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  NotificationSchemaArray,
+  type CreateNotificationSchemaType,
+  type NotificationSchemaArrayType,
+} from "@/src/schemas/notifications/notificationsSchema";
 import type { Notifications } from "@/src/server/core/db/types/db";
 import type { Insertable, Selectable } from "kysely";
-import type {
-  CreateNotificationSchemaType,
-  NotificationSchemaArrayType,
-} from "@/src/schemas/notifications/notificationsSchema";
-import { NotificationSchemaArrayValidator } from "@/src/server/core/lib/validation/schemaValidators";
 
 export interface INotificationsParser {
   toInsertableNotifications(
@@ -40,7 +41,7 @@ export class NotificationsParser implements INotificationsParser {
   ): NotificationSchemaArrayType {
     const parsed = this.toNotificationsDto(rows);
 
-    return NotificationSchemaArrayValidator(parsed);
+    return validateOrThrow(NotificationSchemaArray, parsed);
   }
 
   private toNotificationsDto(rows: Selectable<Notifications>[]) {

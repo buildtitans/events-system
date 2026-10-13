@@ -32,6 +32,7 @@ export const useSignInForm = () => {
       message: "Please provide a valid email",
     },
   });
+
   const { ref: passwordInputRef, ...passwordField } = register("password", {
     required: "Password is required",
     minLength: {

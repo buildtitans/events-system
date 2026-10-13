@@ -1,8 +1,8 @@
-import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import { SearchSchema, SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events//eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { ValidateSearchQuery } from "@/src/server/core/lib/validation/schemaValidators";
 import type { IEventQueryHandler, EventQueryDb } from "./types";
 
 export class EventQueryHandler implements IEventQueryHandler {
@@ -18,13 +18,13 @@ export class EventQueryHandler implements IEventQueryHandler {
 
   async searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]> {
     const trimmed = query.trim();
-    const validatedQuery = ValidateSearchQuery(trimmed);
+    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.events.select.search(validatedQuery);
   }
 
   async suggestEvents(query: SearchSchemaType): Promise<EventSchemaType[]> {
     const trimmed = query.trim();
-    const validatedQuery = ValidateSearchQuery(trimmed);
+    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.events.select.suggest(validatedQuery);
   }
 

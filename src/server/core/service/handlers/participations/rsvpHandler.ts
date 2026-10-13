@@ -1,6 +1,10 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  EventAttendantStatusSchema,
+  type EventAttendantsSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
+import { RsvpSchemaArray, type RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
-import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import {
   AuthenticatedUserId,
   IAuthorization,
@@ -15,10 +19,6 @@ import {
   type AttendanceDictionaryType,
   mapAttendanceDictionary,
 } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
-import {
-  RsvpSchemaArrayValidator,
-  RsvpStatusSchemaValidator,
-} from "@/src/server/core/lib/validation/schemaValidators";
 
 export class RsvpHandler {
   constructor(
@@ -47,7 +47,7 @@ export class RsvpHandler {
     const userId = this.policy.requireAuthenticated(user_id);
     const result = await this.db.eventAttendants.select.rsvp(userId, event_id);
 
-    return RsvpStatusSchemaValidator(result);
+    return validateOrThrow(EventAttendantStatusSchema, result);
   }
 
   public async getRsvpdEvents(
@@ -103,7 +103,7 @@ export class RsvpHandler {
     const hash = buildGroupNameLookup(groups);
     const events = await this.db.events.select.byIds(keys);
     const rsvps = this.parse.toRsvpShape(events, hash, filtered);
-    return RsvpSchemaArrayValidator(rsvps);
+    return validateOrThrow(RsvpSchemaArray, rsvps);
   }
 
   private async getUserAttendance(

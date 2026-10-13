@@ -1,13 +1,12 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  GroupSchema,
+  GroupsSchema,
+  type GroupSchemaType,
+  type GroupsSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import type { Selectable } from "kysely";
 import type { Groups } from "@/src/server/core/db/types/db";
-import type {
-  GroupSchemaType,
-  GroupsSchemaType,
-} from "@/src/schemas/groups/groupSchema";
-import {
-  GroupSchemaValidator,
-  GroupsSchemaValidator,
-} from "@/src/server/core/lib/validation/schemaValidators";
 
 export class GroupsValidator {
   groups(groups: Selectable<Groups>[]): GroupsSchemaType {
@@ -18,13 +17,13 @@ export class GroupsValidator {
       formatted.push(parsed);
     }
 
-    const validGroups = GroupsSchemaValidator(formatted);
+    const validGroups = validateOrThrow(GroupsSchema, formatted);
     return validGroups;
   }
 
   group(group: Selectable<Groups>): GroupSchemaType {
     const raw = this.toGroupSchema(group);
-    return GroupSchemaValidator(raw);
+    return validateOrThrow(GroupSchema, raw);
   }
 
   private toGroupSchema(group: Selectable<Groups>): GroupSchemaType {

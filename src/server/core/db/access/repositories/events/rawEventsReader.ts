@@ -8,6 +8,47 @@ import { textSearchRelevance } from "../../../../lib/utils/queries/textSearchRel
 export class RawEventsReader {
   constructor(private readonly db: Kysely<DB>) {}
 
+  async rawHydratedWithGroupDetails(id: EventSchemaType["id"]) {
+    const { group_name, group_slug, going, interested, ...event } =
+      await this.db
+        .selectFrom("events")
+        .innerJoin("groups", "groups.id", "events.group_id")
+        .leftJoin("event_attendants", "event_attendants.event_id", "events.id")
+        .selectAll("events")
+        .select(["groups.name as group_name", "groups.slug as group_slug"])
+        .select((eb) => [
+          eb.fn
+            .countAll()
+            .filterWhere("event_attendants.status", "=", "going")
+            .as("going"),
+          eb.fn
+            .countAll()
+            .filterWhere("event_attendants.status", "=", "interested")
+            .as("interested"),
+        ])
+        .where("events.id", "=", id)
+        .groupBy(["events.id", "groups.id"])
+        .executeTakeFirstOrThrow();
+
+    return {
+      event: {
+        ...event,
+        starts_at: event.starts_at.toISOString(),
+        starts_at_ms: event.starts_at.getTime(),
+        created_at: event.created_at.toISOString(),
+        updated_at: event.updated_at?.toISOString() ?? null,
+      },
+      meta: {
+        group_name,
+        group_slug,
+        attendants: {
+          going: Number(going),
+          interested: Number(interested),
+        },
+      },
+    };
+  }
+
   async allRawEvents() {
     return await this.db
       .selectFrom("events")

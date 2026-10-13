@@ -1,5 +1,10 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
+import {
+  EventAttendantStatusSchema,
+  EventHeadCountSchema,
+} from "./eventAttendantsSchema";
+import { GroupRoleSchema } from "../groups/groupMembersSchema";
 
 const EVENT_TAG_MAX_LENGTH = 24;
 
@@ -30,6 +35,40 @@ const EventSchema = Type.Object({
   created_at: Type.String({ format: "date-time" }),
   updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
 });
+
+const EventMetaDataSchema = Type.Object({
+  group_name: Type.String(),
+  group_slug: Type.String(),
+  attendants: EventHeadCountSchema,
+});
+
+export const UserSpecificEventMetaDataSchema = Type.Object({
+  status: EventAttendantStatusSchema,
+  role: GroupRoleSchema,
+});
+
+export type UserSpecificEventMetaDataSchemaType = Static<
+  typeof UserSpecificEventMetaDataSchema
+>;
+
+const HydratedEventMetaDataSchema = Type.Object({
+  event: EventMetaDataSchema,
+  user: UserSpecificEventMetaDataSchema,
+});
+
+export const EventReadModelSchema = Type.Object({
+  event: EventSchema,
+  meta: EventMetaDataSchema,
+});
+
+export type EventReadModelSchemaType = Static<typeof EventReadModelSchema>;
+
+export const HydratedEventSchema = Type.Object({
+  event: EventSchema,
+  meta: HydratedEventMetaDataSchema,
+});
+
+export type HydratedEventSchemaType = Static<typeof HydratedEventSchema>;
 
 const GroupIdSchema = Type.String();
 

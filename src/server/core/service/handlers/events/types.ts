@@ -1,10 +1,14 @@
 import {
   EventSchemaType,
+  HydratedEventSchemaType,
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchemaType,
+  EventAttendantStatusSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import {
   HydratedEvent,
@@ -14,6 +18,7 @@ import {
 } from "@/src/server/core/service/types";
 import { GroupSchemaType } from "@/src/schemas//groups/groupSchema";
 import { IDBClient } from "../../../db/access/client/dbClient";
+import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
 
 export type EventHydrationDb = Pick<
   IDBClient,
@@ -51,7 +56,6 @@ export interface IEventLifecycleHandler {
   ): Promise<{ updateStatus: "success" | "failure" }>;
   createEvent(
     newEvent: NewEventInputSchemaType,
-    group_id: EventSchemaType["group_id"],
     user_id: string | undefined,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
@@ -87,8 +91,14 @@ export interface IEventTimelineHandler {
 }
 
 export interface IEventHydrationHandler {
-  openedEvent(
+  event(
     user_id: string | undefined | null,
     event_id: string,
-  ): Promise<HydratedEvent>;
+  ): Promise<HydratedEventSchemaType>;
 }
+
+export type AttendanceAndRole = {
+  rsvpStatus: EventAttendantStatusSchemaType;
+  attendants: HydratedEvent["meta"]["attendants"];
+  role: GroupMemberSchemaType["role"];
+};

@@ -1,0 +1,56 @@
+# ---------- Builder ----------
+FROM node:24-bookworm-slim AS builder
+
+WORKDIR /app
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV pnpm_config_node_linker=isolated
+ENV pnpm_config_package_import_method=copy
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       build-essential \
+       python3 \
+       git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable
+
+# Copy dependency metadata first for layer caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY src/server/package.json ./src/server/package.json
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+ENV NODE_ENV=production
+
+# Public client values have to exist during next build
+ARG NEXT_PUBLIC_PROD_API_URL=/api/trpc
+ENV NEXT_PUBLIC_PROD_API_URL=$NEXT_PUBLIC_PROD_API_URL
+
+RUN pnpm build
+
+
+# ---------- Runtime ----------
+FROM node:24-bookworm-slim AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+# Standalone output already contains the traced runtime dependencies
+COPY --from=builder /app/.next/standalone ./
+
+COPY --from=builder /app/.next/static ./.next/static
+
+# Assuming your project has /public
+COPY --from=builder /app/public ./public
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

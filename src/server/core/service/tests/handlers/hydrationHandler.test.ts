@@ -1,7 +1,7 @@
+import type { EventReadModelSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
 import {
   createMockDb,
-  makeAttendanceUpdate,
   makeEvent,
   makeGroup,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -10,103 +10,78 @@ describe("EventHydrationHandler", () => {
   const userId = "user-1";
   const eventId = "event-1";
   const groupId = "group-1";
-
   const group = makeGroup({ id: groupId });
   const event = makeEvent({ id: eventId, group_id: groupId });
   let handler: EventHydrationHandler;
   let db: ReturnType<typeof createMockDb>;
-  let getEventInDb: jest.Mock;
-  let getAttendantsInDb: jest.Mock;
-  let getUserRsvpStatusToEventInDb: jest.Mock;
-  let getMembershipRoleInDb: jest.Mock;
-  let getEventMetaData: jest.Mock;
+  let hydrateEvent: jest.Mock;
+  let getRsvp: jest.Mock;
+  let getRole: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
     db = createMockDb();
-    getEventInDb = db.events.select.byId as jest.Mock;
-    getAttendantsInDb = db.eventAttendants.select.attendants as jest.Mock;
-    getUserRsvpStatusToEventInDb = db.eventAttendants.select.rsvp as jest.Mock;
-    getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
-    getEventMetaData = db.groups.select.byId as jest.Mock;
+    hydrateEvent = db.events.select.hydrate as jest.Mock;
+    getRsvp = db.eventAttendants.select.rsvp as jest.Mock;
+    getRole = db.groupMembers.select.role as jest.Mock;
     handler = new EventHydrationHandler(db);
   });
 
-  describe("openedEvent", () => {
-    it("returns the hydrated event data for an authenticated user", async () => {
-      getUserRsvpStatusToEventInDb.mockResolvedValue("interested");
-      getAttendantsInDb.mockResolvedValue([
-        makeAttendanceUpdate({ event_id: eventId, user_id: "att-1" }, "going"),
-        makeAttendanceUpdate({ event_id: eventId, user_id: "att-2" }, "going"),
-        makeAttendanceUpdate(
-          { event_id: eventId, user_id: "att-3" },
-          "interested",
-        ),
-        makeAttendanceUpdate(
-          { event_id: eventId, user_id: "att-4" },
-          "not_going",
-        ),
-      ]);
-      getEventInDb.mockResolvedValue(
-        makeEvent({ id: eventId, group_id: groupId }),
-      );
-      getMembershipRoleInDb.mockResolvedValue("organizer");
-      getEventMetaData.mockResolvedValue(group);
-
-      await expect(handler.openedEvent(userId, eventId)).resolves.toEqual({
+  describe("event", () => {
+    it("combines the event read model with authenticated user metadata", async () => {
+      const readModel: EventReadModelSchemaType = {
         event,
         meta: {
-          rsvpStatus: "interested",
-          attendants: {
-            going: 2,
-            interested: 1,
-          },
-          role: "organizer",
-          name: group.name,
-          slug: group.slug,
+          group_name: group.name,
+          group_slug: group.slug,
+          attendants: { going: 2, interested: 1 },
+        },
+      };
+      hydrateEvent.mockResolvedValue(readModel);
+      getRsvp.mockResolvedValue("interested");
+      getRole.mockResolvedValue("organizer");
+
+      await expect(handler.event(userId, eventId)).resolves.toEqual({
+        event,
+        meta: {
+          event: readModel.meta,
+          user: { status: "interested", role: "organizer" },
         },
       });
 
-      expect(getUserRsvpStatusToEventInDb).toHaveBeenCalledWith(
-        userId,
-        eventId,
-      );
-      expect(getAttendantsInDb).toHaveBeenCalledWith(eventId);
-      expect(getEventInDb).toHaveBeenCalledWith(eventId);
-      expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
+      expect(hydrateEvent).toHaveBeenCalledWith(eventId);
+      expect(getRsvp).toHaveBeenCalledWith(userId, eventId);
+      expect(getRole).toHaveBeenCalledWith(userId, groupId);
+      expect(db.events.select.byId).not.toHaveBeenCalled();
+      expect(db.groups.select.byId).not.toHaveBeenCalled();
+      expect(db.eventAttendants.select.attendants).not.toHaveBeenCalled();
     });
 
-    it("returns anonymous hydration data for a viewer who is not signed in", async () => {
-      getAttendantsInDb.mockResolvedValue([
-        makeAttendanceUpdate({ event_id: eventId, user_id: "att-1" }, "going"),
-        makeAttendanceUpdate(
-          { event_id: eventId, user_id: "att-2" },
-          "interested",
-        ),
-      ]);
-      getEventInDb.mockResolvedValue(
-        makeEvent({ id: eventId, group_id: groupId }),
-      );
-      getEventMetaData.mockResolvedValue(group);
-
-      await expect(handler.openedEvent(undefined, eventId)).resolves.toEqual({
-        event,
-        meta: {
-          rsvpStatus: "not_going",
-          attendants: {
-            going: 1,
-            interested: 1,
+    it.each([undefined, null])(
+      "uses anonymous metadata without user lookups when user ID is %s",
+      async (anonymousUserId) => {
+        const readModel: EventReadModelSchemaType = {
+          event,
+          meta: {
+            group_name: group.name,
+            group_slug: group.slug,
+            attendants: { going: 1, interested: 1 },
           },
-          role: "anonymous",
-          name: group.name,
-          slug: group.slug,
-        },
-      });
+        };
+        hydrateEvent.mockResolvedValue(readModel);
 
-      expect(getUserRsvpStatusToEventInDb).not.toHaveBeenCalled();
-      expect(getAttendantsInDb).toHaveBeenCalledWith(eventId);
-      expect(getEventInDb).toHaveBeenCalledWith(eventId);
-      expect(getMembershipRoleInDb).not.toHaveBeenCalled();
-    });
+        await expect(handler.event(anonymousUserId, eventId)).resolves.toEqual({
+          event,
+          meta: {
+            event: readModel.meta,
+            user: { status: "not_going", role: "anonymous" },
+          },
+        });
+
+        expect(hydrateEvent).toHaveBeenCalledWith(eventId);
+        expect(getRsvp).not.toHaveBeenCalled();
+        expect(getRole).not.toHaveBeenCalled();
+      },
+    );
   });
 });

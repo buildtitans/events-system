@@ -1,12 +1,13 @@
-import { Kysely } from "kysely";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
+  CategorySchema,
   CategoriesValidator,
   CategorySchemaType,
   type CategoriesSchemaType,
 } from "@/src/schemas/groups/categoriesSchema";
+import { Kysely } from "kysely";
 import type { Categories, DB } from "../../../types/db";
 import type { Selectable } from "kysely";
-import { CategorySchemaValidator } from "../../../../lib/validation/schemaValidators";
 
 export interface ICategoriesRepository {
   getCategories(): Promise<CategoriesSchemaType>;
@@ -51,7 +52,7 @@ export class CategoriesRepository implements ICategoriesRepository {
   }
 
   private validateCategory(raw: unknown): CategorySchemaType {
-    return CategorySchemaValidator(raw);
+    return validateOrThrow(CategorySchema, raw);
   }
 
   private parseCategories(raw: Selectable<Categories>[]): CategoriesSchemaType {

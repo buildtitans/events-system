@@ -2,12 +2,14 @@ import { EventsValidator } from "./eventsValidator";
 import { RawEventsReader } from "./rawEventsReader";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
+  EventReadModelSchemaType,
   EventsArraySchemaType,
   EventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 
 export interface IEventsSelector {
+  hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
   search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
   suggest(query: SearchSchemaType): Promise<EventSchemaType[]>;
   nextEventByGroupId(group_id: string): Promise<EventSchemaType | undefined>;
@@ -25,6 +27,11 @@ export class EventsSelector implements IEventsSelector {
     private readonly validate: EventsValidator,
     private readonly read: RawEventsReader,
   ) {}
+
+  async hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType> {
+    const raw = await this.read.rawHydratedWithGroupDetails(id);
+    return this.validate.eventWithGroupDetails(raw);
+  }
 
   async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
     const raw = await this.read.rawSearchByTitle(query);

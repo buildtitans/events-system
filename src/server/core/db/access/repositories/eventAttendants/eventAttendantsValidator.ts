@@ -1,10 +1,12 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  EventAttendantStatusSchema,
+  EventAttendantsSchema,
+  type EventAttendantsSchemaType,
+  type EventHeadCountSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import type { Selectable } from "kysely";
 import type { EventAttendants } from "@/src/server/core/db/types/db";
-import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import {
-  AttendanceStatusValidator,
-  ValidateRawAttendants,
-} from "../../../../lib/validation/schemaValidators";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
@@ -21,7 +23,7 @@ export class EventAttendantsValidator {
         ? dayjs(row.updated_at).utc().format(ISO_FORMAT)
         : null;
 
-      return ValidateRawAttendants({
+      return validateOrThrow(EventAttendantsSchema, {
         event_id: row.event_id,
         user_id: row.user_id,
         status: row.status,
@@ -40,7 +42,7 @@ export class EventAttendantsValidator {
       ? dayjs(row.updated_at).utc().format(ISO_FORMAT)
       : null;
 
-    return ValidateRawAttendants({
+    return validateOrThrow(EventAttendantsSchema, {
       event_id: row.event_id,
       user_id: row.user_id,
       status: row.status,
@@ -50,6 +52,6 @@ export class EventAttendantsValidator {
   }
 
   parseRsvpStatusResult(status: unknown): EventAttendantsSchemaType["status"] {
-    return AttendanceStatusValidator(status);
+    return validateOrThrow(EventAttendantStatusSchema, status);
   }
 }

@@ -12,7 +12,38 @@ src/server/dist
 Dockerfile
 docker-compose.yml
 compose.yaml
-.env
-.env.*
+**/.env
+**/.env.*
 npm-debug.log
 pnpm-debug.log
+# Dependencies
+node_modules
+src/server/node_modules
+.pnpm-store
+
+# Build output
+.next
+dist
+src/server/dist
+*.tsbuildinfo
+coverage
+.deploy
+
+# Git
+.git
+.gitignore
+
+# Docker/dev orchestration
+Dockerfile
+docker-compose.yml
+compose.yaml
+
+# Environment/secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs
+npm-debug.log
+pnpm-debug.log
+*.log

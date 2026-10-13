@@ -20,6 +20,13 @@ const EventAttendantKeySchema = Type.Object({
   user_id: Type.String({ format: "uuid" }),
 });
 
+export const EventHeadCountSchema = Type.Object({
+  going: Type.Number(),
+  interested: Type.Number(),
+});
+
+export type EventHeadCountSchemaType = Static<typeof EventHeadCountSchema>;
+
 const EventIdSchema = Type.String();
 
 const EventIdsSchema = Type.Array(EventIdSchema);

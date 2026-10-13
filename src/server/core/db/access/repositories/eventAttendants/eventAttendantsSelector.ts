@@ -1,4 +1,7 @@
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
+import {
+  EventAttendantsSchemaType,
+  EventHeadCountSchemaType,
+} from "@/src/schemas/events/eventAttendantsSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";

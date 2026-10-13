@@ -74,7 +74,7 @@ export default function Footer() {
                       aria-label={link.label}
                       underline="none"
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       sx={footerLinkSx}
                     >
                       {link.label === "GitHub" ? (
