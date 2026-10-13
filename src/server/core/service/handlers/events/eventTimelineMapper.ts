@@ -1,15 +1,16 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
+  EventsByGroupIdSchema,
   EventsByGroupIdSchemaType,
   EventSchemaType,
 } from "@/src/schemas/events/eventSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { isPastEvent } from "@/src/server/core/lib/utils/isPastEvent";
 import {
   EventsByGroupId,
   UpComingEventsLookup,
   PastEventAttendanceLookup,
 } from "@/src/server/core/service/types";
-import { EventsByGroupIdSchemaValidator } from "@/src/server/core/lib/validation/schemaValidators";
-import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 
 export class EventTimelineMapper {
   mapPastEventHeadCounts(
@@ -67,7 +68,7 @@ export class EventTimelineMapper {
       results[groupId].push(event);
     }
 
-    return EventsByGroupIdSchemaValidator(results);
+    return validateOrThrow(EventsByGroupIdSchema, results);
   }
 
   private getNextOrMostRecentGroupEvent(

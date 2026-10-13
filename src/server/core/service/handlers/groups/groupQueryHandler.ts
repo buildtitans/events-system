@@ -1,3 +1,5 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
@@ -8,7 +10,6 @@ import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 import { IGroupQueryHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
-import { ValidateSearchQuery } from "../../../lib/validation/schemaValidators";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
   constructor(private readonly db: GroupServiceDb) {}
@@ -40,13 +41,13 @@ export class GroupQueryHandler implements IGroupQueryHandler {
 
   async suggestGroups(query: string): Promise<GroupSchemaType[]> {
     const trimmed = query.trim();
-    const validatedQuery = ValidateSearchQuery(trimmed);
+    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.suggestByName(validatedQuery);
   }
 
   async searchGroups(query: string): Promise<GroupSchemaType[]> {
     const trimmed = query.trim();
-    const validatedQuery = ValidateSearchQuery(trimmed);
+    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.search(validatedQuery);
   }
 

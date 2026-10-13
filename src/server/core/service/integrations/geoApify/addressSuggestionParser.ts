@@ -1,5 +1,8 @@
-import { GeoapifyAutocompleteJsonResponse } from "../../../../../schemas/geoapify/geoapifyAutocompleteSchema";
-import { GeoapifyAutocompleteValidator } from "../../../lib/validation/schemaValidators";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  GeoapifyAutocompleteJsonResponseSchema,
+  GeoapifyAutocompleteJsonResponse,
+} from "@/src/schemas/geoapify/geoapifyAutocompleteSchema";
 import { AddressSuggestion } from "../types";
 
 export interface IAddressSuggestionParser {
@@ -8,7 +11,7 @@ export interface IAddressSuggestionParser {
 
 export class AddressSuggestionParser implements IAddressSuggestionParser {
   public parse(raw: unknown): AddressSuggestion[] {
-    const validated = GeoapifyAutocompleteValidator(raw);
+    const validated = validateOrThrow(GeoapifyAutocompleteJsonResponseSchema, raw);
     return this.toSuggestions(validated);
   }
 

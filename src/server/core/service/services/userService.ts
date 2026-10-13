@@ -1,21 +1,21 @@
-import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
-  GroupSchemaType,
-  GroupsSchemaType,
-} from "@/src/schemas/groups/groupSchema";
+  UserMembershipSchemaArray,
+  UserMembershipSchemaType,
+} from "@/src/schemas/groups/userMembershipSchema";
+import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
+import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
   AuthenticatedUserId,
   IAuthorization,
 } from "../auth/authorization";
 import { chunkUserGroupsIntoPages } from "@/src/server/core/lib/utils/chunkUserGroupsToPages";
 import { validateLoginCredentials } from "@/src/server/core/lib/validation/validateLoginCredentials";
-import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import {
   buildGroupNameLookup,
   NameSlugDescriptionLookup,
 } from "@/src/server/core/lib/utils/buildGroupNameLookup";
-import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { UserMembershipSchemaArrayValidator } from "@/src/server/core/lib/validation/schemaValidators";
 import { NewUserResponse } from "@/src/server/core/db/access/types/types";
 import { IUserService, UserServiceDb } from "./types";
 
@@ -103,6 +103,6 @@ export class UserService implements IUserService {
           lookupMap[membership.group_id]?.group_description ?? "",
       };
     });
-    return UserMembershipSchemaArrayValidator(results);
+    return validateOrThrow(UserMembershipSchemaArray, results);
   }
 }

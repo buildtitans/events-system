@@ -1,12 +1,10 @@
-import { layoutSlotValidator } from "@/src/server/core/lib/validation/schemaValidators";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
-  EventsArraySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
-import {
+  PaginatedLayoutSchema,
   LayoutSlotSchemaType,
   PaginatedLayoutSchemaType,
 } from "@/src/schemas/events/layoutSlotSchema";
+import { EventsArraySchemaType, EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { LayoutSlot } from "../../../lib/types";
 import { cardSizingConfig } from "../../../lib/config/cardSizingConfig";
 import { IEventLayoutComposer } from "./types";
@@ -16,7 +14,7 @@ export class EventLayoutComposer implements IEventLayoutComposer {
 
   public compileLayout(events: EventSchemaType[]): PaginatedLayoutSchemaType {
     const layout = this.buildLayoutSlots(events);
-    return layoutSlotValidator(layout);
+    return validateOrThrow(PaginatedLayoutSchema, layout);
   }
 
   private buildLayoutSlots(

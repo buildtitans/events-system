@@ -75,7 +75,7 @@ const selectEventsRouter = router({
   hydrateEvent: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.hydrate.openedEvent(
+      return await ctx.api.services.domains.events.hydrate.event(
         ctx.req.user?.id,
         input,
       );

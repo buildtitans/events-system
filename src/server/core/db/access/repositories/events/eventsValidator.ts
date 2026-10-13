@@ -1,6 +1,11 @@
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import {
+  EventSchema,
+  EventReadModelSchema,
+  EventSchemaType,
+  EventReadModelSchemaType,
+} from "@/src/schemas/events/eventSchema";
 import { Selectable } from "kysely";
-import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
-import { eventValidator } from "../../../../lib/validation/schemaValidators";
 import { Events } from "../../../types/db";
 
 export class EventsValidator {
@@ -8,7 +13,7 @@ export class EventsValidator {
     return rows.map((row) => {
       const startsAtMs = row.starts_at.getTime();
 
-      return eventValidator({
+      return validateOrThrow(EventSchema, {
         id: String(row.id),
         img: row.img,
         tag: row.tag,
@@ -25,10 +30,14 @@ export class EventsValidator {
     });
   }
 
+  eventWithGroupDetails(data: unknown): EventReadModelSchemaType {
+    return validateOrThrow(EventReadModelSchema, data);
+  }
+
   event(raw: Selectable<Events>): EventSchemaType {
     const startsAtMs = raw.starts_at.getTime();
 
-    return eventValidator({
+    return validateOrThrow(EventSchema, {
       id: raw.id,
       tag: raw.tag,
       title: raw.title,

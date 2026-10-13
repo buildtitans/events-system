@@ -1,4 +1,5 @@
-import { validateLoginInput } from "./schemaValidators";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
+import { LoginCredentialsSchema } from "@/src/schemas/auth/loginCredentialsSchema";
 
 export function validateLoginCredentials(
   emailInput: string,
@@ -6,5 +7,8 @@ export function validateLoginCredentials(
 ) {
   const trimmedEmail = emailInput.trim().toLowerCase();
 
-  return validateLoginInput({ email: trimmedEmail, password: passwordInput });
+  return validateOrThrow(LoginCredentialsSchema, {
+    email: trimmedEmail,
+    password: passwordInput,
+  });
 }

@@ -1,5 +1,6 @@
 import {
   EventSchemaType,
+  HydratedEventSchemaType,
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
 } from "@/src/schemas/events/eventSchema";
@@ -90,10 +91,10 @@ export interface IEventTimelineHandler {
 }
 
 export interface IEventHydrationHandler {
-  openedEvent(
+  event(
     user_id: string | undefined | null,
     event_id: string,
-  ): Promise<HydratedEvent>;
+  ): Promise<HydratedEventSchemaType>;
 }
 
 export type AttendanceAndRole = {

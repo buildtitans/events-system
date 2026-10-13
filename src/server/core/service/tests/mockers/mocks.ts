@@ -117,6 +117,7 @@ export const unauthenticated = () => {
 function createMockEventsRepo() {
   return {
     select: {
+      hydrate: jest.fn(),
       search: jest.fn(),
       allStatuses: jest.fn(),
       allScheduled: jest.fn(),

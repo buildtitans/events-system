@@ -125,19 +125,21 @@ const EventDrawerSlice = createSlice({
       hydrateEventDrawer.fulfilled,
       (state: InitialState, action) => {
         const { meta, event } = action.payload;
+        const eventMeta = meta.event;
+        const userMeta = meta.user;
 
-        state.groupName = { status: "ready", data: meta.name };
-        state.drawerViewerRole = meta.role;
-        state.groupSlug = { status: "ready", data: meta.slug };
+        state.groupName = { status: "ready", data: eventMeta.group_name };
+        state.drawerViewerRole = userMeta.role;
+        state.groupSlug = { status: "ready", data: eventMeta.group_slug };
         state.numberAttending = {
           status: "ready",
-          data: meta.attendants.going,
+          data: eventMeta.attendants.going,
         };
         state.numberInterested = {
           status: "ready",
-          data: meta.attendants.interested,
+          data: eventMeta.attendants.interested,
         };
-        state.viewerAttendanceStatus = meta.rsvpStatus;
+        state.viewerAttendanceStatus = userMeta.status;
 
         state.event = { status: "ready", data: event };
       },

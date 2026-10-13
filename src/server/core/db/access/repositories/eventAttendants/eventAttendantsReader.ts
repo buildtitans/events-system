@@ -1,8 +1,13 @@
 import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
 import { SelectedAttendant } from "../../types/types";
+import { EventAttendantsSchemaType } from "../../../../../../schemas/events/eventAttendantsSchema";
+import type { EventHeadCountSchemaType } from "../../../../../../schemas/events/eventAttendantsSchema";
 
 export interface IEventAttendantsReader {
+  rawHeadCount(
+    event_id: EventAttendantsSchemaType["event_id"],
+  ): Promise<EventHeadCountSchemaType>;
   rawRsvp({
     user_id,
     event_id,
@@ -39,6 +44,26 @@ export class EventAttendantsReader implements IEventAttendantsReader {
       .where("user_id", "=", user_id)
       .where("event_id", "=", event_id)
       .executeTakeFirst();
+  }
+
+  async rawHeadCount(event_id: EventAttendantsSchemaType["event_id"]) {
+    const { going, interested } = await this.db
+      .selectFrom("event_attendants")
+      .select((eb) => [
+        eb.fn.countAll().filterWhere("status", "=", "going").as("going"),
+
+        eb.fn
+          .countAll()
+          .filterWhere("status", "=", "interested")
+          .as("interested"),
+      ])
+      .where("event_id", "=", event_id)
+      .executeTakeFirstOrThrow();
+
+    return {
+      going: Number(going),
+      interested: Number(interested),
+    };
   }
 
   async allRawRecords(): Promise<Selectable<EventAttendants>[]> {
