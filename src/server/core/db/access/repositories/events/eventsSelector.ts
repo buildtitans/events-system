@@ -1,4 +1,4 @@
-import { EventsValidator } from "./eventsValidator";
+import { EventsValidator, IEventsValidator } from "./eventsValidator";
 import { RawEventsReader } from "./rawEventsReader";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
@@ -24,7 +24,7 @@ export interface IEventsSelector {
 
 export class EventsSelector implements IEventsSelector {
   constructor(
-    private readonly validate: EventsValidator,
+    private readonly validate: IEventsValidator,
     private readonly read: RawEventsReader,
   ) {}
 

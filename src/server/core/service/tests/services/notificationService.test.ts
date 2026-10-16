@@ -1,3 +1,4 @@
+import { USER_ID } from "../mockers/mockValues";
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
 import type { NewNotification } from "@/src/server/core/service/services/types";
 import {
@@ -57,7 +58,7 @@ describe("NotificationService.createNotification", () => {
     });
 
     await expect(
-      service.createNotification(newNotification, "user-1"),
+      service.createNotification(newNotification, USER_ID),
     ).rejects.toThrow("403");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
@@ -80,7 +81,7 @@ describe("NotificationService.createNotification", () => {
     );
 
     await expect(
-      service.createNotification(newNotification, "user-1"),
+      service.createNotification(newNotification, USER_ID),
     ).resolves.toEqual(notificationResponse);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
@@ -129,7 +130,7 @@ describe("NotificationService.getNewNotifications", () => {
 
     getUnseenNotificationsInDb.mockResolvedValue(notifications);
 
-    await expect(service.getNewNotifications("user-1")).resolves.toEqual(
+    await expect(service.getNewNotifications(USER_ID)).resolves.toEqual(
       notifications,
     );
 
@@ -176,11 +177,11 @@ describe("NotificationService.getNotifications", () => {
   });
 
   it("returns new and viewed notifications for the authenticated user", async () => {
-    authenticateAs("user-1");
+    authenticateAs(USER_ID);
     getUnseenNotificationsInDb.mockResolvedValue(newNotifications);
     getOpenedNotificationsInDb.mockResolvedValue(seenNotifications);
 
-    await expect(service.getNotifications("user-1")).resolves.toEqual({
+    await expect(service.getNotifications(USER_ID)).resolves.toEqual({
       new: newNotifications,
       seen: seenNotifications,
     });
@@ -223,7 +224,7 @@ describe("NotificationService.markSeen", () => {
     });
 
     await expect(
-      service.markSeen("user-1", seenNotificationIds),
+      service.markSeen(USER_ID, seenNotificationIds),
     ).resolves.toEqual({
       ok: true,
       numUpdated: 2,

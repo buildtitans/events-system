@@ -4,12 +4,10 @@ import type {
 } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { NewOrganizerInput } from "../../types";
-import {
-  AuthenticatedUserId,
-  IAuthorization,
-} from "../../auth/authorization";
+import { IAuthorization } from "../../auth/authorization";
 import { IGroupLifecycleHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   constructor(
@@ -18,7 +16,7 @@ export class GroupLifecycleHandler implements IGroupLifecycleHandler {
   ) {}
 
   async createNewGroup(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     newGroupInput: NewGroupInputSchemaType,
   ): Promise<
     { ok: true; data: GroupSchemaType } | { ok: false; error: string }

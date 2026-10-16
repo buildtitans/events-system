@@ -1,3 +1,4 @@
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { IAuthorization } from "../../auth/authorization";
@@ -11,9 +12,9 @@ export class MembershipHandler implements IMembershipHandler {
   ) {}
 
   async addMember(
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<GroupMemberSchemaType> {
+  ) {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireCanChangeMembership(userId, group_id);
@@ -26,8 +27,8 @@ export class MembershipHandler implements IMembershipHandler {
 
   async leaveGroup(
     group_id: GroupSchemaType["id"],
-    user_id: string | undefined | null,
-  ): Promise<boolean> {
+    user_id: AuthenticatedUserId | undefined | null,
+  ) {
     const userId = this.policy.requireAuthenticated(user_id);
 
     await this.policy.requireCanChangeMembership(userId, group_id);
@@ -36,19 +37,14 @@ export class MembershipHandler implements IMembershipHandler {
   }
 
   async getRoleInGroup(
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     group_id: GroupSchemaType["id"],
-  ): Promise<GroupMemberSchemaType["role"]> {
+  ) {
     if (!user_id) return "anonymous";
-
-    const role = await this.db.groupMembers.select.role(user_id, group_id);
-
-    return role ?? "anonymous";
+    return await this.db.groupMembers.select.role(user_id, group_id);
   }
 
-  async getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number> {
-    const members = await this.db.groupMembers.select.allMembers(group_id);
-
-    return members.length;
+  async getGroupHeadCount(group_id: GroupSchemaType["id"]) {
+    return await this.db.groupMembers.select.memberCount(group_id);
   }
 }

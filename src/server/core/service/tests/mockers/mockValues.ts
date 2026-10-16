@@ -1,4 +1,6 @@
-const USER_ID = "user-1";
+import type { AuthenticatedUserId } from "../../handlers/session/SessionHandler";
+
+const USER_ID = "user-1" as AuthenticatedUserId;
 const EVENT_ID = "event-1";
 const GROUP_ID_1 = "5cf76d94-83c9-46de-90ac-fe4047a00000";
 const GROUP_ID_2 = "6cf76d94-83c9-46de-90ac-fe4047a00000";

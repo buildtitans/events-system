@@ -8,7 +8,13 @@ import {
 import { Selectable } from "kysely";
 import { Events } from "../../../types/db";
 
-export class EventsValidator {
+export interface IEventsValidator {
+  events(rows: Selectable<Events>[]): EventSchemaType[];
+  event(raw: Selectable<Events>): EventSchemaType;
+  eventWithGroupDetails(data: unknown): EventReadModelSchemaType;
+}
+
+export class EventsValidator implements IEventsValidator {
   events(rows: Selectable<Events>[]): EventSchemaType[] {
     return rows.map((row) => {
       const startsAtMs = row.starts_at.getTime();

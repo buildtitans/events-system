@@ -1,3 +1,4 @@
+import { USER_ID } from "../mockers/mockValues";
 import type { EventReadModelSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventHydrationHandler", () => {
-  const userId = "user-1";
+  const userId = USER_ID;
   const eventId = "event-1";
   const groupId = "group-1";
   const group = makeGroup({ id: groupId });

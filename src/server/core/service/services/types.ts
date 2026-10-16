@@ -1,3 +1,4 @@
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
@@ -74,19 +75,19 @@ export interface IParticipationsService {
 }
 
 export interface INotificationService {
-  getNotifications(user_id: string | null | undefined): Promise<{
+  getNotifications(user_id: AuthenticatedUserId | undefined | null): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }>;
   getNewNotifications(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<NotificationSchemaType[]>;
   createNotification(
     notification: NewNotification,
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<NotificationSchemaType | undefined>;
   markSeen(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     ids: NotificationSchemaType["id"][],
   ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }>;
 }
@@ -112,12 +113,12 @@ export interface IUserService {
     passwordInput: string,
   ): Promise<NewUserResponse>;
   getGroupsCreated(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<GroupSchemaType[][]>;
   getEmailById(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<DbUserSchemaType["email"]>;
   getMemberships(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<UserMembershipSchemaType[]>;
 }

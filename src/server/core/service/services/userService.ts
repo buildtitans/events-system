@@ -4,12 +4,12 @@ import {
   UserMembershipSchemaType,
 } from "@/src/schemas/groups/userMembershipSchema";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
-import { GroupSchemaType, GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
-import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
-  AuthenticatedUserId,
-  IAuthorization,
-} from "../auth/authorization";
+  GroupSchemaType,
+  GroupsSchemaType,
+} from "@/src/schemas/groups/groupSchema";
+import { GroupMembersArraySchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { IAuthorization } from "../auth/authorization";
 import { chunkUserGroupsIntoPages } from "@/src/server/core/lib/utils/chunkUserGroupsToPages";
 import { validateLoginCredentials } from "@/src/server/core/lib/validation/validateLoginCredentials";
 import {
@@ -18,6 +18,7 @@ import {
 } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import { NewUserResponse } from "@/src/server/core/db/access/types/types";
 import { IUserService, UserServiceDb } from "./types";
+import { AuthenticatedUserId } from "../handlers/session/SessionHandler";
 
 export class UserService implements IUserService {
   constructor(
@@ -38,14 +39,14 @@ export class UserService implements IUserService {
   }
 
   async getGroupsCreated(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<GroupSchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
     return await this.groupsOrganized(userId);
   }
 
   async getEmailById(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<DbUserSchemaType["email"]> {
     const userId = this.policy.requireAuthenticated(user_id);
     const { email } = await this.db.auth.getEmailByUserId(userId);
@@ -53,7 +54,7 @@ export class UserService implements IUserService {
   }
 
   async getMemberships(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<UserMembershipSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
     return await this.membershipsOfUser(userId);

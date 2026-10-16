@@ -120,13 +120,9 @@ export const refreshArchivedEvents = createAsyncThunk(
     thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
 
     try {
-      const { archives, archivedAttendanceRecords } =
-        await trpcClient.events.select.archives.query(id);
+      const result = await trpcClient.groups.select.archives.query(id);
 
-      return {
-        archives,
-        archivedAttendanceRecords,
-      };
+      return result;
     } catch (err) {
       logCaughtError("OpenedGroupSlice.refreshArchivedEvents()", err);
       return thunkAPI.rejectWithValue(err);

@@ -1,5 +1,7 @@
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
+  ArchivedEventSchemaType,
+  GroupArchivesSchema,
   GroupSchema,
   GroupsSchema,
   type GroupSchemaType,
@@ -7,8 +9,12 @@ import {
 } from "@/src/schemas/groups/groupSchema";
 import type { Selectable } from "kysely";
 import type { Groups } from "@/src/server/core/db/types/db";
+import { EventsValidator } from "../events/eventsValidator";
+import type { RawArchives } from "./rawGroupsReader";
 
 export class GroupsValidator {
+  constructor(private readonly eventsValidator: EventsValidator) {}
+
   groups(groups: Selectable<Groups>[]): GroupsSchemaType {
     const formatted = [];
 
@@ -19,6 +25,19 @@ export class GroupsValidator {
 
     const validGroups = validateOrThrow(GroupsSchema, formatted);
     return validGroups;
+  }
+
+  archives(archives: RawArchives): ArchivedEventSchemaType[] {
+    const events = this.eventsValidator.events(
+      archives.map(({ event }) => event),
+    );
+
+    const normalized = archives.map(({ attendance }, index) => ({
+      event: events[index],
+      attendance,
+    }));
+
+    return validateOrThrow(GroupArchivesSchema, normalized);
   }
 
   group(group: Selectable<Groups>): GroupSchemaType {

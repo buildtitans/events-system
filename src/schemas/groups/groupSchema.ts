@@ -1,5 +1,6 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
+import { EventSchema } from "../events/eventSchema";
 
 export const GroupSchema = Type.Object({
   id: Type.String(),
@@ -19,6 +20,18 @@ export const NewGroupInputSchema = Type.Object({
   location: Type.Union([Type.String(), Type.Null()]),
   category_id: Type.Union([Type.String(), Type.Null()]),
 });
+
+export const ArchivedEventSchema = Type.Object({
+  event: EventSchema,
+  attendance: Type.Object({
+    going: Type.Number(),
+    interested: Type.Number(),
+  }),
+});
+
+export const GroupArchivesSchema = Type.Array(ArchivedEventSchema);
+
+export type ArchivedEventSchemaType = Static<typeof ArchivedEventSchema>;
 
 export const GroupSlugSchema = Type.String();
 

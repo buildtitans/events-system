@@ -16,6 +16,15 @@ const selectGroupsRouter = router({
     return await ctx.api.services.domains.groups.query.getAllGroups();
   }),
 
+  archives: protectedProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.archives(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
   bySlug: publicProcedure
     .input(groupSlugInputValidator)
     .query(async ({ ctx, input }) => {

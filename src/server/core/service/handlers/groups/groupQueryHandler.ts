@@ -1,6 +1,10 @@
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  ArchivedEventSchemaType,
+  GroupSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
   CategoriesSchemaType,
@@ -10,9 +14,13 @@ import { buildGroupNameLookup } from "../../../lib/utils/buildGroupNameLookup";
 import type { NameSlugDescriptionLookup } from "../../../lib/utils/buildGroupNameLookup";
 import { IGroupQueryHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
+import { IAuthorization } from "../../auth/authorization";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
-  constructor(private readonly db: GroupServiceDb) {}
+  constructor(
+    private readonly db: GroupServiceDb,
+    private readonly policy: IAuthorization,
+  ) {}
 
   async getGroupCategories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
@@ -49,6 +57,15 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.search(validatedQuery);
+  }
+
+  async archives(
+    user_id: AuthenticatedUserId | undefined | null,
+    id: GroupSchemaType["id"],
+  ): Promise<ArchivedEventSchemaType[]> {
+    const userId = this.policy.requireAuthenticated(user_id);
+    await this.policy.requireOrganizer(userId, id);
+    return await this.db.groups.select.archives(id);
   }
 
   async getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]> {

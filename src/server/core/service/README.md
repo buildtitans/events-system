@@ -247,25 +247,26 @@ again in this layer.
 
 ### Authenticated User IDs
 
-`requireAuthenticated()` performs the runtime authentication check and returns
-an `AuthenticatedUserId`. This branded string records, in the type system, that
-the application has already established the authentication invariant.
+Session authentication establishes the identity and brands the request's user ID.
+`requireAuthenticated()` checks that this already-branded ID is present and returns
+it. This branded string records, in the type system, that the application has
+already established the authentication invariant.
 
 ```text
-string | null | undefined
+AuthenticatedUserId | undefined | null
         ↓ requireAuthenticated()
 AuthenticatedUserId
         ↓
 authenticated private workflow
 ```
 
-Public service and handler methods accept raw request IDs and call
-`requireAuthenticated()` at the application boundary. Private workflows that
+Public service and handler methods accept branded request IDs or an absent user
+and call `requireAuthenticated()` when authentication is required. Private workflows that
 require an authenticated actor accept `AuthenticatedUserId` rather than a
 plain `string`:
 
 ```ts
-async getMemberships(userId: string | null | undefined) {
+async getMemberships(userId: AuthenticatedUserId | undefined | null) {
   const actor = this.policy.requireAuthenticated(userId);
   return await this.membershipsOfUser(actor);
 }
@@ -277,10 +278,10 @@ private async membershipsOfUser(actor: AuthenticatedUserId) {
 
 The brand prevents accidental use of an unchecked ID inside authenticated
 workflows. It does not replace runtime authorization: TypeScript types are not
-present when the server executes. The cast that creates an
-`AuthenticatedUserId` remains centralized inside `Authorization`, immediately
-after the runtime check; application code should obtain the type through
-`requireAuthenticated()` rather than casting IDs directly.
+present when the server executes. Casts that create an `AuthenticatedUserId`
+belong at the successful session or login boundary. Service code preserves the
+brand and uses `requireAuthenticated()` to reject absent users rather than
+casting arbitrary strings.
 
 `RoleBasedAccessHandler` resolves the user's group role through the
 `groupMembers` repository and evaluates it against the centralized permissions

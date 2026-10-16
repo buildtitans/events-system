@@ -135,7 +135,7 @@ describe("UserService.getGroupsCreated", () => {
 
     getGroupsByOrganizerIdinDb.mockResolvedValue(groupsByUser);
 
-    await expect(service.getGroupsCreated("user-1")).resolves.toEqual([
+    await expect(service.getGroupsCreated(USER_ID)).resolves.toEqual([
       groupsByUser,
     ]);
 
@@ -150,7 +150,7 @@ describe("UserService.getEmailById", () => {
   let getEmailByUserIdInDb: jest.Mock;
 
   const email = "alice@example.com";
-  const user_id = "user-1";
+  const user_id = USER_ID;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -164,7 +164,7 @@ describe("UserService.getEmailById", () => {
 
     getEmailByUserIdInDb.mockResolvedValue({ email: email });
 
-    await expect(service.getEmailById("user-1")).resolves.toBe(email);
+    await expect(service.getEmailById(USER_ID)).resolves.toBe(email);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalled();
     expect(getEmailByUserIdInDb).toHaveBeenCalled();

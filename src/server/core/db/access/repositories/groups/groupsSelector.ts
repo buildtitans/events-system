@@ -1,7 +1,11 @@
 import { CategorySchemaType } from "../../../../../../schemas/groups/categoriesSchema";
+import { IEventsValidator } from "../events/eventsValidator";
 import { GroupsValidator } from "./groupsValidator";
 import { RawGroupsReader } from "./rawGroupsReader";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  ArchivedEventSchemaType,
+  GroupSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 
 export interface IGroupsSelector {
   all(): Promise<GroupSchemaType[]>;
@@ -16,6 +20,7 @@ export interface IGroupsSelector {
     category_id: CategorySchemaType["name"],
   ): Promise<GroupSchemaType[]>;
   suggestByName(query: string): Promise<GroupSchemaType[]>;
+  archives(id: GroupSchemaType["id"]): Promise<ArchivedEventSchemaType[]>;
 }
 
 export class GroupsSelector implements IGroupsSelector {
@@ -27,6 +32,11 @@ export class GroupsSelector implements IGroupsSelector {
   async all(): Promise<GroupSchemaType[]> {
     const raw = await this.read.allRawGroups();
     return this.validator.groups(raw);
+  }
+
+  async archives(id: GroupSchemaType["id"]) {
+    const archives = await this.read.archivedEventsWithAttendance(id);
+    return this.validator.archives(archives);
   }
 
   async byId(id: GroupSchemaType["id"]): Promise<GroupSchemaType> {

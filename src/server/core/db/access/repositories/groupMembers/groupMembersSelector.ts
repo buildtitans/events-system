@@ -3,6 +3,7 @@ import { RawGroupMembersReader } from "./rawGroupMembersReader";
 import {
   GroupMemberSchemaType,
   MemberCountSchemaType,
+  NumberOfMembersSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
 
 export interface IGroupMembersSelector {
@@ -26,6 +27,9 @@ export interface IGroupMembersSelector {
   memberCounts(
     groupIds: GroupMemberSchemaType["group_id"][],
   ): Promise<MemberCountSchemaType>;
+  memberCount(
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<NumberOfMembersSchemaType>;
 }
 
 export class GroupMembersSelector implements IGroupMembersSelector {
@@ -37,6 +41,14 @@ export class GroupMembersSelector implements IGroupMembersSelector {
   async all(): Promise<GroupMemberSchemaType[]> {
     const raw = await this.read.allRawMembers();
     return this.validator.members(raw);
+  }
+
+  async memberCount(
+    group_id: GroupMemberSchemaType["group_id"],
+  ): Promise<NumberOfMembersSchemaType> {
+    const rawCount = await this.read.rawMemberCount(group_id);
+    const memberCount = Number(rawCount.member_count);
+    return this.validator.numberOfMembers(memberCount);
   }
 
   async byUserId(
@@ -62,13 +74,16 @@ export class GroupMembersSelector implements IGroupMembersSelector {
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["role"]> {
-    const raw = await this.read.rawRoleInGroup(user_id, group_id);
+    let role: string;
 
-    if (raw === undefined) {
-      return "anonymous";
+    const raw = await this.read.rawRoleInGroup(user_id, group_id);
+    if (raw) {
+      role = raw.role;
+    } else {
+      role = "anonymous";
     }
 
-    return this.validator.role(raw.role);
+    return this.validator.role(role);
   }
 
   async organizer(

@@ -1,8 +1,11 @@
 import { IRoleBasedAccessHandler } from "@/src/server/core/service/auth/types";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
+import { AuthenticatedUserId } from "../handlers/session/SessionHandler";
 
 export interface IAuthorization {
-  requireAuthenticated(userId: string | undefined | null): AuthenticatedUserId;
+  requireAuthenticated(
+    userId: AuthenticatedUserId | undefined | null,
+  ): AuthenticatedUserId;
   requireToken(token: string | undefined | null): string;
   requireOrganizer(userId: AuthenticatedUserId, groupId: string): Promise<void>;
   requireIsGroupMember(
@@ -15,21 +18,17 @@ export interface IAuthorization {
   ): Promise<void>;
 }
 
-declare const authenticatedUser: unique symbol;
-
-export type AuthenticatedUserId = string & {
-  readonly [authenticatedUser]: true;
-};
-
 export class Authorization implements IAuthorization {
   constructor(private readonly auth: IRoleBasedAccessHandler) {}
 
-  requireAuthenticated(userId: string | undefined | null): AuthenticatedUserId {
+  requireAuthenticated(
+    userId: AuthenticatedUserId | undefined | null,
+  ): AuthenticatedUserId {
     if (!userId) {
       throw new TRPCResolverError(401, "Authentication required");
     }
 
-    return userId as AuthenticatedUserId;
+    return userId;
   }
 
   requireToken(token: string | undefined | null) {

@@ -19,6 +19,7 @@ import {
 import { GroupSchemaType } from "@/src/schemas//groups/groupSchema";
 import { IDBClient } from "../../../db/access/client/dbClient";
 import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export type EventHydrationDb = Pick<
   IDBClient,
@@ -51,12 +52,12 @@ export interface IEventQueryHandler {
 
 export interface IEventLifecycleHandler {
   updateEventStatus(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }>;
   createEvent(
     newEvent: NewEventInputSchemaType,
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   >;
@@ -78,21 +79,14 @@ export interface IEventLayoutComposer {
 export interface IEventTimelineHandler {
   getPastEventsForGroup(group_id: string): Promise<PastEventsResults>;
   getAttendantsOfPastEvents(ids: string[]): Promise<PastEventAttendanceLookup>;
-  getArchivedGroupEvents(
-    user_id: string | null | undefined,
-    group_id: string,
-  ): Promise<{
-    archives: EventSchemaType[];
-    archivedAttendanceRecords: PastEventAttendanceLookup;
-  }>;
   getNextEventMap(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<UpComingEventsLookup>;
 }
 
 export interface IEventHydrationHandler {
   event(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
   ): Promise<HydratedEventSchemaType>;
 }

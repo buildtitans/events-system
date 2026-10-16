@@ -137,6 +137,7 @@ function createMockEventsRepo() {
 function createMockGroupsRepo() {
   return {
     select: {
+      archives: jest.fn(),
       all: jest.fn(),
       byId: jest.fn(),
       byIds: jest.fn(),
@@ -160,6 +161,7 @@ function createMockGroupMembersRepo() {
       role: jest.fn(),
       organizer: jest.fn(),
       memberCounts: jest.fn(),
+      memberCount: jest.fn(),
     },
     write: {
       addOrganizer: jest.fn(),

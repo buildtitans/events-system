@@ -1,9 +1,11 @@
-import type { NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
+import { USER_ID } from "../mockers/mockValues";
+import type { ArchivedEventSchemaType, NewGroupInputSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupService } from "@/src/server/core/service/services/groupService";
 import {
   policyMock,
   createMockDb,
   makeGroup,
+  makeEvent,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -67,7 +69,7 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
     });
 
     await expect(
-      service.groupLifecycle.createNewGroup("user-1", newGroup),
+      service.groupLifecycle.createNewGroup(USER_ID, newGroup),
     ).resolves.toEqual({ ok: true, data: group });
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalled();
@@ -76,6 +78,70 @@ describe("GroupService.groupLifecycle.createNewGroup", () => {
       user_id: "user-1",
       group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
     });
+  });
+});
+
+describe("GroupService.query.archives", () => {
+  const groupId = "group-1";
+  let service: GroupService;
+  let getArchives: jest.MockedFunction<
+    ReturnType<typeof createMockDb>["groups"]["select"]["archives"]
+  >;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    const db = createMockDb();
+    getArchives = jest.mocked(db.groups.select.archives);
+    service = new GroupService(db, policyMock);
+    authenticateAs();
+  });
+
+  it("rejects an unauthenticated user without reading archives", async () => {
+    unauthenticated();
+
+    await expect(service.query.archives(undefined, groupId)).rejects.toThrow("401");
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
+    expect(policyMock.requireOrganizer).not.toHaveBeenCalled();
+    expect(getArchives).not.toHaveBeenCalled();
+  });
+
+  it("rejects a non-organizer without reading archives", async () => {
+    jest.mocked(policyMock.requireOrganizer).mockRejectedValue(new Error("403"));
+
+    await expect(service.query.archives(USER_ID, groupId)).rejects.toThrow("403");
+
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(USER_ID, groupId);
+    expect(getArchives).not.toHaveBeenCalled();
+  });
+
+  it("returns archived events with embedded attendance for the organizer", async () => {
+    const archives: ArchivedEventSchemaType[] = [{
+      event: makeEvent({ group_id: groupId, status: "cancelled" }),
+      attendance: { going: 2, interested: 1 },
+    }];
+    getArchives.mockResolvedValue(archives);
+
+    await expect(service.query.archives(USER_ID, groupId)).resolves.toEqual(archives);
+
+    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(USER_ID, groupId);
+    expect(getArchives).toHaveBeenCalledWith(groupId);
+  });
+
+  it("returns an empty array when the group has no archives", async () => {
+    getArchives.mockResolvedValue([]);
+
+    await expect(service.query.archives(USER_ID, groupId)).resolves.toEqual([]);
+
+    expect(policyMock.requireOrganizer).toHaveBeenCalledWith(USER_ID, groupId);
+    expect(getArchives).toHaveBeenCalledWith(groupId);
+  });
+
+  it("propagates a database failure instead of returning empty archives", async () => {
+    getArchives.mockRejectedValue(new Error("Database unavailable"));
+
+    await expect(service.query.archives(USER_ID, groupId)).rejects.toThrow("Database unavailable");
   });
 });
 

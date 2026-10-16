@@ -1,13 +1,11 @@
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-import {
-  AuthenticatedUserId,
-  IAuthorization,
-} from "../auth/authorization";
+import { IAuthorization } from "../auth/authorization";
 import {
   INotificationService,
   NotificationServiceDB,
   NewNotification,
 } from "./types";
+import { AuthenticatedUserId } from "../handlers/session/SessionHandler";
 
 export class NotificationService implements INotificationService {
   constructor(
@@ -15,7 +13,7 @@ export class NotificationService implements INotificationService {
     private readonly policy: IAuthorization,
   ) {}
 
-  async getNotifications(user_id: string | null | undefined): Promise<{
+  async getNotifications(user_id: AuthenticatedUserId | undefined | null): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }> {
@@ -24,7 +22,7 @@ export class NotificationService implements INotificationService {
   }
 
   async getNewNotifications(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<NotificationSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
     return this.db.notifications.select.getUnseenNotifications(userId);
@@ -32,7 +30,7 @@ export class NotificationService implements INotificationService {
 
   async createNotification(
     notification: NewNotification,
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<NotificationSchemaType | undefined> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, notification.group_id);
@@ -40,7 +38,7 @@ export class NotificationService implements INotificationService {
   }
 
   async markSeen(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     ids: NotificationSchemaType["id"][],
   ): Promise<{ ok: true; numUpdated: number } | { ok: false; error: string }> {
     const userId = this.policy.requireAuthenticated(user_id);

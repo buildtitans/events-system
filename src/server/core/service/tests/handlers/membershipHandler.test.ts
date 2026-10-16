@@ -1,3 +1,4 @@
+import { USER_ID } from "../mockers/mockValues";
 import { MembershipHandler } from "@/src/server/core/service/handlers/groups/membershipHandler";
 import {
   authenticateAs,
@@ -9,14 +10,14 @@ import {
 
 describe("MembershipHandler", () => {
   const groupId = "group-1";
-  const userId = "user-1";
+  const userId = USER_ID;
 
   let handler: MembershipHandler;
   let db: ReturnType<typeof createMockDb>;
   let addNewMemberInDb: jest.Mock;
   let removeMemberInDb: jest.Mock;
   let getMembershipRoleInDb: jest.Mock;
-  let getGroupMembersInDb: jest.Mock;
+  let getMemberCountInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -24,7 +25,7 @@ describe("MembershipHandler", () => {
     addNewMemberInDb = db.groupMembers.write.newMember as jest.Mock;
     removeMemberInDb = db.groupMembers.write.removeMember as jest.Mock;
     getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
-    getGroupMembersInDb = db.groupMembers.select.allMembers as jest.Mock;
+    getMemberCountInDb = db.groupMembers.select.memberCount as jest.Mock;
     handler = new MembershipHandler(db, policyMock);
   });
 
@@ -152,8 +153,8 @@ describe("MembershipHandler", () => {
       expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
     });
 
-    it("returns anonymous when the membership role is missing", async () => {
-      getMembershipRoleInDb.mockResolvedValue(null);
+    it("returns anonymous when the selector reports no membership", async () => {
+      getMembershipRoleInDb.mockResolvedValue("anonymous");
 
       await expect(handler.getRoleInGroup(userId, groupId)).resolves.toBe(
         "anonymous",
@@ -165,15 +166,11 @@ describe("MembershipHandler", () => {
 
   describe("getGroupHeadCount", () => {
     it("returns the number of members in the group", async () => {
-      getGroupMembersInDb.mockResolvedValue([
-        makeMembership({ user_id: "user-1", group_id: groupId }),
-        makeMembership({ user_id: "user-2", group_id: groupId }),
-        makeMembership({ user_id: "user-3", group_id: groupId }),
-      ]);
+      getMemberCountInDb.mockResolvedValue(3);
 
       await expect(handler.getGroupHeadCount(groupId)).resolves.toBe(3);
 
-      expect(getGroupMembersInDb).toHaveBeenCalledWith(groupId);
+      expect(getMemberCountInDb).toHaveBeenCalledWith(groupId);
     });
   });
 });

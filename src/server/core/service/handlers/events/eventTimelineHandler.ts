@@ -4,12 +4,10 @@ import {
   PastEventsResults,
   PastEventAttendanceLookup,
 } from "@/src/server/core/service/types";
-import type {
-  AuthenticatedUserId,
-  IAuthorization,
-} from "@/src/server/core/service/auth/authorization";
+import type { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import type { EventTimelineDb, IEventTimelineHandler } from "./types";
 import { EventTimelineMapper } from "./eventTimelineMapper";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export class EventTimelineHandler implements IEventTimelineHandler {
   private readonly mapper: EventTimelineMapper;
@@ -24,19 +22,8 @@ export class EventTimelineHandler implements IEventTimelineHandler {
     return await this.pastEventsForGroup(group_id);
   }
 
-  async getArchivedGroupEvents(
-    user_id: string | null | undefined,
-    group_id: string,
-  ): Promise<{
-    archives: EventSchemaType[];
-    archivedAttendanceRecords: PastEventAttendanceLookup;
-  }> {
-    const userId = this.policy.requireAuthenticated(user_id);
-    return await this.archivedEvents(userId, group_id);
-  }
-
   async getNextEventMap(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<UpComingEventsLookup> {
     const actor = this.policy.requireAuthenticated(user_id);
     return await this.getNextEventsForMemberships(actor);
@@ -49,34 +36,6 @@ export class EventTimelineHandler implements IEventTimelineHandler {
 
     const attendees = await this.db.eventAttendants.select.pastRecords(ids);
     return this.mapper.mapPastEventHeadCounts(ids, attendees);
-  }
-
-  private async archivedEvents(
-    userId: AuthenticatedUserId,
-    group_id: string,
-  ): Promise<{
-    archives: EventSchemaType[];
-    archivedAttendanceRecords: PastEventAttendanceLookup;
-  }> {
-    await this.policy.requireOrganizer(userId, group_id);
-
-    let archives: EventSchemaType[];
-    let archivedAttendanceRecords: PastEventAttendanceLookup;
-    archives = await this.db.events.select.cancelledByGroupId(group_id);
-    const ids = archives.map((ev) => ev.id);
-
-    if (ids.length === 0) {
-      archives = [];
-      archivedAttendanceRecords = {};
-      return { archives, archivedAttendanceRecords };
-    }
-
-    archivedAttendanceRecords = await this.getAttendantsOfPastEvents(ids);
-
-    return {
-      archives,
-      archivedAttendanceRecords,
-    };
   }
 
   private async pastEventsForGroup(

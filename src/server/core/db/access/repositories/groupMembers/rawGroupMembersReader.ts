@@ -9,6 +9,19 @@ export class RawGroupMembersReader {
     return await this.db.selectFrom("group_members").selectAll().execute();
   }
 
+  async rawMemberCount(group_id: GroupMemberSchemaType["group_id"]) {
+    return await this.db
+      .selectFrom("group_members")
+      .where("group_id", "=", group_id)
+      .select((eb) => [
+        eb.fn
+          .countAll()
+          .filterWhere("role", "in", ["member", "organizer"])
+          .as("member_count"),
+      ])
+      .executeTakeFirstOrThrow();
+  }
+
   async rawByUserId(
     user_id: GroupMemberSchemaType["user_id"],
   ): Promise<Selectable<GroupMembers>[]> {

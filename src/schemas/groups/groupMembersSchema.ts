@@ -19,6 +19,10 @@ const GroupMemberSchema = Type.Object({
   joined_at: Type.String(),
 });
 
+export const NumberOfMembersSchema = Type.Number();
+
+export type NumberOfMembersSchemaType = Static<typeof NumberOfMembersSchema>;
+
 const GroupMemberIdSchema = Type.String();
 
 export const GroupMemberIdsSchema = Type.Array(GroupMemberIdSchema);

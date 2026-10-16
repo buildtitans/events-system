@@ -1,3 +1,4 @@
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
@@ -15,16 +16,16 @@ export interface ICensusHandler {
 
 export interface IRsvpHandler {
   updateRsvpStatus(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
     newStatus: EventAttendantsSchemaType["status"],
   ): Promise<EventAttendantsSchemaType>;
   getUserRsvpToEvent(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]>;
-  getRsvpdEvents(user_id: string | null | undefined): Promise<RsvpSchemaType[]>;
+  getRsvpdEvents(user_id: AuthenticatedUserId | undefined | null): Promise<RsvpSchemaType[]>;
   getAttendanceDictionary(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<AttendanceDictionaryType>;
 }

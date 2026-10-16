@@ -8,6 +8,8 @@ import {
   GroupMembersArraySchemaType,
   GroupMemberSchemaType,
   MemberCountSchemaType,
+  NumberOfMembersSchema,
+  NumberOfMembersSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupMembers } from "../../../types/db";
 import dayjs from "dayjs";
@@ -26,6 +28,10 @@ export class GroupMembersValidator {
       role: raw.role,
       user_id: raw.user_id,
     });
+  }
+
+  numberOfMembers(raw: unknown): NumberOfMembersSchemaType {
+    return validateOrThrow(NumberOfMembersSchema, raw);
   }
 
   members(raw: Selectable<GroupMembers>[]): GroupMembersArraySchemaType {

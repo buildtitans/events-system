@@ -19,6 +19,6 @@ export class GroupService implements IGroupService {
   ) {
     this.groupLifecycle = new GroupLifecycleHandler(this.db, this.policy);
     this.memberships = new MembershipHandler(this.db, this.policy);
-    this.query = new GroupQueryHandler(this.db);
+    this.query = new GroupQueryHandler(this.db, this.policy);
   }
 }

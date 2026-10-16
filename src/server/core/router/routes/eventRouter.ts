@@ -49,15 +49,6 @@ const selectEventsRouter = router({
       return await ctx.api.services.domains.events.query.getEventById(input);
     }),
 
-  archives: protectedProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.timeline.getArchivedGroupEvents(
-        ctx.req.user?.id,
-        input,
-      );
-    }),
-
   history: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {

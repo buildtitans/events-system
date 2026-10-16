@@ -1,11 +1,12 @@
 import "fastify";
+import { AuthenticatedUserId } from "../service/handlers/session/SessionHandler";
 
-type AuthenticatedUser = {
-  id: string;
-} | null;
+export type AuthenticatedUser = {
+  id: AuthenticatedUserId;
+};
 
 declare module "fastify" {
   interface FastifyRequest {
-    user: AuthenticatedUser;
+    user?: AuthenticatedUser;
   }
 }

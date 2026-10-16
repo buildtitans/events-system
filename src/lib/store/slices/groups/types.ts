@@ -1,6 +1,9 @@
 import { AsyncState } from "@/src/lib/types/state/types";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  ArchivedEventSchemaType,
+  GroupSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
@@ -12,7 +15,7 @@ export type LandingGroupsDisplayedState = AsyncState<
 >;
 
 export type GroupArchivesState = AsyncState<
-  EventSchemaType[],
+  ArchivedEventSchemaType[],
   "This group has no archived events"
 >;
 

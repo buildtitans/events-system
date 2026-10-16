@@ -72,7 +72,7 @@ const statusRouter = router({
     }
 
     const email = await ctx.api.services.domains.users.getEmailById(
-      session.user_id,
+      ctx.req.user?.id,
     );
 
     return {

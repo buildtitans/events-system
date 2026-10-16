@@ -3,12 +3,12 @@ import {
   EventAttendantStatusSchema,
   type EventAttendantsSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
-import { RsvpSchemaArray, type RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
-import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
 import {
-  AuthenticatedUserId,
-  IAuthorization,
-} from "@/src/server/core/service/auth/authorization";
+  RsvpSchemaArray,
+  type RsvpSchemaType,
+} from "@/src/schemas/events/rsvpSchema";
+import type { ParticipationsServiceDb } from "@/src/server/core/service/services/types";
+import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { ParticipationDtoHandler } from "./participationDtoHandler";
 import { buildGroupNameLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 import {
@@ -19,6 +19,7 @@ import {
   type AttendanceDictionaryType,
   mapAttendanceDictionary,
 } from "@/src/server/core/lib/utils/mapAttendanceDictionary";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export class RsvpHandler {
   constructor(
@@ -28,7 +29,7 @@ export class RsvpHandler {
   ) {}
 
   public async updateRsvpStatus(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
     newStatus: EventAttendantsSchemaType["status"],
   ): Promise<EventAttendantsSchemaType> {
@@ -41,7 +42,7 @@ export class RsvpHandler {
   }
 
   public async getUserRsvpToEvent(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
     const userId = this.policy.requireAuthenticated(user_id);
@@ -51,14 +52,14 @@ export class RsvpHandler {
   }
 
   public async getRsvpdEvents(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<RsvpSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
     return await this.rsvpdEvents(userId);
   }
 
   async getAttendanceDictionary(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<AttendanceDictionaryType> {
     const userId = this.policy.requireAuthenticated(user_id);
     return await this.attendanceDictionary(userId);

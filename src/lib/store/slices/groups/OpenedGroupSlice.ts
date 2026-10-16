@@ -22,6 +22,7 @@ import {
   scheduleNewEvent,
 } from "./thunks";
 import { PastEventAttendanceLookup } from "@/src/server/core/service/types";
+import { ArchivedEventSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type InitialState = {
   group: GroupHydrated;
@@ -143,15 +144,11 @@ const OpenedGroupSlice = createSlice({
       refreshArchivedEvents.fulfilled,
       (
         state: InitialState,
-        action: PayloadAction<{
-          archives: EventSchemaType[];
-          archivedAttendanceRecords: PastEventAttendanceLookup;
-        }>,
+        action: PayloadAction<ArchivedEventSchemaType[]>,
       ) => {
         const payload = action.payload;
-        if (payload.archives.length > 0) {
-          state.archives = { status: "ready", data: payload.archives };
-          state.archivesAttendance = payload.archivedAttendanceRecords;
+        if (payload.length > 0) {
+          state.archives = { status: "ready", data: payload };
         } else {
           state.archives = {
             status: "n/a",
