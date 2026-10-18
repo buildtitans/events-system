@@ -1,11 +1,15 @@
 "use client";
 import type { EventCardProps } from "../cards/eventHeroCard";
-import type { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type {
+  EventSchemaType,
+  EventSurfaceSchemaType,
+} from "@/src/schemas/events/eventSchema";
 import { lazy, Suspense, type ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import EventStackCardSkeleton from "@/src/client/components/ui/box/cards/skeletons/eventStackCardSkeleton";
+import { assertNever } from "@/src/lib/utils/assert/assertNever";
+import GroupEventStackCard from "../cards/groupEventStackCard";
 const EventStackCard = lazy(
   () => import("@/src/client/components/ui/box/cards/eventStackCard"),
 );
@@ -14,8 +18,7 @@ type EventStackSlotProps = {
   handleBlur: EventCardProps["handleBlur"];
   handleFocus: EventCardProps["handleFocus"];
   focusedCardIndex: EventCardProps["focusedCardIndex"];
-  events: EventCardProps["event"][];
-  groupNameLookup: NameSlugDescriptionLookup;
+  stack: EventSurfaceSchemaType[];
   handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
 };
 
@@ -23,8 +26,7 @@ function EventStackSlot({
   handleBlur,
   handleFocus,
   focusedCardIndex,
-  events,
-  groupNameLookup,
+  stack,
   handleOpenEvent,
 }: EventStackSlotProps): ReactNode {
   return (
@@ -37,19 +39,42 @@ function EventStackSlot({
           height: "100%",
         }}
       >
-        {" "}
-        {events.map((event) => (
-          <Suspense key={event.id} fallback={<EventStackCardSkeleton />}>
-            <EventStackCard
-              groupName={groupNameLookup[event.group_id].name}
-              handleBlur={handleBlur}
-              handleFocus={handleFocus}
-              focusedCardIndex={focusedCardIndex}
-              event={event}
-              handleOpenEvent={handleOpenEvent}
-            />
-          </Suspense>
-        ))}
+        {stack.map((slot) => {
+          switch (slot.for) {
+            case "discovery": {
+              return (
+                <Suspense fallback={<EventStackCardSkeleton />}>
+                  <EventStackCard
+                    key={slot.content.event.id}
+                    handleBlur={handleBlur}
+                    handleFocus={handleFocus}
+                    focusedCardIndex={focusedCardIndex}
+                    event={slot.content.event}
+                    meta={slot.content.meta}
+                    handleOpenEvent={handleOpenEvent}
+                  />
+                </Suspense>
+              );
+            }
+            case "withinGroup": {
+              return (
+                <GroupEventStackCard
+                  key={slot.content.event.id}
+                  event={slot.content.event}
+                  meta={slot.content.meta}
+                  focusedCardIndex={focusedCardIndex}
+                  handleOpenEvent={handleOpenEvent}
+                  handleBlur={handleBlur}
+                  handleFocus={handleFocus}
+                />
+              );
+            }
+
+            default: {
+              return assertNever(slot);
+            }
+          }
+        })}
       </Box>
     </Grid>
   );

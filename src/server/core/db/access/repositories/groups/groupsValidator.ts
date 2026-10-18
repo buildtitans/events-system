@@ -2,6 +2,8 @@ import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
   ArchivedEventSchemaType,
   GroupArchivesSchema,
+  GroupHydratedSchema,
+  GroupHydratedSchemaType,
   GroupSchema,
   GroupsSchema,
   type GroupSchemaType,
@@ -14,6 +16,10 @@ import type { RawArchives } from "./rawGroupsReader";
 
 export class GroupsValidator {
   constructor(private readonly eventsValidator: EventsValidator) {}
+
+  hydrated(data: unknown): GroupHydratedSchemaType {
+    return validateOrThrow(GroupHydratedSchema, data);
+  }
 
   groups(groups: Selectable<Groups>[]): GroupsSchemaType {
     const formatted = [];

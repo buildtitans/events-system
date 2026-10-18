@@ -2,9 +2,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import type { JSX } from "react";
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import AlternateEmailRoundedIcon from "@mui/icons-material/AlternateEmailRounded";
@@ -23,14 +21,14 @@ import {
 } from "@/src/client/styles/sx/openedGroupHero";
 
 type GroupDescriptionProps = {
-  group: GroupSchemaType;
+  hydrated: GroupHydratedSchemaType;
 };
 
 export default function GroupDescription({
-  group,
+  hydrated,
 }: GroupDescriptionProps): JSX.Element {
-  const memberCount = useSelector((s: RootState) => s.openGroup.numMembers);
-  const organizerEmail = useSelector((s: RootState) => s.openGroup.organizerEmail);
+  const { group, meta } = hydrated;
+  const memberCount = meta.member_count;
   const normalizedDescription =
     group.description?.trim() || "This community is still building out its story.";
   const locationValue =
@@ -38,7 +36,7 @@ export default function GroupDescription({
       ? "Hosts events online"
       : group.location?.trim() || "Location coming soon";
   const memberValue = `${memberCount} ${memberCount === 1 ? "member" : "members"}`;
-  const organizerValue = organizerEmail || "Organizer details coming soon";
+  const organizerValue = meta.organizer_email;
 
   return (
     <Box sx={openedGroupHeroDescriptionGridSx}>

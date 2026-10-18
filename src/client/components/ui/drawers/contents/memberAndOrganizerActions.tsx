@@ -3,25 +3,11 @@ import React, { useState } from "react";
 import { Stack } from "@mui/material";
 import { openedEventHeroSx } from "@/src/client/styles/sx/openedEventDrawer";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import {
-  GroupSlug,
-  NameOfGroup,
-  NumberOfAttendantsType,
-} from "@/src/lib/store/slices/events/EventDrawerSlice";
 import OpenedEventHead from "../../stack/openedEvent/contents/openedEventHead";
 import { RenderOpenEventFormSection } from "@/src/client/components/pipelines/drawers/interfaces/renderOpenedEventSection";
 import { ActionButtons } from "../actions/actionButtons";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
-
-type MemberAndOrganizerActionsProps = {
-  role: GroupMemberSchemaType["role"];
-  event: EventSchemaType;
-  numAttendants: NumberOfAttendantsType;
-  numInterested: NumberOfAttendantsType;
-  name: NameOfGroup;
-  slug: GroupSlug;
-};
+import { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
 
 export type EventDrawerFormState =
   | "details"
@@ -59,44 +45,27 @@ export function createActions(
 }
 
 export default function MemberAndOrganizerActions({
-  role,
-  event,
-  numAttendants,
-  name,
-  slug,
-  numInterested,
-}: MemberAndOrganizerActionsProps) {
+  hydrated,
+}: {
+  hydrated: HydratedEventSchemaType;
+}) {
   const [openSection, setOpenSection] =
     useState<EventDrawerFormState>("details");
-  const isCurrent = isFutureOrNow(new Date(event.starts_at));
-  const actions = createActions(role, isCurrent);
+  const isCurrent = isFutureOrNow(new Date(hydrated.event.starts_at));
+  const actions = createActions(hydrated.meta.user.role, isCurrent);
 
   return (
     <React.Fragment>
       <Stack sx={openedEventHeroSx} spacing={1.35}>
-        <OpenedEventHead
-          event={event}
-          numAttendants={numAttendants}
-          numInterested={numInterested}
-          name={name}
-          slug={slug}
-        />
+        <OpenedEventHead hydrated={hydrated} />
         <ActionButtons
           actions={actions}
           currentAction={openSection}
           setOpenAction={setOpenSection}
-          eventStatus={event.status}
+          eventStatus={hydrated.event.status}
         />
       </Stack>
-      <RenderOpenEventFormSection
-        role={role}
-        event={event}
-        numAttendants={numAttendants}
-        numInterested={numInterested}
-        name={name}
-        slug={slug}
-        state={openSection}
-      />
+      <RenderOpenEventFormSection hydrated={hydrated} state={openSection} />
     </React.Fragment>
   );
 }

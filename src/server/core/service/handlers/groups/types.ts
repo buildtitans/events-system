@@ -6,6 +6,7 @@ import type {
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type {
   ArchivedEventSchemaType,
+  GroupHydratedSchemaType,
   GroupSchemaType,
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
@@ -38,6 +39,9 @@ export interface IMembershipHandler {
 }
 
 export interface IGroupQueryHandler {
+  hydrateGroup(
+    group_id: GroupSchemaType["id"],
+  ): Promise<GroupHydratedSchemaType>;
   archives(
     user_id: AuthenticatedUserId | undefined | null,
     id: GroupSchemaType["id"],
@@ -47,7 +51,7 @@ export interface IGroupQueryHandler {
     id: CategorySchemaType["id"],
   ): Promise<CategorySchemaType | undefined>;
   getGroupNameDictionary(): Promise<NameSlugDescriptionLookup>;
-  getAllGroups(): Promise<GroupSchemaType[]>;
+  discovery(): Promise<GroupSchemaType[]>;
   searchGroups(query: string): Promise<GroupSchemaType[]>;
   suggestGroups(query: string): Promise<GroupSchemaType[]>;
   getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]>;

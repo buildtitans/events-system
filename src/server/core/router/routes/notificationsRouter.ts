@@ -5,11 +5,6 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectNotificationRouter = router({
-  new: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.notifications.getNewNotifications(
-      ctx.req.user?.id,
-    );
-  }),
   newAndViewed: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.api.services.domains.notifications.getNotifications(
       ctx.req.user?.id,

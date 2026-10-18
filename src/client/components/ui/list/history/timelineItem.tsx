@@ -2,14 +2,13 @@ import ListItem from "@mui/material/ListItem";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
 import type { JSX } from "react";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import { limitDescription } from "@/src/lib/utils/rendering/limitDescription";
 import Typography from "@mui/material/Typography";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
@@ -20,7 +19,6 @@ import {
   groupHistoryActionsWrapSx,
   groupHistoryAttendanceLabelSx,
   groupHistoryAttendanceTextSx,
-  groupHistoryDescriptionSx,
   groupHistoryItemLayoutSx,
   groupHistoryListItemSx,
   groupHistoryMetaRowSx,
@@ -31,7 +29,7 @@ import {
 } from "@/src/client/styles/sx/groupHistoryListItem";
 
 type TimelineItemProps = {
-  historyLog: EventSchemaType;
+  historyLog: GroupEventSummarySchemaType;
   rsvpStatus: EventAttendantsSchemaType["status"];
   isMobile: boolean;
   attendanceRecord: string;
@@ -39,12 +37,10 @@ type TimelineItemProps = {
 
 export default function TimelineItem({
   historyLog,
-  isMobile,
   attendanceRecord,
 }: TimelineItemProps): JSX.Element {
-  const date = new Date(historyLog.starts_at);
+  const date = new Date(historyLog.starts_at_ms);
   const current = isFutureOrNow(date);
-  const description = limitDescription(historyLog.description, 80);
   const statusState = current ? "upcoming" : "past";
   const statusLabel = current ? "Upcoming" : "Past";
 
@@ -74,15 +70,11 @@ export default function TimelineItem({
             />
           </Box>
 
-          <Typography sx={groupHistoryDescriptionSx}>
-            {isMobile ? description : historyLog.description}
-          </Typography>
-
           <Stack direction="row" sx={groupHistoryMetaRowSx}>
             <Box sx={getGroupHistoryMetaChipSx(true)}>
               <EventRoundedIcon sx={getGroupHistoryMetaIconSx(true)} />
               <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                {toMonthDayYearHour(historyLog.starts_at)}
+                {toMonthDayYearHour(historyLog.starts_at_ms)}
               </Typography>
             </Box>
 

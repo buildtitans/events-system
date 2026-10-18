@@ -16,6 +16,10 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import type { Selectable } from "kysely";
 import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
+import {
+  UserMembershipsSchema,
+  UserMembershipSurfaceSchemaType,
+} from "../../../../../../schemas/groups/userMembershipSchema";
 dayjs.extend(utc);
 
 export class GroupMembersValidator {
@@ -28,6 +32,10 @@ export class GroupMembersValidator {
       role: raw.role,
       user_id: raw.user_id,
     });
+  }
+
+  memberships(memberships: unknown[]): UserMembershipSurfaceSchemaType[] {
+    return validateOrThrow(UserMembershipsSchema, memberships);
   }
 
   numberOfMembers(raw: unknown): NumberOfMembersSchemaType {

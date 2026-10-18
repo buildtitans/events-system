@@ -1,8 +1,9 @@
+import { UserMembershipSurfaceSchemaType } from "../../../../../../schemas/groups/userMembershipSchema";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 import { GroupMembersValidator } from "./groupMembersValidator";
 import { RawGroupMembersReader } from "./rawGroupMembersReader";
 import {
   GroupMemberSchemaType,
-  MemberCountSchemaType,
   NumberOfMembersSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
 
@@ -24,9 +25,9 @@ export interface IGroupMembersSelector {
   organizer(
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType>;
-  memberCounts(
-    groupIds: GroupMemberSchemaType["group_id"][],
-  ): Promise<MemberCountSchemaType>;
+  memberships(
+    user_id: AuthenticatedUserId,
+  ): Promise<UserMembershipSurfaceSchemaType[]>;
   memberCount(
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<NumberOfMembersSchemaType>;
@@ -37,6 +38,13 @@ export class GroupMembersSelector implements IGroupMembersSelector {
     private readonly read: RawGroupMembersReader,
     private readonly validator: GroupMembersValidator,
   ) {}
+
+  async memberships(
+    user_id: AuthenticatedUserId,
+  ): Promise<UserMembershipSurfaceSchemaType[]> {
+    const raw = await this.read.byUserId(user_id);
+    return this.validator.memberships(raw);
+  }
 
   async all(): Promise<GroupMemberSchemaType[]> {
     const raw = await this.read.allRawMembers();
@@ -93,18 +101,4 @@ export class GroupMembersSelector implements IGroupMembersSelector {
     return this.validator.member(raw);
   }
 
-  async memberCounts(
-    groupIds: GroupMemberSchemaType["group_id"][],
-  ): Promise<MemberCountSchemaType> {
-    if (groupIds.length === 0) return {};
-    const rows = await this.read.rawMemberCounts(groupIds);
-
-    const counts: Record<string, number> = {};
-
-    for (const row of rows) {
-      counts[row.group_id] = Number(row.member_count);
-    }
-
-    return this.validator.memberCount(counts);
-  }
 }

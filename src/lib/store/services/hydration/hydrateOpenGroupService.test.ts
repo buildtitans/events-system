@@ -1,114 +1,57 @@
-import { HydrateOpenGroupService } from "@/src/lib/store/services/hydration/hydrateOpenGroupService";
+import { HydrateOpenGroupService } from "./hydrateOpenGroupService";
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
+import { makeHydratedGroup, makeNextEvent } from "./groupHydration.fixtures";
+
+function setup(hydrated = makeHydratedGroup()) {
+  const groupQuery = jest.fn().mockResolvedValue(hydrated);
+  const roleQuery = jest.fn().mockResolvedValue("member");
+  const layoutQuery = jest.fn().mockResolvedValue([]);
+  const calendarQuery = jest.fn().mockResolvedValue([]);
+  const client = {
+    groups: { read: {
+      hydrate: { group: { query: groupQuery } },
+      events: { list: { query: calendarQuery } },
+    } },
+    layouts: { events: { forGroup: { query: layoutQuery } } },
+    groupMembers: { select: { role: { query: roleQuery } } },
+  } as unknown as TrpcClientType;
+  return { service: new HydrateOpenGroupService(client), groupQuery, roleQuery, layoutQuery, calendarQuery };
+}
 
 describe("HydrateOpenGroupService", () => {
-  const group = {
-    id: "group-1",
-    slug: "group-one",
-    category_id: "category-1",
-  };
-  const calandar = [{ id: "event-1" }];
-  const nextEvent = { id: "event-2" };
-  const category = {
-    id: "category-1",
-    name: "Technology",
-    slug: "technology",
-    icon: "computer",
-  };
-  const members = [{ user_id: "user-1" }, { user_id: "user-2" }];
-  const nextEventQuery = jest.fn().mockResolvedValue(nextEvent);
-  const categoryByIdQuery = jest.fn().mockResolvedValue(category);
-  const client = {
-    groups: {
-      select: {
-        bySlug: { query: jest.fn().mockResolvedValue(group) },
-        categoryById: { query: categoryByIdQuery },
-      },
-    },
-    groupMembers: {
-      select: {
-        role: { query: jest.fn().mockResolvedValue("member") },
-        forGroup: { query: jest.fn().mockResolvedValue(members) },
-        organizerEmail: {
-          query: jest
-            .fn()
-            .mockResolvedValue({ email: "organizer@example.com" }),
-        },
-      },
-    },
-    events: {
-      layout: { forGroup: { query: jest.fn().mockResolvedValue(null) } },
-      select: {
-        forGroup: { query: jest.fn().mockResolvedValue(calandar) },
-        nextEventForGroup: { query: nextEventQuery },
-      },
-    },
-  } as unknown as TrpcClientType;
-  const service = new HydrateOpenGroupService(client);
-  it("combines a group with its metadata", async () => {
-    await expect(service.hydrate("group-one")).resolves.toEqual({
-      ok: true,
-      data: {
-        group,
-        role: "member",
-        layout: [],
-        calandar,
-        numMembers: 2,
-        organizerEmail: "organizer@example.com",
-        nextEvent,
-        category,
-      },
+  it("combines hydrated metadata with role, layout, and calendar", async () => {
+    const hydrated = makeHydratedGroup({ next_event: makeNextEvent() });
+    const { service, groupQuery, roleQuery, layoutQuery, calendarQuery } = setup(hydrated);
+    const calendar = [makeNextEvent()];
+    calendarQuery.mockResolvedValue(calendar);
+    await expect(service.hydrate(hydrated.group.slug)).resolves.toEqual({
+      ok: true, data: { hydrated, role: "member", layout: [], calandar: calendar },
     });
-    expect(client.groupMembers.select.role.query).toHaveBeenCalledWith(
-      "group-1",
-    );
-    expect(nextEventQuery).toHaveBeenCalledWith("group-1");
-    expect(categoryByIdQuery).toHaveBeenCalledWith("category-1");
+    expect(groupQuery).toHaveBeenCalledWith(hydrated.group.slug);
+    for (const query of [roleQuery, layoutQuery, calendarQuery]) {
+      expect(query).toHaveBeenCalledWith(hydrated.group.id);
+    }
   });
 
-  it("preserves missing optional next-event and category metadata", async () => {
-    nextEventQuery.mockResolvedValueOnce(undefined);
-    categoryByIdQuery.mockResolvedValueOnce(undefined);
-
-    await expect(service.hydrate("group-one")).resolves.toEqual({
-      ok: true,
-      data: {
-        group,
-        role: "member",
-        layout: [],
-        calandar,
-        numMembers: 2,
-        organizerEmail: "organizer@example.com",
-        nextEvent: undefined,
-        category: undefined,
-      },
+  it("preserves a valid group without a next event", async () => {
+    const hydrated = makeHydratedGroup();
+    const { service } = setup(hydrated);
+    await expect(service.hydrate(hydrated.group.slug)).resolves.toMatchObject({
+      ok: true, data: { hydrated },
     });
   });
 
-  it("returns a failure payload when the group cannot be found", async () => {
-    const consoleError = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
-
-    const service = new HydrateOpenGroupService({
-      groups: {
-        select: {
-          bySlug: {
-            query: jest.fn().mockResolvedValue(null),
-          },
-        },
-      },
-    } as unknown as TrpcClientType);
-
+  it.each(["group", "calendar"])("returns failure when the %s request rejects", async (request) => {
+    const { service, groupQuery, calendarQuery, roleQuery } = setup();
+    const log = jest.spyOn(console, "error").mockImplementation(() => undefined);
+    (request === "group" ? groupQuery : calendarQuery).mockRejectedValue(new Error("unavailable"));
     try {
-      await expect(service.hydrate("missing")).resolves.toEqual({
-        ok: false,
-        error: "Failed to hydrate group selected",
+      await expect(service.hydrate("group-one")).resolves.toEqual({
+        ok: false, error: "Failed to hydrate group selected",
       });
-
-      expect(consoleError).toHaveBeenCalled();
+      if (request === "group") expect(roleQuery).not.toHaveBeenCalled();
     } finally {
-      consoleError.mockRestore();
+      log.mockRestore();
     }
   });
 });

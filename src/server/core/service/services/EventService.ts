@@ -25,7 +25,7 @@ export class EventService implements IEventService {
     private readonly policy: IAuthorization,
   ) {
     this.hydrate = new EventHydrationHandler(this.db);
-    this.timeline = new EventTimelineHandler(this.db, this.policy);
+    this.timeline = new EventTimelineHandler(this.db);
     this.layout = new EventLayoutHandler(this.db, new EventLayoutComposer());
     this.query = new EventQueryHandler(this.db);
     this.lifecycle = new EventLifecycleHandler(this.db, this.policy);

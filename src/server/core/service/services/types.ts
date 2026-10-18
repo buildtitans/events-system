@@ -1,7 +1,7 @@
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
@@ -30,7 +30,10 @@ export type ParticipationsServiceDb = Pick<
   "eventAttendants" | "groupMembers" | "groups" | "events"
 >;
 
-export type UserServiceDb = Pick<IDBClient, "groups" | "groupMembers" | "auth">;
+export type UserServiceDb = Pick<
+  IDBClient,
+  "groups" | "groupMembers" | "auth" | "eventAttendants"
+>;
 
 export type GroupServiceDb = IDBClient;
 
@@ -71,7 +74,7 @@ export interface IGroupService {
 
 export interface IParticipationsService {
   readonly census: ICensusHandler;
-  readonly rsvps: IRsvpHandler;
+  readonly attendance: IRsvpHandler;
 }
 
 export interface INotificationService {
@@ -79,9 +82,6 @@ export interface INotificationService {
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }>;
-  getNewNotifications(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<NotificationSchemaType[]>;
   createNotification(
     notification: NewNotification,
     user_id: AuthenticatedUserId | undefined | null,
@@ -108,6 +108,9 @@ export interface ISessionService {
 }
 
 export interface IUserService {
+  memberships(
+    user_id: AuthenticatedUserId | undefined | null,
+  ): Promise<UserMembershipSurfaceSchemaType[]>;
   createNewUser(
     emailInput: string,
     passwordInput: string,
@@ -118,7 +121,4 @@ export interface IUserService {
   getEmailById(
     user_id: AuthenticatedUserId | undefined | null,
   ): Promise<DbUserSchemaType["email"]>;
-  getMemberships(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<UserMembershipSchemaType[]>;
 }

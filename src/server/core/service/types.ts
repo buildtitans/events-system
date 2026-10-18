@@ -1,5 +1,8 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type {
+  EventSchemaType,
+  GroupEventSummarySchemaType,
+} from "@/src/schemas/events/eventSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import {
   EventAttendantsSchemaType,
@@ -35,16 +38,6 @@ export type GroupNameLookupMap = Record<
   { name: GroupSchemaType["name"]; slug: GroupSchemaType["slug"] }
 >;
 
-export type EventsByGroupId = Record<
-  EventSchemaType["group_id"],
-  EventSchemaType[]
->;
-
-export type UpComingEventsLookup = Record<
-  GroupSchemaType["id"],
-  EventSchemaType["starts_at"]
->;
-
 export type NewOrganizerInput = Pick<
   GroupMemberSchemaType,
   "user_id" | "group_id"
@@ -73,6 +66,6 @@ export type Permissions = Record<
 >;
 
 export type PastEventsResults = {
-  history: EventSchemaType[];
+  history: GroupEventSummarySchemaType[];
   pastEventsRecords: PastEventAttendanceLookup;
 };

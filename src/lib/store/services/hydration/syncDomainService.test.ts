@@ -2,19 +2,19 @@ import { SyncDomainsService } from "@/src/lib/store/services/hydration/syncDomai
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 
 const clientWith = (results: {
-  events: unknown;
-  groups: unknown;
-  categories: unknown;
-  names: unknown;
+  events: () => Promise<unknown>;
+  groups: () => Promise<unknown>;
+  categories: () => Promise<unknown>;
+  names: () => Promise<unknown>;
 }) =>
   ({
-    events: { layout: { allActive: { query: jest.fn(() => results.events) } } },
+    events: { layout: { allActive: { query: jest.fn(results.events) } } },
     groups: {
-      select: { all: { query: jest.fn(() => results.groups) } },
-      lookup: { groupNames: { query: jest.fn(() => results.names) } },
+      read: { select: { discovery: { query: jest.fn(results.groups) } } },
+      lookup: { groupNames: { query: jest.fn(results.names) } },
     },
     categories: {
-      getAllCategories: { query: jest.fn(() => results.categories) },
+      getAllCategories: { query: jest.fn(results.categories) },
     },
   }) as unknown as TrpcClientType;
 
@@ -28,10 +28,10 @@ describe("SyncDomainsService", () => {
     };
     const service = new SyncDomainsService(
       clientWith({
-        events: Promise.resolve(data.events),
-        groups: Promise.resolve(data.groups),
-        categories: Promise.resolve(data.categories),
-        names: Promise.resolve(data.groupNameDictionary),
+        events: () => Promise.resolve(data.events),
+        groups: () => Promise.resolve(data.groups),
+        categories: () => Promise.resolve(data.categories),
+        names: () => Promise.resolve(data.groupNameDictionary),
       }),
     );
 
@@ -42,10 +42,10 @@ describe("SyncDomainsService", () => {
     const groups = [{ id: "group-1" }];
     const service = new SyncDomainsService(
       clientWith({
-        events: Promise.reject(new Error("events")),
-        groups: Promise.resolve(groups),
-        categories: Promise.reject(new Error("categories")),
-        names: Promise.reject(new Error("names")),
+        events: () => Promise.reject(new Error("events")),
+        groups: () => Promise.resolve(groups),
+        categories: () => Promise.reject(new Error("categories")),
+        names: () => Promise.reject(new Error("names")),
       }),
     );
 
@@ -59,10 +59,10 @@ describe("SyncDomainsService", () => {
     const rejected = () => Promise.reject(new Error("offline"));
     const service = new SyncDomainsService(
       clientWith({
-        events: rejected(),
-        groups: rejected(),
-        categories: rejected(),
-        names: rejected(),
+        events: rejected,
+        groups: rejected,
+        categories: rejected,
+        names: rejected,
       }),
     );
 

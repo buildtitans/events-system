@@ -1,8 +1,16 @@
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
-import { SearchSchema, SearchSchemaType } from "@/src/schemas/search/searchSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { EventAttendantsSchemaType } from "@/src/schemas/events//eventAttendantsSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import {
+  SearchSchema,
+  SearchSchemaType,
+} from "@/src/schemas/search/searchSchema";
+import {
+  GroupEventSummarySchemaType,
+  EventSchemaType,
+} from "@/src/schemas/events/eventSchema";
+import {
+  GroupSchemaType,
+  NextEventForGroupSummarySchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import type { IEventQueryHandler, EventQueryDb } from "./types";
 
 export class EventQueryHandler implements IEventQueryHandler {
@@ -28,23 +36,15 @@ export class EventQueryHandler implements IEventQueryHandler {
     return await this.db.events.select.suggest(validatedQuery);
   }
 
-  async getEventById(event_id: string): Promise<EventSchemaType> {
-    return await this.db.events.select.byId(event_id);
-  }
-
   async nextEventForGroup(
     group_id: GroupSchemaType["id"],
-  ): Promise<EventSchemaType | undefined> {
+  ): Promise<NextEventForGroupSummarySchemaType | undefined> {
     return await this.db.events.select.nextEventByGroupId(group_id);
   }
 
-  async getEventAttendants(
-    event_id: string,
-  ): Promise<EventAttendantsSchemaType[]> {
-    return await this.db.eventAttendants.select.attendants(event_id);
-  }
-
-  async getGroupEvents(group_id: string): Promise<EventSchemaType[]> {
+  async getGroupEvents(
+    group_id: string,
+  ): Promise<GroupEventSummarySchemaType[]> {
     return await this.db.events.select.byGroupId(group_id);
   }
 }

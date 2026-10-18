@@ -2,14 +2,14 @@
 import { useMemo } from "react";
 import dayjs from "dayjs";
 import {
-  EventsArraySchemaType,
+  GroupEventSummarySchemaType,
   EventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 
 export type CalendarLookup = Map<string, Set<EventSchemaType["status"]>>;
 
 export function useHydrateCalendar(
-  events: EventsArraySchemaType,
+  events: GroupEventSummarySchemaType[],
 ): CalendarLookup {
   return useMemo(() => {
     const lookup: CalendarLookup = new Map();

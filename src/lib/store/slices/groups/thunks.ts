@@ -63,7 +63,7 @@ export const hydrateGroupHistory = createAsyncThunk(
 
     try {
       const { pastEventsRecords, history } =
-        await trpcClient.events.select.history.query(id);
+        await trpcClient.groups.read.events.history.query(id);
 
       if (history.length > 0) {
         const sorted = sortByDate(history);
@@ -95,10 +95,9 @@ export const refreshGroupEvents = createAsyncThunk(
   ) => {
     try {
       const refreshedEventsLayout =
-        await trpcClient.events.layout.forGroup.query(id);
-      const calandarEvents = await trpcClient.events.select.forGroup.query(id);
-      const nextEvent =
-        await trpcClient.events.select.nextEventForGroup.query(id);
+        await trpcClient.layouts.events.forGroup.query(id);
+      const calandarEvents = await trpcClient.groups.read.events.list.query(id);
+      const nextEvent = await trpcClient.groups.read.events.nextEvent.query(id);
       return {
         refreshedEventsLayout,
         calandarEvents,
@@ -120,7 +119,7 @@ export const refreshArchivedEvents = createAsyncThunk(
     thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
 
     try {
-      const result = await trpcClient.groups.select.archives.query(id);
+      const result = await trpcClient.groups.read.events.archives.query(id);
 
       return result;
     } catch (err) {

@@ -1,13 +1,14 @@
-import { CategorySchemaType } from "../../../../../../schemas/groups/categoriesSchema";
-import { IEventsValidator } from "../events/eventsValidator";
+import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { GroupsValidator } from "./groupsValidator";
-import { RawGroupsReader } from "./rawGroupsReader";
+import { IGroupsReader } from "./rawGroupsReader";
 import {
   ArchivedEventSchemaType,
+  GroupHydratedSchemaType,
   GroupSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 
 export interface IGroupsSelector {
+  hydrateGroup(id: GroupSchemaType["id"]): Promise<GroupHydratedSchemaType>;
   all(): Promise<GroupSchemaType[]>;
   byId(id: GroupSchemaType["id"]): Promise<GroupSchemaType>;
   byIds(ids: GroupSchemaType["id"][]): Promise<GroupSchemaType[]>;
@@ -21,16 +22,27 @@ export interface IGroupsSelector {
   ): Promise<GroupSchemaType[]>;
   suggestByName(query: string): Promise<GroupSchemaType[]>;
   archives(id: GroupSchemaType["id"]): Promise<ArchivedEventSchemaType[]>;
+  popular(): Promise<GroupSchemaType[]>;
 }
 
 export class GroupsSelector implements IGroupsSelector {
   constructor(
-    private readonly read: RawGroupsReader,
+    private readonly read: IGroupsReader,
     private readonly validator: GroupsValidator,
   ) {}
 
+  async hydrateGroup(id: GroupSchemaType["id"]) {
+    const hydratedGroup = await this.read.hydrateGroup(id);
+    return this.validator.hydrated(hydratedGroup);
+  }
+
   async all(): Promise<GroupSchemaType[]> {
-    const raw = await this.read.allRawGroups();
+    const raw = await this.read.allGroups();
+    return this.validator.groups(raw);
+  }
+
+  async popular(): Promise<GroupSchemaType[]> {
+    const raw = await this.read.popularGroups();
     return this.validator.groups(raw);
   }
 

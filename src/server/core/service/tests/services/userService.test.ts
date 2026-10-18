@@ -1,20 +1,13 @@
 import { UserService } from "@/src/server/core/service/services/userService";
 import {
   createMockDb,
-  groups,
   makeGroup,
   policyMock,
   authenticateAs,
   unauthenticated,
-  makeMembership,
   dtoMemberships,
 } from "@/src/server/core/service/tests/mockers/mocks";
-import {
-  GROUP_ID_1,
-  GROUP_ID_2,
-  GROUP_ID_3,
-  USER_ID,
-} from "../mockers/mockValues";
+import { USER_ID } from "../mockers/mockValues";
 
 describe("UserService.createNewUser", () => {
   let service: UserService;
@@ -42,56 +35,37 @@ describe("UserService.createNewUser", () => {
   });
 });
 
-describe("getMemberships", () => {
+describe("UserService.memberships", () => {
   let service: UserService;
   let db: ReturnType<typeof createMockDb>;
-  let getGroupsInDb: jest.Mock;
-  let getViewerMembershipsInDb: jest.Mock;
-  let getMemberCountsByGroupIdsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
     db = createMockDb();
-    getGroupsInDb = db.groups.select.all as jest.Mock;
-    getViewerMembershipsInDb = db.groupMembers.select.byUserId as jest.Mock;
-    getMemberCountsByGroupIdsInDb =
-      db.groupMembers.select.memberCounts as jest.Mock;
     service = new UserService(db, policyMock);
   });
 
-  it("throws a 401 status for a user that is not authenticated", async () => {
+  it("rejects unauthenticated users before reading memberships", async () => {
     unauthenticated();
-
-    await expect(service.getMemberships(undefined)).rejects.toThrow("401");
-
-    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(undefined);
-    expect(getGroupsInDb).not.toHaveBeenCalled();
-    expect(getViewerMembershipsInDb).not.toHaveBeenCalled();
+    await expect(service.memberships(undefined)).rejects.toThrow("401");
+    expect(db.groupMembers.select.memberships).not.toHaveBeenCalled();
   });
 
-  it("returns memberships associated with the authenticated user", async () => {
+  it("returns membership surfaces for the authenticated user", async () => {
     authenticateAs();
+    const surfaces = dtoMemberships.map((membership) => ({
+      membership,
+      meta: {
+        member_headcount: 3,
+        schedule: { timeline_status: "no_events" as const },
+      },
+    }));
+    (db.groupMembers.select.memberships as jest.Mock).mockResolvedValue(surfaces);
 
-    getGroupsInDb.mockResolvedValue(groups);
-
-    getViewerMembershipsInDb.mockResolvedValue([
-      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_1 }),
-      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_2 }),
-      makeMembership({ user_id: USER_ID, group_id: GROUP_ID_3 }),
-    ]);
-
-    getMemberCountsByGroupIdsInDb.mockResolvedValue({
-      [GROUP_ID_1]: 3,
-      [GROUP_ID_2]: 5,
-      [GROUP_ID_3]: 7,
-    });
-
-    await expect(service.getMemberships(USER_ID)).resolves.toEqual(
-      dtoMemberships,
-    );
-
+    await expect(service.memberships(USER_ID)).resolves.toEqual(surfaces);
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
-    expect(getViewerMembershipsInDb).toHaveBeenCalledWith(USER_ID);
+    expect(db.groupMembers.select.memberships).toHaveBeenCalledWith(USER_ID);
+    expect(db.groups.select.all).not.toHaveBeenCalled();
   });
 });
 

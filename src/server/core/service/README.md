@@ -219,10 +219,8 @@ reusable transformations that support a handler's private workflow.
 
 ### Participations
 
-- `RsvpHandler` updates attendance, retrieves viewer RSVP data, creates the
-  attendance dictionary, and assembles user RSVP history.
-- `ParticipationDtoHandler` converts event, group, and attendance data into the
-  client-facing RSVP shape.
+- `RsvpHandler` updates attendance and retrieves authenticated RSVP surfaces
+  through the persistence selector.
 - `CensusHandler` calculates attendance counts and derives popular groups and
   events.
 
@@ -369,17 +367,11 @@ The handler:
 
 ### Loading a user's RSVPs
 
-The router delegates to `domains.participations.rsvps.getRsvpdEvents(userId)`.
+The router delegates to `domains.participations.attendance.rsvps(userId)`.
 
-The handler:
-
-1. requires authentication;
-2. retrieves the user's attendance records;
-3. removes records that are not meaningful active RSVPs;
-4. returns early when no qualifying records remain;
-5. loads the corresponding events and group names;
-6. delegates response shaping to `ParticipationDtoHandler`;
-7. validates the resulting RSVP collection.
+The handler requires authentication and returns the validated RSVP surfaces from
+`db.eventAttendants.select.rsvps(userId)`. The persistence read supplies the event
+and group metadata directly.
 
 ### Creating a group
 

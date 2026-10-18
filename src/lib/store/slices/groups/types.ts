@@ -1,8 +1,13 @@
 import { AsyncState } from "@/src/lib/types/state/types";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type {
+  EventSchemaType,
+  GroupEventSummarySchemaType,
+} from "@/src/schemas/events/eventSchema";
 import {
   ArchivedEventSchemaType,
+  GroupHydratedSchemaType,
   GroupSchemaType,
+  NextEventForGroupSummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
@@ -30,23 +35,23 @@ export type GroupCategoryState = AsyncState<
 >;
 
 export type GroupEventsCalandarState = AsyncState<
-  EventSchemaType[],
+  GroupEventSummarySchemaType[],
   "No Events held for this group"
 >;
 
 export type NextEventState = AsyncState<
-  EventSchemaType,
+  NextEventForGroupSummarySchemaType,
   "This Group does not have any upcoming events"
 >;
 
-export type GroupHydrated = AsyncState<GroupSchemaType>;
+export type GroupHydrated = AsyncState<GroupHydratedSchemaType>;
 
 export type EventsOfGroup =
   | AsyncState<EventsPages, "No events have been scheduled for this group">
   | { status: "refreshing" };
 
 export type GroupHistoryType = AsyncState<
-  EventSchemaType[],
+  GroupEventSummarySchemaType[],
   "No history to display"
 >;
 

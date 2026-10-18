@@ -1,12 +1,11 @@
 "use client";
 import type { EventCardProps } from "./eventHeroCard";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { EventDiscoverySummarySchemaType } from "@/src/schemas/events/eventSchema";
 import React, { useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import {
   StyledCard,
   StyledCardContent,
-  StyledTypography,
 } from "@/src/client/styles/styledComponents/styledCard";
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import Box from "@mui/material/Box";
@@ -15,7 +14,6 @@ import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import {
   eventCardContentSx,
-  eventCardDescriptionSx,
   eventCardGroupLabelSx,
   eventCardRootSx,
   eventCardTitleSx,
@@ -25,9 +23,11 @@ type EventStackCardProps = {
   handleBlur: EventCardProps["handleBlur"];
   handleFocus: EventCardProps["handleFocus"];
   focusedCardIndex: EventCardProps["focusedCardIndex"];
-  event: EventCardProps["event"];
-  groupName: string;
-  handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
+  event: EventDiscoverySummarySchemaType["event"];
+  meta: EventDiscoverySummarySchemaType["meta"];
+  handleOpenEvent: (
+    event_id: EventDiscoverySummarySchemaType["event"]["id"],
+  ) => void;
 };
 
 function EventStackCard({
@@ -35,13 +35,13 @@ function EventStackCard({
   handleFocus,
   focusedCardIndex,
   event,
-  groupName,
+  meta,
   handleOpenEvent,
 }: EventStackCardProps) {
-  const date = new Date(event.starts_at);
+  const date = new Date(event.starts_at_ms);
   const isFutureDateOrNow = isFutureOrNow(date);
   const scheduled_at = useMemo(() => {
-    return toMonthDayYearHour(event.starts_at);
+    return toMonthDayYearHour(event.starts_at_ms);
   }, [event]);
 
   return (
@@ -79,7 +79,7 @@ function EventStackCard({
             component="div"
             sx={eventCardGroupLabelSx}
           >
-            {groupName}
+            {meta.group_name}
           </Typography>
           <Typography
             gutterBottom
@@ -89,18 +89,11 @@ function EventStackCard({
           >
             {event.title}
           </Typography>
-          <StyledTypography
-            variant="body2"
-            gutterBottom
-            sx={eventCardDescriptionSx}
-          >
-            {event.description}
-          </StyledTypography>
         </Box>
       </StyledCardContent>
       <CardFooter
         isFutureDateOrNow={isFutureDateOrNow}
-        location={event.meeting_location}
+        location={meta.group_location}
         scheduled_at={scheduled_at}
       />
     </StyledCard>

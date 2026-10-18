@@ -8,8 +8,7 @@ import {
 import type {
   MyGroupsState,
   UserAccountViewType,
-  PariticpationsState,
-  NextGroupEventLookupMapType,
+  RsvpsState,
   UserEmailState,
   PasswordResetState,
   RequestPwResetState,
@@ -19,14 +18,14 @@ import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { enqueueSidebar } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { hydrateUserMemberships, hydrateUserRsvps } from "./thunks";
 
 type InitialState = {
   email: UserEmailState;
-  participations: PariticpationsState;
+  rsvps: RsvpsState;
   memberships: MembershipsState;
   myGroups: MyGroupsState;
   view: UserAccountViewType;
-  nextEventLookup: NextGroupEventLookupMapType;
   requestPwReset: RequestPwResetState;
   pwReset: PasswordResetState;
 };
@@ -34,10 +33,9 @@ type InitialState = {
 const initialState: InitialState = {
   email: { status: "initial" },
   myGroups: { status: "initial" },
-  participations: { status: "initial" },
+  rsvps: { status: "initial" },
   memberships: { status: "initial" },
   view: "my groups",
-  nextEventLookup: {},
   pwReset: { status: "initial" },
   requestPwReset: { status: "initial" },
 };
@@ -78,9 +76,9 @@ const UserSlice = createSlice({
     },
     getParticipations: (
       state: InitialState,
-      action: PayloadAction<PariticpationsState>,
+      action: PayloadAction<RsvpsState>,
     ) => {
-      state.participations = action.payload;
+      state.rsvps = action.payload;
     },
     getMemberships: (
       state: InitialState,
@@ -93,12 +91,6 @@ const UserSlice = createSlice({
       action: PayloadAction<MyGroupsState>,
     ) => {
       state.myGroups = action.payload;
-    },
-    getNextGroupEventLookup: (
-      state: InitialState,
-      action: PayloadAction<NextGroupEventLookupMapType>,
-    ) => {
-      state.nextEventLookup = action.payload;
     },
     changeAccountTab: (
       state: InitialState,
@@ -149,6 +141,53 @@ const UserSlice = createSlice({
         }
       },
     );
+
+    builder.addCase(hydrateUserRsvps.pending, (state) => {
+      state.rsvps = { status: "pending" };
+    });
+
+    builder.addCase(hydrateUserRsvps.rejected, (state, action) => {
+      state.rsvps = {
+        status: "failed",
+        error: action.error.message ?? "Failed to hydrate rsvps",
+      };
+    });
+
+    builder.addCase(hydrateUserRsvps.fulfilled, (state, action) => {
+      const payload = action.payload;
+      if (payload.length === 0) {
+        state.rsvps = {
+          status: "n/a",
+          message: "We couldn't find any records of user participations",
+        };
+      } else {
+        state.rsvps = { status: "ready", data: payload };
+      }
+    });
+
+    builder.addCase(hydrateUserMemberships.pending, (state) => {
+      state.memberships = { status: "pending" };
+    });
+
+    builder.addCase(hydrateUserMemberships.rejected, (state, action) => {
+      state.memberships = {
+        status: "failed",
+        error: action.error.message ?? "Failed to hydrate memberships",
+      };
+    });
+
+    builder.addCase(hydrateUserMemberships.fulfilled, (state, action) => {
+      const payload = action.payload;
+      if (payload.length === 0) {
+        state.memberships = {
+          status: "n/a",
+          message: "No records of any memberships",
+        };
+        return;
+      } else {
+        state.memberships = { status: "ready", data: payload };
+      }
+    });
   },
 });
 
@@ -157,7 +196,6 @@ export const {
   getParticipations,
   getMyGroups,
   changeAccountTab,
-  getNextGroupEventLookup,
   requestResetPassword,
   resetPassword,
   getMemberships,

@@ -7,16 +7,17 @@ import Typography from "@mui/material/Typography";
 import {
   StyledCard,
   StyledCardContent,
-  StyledTypography,
 } from "@/src/client/styles/styledComponents/styledCard";
 import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import type { JSX } from "react";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type {
+  EventDiscoverySummarySchemaType,
+  GroupEventSummarySchemaType,
+} from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import {
   eventCardContentSx,
-  eventCardDescriptionSx,
   eventCardGroupLabelSx,
   eventCardMediaOverlaySx,
   eventCardMediaSx,
@@ -45,11 +46,15 @@ export type EventCardProps = {
   handleFocus: (index: number) => void;
   handleBlur: () => void;
   focusedCardIndex: number | null;
-  event: EventSchemaType;
+  event: EventDiscoverySummarySchemaType["event"];
+  eventMetaData: EventDiscoverySummarySchemaType["meta"];
   variant: CardDesignation;
   index: number;
   groupName: string;
-  handleOpenEvent: (event_id: EventSchemaType["id"]) => void;
+  location: string;
+  handleOpenEvent: (
+    event_id: GroupEventSummarySchemaType["event"]["id"],
+  ) => void;
 };
 
 function EventHeroCard({
@@ -60,13 +65,14 @@ function EventHeroCard({
   variant,
   index,
   groupName,
+  location,
   handleOpenEvent,
 }: EventCardProps): JSX.Element {
   const scheduled_at = useMemo(() => {
-    return toMonthDayYearHour(event.starts_at);
+    return toMonthDayYearHour(event.starts_at_ms);
   }, [event]);
 
-  const date = new Date(event.starts_at);
+  const date = new Date(event.starts_at_ms);
   const isFutureDateOrNow = isFutureOrNow(date);
 
   return (
@@ -123,18 +129,11 @@ function EventHeroCard({
           >
             {event.title}
           </Typography>
-          <StyledTypography
-            variant="body2"
-            gutterBottom
-            sx={eventCardDescriptionSx}
-          >
-            {event.description}
-          </StyledTypography>
         </StyledCardContent>
         <CardFooter
           isFutureDateOrNow={isFutureDateOrNow}
           scheduled_at={scheduled_at}
-          location={event.meeting_location}
+          location={location}
         />
       </StyledCard>
     </Grid>

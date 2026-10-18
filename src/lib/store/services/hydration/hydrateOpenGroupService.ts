@@ -20,34 +20,23 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
     slug: GroupSchemaType["slug"],
   ): Promise<SyncOpenGroupPayload> {
     try {
-      const group = await this.trpc.groups.select.bySlug.query(slug);
+      const hydrated = await this.trpc.groups.read.hydrate.group.query(slug);
 
-      if (!group) {
+      if (!hydrated) {
         throw new Error(`Failed to hydrate group by slug: ${slug}`);
       }
 
-      const {
-        role,
-        layout,
-        calandar,
-        members,
-        organizerEmail,
-        nextEvent,
-        category,
-      } = await this.getGroupMetaData(group.id, group.category_id);
+      const { role, layout, calandar } = await this.getGroupMetaData(
+        hydrated.group.id,
+      );
 
-      const numMembers = members.length;
       return {
         ok: true,
         data: {
-          group,
+          hydrated,
           role,
           layout,
           calandar,
-          numMembers,
-          organizerEmail,
-          nextEvent,
-          category,
         },
       };
     } catch (err) {
@@ -63,36 +52,17 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
     };
   }
 
-  private async getGroupMetaData(
-    group_id: GroupSchemaType["id"],
-    category_id: GroupSchemaType["category_id"],
-  ) {
-    const [
-      role,
-      layoutResult,
-      calandar,
-      members,
-      organizer,
-      nextEvent,
-      category,
-    ] = await Promise.all([
+  private async getGroupMetaData(group_id: GroupSchemaType["id"]) {
+    const [layoutResult, role, calandar] = await Promise.all([
+      this.trpc.layouts.events.forGroup.query(group_id),
       this.trpc.groupMembers.select.role.query(group_id),
-      this.trpc.events.layout.forGroup.query(group_id),
-      this.trpc.events.select.forGroup.query(group_id),
-      this.trpc.groupMembers.select.forGroup.query(group_id),
-      this.trpc.groupMembers.select.organizerEmail.query(group_id),
-      this.trpc.events.select.nextEventForGroup.query(group_id),
-      this.trpc.groups.select.categoryById.query(category_id ?? ""),
+      this.trpc.groups.read.events.list.query(group_id),
     ]);
 
     return {
       role,
       layout: layoutResult ?? [],
       calandar,
-      members,
-      organizerEmail: organizer.email,
-      nextEvent,
-      category,
     };
   }
 }

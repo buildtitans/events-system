@@ -38,24 +38,6 @@ describe("HydrateUserService", () => {
     expect(recover).toHaveBeenCalledTimes(1);
   });
 
-  it("returns the viewer attendance dictionary", async () => {
-    const attendance = {
-      "event-1": "going",
-      "event-2": "not_going",
-    };
-    const getAttendance = jest.fn().mockResolvedValue(attendance);
-    const service = new HydrateUserService({
-      users: {
-        select: {
-          attendanceDictionary: { query: getAttendance },
-        },
-      },
-    } as unknown as TrpcClientType);
-
-    await expect(service.attendance()).resolves.toEqual(attendance);
-    expect(getAttendance).toHaveBeenCalledTimes(1);
-  });
-
   it("returns new and viewed notifications in server-provided order", async () => {
     const newNotifications = [
       createNotificationPlaceholder({
@@ -96,27 +78,5 @@ describe("HydrateUserService", () => {
     await expect(service.notifications()).resolves.toStrictEqual(notifications);
   });
 
-  it("hydrates participations and requests next events for the authenticated user", async () => {
-    const rsvps = [{ event_id: "event-1" }];
-    const memberships = [{ group_id: "group-1" }, { group_id: "group-2" }];
-    const lookup = { "group-1": { id: "event-2" } };
-    const nextEvents = jest.fn().mockResolvedValue(lookup);
-    const service = new HydrateUserService({
-      eventAttendants: {
-        select: { rsvps: { query: jest.fn().mockResolvedValue(rsvps) } },
-      },
-      users: {
-        select: {
-          memberships: { query: jest.fn().mockResolvedValue(memberships) },
-        },
-      },
-      groups: { lookup: { nextEvents: { query: nextEvents } } },
-    } as unknown as TrpcClientType);
 
-    await expect(service.participations()).resolves.toEqual({
-      participations: { rsvps, memberships },
-      lookup,
-    });
-    expect(nextEvents).toHaveBeenCalledWith();
-  });
 });

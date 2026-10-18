@@ -1,5 +1,5 @@
 import { Type, Static } from "@sinclair/typebox";
-import { EventSchema } from "../events/eventSchema";
+import { EventSurfaceSchema } from "../events/eventSchema";
 
 const CardVariantTypeSchema = Type.Union([
   Type.Literal("hero"),
@@ -20,11 +20,11 @@ const LayoutSlotSchema = Type.Union([
   Type.Object({
     kind: Type.Literal("card"),
     variant: CardDesignationSchema,
-    event: EventSchema,
+    event: EventSurfaceSchema,
   }),
   Type.Object({
     kind: Type.Literal("stack"),
-    events: Type.Array(EventSchema),
+    events: Type.Array(EventSurfaceSchema),
   }),
 ]);
 

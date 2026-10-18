@@ -3,6 +3,7 @@ import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import {
   ArchivedEventSchemaType,
+  GroupHydratedSchemaType,
   GroupSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
@@ -22,6 +23,12 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     private readonly policy: IAuthorization,
   ) {}
 
+  async hydrateGroup(
+    group_id: GroupSchemaType["id"],
+  ): Promise<GroupHydratedSchemaType> {
+    return await this.db.groups.select.hydrateGroup(group_id);
+  }
+
   async getGroupCategories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
   }
@@ -31,7 +38,7 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return buildGroupNameLookup(groups);
   }
 
-  async getAllGroups(): Promise<GroupSchemaType[]> {
+  async discovery(): Promise<GroupSchemaType[]> {
     return await this.db.groups.select.all();
   }
 

@@ -22,7 +22,7 @@ export class SyncDomainsService implements ISyncDomainsService {
     const [events, groups, categories, groupNameDictionary] =
       await Promise.allSettled([
         this.client.events.layout.allActive.query(),
-        this.client.groups.select.all.query(),
+        this.client.groups.read.select.discovery.query(),
         this.client.categories.getAllCategories.query(),
         this.client.groups.lookup.groupNames.query(),
       ]);

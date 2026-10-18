@@ -50,7 +50,7 @@ export default function GroupActonsContainer({
             <Stack spacing={0.35} minWidth={0}>
               <Typography sx={groupSidebarSectionLabelSx}>Community</Typography>
               <Typography variant="body1" sx={groupSidebarTitleSx}>
-                {group.data.name}
+                {group.data.group.name}
               </Typography>
             </Stack>
           </Stack>
@@ -62,11 +62,11 @@ export default function GroupActonsContainer({
                 {groupSidebarRoleLabelMap[role]}
               </Typography>
             </Box>
-            {group.data.location && (
+            {group.data.group.location && (
               <Box sx={getGroupSidebarMetaChipSx()}>
                 <PlaceRoundedIcon sx={getGroupSidebarMetaIconSx()} />
                 <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                  {group.data.location}
+                  {group.data.group.location}
                 </Typography>
               </Box>
             )}

@@ -8,12 +8,14 @@ import {
   createMockDb,
   policyMock,
   makeEvent,
+  makeEventSummary,
+  makeGroupEventSummary,
   makeAttendanceUpdate,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
-describe("EventService.layout.active", () => {
+describe("EventService.layout.discovery", () => {
   let service: EventService;
   let db: ReturnType<typeof createMockDb>;
   let getEvents: jest.Mock;
@@ -23,7 +25,7 @@ describe("EventService.layout.active", () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
     db = createMockDb();
-    getEvents = db.events.select.allScheduled as jest.Mock;
+    getEvents = db.events.select.discovery as jest.Mock;
     service = new EventService(db, policyMock);
   });
 
@@ -32,25 +34,25 @@ describe("EventService.layout.active", () => {
   });
 
   it("returns only events scheduled after now", async () => {
-    const pastEvent = makeEvent({
+    const pastEvent = makeEventSummary({
       id: "past-1",
       starts_at: "2026-04-01T12:00:00.000Z",
       starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
     });
-    const futureEventOne = makeEvent({
+    const futureEventOne = makeEventSummary({
       id: "future-1",
       starts_at: "2026-04-08T12:00:00.000Z",
       starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
     });
-    const futureEventTwo = makeEvent({
+    const futureEventTwo = makeEventSummary({
       id: "future-2",
       starts_at: "2026-04-12T12:00:00.000Z",
       starts_at_ms: new Date("2026-04-12T12:00:00.000Z").getTime(),
     });
 
-    getEvents.mockResolvedValue([pastEvent, futureEventOne, futureEventTwo]);
+    getEvents.mockResolvedValue([futureEventTwo, pastEvent, futureEventOne]);
 
-    await expect(service.layout.active()).resolves.toEqual([
+    await expect(service.layout.discovery()).resolves.toEqual([
       [
         {
           kind: "card",
@@ -58,7 +60,7 @@ describe("EventService.layout.active", () => {
             type: "hero",
             size: { xs: 12, md: 6 },
           },
-          event: futureEventOne,
+          event: { for: "discovery", content: futureEventOne },
         },
         {
           kind: "card",
@@ -66,7 +68,7 @@ describe("EventService.layout.active", () => {
             type: "hero",
             size: { xs: 12, md: 6 },
           },
-          event: futureEventTwo,
+          event: { for: "discovery", content: futureEventTwo },
         },
       ],
     ]);
@@ -75,12 +77,12 @@ describe("EventService.layout.active", () => {
   });
 
   it("returns an empty layout when every event is in the past or exactly now", async () => {
-    const pastEvent = makeEvent({
+    const pastEvent = makeEventSummary({
       id: "past-1",
       starts_at: "2026-04-01T12:00:00.000Z",
       starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
     });
-    const nowEvent = makeEvent({
+    const nowEvent = makeEventSummary({
       id: "now-1",
       starts_at: "2026-04-06T00:00:00.000Z",
       starts_at_ms: new Date("2026-04-06T00:00:00.000Z").getTime(),
@@ -88,7 +90,39 @@ describe("EventService.layout.active", () => {
 
     getEvents.mockResolvedValue([pastEvent, nowEvent]);
 
-    await expect(service.layout.active()).resolves.toEqual([]);
+    await expect(service.layout.discovery()).resolves.toEqual([]);
+  });
+});
+
+describe("EventService summary consumers", () => {
+  it("returns group event summaries for the calendar without discovery metadata", async () => {
+    const db = createMockDb();
+    const summary = makeGroupEventSummary();
+    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([summary]);
+    const service = new EventService(db, policyMock);
+
+    await expect(service.query.getGroupEvents("group-1")).resolves.toEqual([summary]);
+    expect(db.events.select.byGroupId).toHaveBeenCalledWith("group-1");
+  });
+
+  it("skips the selector when a layout has no requested IDs", async () => {
+    const db = createMockDb();
+    const service = new EventService(db, policyMock);
+
+    await expect(service.layout.byIds([])).resolves.toEqual([]);
+    expect(db.events.select.byIds).not.toHaveBeenCalled();
+  });
+
+  it("excludes past events from group layouts", async () => {
+    const db = createMockDb();
+    const past = makeGroupEventSummary({ starts_at_ms: Date.now() - 60_000 });
+    const future = makeGroupEventSummary({ starts_at_ms: Date.now() + 60_000 });
+    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([past, future]);
+    const service = new EventService(db, policyMock);
+
+    await expect(service.layout.forGroup("group-1")).resolves.toEqual([
+      [{ kind: "card", variant: { type: "hero", size: { xs: 12, md: 6 } }, event: { for: "withinGroup", content: future } }],
+    ]);
   });
 });
 
@@ -134,7 +168,7 @@ describe("EventService.layout curated filters", () => {
         makeAttendanceUpdate({ event_id: pastEvent.id, user_id }, "going"),
       ),
     ]);
-    getEventsByIds.mockResolvedValue([popularEvent]);
+    getEventsByIds.mockResolvedValue([makeEventSummary(popularEvent)]);
 
     await expect(service.layout.popular()).resolves.toHaveLength(1);
     expect(getEventsByIds).toHaveBeenCalledWith([popularEvent.id]);
@@ -157,7 +191,7 @@ describe("EventService.layout curated filters", () => {
     ];
     const upcomingEvents = [events[1], events[2], events[3]];
     getScheduledEvents.mockResolvedValue(events);
-    getEventsByIds.mockResolvedValue(upcomingEvents);
+    getEventsByIds.mockResolvedValue(upcomingEvents.map((event) => makeEventSummary(event)));
 
     await expect(service.layout.upcoming()).resolves.toHaveLength(1);
     expect(getEventsByIds).toHaveBeenCalledWith([
@@ -171,242 +205,48 @@ describe("EventService.layout curated filters", () => {
 describe("EventService.timeline.getPastEventsForGroup", () => {
   let service: EventService;
   let db: ReturnType<typeof createMockDb>;
-  let getGroupEvents: jest.Mock;
-  let getPastEventRecords: jest.Mock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
     db = createMockDb();
-    getGroupEvents = db.events.select.byGroupId as jest.Mock;
-    getPastEventRecords = db.eventAttendants.select.pastRecords as jest.Mock;
     service = new EventService(db, policyMock);
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
-  });
+  afterEach(() => jest.useRealTimers());
 
-  it("returns only events scheduled before now", async () => {
-    const pastEvent = makeEvent({
-      id: "past-1",
-      group_id: "group-1",
-      starts_at: "2026-04-01T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
-    });
-    const futureEvent = makeEvent({
-      id: "future-1",
-      group_id: "group-1",
-      starts_at: "2026-04-08T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
-    });
-
-    getGroupEvents.mockResolvedValue([pastEvent, futureEvent]);
-
-    getPastEventRecords.mockResolvedValue([
-      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-1" }, "going"),
-      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-2" }, "going"),
-      makeAttendanceUpdate(
-        { event_id: "future-1", user_id: "user-3" },
-        "interested",
-      ),
-    ]);
-
-    const result = await service.timeline.getPastEventsForGroup("group-1");
-
-    expect(result).toEqual({
-      history: [pastEvent],
-      pastEventsRecords: {
-        "past-1": 2,
-        "future-1": 0,
-      },
-    });
-
-    expect(getGroupEvents).toHaveBeenCalledWith("group-1");
-    expect(getPastEventRecords).toHaveBeenCalledWith(["past-1", "future-1"]);
-  });
-
-  it("returns an empty array when a group has no past events", async () => {
-    getGroupEvents.mockResolvedValue([
-      makeEvent({
-        id: "future-1",
-        group_id: "group-1",
-        starts_at: "2026-04-08T12:00:00.000Z",
-        starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
-      }),
-    ]);
-
-    getPastEventRecords.mockResolvedValue([]);
-
-    const result = await service.timeline.getPastEventsForGroup("group-1");
-
-    expect(result).toEqual({
-      history: [],
-      pastEventsRecords: {
-        "future-1": 0,
-      },
-    });
-    expect(getPastEventRecords).toHaveBeenCalledWith(["future-1"]);
-  });
-
-  it("returns all events when every event in the group is in the past", async () => {
-    const olderPastEvent = makeEvent({
-      id: "past-1",
-      group_id: "group-1",
-      starts_at: "2026-03-20T12:00:00.000Z",
-      starts_at_ms: new Date("2026-03-20T12:00:00.000Z").getTime(),
-    });
-    const recentPastEvent = makeEvent({
-      id: "past-2",
-      group_id: "group-1",
-      starts_at: "2026-04-05T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-05T12:00:00.000Z").getTime(),
-    });
-
-    getGroupEvents.mockResolvedValue([olderPastEvent, recentPastEvent]);
-    getPastEventRecords.mockResolvedValue([
-      makeAttendanceUpdate({ event_id: "past-1", user_id: "user-1" }, "going"),
-      makeAttendanceUpdate({ event_id: "past-2", user_id: "user-2" }, "going"),
-      makeAttendanceUpdate({ event_id: "past-2", user_id: "user-3" }, "going"),
-    ]);
-
-    const result = await service.timeline.getPastEventsForGroup("group-1");
-
-    expect(result).toEqual({
-      history: [olderPastEvent, recentPastEvent],
-      pastEventsRecords: {
-        "past-1": 1,
-        "past-2": 2,
-      },
-    });
-    expect(getPastEventRecords).toHaveBeenCalledWith(["past-1", "past-2"]);
-  });
-});
-
-describe("EventService.timeline.getNextEventMap", () => {
-  let service: EventService;
-  let db: ReturnType<typeof createMockDb>;
-  let getEventsByGroupIds: jest.Mock;
-  let getMembershipsByUserId: jest.Mock;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date("2026-04-01T00:00:00.000Z"));
-    db = createMockDb();
-    getEventsByGroupIds = db.events.select.byGroupIds as jest.Mock;
-    getMembershipsByUserId = db.groupMembers.select.byUserId as jest.Mock;
-    authenticateAs(USER_ID);
-    getMembershipsByUserId.mockResolvedValue([{ group_id: "group-1" }]);
-    service = new EventService(db, policyMock);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  it("returns an empty lookup when no events are found", async () => {
-    getEventsByGroupIds.mockResolvedValue([]);
-
-    const result = await service.timeline.getNextEventMap(USER_ID);
-
-    expect(result).toEqual({});
-    expect(policyMock.requireAuthenticated).toHaveBeenCalledWith("user-1");
-    expect(getMembershipsByUserId).toHaveBeenCalledWith("user-1");
-    expect(getEventsByGroupIds).toHaveBeenCalledWith(["group-1"]);
-  });
-
-  it("rejects unauthenticated requests before querying memberships", async () => {
-    unauthenticated();
-
-    await expect(service.timeline.getNextEventMap(undefined)).rejects.toThrow(
-      "401",
+  it("returns past summaries with their included going counts in chronological order", async () => {
+    const older = makeGroupEventSummary(
+      { id: "past-1", starts_at_ms: Date.parse("2026-03-20T12:00:00.000Z") },
+      { attendance: { going: 0, interested: 3 } },
     );
-    expect(getMembershipsByUserId).not.toHaveBeenCalled();
-    expect(getEventsByGroupIds).not.toHaveBeenCalled();
-  });
+    const recent = makeGroupEventSummary(
+      { id: "past-2", starts_at_ms: Date.parse("2026-04-05T12:00:00.000Z") },
+      { attendance: { going: 2, interested: 4 } },
+    );
+    const future = makeGroupEventSummary({ id: "future", starts_at_ms: Date.now() + 1 });
+    const now = makeGroupEventSummary({ id: "now", starts_at_ms: Date.now() });
+    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([recent, future, now, older]);
 
-  it("returns the nearest future event when a group has both past and future events", async () => {
-    getEventsByGroupIds.mockResolvedValue([
-      makeEvent({
-        id: "past-1",
-        group_id: "group-1",
-        starts_at: "2026-03-20T12:00:00.000Z",
-        starts_at_ms: new Date("2026-03-20T12:00:00.000Z").getTime(),
-      }),
-      makeEvent({
-        id: "future-later",
-        group_id: "group-1",
-        starts_at: "2026-04-20T12:00:00.000Z",
-        starts_at_ms: new Date("2026-04-20T12:00:00.000Z").getTime(),
-      }),
-      makeEvent({
-        id: "future-sooner",
-        group_id: "group-1",
-        starts_at: "2026-04-05T12:00:00.000Z",
-        starts_at_ms: new Date("2026-04-05T12:00:00.000Z").getTime(),
-      }),
-    ]);
-
-    const result = await service.timeline.getNextEventMap(USER_ID);
-
-    expect(result).toEqual({
-      "group-1": "2026-04-05T12:00:00.000Z",
+    await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual({
+      history: [older, recent],
+      pastEventsRecords: { "past-1": 0, "past-2": 2 },
     });
+    expect(db.events.select.byGroupId).toHaveBeenCalledWith("group-1");
   });
 
-  it("returns the most recent past event when a group has no future events", async () => {
-    getEventsByGroupIds.mockResolvedValue([
-      makeEvent({
-        id: "older-past",
-        group_id: "group-1",
-        starts_at: "2026-03-01T12:00:00.000Z",
-        starts_at_ms: new Date("2026-03-01T12:00:00.000Z").getTime(),
-      }),
-      makeEvent({
-        id: "recent-past",
-        group_id: "group-1",
-        starts_at: "2026-03-30T12:00:00.000Z",
-        starts_at_ms: new Date("2026-03-30T12:00:00.000Z").getTime(),
-      }),
-    ]);
-
-    const result = await service.timeline.getNextEventMap(USER_ID);
-
-    expect(result).toEqual({
-      "group-1": "2026-03-30T12:00:00.000Z",
-    });
-  });
-
-  it("builds the lookup independently for multiple groups", async () => {
-    getMembershipsByUserId.mockResolvedValue([
-      { group_id: "group-1" },
-      { group_id: "group-2" },
-    ]);
-    getEventsByGroupIds.mockResolvedValue([
-      makeEvent({
-        id: "g1-future",
-        group_id: "group-1",
-        starts_at: "2026-04-08T12:00:00.000Z",
-        starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
-      }),
-      makeEvent({
-        id: "g2-past",
-        group_id: "group-2",
-        starts_at: "2026-03-28T12:00:00.000Z",
-        starts_at_ms: new Date("2026-03-28T12:00:00.000Z").getTime(),
-      }),
-    ]);
-
-    const result = await service.timeline.getNextEventMap(USER_ID);
-
-    expect(result).toEqual({
-      "group-1": "2026-04-08T12:00:00.000Z",
-      "group-2": "2026-03-28T12:00:00.000Z",
-    });
-    expect(getEventsByGroupIds).toHaveBeenCalledWith(["group-1", "group-2"]);
-  });
+  it.each([
+    { events: [] },
+    { events: [makeGroupEventSummary({ starts_at_ms: Date.parse("2026-04-08T00:00:00.000Z") })] },
+  ])(
+    "returns empty history when there are no past events (%#)",
+    async ({ events }) => {
+      (db.events.select.byGroupId as jest.Mock).mockResolvedValue(events);
+      await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual({
+        history: [], pastEventsRecords: {},
+      });
+    },
+  );
 });
 
 describe("EventService.lifecycle.updateEventStatus", () => {

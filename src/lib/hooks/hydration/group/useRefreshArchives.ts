@@ -15,7 +15,7 @@ export const useRefreshArchives = () => {
     if (archives.status !== "ready") return;
 
     const executeRefreshArchives = async () => {
-      dispatch(refreshArchivedEvents(group.data.id));
+      dispatch(refreshArchivedEvents(group.data.group.id));
     };
 
     void executeRefreshArchives();

@@ -2,16 +2,13 @@
 import List from "@mui/material/List";
 import TimelineItem from "@/src/client/components/ui/list/history/timelineItem";
 import Container from "@mui/material/Container";
-import {
-  EventsArraySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
+import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { createAttendanceMessage } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 
 type HistoryTimelineProps = {
-  history: EventsArraySchemaType;
+  history: GroupEventSummarySchemaType[];
   isMobile: boolean;
 };
 
@@ -43,7 +40,7 @@ export default function HistoryTimeline({
           gap: 2,
         }}
       >
-        {history.map((log: EventSchemaType) => {
+        {history.map((log: GroupEventSummarySchemaType) => {
           const numberAttended = pastEventsRecords[log.id];
 
           return (

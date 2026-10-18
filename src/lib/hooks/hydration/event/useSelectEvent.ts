@@ -1,9 +1,9 @@
 "use client";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/src/lib/store";
-import { hydrateEventDrawer } from "@/src/lib/store/slices/events/EventDrawerSlice";
 import { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { useCallback } from "react";
+import { hydrateEventDrawer } from "@/src/lib/store/slices/events/thunks";
 
 export const useSelectEvent = () => {
   const dispatch = useDispatch<AppDispatch>();

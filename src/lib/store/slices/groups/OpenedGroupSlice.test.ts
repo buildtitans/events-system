@@ -20,159 +20,68 @@ jest.mock("./thunks", () => {
   };
 });
 
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import type { OpenedGroupPayload } from "../../services/types";
+import { makeHydratedGroup, makeHydrationPayload, makeNextEvent } from "../../services/hydration/groupHydration.fixtures";
 import openedGroupReducer from "./OpenedGroupSlice";
 import { hydrateGroup, refreshGroupEvents } from "./thunks";
 
-function makeEvent(): EventSchemaType {
-  return {
-    id: "event-1",
-    group_id: "group-1",
-    status: "scheduled",
-    starts_at: "2026-08-19T18:00:00.000Z",
-    starts_at_ms: Date.parse("2026-08-19T18:00:00.000Z"),
-    img: "event.jpg",
-    tag: "Type Safety",
-    title: "Runtime Validation Meets Static Types",
-    description: "An event about runtime validation.",
-    meeting_location: "Online",
-    created_at: "2026-08-01T12:00:00.000Z",
-    updated_at: null,
-  };
-}
-
-function makeHydrationPayload(
-  overrides: Partial<OpenedGroupPayload> = {},
-): OpenedGroupPayload {
-  return {
-    group: {
-      id: "group-1",
-      name: "Illinois TypeScript Enthusiasts",
-      slug: "illinois-typescript-enthusiasts",
-      description: "A TypeScript community.",
-      location: "Online",
-      category_id: "category-1",
-      organizer_id: "organizer-1",
-      created_at: "2026-08-01T12:00:00.000Z",
-      updated_at: "2026-08-01T12:00:00.000Z",
-    },
-    layout: [],
-    role: "member",
-    numMembers: 2,
-    organizerEmail: "organizer@example.com",
-    calandar: [],
-    nextEvent: undefined,
-    category: undefined,
-    ...overrides,
-  };
-}
-
 describe("OpenedGroupSlice", () => {
-  it("hydrates available next-event and category metadata", () => {
-    const nextEvent = makeEvent();
-    const category = {
-      id: "category-1",
-      name: "Technology",
-      slug: "technology",
-      icon: "computer",
-    };
-
-    const state = openedGroupReducer(
-      undefined,
-      hydrateGroup.fulfilled(
-        makeHydrationPayload({ nextEvent, category }),
-        "request-1",
-        "illinois-typescript-enthusiasts",
-      ),
-    );
-
-    expect(state.nextEvent).toEqual({ status: "ready", data: nextEvent });
-    expect(state.category).toEqual({ status: "ready", data: category });
+  it("stores hydrated group metadata together", () => {
+    const hydrated = makeHydratedGroup({ next_event: makeNextEvent() });
+    const state = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      makeHydrationPayload({ hydrated }), "request-1", hydrated.group.slug,
+    ));
+    expect(state.group).toEqual({ status: "ready", data: hydrated });
+    expect(state.events.status).toBe("n/a");
+    expect(state.calandar.status).toBe("n/a");
   });
 
-  it("settles missing next-event and category metadata as unavailable", () => {
-    const state = openedGroupReducer(
-      undefined,
-      hydrateGroup.fulfilled(
-        makeHydrationPayload(),
-        "request-1",
-        "illinois-typescript-enthusiasts",
-      ),
-    );
-
-    expect(state.nextEvent).toEqual({
-      status: "n/a",
-      message: "This Group does not have any upcoming events",
-    });
-    expect(state.category).toEqual({
-      status: "n/a",
-      message: "Could not find a valid category for this group",
-    });
+  it("keeps a group ready when it has no upcoming event", () => {
+    const payload = makeHydrationPayload();
+    const state = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      payload, "request-1", payload.hydrated.group.slug,
+    ));
+    expect(state.group).toEqual({ status: "ready", data: payload.hydrated });
+    expect(payload.hydrated.meta.next_event).toBeUndefined();
   });
 
-  it("refreshes the next event alongside the event layout and calendar", () => {
-    const nextEvent = makeEvent();
-    const pendingState = openedGroupReducer(
-      undefined,
-      refreshGroupEvents.pending("request-1", "group-1"),
-    );
-
-    expect(pendingState.nextEvent).toEqual({ status: "pending" });
-
-    const state = openedGroupReducer(
-      pendingState,
-      refreshGroupEvents.fulfilled(
-        {
-          refreshedEventsLayout: [],
-          calandarEvents: [nextEvent],
-          nextEvent,
-        },
-        "request-1",
-        "group-1",
-      ),
-    );
-
-    expect(state.nextEvent).toEqual({ status: "ready", data: nextEvent });
+  it("refreshes layout and calendar while retaining the opened group", () => {
+    const payload = makeHydrationPayload();
+    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      payload, "hydrate-1", payload.hydrated.group.slug,
+    ));
+    const pending = openedGroupReducer(initial, refreshGroupEvents.pending("refresh-1", "group-1"));
+    expect(pending.events.status).toBe("refreshing");
+    expect(pending.calandar.status).toBe("pending");
+    expect(pending.group).toEqual(initial.group);
+    const nextEvent = makeNextEvent();
+    const state = openedGroupReducer(pending, refreshGroupEvents.fulfilled({
+      refreshedEventsLayout: [], calandarEvents: [nextEvent], nextEvent,
+    }, "refresh-1", "group-1"));
+    expect(state.calandar).toEqual({ status: "ready", data: [nextEvent] });
+    expect(state.events.status).toBe("n/a");
   });
 
-  it("settles the next event as unavailable after an empty refresh", () => {
-    const state = openedGroupReducer(
-      undefined,
-      refreshGroupEvents.fulfilled(
-        {
-          refreshedEventsLayout: [],
-          calandarEvents: [],
-          nextEvent: undefined,
-        },
-        "request-1",
-        "group-1",
-      ),
-    );
-
-    expect(state.nextEvent).toEqual({
-      status: "n/a",
-      message: "This Group does not have any upcoming events",
-    });
+  it("settles an empty calendar refresh as unavailable", () => {
+    const state = openedGroupReducer(undefined, refreshGroupEvents.fulfilled({
+      refreshedEventsLayout: [], calandarEvents: [], nextEvent: undefined,
+    }, "refresh-1", "group-1"));
+    expect(state.calandar.status).toBe("n/a");
+    expect(state.events.status).toBe("n/a");
   });
 
-  it("settles the next event as failed when its refresh fails", () => {
-    const pendingState = openedGroupReducer(
-      undefined,
-      refreshGroupEvents.pending("request-1", "group-1"),
-    );
-    const state = openedGroupReducer(
-      pendingState,
-      refreshGroupEvents.rejected(
-        new Error("network unavailable"),
-        "request-1",
-        "group-1",
-      ),
-    );
-
-    expect(state.nextEvent).toEqual({
-      status: "failed",
-      error: "Failed to refresh soonest upcoming event",
-    });
+  it("reports refresh failures without discarding the opened group", () => {
+    const payload = makeHydrationPayload();
+    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      payload, "hydrate-1", payload.hydrated.group.slug,
+    ));
+    const state = openedGroupReducer(initial, refreshGroupEvents.rejected(
+      new Error("network unavailable"), "refresh-1", "group-1",
+    ));
+    expect(state.events.status).toBe("failed");
+    expect(state.calandar.status).toBe("failed");
+    expect(state.group).toEqual(initial.group);
   });
+
+  it.todo("replaces hydrated.meta.next_event after an event refresh");
+  it.todo("clears hydrated.meta.next_event when the refreshed group has no upcoming event");
 });

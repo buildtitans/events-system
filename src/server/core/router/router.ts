@@ -8,8 +8,10 @@ import { notificationRouter } from "./routes/notificationsRouter";
 import { userRouter } from "./routes/usersRouter";
 import { geoCodingRouter } from "./routes/geoCodingRouter";
 import { eventRouter } from "./routes/eventRouter";
+import { layoutRouter } from "./routes/layoutsRouter";
 
 export const appRouter = router({
+  layouts: layoutRouter,
   events: eventRouter,
   groups: groupRouter,
   auth: authRouter,

@@ -26,10 +26,8 @@ const selectMembersRouter = router({
       );
     }),
 
-  userMemberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.getMemberships(
-      ctx.req.user?.id,
-    );
+  memberships: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.users.memberships(ctx.req.user?.id);
   }),
 
   organizerEmail: publicProcedure

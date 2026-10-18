@@ -24,7 +24,7 @@ export function RenderActiveSidebar({
       return (
         <AsyncStateRenderer state={group} pending={() => (<SidebarSkeleton />)}>
           {(state) => (
-            <GroupActonsContainer group_id={state.id}/>
+            <GroupActonsContainer group_id={state.group.id}/>
           )}
         </AsyncStateRenderer>
       )

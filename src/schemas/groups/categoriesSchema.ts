@@ -3,7 +3,7 @@ import { TypeCompiler } from "@sinclair/typebox/compiler";
 
 export const CategorySchema = Type.Object({
   icon: Type.String(),
-  id: Type.String(),
+  id: Type.String({ format: "uuid" }),
   name: Type.String(),
   slug: Type.String(),
 });

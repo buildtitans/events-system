@@ -4,6 +4,6 @@ dayjs.extend(utc);
 
 const MONTH_DAY_YEAR_HOUR_FORMAT = 'MMMM D, YYYY h:mm A';
 
-export function toMonthDayYearHour(date: string): string {
+export function toMonthDayYearHour(date: string | number): string {
     return dayjs(date).format(MONTH_DAY_YEAR_HOUR_FORMAT);
 };

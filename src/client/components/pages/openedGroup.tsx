@@ -13,7 +13,7 @@ import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice"
 
 export default function OpenedGroup(): JSX.Element | null {
   const dispatch = useDispatch<AppDispatch>();
-  const { group } = useSelector((s: RootState) => s.openGroup);
+  const hydrated = useSelector((s: RootState) => s.openGroup.group);
   const sidebar = useSelector((s: RootState) => s.rendering.sidebar);
   const showDesktopSidebar = sidebar === "group";
 
@@ -35,8 +35,8 @@ export default function OpenedGroup(): JSX.Element | null {
       }}
     >
       <Box sx={{ width: "100%", height: "100%" }}>
-        <AsyncStateRenderer state={group} pending={() => <SimpleBackdrop />}>
-          {(state) => <ViewGroupSection group={state} />}
+        <AsyncStateRenderer state={hydrated} pending={() => <SimpleBackdrop />}>
+          {(state) => <ViewGroupSection hydrated={state} />}
         </AsyncStateRenderer>
       </Box>
     </Container>

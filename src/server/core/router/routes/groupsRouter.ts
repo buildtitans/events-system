@@ -6,16 +6,37 @@ import {
 import {
   searchInputValidator,
   newGroupInputValidator,
-  groupSlugInputValidator,
-  groupsByCategoryInputValidator,
   groupIdInputValidator,
+  groupSlugInputValidator,
+  groupSlugInput,
 } from "../inputValidators/inputValidation";
 
-const selectGroupsRouter = router({
-  all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.getAllGroups();
+const groupHydrationRouter = router({
+  group: publicProcedure.input(groupSlugInput).query(async ({ ctx, input }) => {
+    return await ctx.api.services.domains.groups.query.hydrateGroup(input);
   }),
+});
 
+const selectGroupEvents = router({
+  nextEvent: publicProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.events.query.nextEventForGroup(
+        input,
+      );
+    }),
+  history: publicProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
+        input,
+      );
+    }),
+  list: publicProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.events.query.getGroupEvents(input);
+    }),
   archives: protectedProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
@@ -24,7 +45,27 @@ const selectGroupsRouter = router({
         input,
       );
     }),
+});
 
+const searchGroups = router({
+  categoryName: publicProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.getCategoryById(input);
+    }),
+  search: publicProcedure
+    .input(searchInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.searchGroups(input);
+    }),
+  suggest: publicProcedure
+    .input(searchInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.suggestGroups(input);
+    }),
+  groupNames: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
+  }),
   bySlug: publicProcedure
     .input(groupSlugInputValidator)
     .query(async ({ ctx, input }) => {
@@ -32,46 +73,12 @@ const selectGroupsRouter = router({
         input,
       );
     }),
-
-  categoryById: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getCategoryById(input);
-    }),
-
-  byCategory: publicProcedure
-    .input(groupsByCategoryInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.byCategory(input);
-    }),
-
-  popular: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.participations.census.getPopularGroups();
-  }),
-
-  search: publicProcedure
-    .input(searchInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.searchGroups(input);
-    }),
-
-  suggest: publicProcedure
-    .input(searchInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.suggestGroups(input);
-    }),
 });
 
-const lookupRouter = router({
-  groupNames: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
-  }),
-
-  nextEvents: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.timeline.getNextEventMap(
-      ctx.req.user?.id,
-    );
-  }),
+const readGroupsRouter = router({
+  hydrate: groupHydrationRouter,
+  events: selectGroupEvents,
+  select: searchGroups,
 });
 
 const writeGroupsRouter = router({
@@ -86,7 +93,6 @@ const writeGroupsRouter = router({
 });
 
 export const groupRouter = router({
-  select: selectGroupsRouter,
+  read: readGroupsRouter,
   write: writeGroupsRouter,
-  lookup: lookupRouter,
 });

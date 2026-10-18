@@ -14,19 +14,11 @@ const selectUserRouter = router({
   }),
 
   memberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.getMemberships(
-      ctx.req.user?.id,
-    );
-  }),
-
-  attendanceDictionary: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.participations.rsvps.getAttendanceDictionary(
-      ctx.req.user?.id,
-    );
+    return await ctx.api.services.domains.users.memberships(ctx.req.user?.id);
   }),
 
   rsvps: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.participations.rsvps.getRsvpdEvents(
+    return await ctx.api.services.domains.participations.attendance.rsvps(
       ctx.req.user?.id,
     );
   }),

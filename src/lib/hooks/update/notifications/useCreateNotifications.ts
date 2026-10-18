@@ -17,7 +17,7 @@ export const useCreateNotifications = () => {
         );
       }
 
-      await dispatch(notifyNewEvent({ event, group: group.data }));
+      await dispatch(notifyNewEvent({ event, group: group.data.group }));
     },
     [group, dispatch],
   );

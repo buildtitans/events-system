@@ -13,19 +13,14 @@ export class NotificationService implements INotificationService {
     private readonly policy: IAuthorization,
   ) {}
 
-  async getNotifications(user_id: AuthenticatedUserId | undefined | null): Promise<{
+  async getNotifications(
+    user_id: AuthenticatedUserId | undefined | null,
+  ): Promise<{
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }> {
     const userId = this.policy.requireAuthenticated(user_id);
     return await this.getNewAndSeenNotifications(userId);
-  }
-
-  async getNewNotifications(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<NotificationSchemaType[]> {
-    const userId = this.policy.requireAuthenticated(user_id);
-    return this.db.notifications.select.getUnseenNotifications(userId);
   }
 
   async createNotification(

@@ -3,17 +3,18 @@ import { lazy, Suspense, type JSX } from "react";
 import { type EventCardProps } from "@/src/client/components/ui/box/cards/eventHeroCard";
 import { EventStackSlot } from "@/src/client/components/ui/box/slots/eventStackSlot";
 import { LayoutSlotSchemaType } from "@/src/schemas/events/layoutSlotSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import EventHeroCardSkeleton from "@/src/client/components/ui/box/cards/skeletons/eventHeroCardSkeleton";
+import GroupEventHeroCard from "../../ui/box/cards/groupEventHeroCard";
+
 const HeroCard = lazy(
   () => import("@/src/client/components/ui/box/cards/eventHeroCard"),
 );
 
 type RenderEventsLayoutProps = {
   slots: LayoutSlotSchemaType[];
+  withinGroup?: boolean;
   handleBlur: EventCardProps["handleBlur"];
   handleFocus: EventCardProps["handleFocus"];
   focusedCardIndex: EventCardProps["focusedCardIndex"];
@@ -25,40 +26,62 @@ function RenderEventsLayout({
   handleFocus,
   focusedCardIndex,
 }: RenderEventsLayoutProps): JSX.Element[] {
-  const groupNameLookup = useSelector(
-    (s: RootState) => s.groups.groupNameLookup,
-  );
   const { handleOpenEvent } = useSelectEvent();
 
   return slots.map((slot, i: number) => {
     switch (slot.kind) {
       case "card": {
-        return (
-          <Suspense
-            key={slot.event.id}
-            fallback={<EventHeroCardSkeleton variant={slot.variant} />}
-          >
-            <HeroCard
-              index={i}
-              groupName={groupNameLookup[slot.event.group_id].name}
-              key={slot.event.id}
-              event={slot.event}
-              variant={slot.variant}
-              handleBlur={handleBlur}
-              handleFocus={handleFocus}
-              focusedCardIndex={focusedCardIndex}
-              handleOpenEvent={handleOpenEvent}
-            />
-          </Suspense>
-        );
+        switch (slot.event.for) {
+          case "discovery": {
+            return (
+              <Suspense
+                key={slot.event.content.event.id}
+                fallback={<EventHeroCardSkeleton variant={slot.variant} />}
+              >
+                <HeroCard
+                  index={i}
+                  eventMetaData={slot.event.content.meta}
+                  groupName={slot.event.content.meta.group_name}
+                  location={slot.event.content.meta.group_location}
+                  key={slot.event.content.event.id}
+                  event={slot.event.content.event}
+                  variant={slot.variant}
+                  handleBlur={handleBlur}
+                  handleFocus={handleFocus}
+                  focusedCardIndex={focusedCardIndex}
+                  handleOpenEvent={handleOpenEvent}
+                />
+              </Suspense>
+            );
+          }
+          case "withinGroup": {
+            return (
+              <GroupEventHeroCard
+                index={i}
+                location={slot.event.content.event.meeting_location}
+                key={slot.event.content.event.id}
+                event={slot.event.content.event}
+                eventMetaData={slot.event.content.meta}
+                variant={slot.variant}
+                handleBlur={handleBlur}
+                handleFocus={handleFocus}
+                focusedCardIndex={focusedCardIndex}
+                handleOpenEvent={handleOpenEvent}
+              />
+            );
+          }
+
+          default: {
+            return assertNever(slot.event);
+          }
+        }
       }
 
       case "stack": {
         return (
           <EventStackSlot
-            groupNameLookup={groupNameLookup}
-            key={slot.events.map((e) => e.id).join("+")}
-            events={slot.events}
+            key={slot.events.map((event) => event.content.event.id).join("+")}
+            stack={slot.events}
             handleBlur={handleBlur}
             handleFocus={handleFocus}
             focusedCardIndex={focusedCardIndex}

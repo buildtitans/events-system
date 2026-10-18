@@ -8,61 +8,23 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
+import { NewEventInputValidator } from "../inputValidators/inputValidation";
 import {
-  NewEventInputValidator,
-  groupIdInputValidator,
-} from "../inputValidators/inputValidation";
-import {
-  EventIdInputValidator,
   EventIDValidator,
   searchInputValidator,
 } from "../inputValidators/inputValidation";
 
 const selectEventsRouter = router({
-  all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.query.allActive();
-  }),
-
   search: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.query.searchEvents(input);
     }),
-
   suggest: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.query.suggestEvents(input);
     }),
-
-  nextEventForGroup: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.nextEventForGroup(
-        input,
-      );
-    }),
-
-  byId: publicProcedure
-    .input(EventIDValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.getEventById(input);
-    }),
-
-  history: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
-        input,
-      );
-    }),
-
-  forGroup: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.getGroupEvents(input);
-    }),
-
   hydrateEvent: publicProcedure
     .input(EventIDValidator)
     .query(async ({ ctx, input }) => {
@@ -71,34 +33,6 @@ const selectEventsRouter = router({
         input,
       );
     }),
-});
-
-const layoutRouter = router({
-  all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.layout.all();
-  }),
-
-  allActive: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.layout.active();
-  }),
-
-  byIds: publicProcedure
-    .input(EventIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.layout.byIds(input);
-    }),
-
-  forGroup: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.layout.forGroup(input);
-    }),
-  popular: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.layout.popular();
-  }),
-  upcoming: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.layout.upcoming();
-  }),
 });
 
 const writeEventsRouter = router({
@@ -126,5 +60,4 @@ const writeEventsRouter = router({
 export const eventRouter = router({
   select: selectEventsRouter,
   write: writeEventsRouter,
-  layout: layoutRouter,
 });
