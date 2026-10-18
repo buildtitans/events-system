@@ -3,7 +3,6 @@ import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { EventSchema } from "../events/eventSchema";
 import { CategorySchema } from "./categoriesSchema";
 import { EventHeadCountSchema } from "../events/eventAttendantsSchema";
-import { GroupMemberSchema } from "./groupMembersSchema";
 
 export const GroupSchema = Type.Object({
   id: Type.String(),

@@ -1,8 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import type { Static } from "@sinclair/typebox";
-import { GroupScheduleSchemaType } from "./userMembershipSchema";
-import { GroupSchema } from "./groupSchema";
 
 export const GroupRoleSchema = Type.Union([
   Type.Literal("member"),
@@ -49,8 +47,6 @@ type GroupMembersArraySchemaType = Static<typeof GroupMembersArraySchema>;
 
 type GroupMemberSchemaType = Static<typeof GroupMemberSchema>;
 
-export type GroupSlugSchemaType = Static<typeof GroupSchema.properties.slug>;
-
 type GroupIDForInsertSchemaType = Static<typeof GroupIDForInsertSchema>;
 
 type GroupRoleSchemaType = Static<typeof GroupRoleSchema>;
@@ -65,10 +61,6 @@ export type {
   GroupRoleSchemaType,
   MemberCountSchemaType,
 };
-
-export const GroupSlugValidator = TypeCompiler.Compile(
-  GroupSchema.properties.slug,
-);
 
 export const GroupIDForInsertSchemaValidator = TypeCompiler.Compile(
   GroupIDForInsertSchema,
