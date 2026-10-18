@@ -43,8 +43,4 @@ export class MembershipHandler implements IMembershipHandler {
     if (!user_id) return "anonymous";
     return await this.db.groupMembers.select.role(user_id, group_id);
   }
-
-  async getGroupHeadCount(group_id: GroupSchemaType["id"]) {
-    return await this.db.groupMembers.select.memberCount(group_id);
-  }
 }

@@ -19,9 +19,6 @@ export interface IGroupsReader {
   hydrateGroup(slug: GroupSchemaType["slug"]): Promise<HydratedGroupRead>;
   popularGroups(): Promise<Selectable<Groups>[]>;
   archivedEventsWithAttendance(id: GroupSchemaType["id"]): Promise<RawArchives>;
-  rawById(id: GroupSchemaType["id"]): Promise<Selectable<Groups>>;
-  rawByIds(ids: GroupSchemaType["id"][]): Promise<Selectable<Groups>[]>;
-  rawBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>>;
   rawSearchByName(query: string): Promise<Selectable<Groups>[]>;
   rawSuggestByName(query: string): Promise<Selectable<Groups>[]>;
   rawByCategoryId(id: CategorySchemaType["id"]): Promise<Selectable<Groups>[]>;
@@ -153,31 +150,6 @@ export class RawGroupsReader implements IGroupsReader {
       .selectAll()
       .orderBy("created_at", "desc")
       .execute();
-  }
-
-  async rawById(id: GroupSchemaType["id"]): Promise<Selectable<Groups>> {
-    return await this.db
-      .selectFrom("groups")
-      .where("id", "=", id)
-      .selectAll()
-      .limit(1)
-      .executeTakeFirstOrThrow();
-  }
-
-  async rawByIds(ids: GroupSchemaType["id"][]): Promise<Selectable<Groups>[]> {
-    return await this.db
-      .selectFrom("groups")
-      .where("id", "in", ids)
-      .selectAll()
-      .execute();
-  }
-
-  async rawBySlug(slug: GroupSchemaType["slug"]): Promise<Selectable<Groups>> {
-    return await this.db
-      .selectFrom("groups")
-      .selectAll()
-      .where("slug", "=", slug)
-      .executeTakeFirstOrThrow();
   }
 
   async rawByOrganizerId(

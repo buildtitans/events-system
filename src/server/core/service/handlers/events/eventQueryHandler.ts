@@ -16,14 +16,6 @@ import type { IEventQueryHandler, EventQueryDb } from "./types";
 export class EventQueryHandler implements IEventQueryHandler {
   constructor(private readonly db: EventQueryDb) {}
 
-  async getAllEvents(): Promise<EventSchemaType[]> {
-    return await this.db.events.select.allStatuses();
-  }
-
-  async allActive(): Promise<EventSchemaType[]> {
-    return await this.db.events.select.allScheduled();
-  }
-
   async searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);

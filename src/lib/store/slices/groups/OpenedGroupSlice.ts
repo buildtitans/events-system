@@ -26,11 +26,6 @@ type InitialState = {
   history: GroupHistoryType;
   archives: GroupArchivesState;
   calandar: GroupEventsCalandarState;
-  attendanceHistoryLookup: Record<
-    EventAttendantsSchemaType["event_id"],
-    number
-  >;
-  archivesAttendance: Record<EventAttendantsSchemaType["event_id"], number>;
 };
 
 const initialState: InitialState = {
@@ -41,8 +36,6 @@ const initialState: InitialState = {
   currPage: 0,
   activeSection: "overview",
   calandar: { status: "initial" },
-  attendanceHistoryLookup: {},
-  archivesAttendance: {},
 };
 
 const OpenedGroupSlice = createSlice({
@@ -86,23 +79,6 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.calandar = action.payload;
     },
-    getPastEventsAttendanceRecords: (
-      state: InitialState,
-      action: PayloadAction<
-        Record<EventAttendantsSchemaType["event_id"], number>
-      >,
-    ) => {
-      state.attendanceHistoryLookup = action.payload;
-    },
-    getArchivesAttendanceRecords: (
-      state: InitialState,
-      action: PayloadAction<
-        Record<EventAttendantsSchemaType["event_id"], number>
-      >,
-    ) => {
-      state.archivesAttendance = action.payload;
-    },
-
     clearOpenedGroupSlice: () => initialState,
   },
 
@@ -116,7 +92,6 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to refresh archived events",
       };
-      state.archivesAttendance = {};
     });
 
     builder.addCase(refreshArchivedEvents.pending, (state: InitialState) => {
@@ -137,7 +112,6 @@ const OpenedGroupSlice = createSlice({
             status: "n/a",
             message: "This group has no archived events",
           };
-          state.archivesAttendance = {};
         }
       },
     );
@@ -159,7 +133,12 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(
       refreshGroupEvents.fulfilled,
       (state: InitialState, action) => {
-        const { refreshedEventsLayout, calandarEvents } = action.payload;
+        const { refreshedEventsLayout, calandarEvents, nextEvent } =
+          action.payload;
+
+        if (state.group.status === "ready") {
+          state.group.data.meta.next_event = nextEvent;
+        }
 
         if (refreshedEventsLayout.length > 0) {
           state.events = { status: "ready", data: refreshedEventsLayout };
@@ -240,8 +219,6 @@ export const {
   populateGroupArchives,
   clearOpenedGroupSlice,
   getCalandarEvents,
-  getPastEventsAttendanceRecords,
-  getArchivesAttendanceRecords,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

@@ -4,7 +4,6 @@ import { RsvpSurfaceSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 export interface ICensusHandler {
-  getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number>;
   getPopularGroups(): Promise<GroupSchemaType[]>;
 }
 

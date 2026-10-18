@@ -1,6 +1,5 @@
 import { Kysely, Selectable } from "kysely";
 import { DB, EventAttendants } from "@/src/server/core/db/types/db";
-import { SelectedAttendant } from "../../types/types";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 import { IEventAttendantsReader, RawRsvp } from "./types";
 
@@ -65,31 +64,4 @@ export class EventAttendantsReader implements IEventAttendantsReader {
   async allRawRecords(): Promise<Selectable<EventAttendants>[]> {
     return await this.db.selectFrom("event_attendants").selectAll().execute();
   }
-
-  async rawAttendant({
-    user_id,
-    event_id,
-  }: {
-    user_id: string;
-    event_id: string;
-  }): Promise<SelectedAttendant> {
-    return await this.db
-      .selectFrom("event_attendants")
-      .selectAll()
-      .where("event_id", "=", event_id)
-      .where("user_id", "=", user_id)
-      .limit(1)
-      .executeTakeFirstOrThrow();
-  }
-
-  async allRawAttendants(
-    event_id: string,
-  ): Promise<Selectable<EventAttendants>[]> {
-    return await this.db
-      .selectFrom("event_attendants")
-      .selectAll()
-      .where("event_id", "=", event_id)
-      .execute();
-  }
-
 }

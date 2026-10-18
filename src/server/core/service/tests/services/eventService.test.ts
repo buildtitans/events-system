@@ -228,10 +228,7 @@ describe("EventService.timeline.getPastEventsForGroup", () => {
     const now = makeGroupEventSummary({ id: "now", starts_at_ms: Date.now() });
     (db.events.select.byGroupId as jest.Mock).mockResolvedValue([recent, future, now, older]);
 
-    await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual({
-      history: [older, recent],
-      pastEventsRecords: { "past-1": 0, "past-2": 2 },
-    });
+    await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual([older, recent]);
     expect(db.events.select.byGroupId).toHaveBeenCalledWith("group-1");
   });
 
@@ -242,9 +239,7 @@ describe("EventService.timeline.getPastEventsForGroup", () => {
     "returns empty history when there are no past events (%#)",
     async ({ events }) => {
       (db.events.select.byGroupId as jest.Mock).mockResolvedValue(events);
-      await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual({
-        history: [], pastEventsRecords: {},
-      });
+      await expect(service.timeline.getPastEventsForGroup("group-1")).resolves.toEqual([]);
     },
   );
 });

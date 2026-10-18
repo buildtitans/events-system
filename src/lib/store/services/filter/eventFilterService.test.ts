@@ -8,7 +8,7 @@ describe("EventFilterService", () => {
     const events = [[{ id: "event-1" }]];
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
-      asClient({ events: { layout: { allActive: { query } } } }),
+      asClient({ layouts: { events: { discovery: { query } } } }),
     );
 
     await expect(service.all()).resolves.toEqual({ ok: true, events });
@@ -20,7 +20,7 @@ describe("EventFilterService", () => {
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
       asClient({
-        events: { layout: { popular: { query } } },
+        layouts: { events: { popular: { query } } },
       }),
     );
 
@@ -33,7 +33,7 @@ describe("EventFilterService", () => {
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
       asClient({
-        events: { layout: { upcoming: { query } } },
+        layouts: { events: { upcoming: { query } } },
       }),
     );
 
@@ -44,9 +44,9 @@ describe("EventFilterService", () => {
   it("returns a failure result when a filter query rejects", async () => {
     const service = new EventFilterService(
       asClient({
-        events: {
-          layout: {
-            allActive: { query: jest.fn().mockRejectedValue(new Error("nope")) },
+        layouts: {
+          events: {
+            discovery: { query: jest.fn().mockRejectedValue(new Error("nope")) },
           },
         },
       }),

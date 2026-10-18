@@ -147,7 +147,7 @@ work directly; others expose smaller handler facets.
 | --- | --- | --- |
 | Events | `query`, `lifecycle`, `timeline`, `layout`, `hydrate` | Event reads, mutations, history, layout, and drawer hydration |
 | Groups | `query`, `groupLifecycle`, `memberships` | Group discovery, creation, membership, and group metadata |
-| Participations | `rsvps`, `census` | RSVP state, attendance shaping, counts, and popularity |
+| Participations | `attendance`, `census` | Authenticated RSVP reads, attendance updates, and popular groups |
 | Session | Direct service methods | Login, logout, recovery, and password reset |
 | Users | Direct service methods | Account lookup, memberships, and created groups |
 | Notifications | Direct service methods | Notification creation, retrieval, and seen state |
@@ -190,8 +190,8 @@ A public method that only forwards one database call does not need a private
 wrapper:
 
 ```ts
-async getEventById(eventId) {
-  return await this.db.events.select.byId(eventId);
+async getGroupEvents(groupId) {
+  return await this.db.events.select.byGroupId(groupId);
 }
 ```
 
@@ -203,26 +203,29 @@ reusable transformations that support a handler's private workflow.
 
 - `EventQueryHandler` performs event reads and search.
 - `EventLifecycleHandler` creates events and changes scheduling status.
-- `EventTimelineHandler` builds past, archived, and next-event views.
-- `EventLayoutHandler` loads event sets for client layout use cases.
+- `EventTimelineHandler` filters group summaries to past events and sorts them
+  chronologically, returning the summary array directly.
+- `EventLayoutHandler` loads summaries and wraps them as discovery or
+  within-group surfaces for client layouts.
 - `EventLayoutComposer` paginates events and produces validated layout slots.
-- `EventHydrationHandler` assembles event, group, role, RSVP, and count metadata
-  for the opened-event drawer.
+- `EventHydrationHandler` adds viewer role and RSVP status to the validated
+  event read model supplied by persistence for the opened-event drawer.
 
 ### Groups
 
-- `GroupQueryHandler` performs group, category, member, organizer, and slug
-  lookups.
+- `GroupQueryHandler` exposes group hydration, discovery, search, category
+  filtering, and organizer-authorized archives. Group hydration includes member
+  count, organizer email, category name, and an optional next-event summary.
 - `GroupLifecycleHandler` creates a group and assigns its organizer membership.
 - `MembershipHandler` joins users to groups, removes memberships, and resolves
-  roles and head counts.
+  roles.
 
 ### Participations
 
 - `RsvpHandler` updates attendance and retrieves authenticated RSVP surfaces
   through the persistence selector.
-- `CensusHandler` calculates attendance counts and derives popular groups and
-  events.
+- `CensusHandler` returns popular groups selected by persistence. Popular event
+  selection belongs to `EventLayoutHandler`.
 
 ### Session
 
@@ -270,7 +273,7 @@ async getMemberships(userId: AuthenticatedUserId | undefined | null) {
 }
 
 private async membershipsOfUser(actor: AuthenticatedUserId) {
-  return await this.db.groupMembers.select.byUserId(actor);
+  return await this.db.groupMembers.select.memberships(actor);
 }
 ```
 

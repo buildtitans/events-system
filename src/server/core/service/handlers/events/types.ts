@@ -9,10 +9,7 @@ import {
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
-import {
-  HydratedEvent,
-  PastEventsResults,
-} from "@/src/server/core/service/types";
+import { HydratedEvent } from "@/src/server/core/service/types";
 import {
   GroupSchemaType,
   NextEventForGroupSummarySchemaType,
@@ -35,8 +32,6 @@ export type EventTimelineDb = Pick<IDBClient, "events">;
 export type EventLifecycleDb = Pick<IDBClient, "events">;
 
 export interface IEventQueryHandler {
-  getAllEvents(): Promise<EventSchemaType[]>;
-  allActive(): Promise<EventSchemaType[]>;
   nextEventForGroup(
     group_id: GroupSchemaType["id"],
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
@@ -71,7 +66,9 @@ export interface IEventLayoutComposer {
 }
 
 export interface IEventTimelineHandler {
-  getPastEventsForGroup(group_id: string): Promise<PastEventsResults>;
+  getPastEventsForGroup(
+    group_id: string,
+  ): Promise<GroupEventSummarySchemaType[]>;
 }
 
 export interface IEventHydrationHandler {

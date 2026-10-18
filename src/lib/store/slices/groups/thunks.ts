@@ -19,11 +19,7 @@ import { trpcClient } from "@/src/trpc/trpcClient";
 import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 import { addGroup } from "./GroupsSlice";
-import {
-  getGroupHistory,
-  getPastEventsAttendanceRecords,
-  populateGroupArchives,
-} from "./OpenedGroupSlice";
+import { getGroupHistory, populateGroupArchives } from "./OpenedGroupSlice";
 import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
 
 export const hydrateGroup = createAsyncThunk(
@@ -62,13 +58,11 @@ export const hydrateGroupHistory = createAsyncThunk(
     thunkAPI.dispatch(getGroupHistory({ status: "pending" }));
 
     try {
-      const { pastEventsRecords, history } =
-        await trpcClient.groups.read.events.history.query(id);
+      const result = await trpcClient.groups.read.events.history.query(id);
 
-      if (history.length > 0) {
-        const sorted = sortByDate(history);
+      if (result.length > 0) {
+        const sorted = sortByDate(result);
         thunkAPI.dispatch(getGroupHistory({ status: "ready", data: sorted }));
-        thunkAPI.dispatch(getPastEventsAttendanceRecords(pastEventsRecords));
       } else {
         thunkAPI.dispatch(
           getGroupHistory({ status: "n/a", message: "No history to display" }),

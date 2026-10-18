@@ -14,14 +14,14 @@ export function useHydrateCalendar(
   return useMemo(() => {
     const lookup: CalendarLookup = new Map();
 
-    for (const event of events) {
-      const dayKey = dayjs(event.starts_at_ms).format("YYYY-MM-DD");
+    for (const el of events) {
+      const dayKey = dayjs(el.event.starts_at_ms).format("YYYY-MM-DD");
       const statusesForDay = lookup.get(dayKey);
 
       if (statusesForDay) {
-        statusesForDay.add(event.status);
+        statusesForDay.add(el.event.status);
       } else {
-        lookup.set(dayKey, new Set([event.status]));
+        lookup.set(dayKey, new Set([el.event.status]));
       }
     }
 

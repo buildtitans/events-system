@@ -82,6 +82,32 @@ describe("OpenedGroupSlice", () => {
     expect(state.group).toEqual(initial.group);
   });
 
-  it.todo("replaces hydrated.meta.next_event after an event refresh");
-  it.todo("clears hydrated.meta.next_event when the refreshed group has no upcoming event");
+  const previousEvent = makeNextEvent();
+  const replacementEvent = makeNextEvent();
+  replacementEvent.event.id = "event-2";
+  const updatedEvent = makeNextEvent();
+  updatedEvent.event.starts_at = "2026-08-20T18:00:00.000Z";
+  updatedEvent.event.starts_at_ms = Date.parse(updatedEvent.event.starts_at);
+  updatedEvent.meta.attendance = { going: 5, interested: 3 };
+
+  it.each([
+    { scenario: "assigns the first next event", previous: undefined, nextEvent: previousEvent },
+    { scenario: "replaces the next event", previous: previousEvent, nextEvent: replacementEvent },
+    { scenario: "updates details and attendance for the same event ID", previous: previousEvent, nextEvent: updatedEvent },
+    { scenario: "clears the next event when none remains", previous: previousEvent, nextEvent: undefined },
+  ])("$scenario after a refresh", ({ previous, nextEvent }) => {
+    const hydrated = makeHydratedGroup({ next_event: previous });
+    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      makeHydrationPayload({ hydrated }), "hydrate-1", hydrated.group.slug,
+    ));
+
+    const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
+      refreshedEventsLayout: [], calandarEvents: [], nextEvent,
+    }, "refresh-1", hydrated.group.id));
+
+    expect(state.group).toEqual({
+      status: "ready",
+      data: { ...hydrated, meta: { ...hydrated.meta, next_event: nextEvent } },
+    });
+  });
 });

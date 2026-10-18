@@ -7,7 +7,6 @@ import {
   searchInputValidator,
   newGroupInputValidator,
   groupIdInputValidator,
-  groupSlugInputValidator,
   groupSlugInput,
 } from "../inputValidators/inputValidation";
 
@@ -48,11 +47,12 @@ const selectGroupEvents = router({
 });
 
 const searchGroups = router({
-  categoryName: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getCategoryById(input);
-    }),
+  list: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.groups.query.discovery();
+  }),
+  popular: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.participations.census.getPopularGroups();
+  }),
   search: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
@@ -63,15 +63,10 @@ const searchGroups = router({
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.groups.query.suggestGroups(input);
     }),
-  groupNames: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
-  }),
-  bySlug: publicProcedure
-    .input(groupSlugInputValidator)
+  byCategory: publicProcedure
+    .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getGroupFromSlug(
-        input,
-      );
+      return await ctx.api.services.domains.groups.query.byCategory(input);
     }),
 });
 

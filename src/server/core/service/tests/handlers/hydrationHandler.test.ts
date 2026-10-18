@@ -53,9 +53,6 @@ describe("EventHydrationHandler", () => {
       expect(hydrateEvent).toHaveBeenCalledWith(eventId);
       expect(getRsvp).toHaveBeenCalledWith(userId, eventId);
       expect(getRole).toHaveBeenCalledWith(userId, groupId);
-      expect(db.events.select.byId).not.toHaveBeenCalled();
-      expect(db.groups.select.byId).not.toHaveBeenCalled();
-      expect(db.eventAttendants.select.attendants).not.toHaveBeenCalled();
     });
 
     it.each([undefined, null])(

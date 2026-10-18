@@ -2,14 +2,8 @@ import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
   GroupMemberIdsSchema,
   GroupMemberSchema,
-  MemberCountSchema,
   GroupRoleSchema,
-  GroupMembersArraySchema,
-  GroupMembersArraySchemaType,
   GroupMemberSchemaType,
-  MemberCountSchemaType,
-  NumberOfMembersSchema,
-  NumberOfMembersSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupMembers } from "../../../types/db";
 import dayjs from "dayjs";
@@ -36,30 +30,6 @@ export class GroupMembersValidator {
 
   memberships(memberships: unknown[]): UserMembershipSurfaceSchemaType[] {
     return validateOrThrow(UserMembershipsSchema, memberships);
-  }
-
-  numberOfMembers(raw: unknown): NumberOfMembersSchemaType {
-    return validateOrThrow(NumberOfMembersSchema, raw);
-  }
-
-  members(raw: Selectable<GroupMembers>[]): GroupMembersArraySchemaType {
-    const parsed = raw.map((row: Selectable<GroupMembers>) => {
-      const joined = dayjs(row.joined_at).utc().format(ISO_FORMAT);
-
-      const dto = {
-        group_id: row.group_id,
-        joined_at: joined,
-        role: row.role,
-        user_id: row.user_id,
-      };
-
-      return dto;
-    });
-    return validateOrThrow(GroupMembersArraySchema, parsed);
-  }
-
-  memberCount(counts: Record<string, number>): MemberCountSchemaType {
-    return validateOrThrow(MemberCountSchema, counts);
   }
 
   role(rawRole: unknown): GroupMemberSchemaType["role"] {

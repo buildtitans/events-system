@@ -38,6 +38,7 @@ export default function MembershipListItem({
         <Stack sx={membershipPrimaryColumnSx}>
           <MembershipListItemHeader
             membership={membership.membership}
+            meta={membership.meta}
             handleClick={handleClick}
           />
 

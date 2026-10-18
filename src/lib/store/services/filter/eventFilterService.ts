@@ -17,7 +17,7 @@ export class EventFilterService implements IEventFilterService {
 
   async all(): Promise<FilterResults> {
     try {
-      const events = await this.trpc.events.layout.allActive.query();
+      const events = await this.trpc.layouts.events.discovery.query();
 
       return {
         ok: true,
@@ -34,7 +34,7 @@ export class EventFilterService implements IEventFilterService {
 
   async popular(): Promise<FilterResults> {
     try {
-      const events = await this.trpc.events.layout.popular.query();
+      const events = await this.trpc.layouts.events.popular.query();
 
       return {
         ok: true,
@@ -51,7 +51,7 @@ export class EventFilterService implements IEventFilterService {
 
   async upcoming(): Promise<FilterResults> {
     try {
-      const events = await this.trpc.events.layout.upcoming.query();
+      const events = await this.trpc.layouts.events.upcoming.query();
 
       return {
         ok: true,

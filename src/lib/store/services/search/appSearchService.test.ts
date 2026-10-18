@@ -17,9 +17,11 @@ const makeClient = ({
       },
     },
     groups: {
-      select: {
-        search: { query: searchGroups },
-        suggest: { query: suggestGroups },
+      read: {
+        select: {
+          search: { query: searchGroups },
+          suggest: { query: suggestGroups },
+        },
       },
     },
   }) as unknown as TrpcClientType;

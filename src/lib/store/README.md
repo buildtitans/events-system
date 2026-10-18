@@ -187,7 +187,7 @@ builder.addCase(hydrateGroup.pending, (state) => {
 });
 
 builder.addCase(hydrateGroup.fulfilled, (state, action) => {
-  state.group = { status: "ready", data: action.payload.group };
+  state.group = { status: "ready", data: action.payload.hydrated };
 });
 
 builder.addCase(hydrateGroup.rejected, (state) => {
@@ -368,13 +368,41 @@ lazy result-card loading, ready results, empty results, and failures each have
 distinct rendering behavior. Header copy is derived by a pure helper so all
 states and singular/plural result counts remain exhaustively testable.
 
+## Hydrated Views and Event Summaries
+
+Opened-group state stores `{ group, meta }` inside its ready data. Group details
+come from `data.group`; member count, organizer email, category name, and the
+optional next event come from `data.meta`. Opened-event state similarly stores
+the hydrated event with public event metadata and viewer-specific role/RSVP
+metadata. Components consume these responses instead of separate lookup state.
+
+Event layout slots contain discriminated surfaces:
+
+- `{ for: "discovery", content }` carries a discovery summary with group context.
+- `{ for: "withinGroup", content }` carries a group event summary with meeting location.
+
+History receives an array of group event summaries. Attendance comes directly
+from each summary's metadata; no separate attendance dictionary is synchronized.
+
+### Refreshing Group Events
+
+`refreshGroupEvents` requests `layouts.events.forGroup`,
+`groups.read.events.list`, and `groups.read.events.nextEvent`. Its fulfilled
+reducer updates layout and calendar state together and, while the group is ready,
+assigns `meta.next_event` directly from the response. This handles first assignment,
+replacement, updated data for the same event ID, and clearing a missing next event.
+
+The pending reducer marks events as refreshing and the calendar as pending while
+retaining the hydrated group. Rejection marks those event/calendar states failed
+without discarding the group. This flow does not rerun full group hydration.
+
 ## Application Bootstrap
 
 Startup hydration is treated as a coordinated domain sync:
 
 1. `useInitializeDomains` starts `SyncDomainsService`.
-2. The service requests independent initial datasets with
-   `Promise.allSettled`.
+2. The service requests event discovery layouts, groups, and categories with
+   `Promise.allSettled`. There is no group-name dictionary request.
 3. Individual failures receive safe fallbacks.
 4. A complete outage returns a rejected sync result.
 5. `initializeDomains` distributes the result to bootstrap and domain slices.

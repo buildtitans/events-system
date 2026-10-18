@@ -10,7 +10,6 @@ import type {
   GroupSchemaType,
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import type { NameSlugDescriptionLookup } from "@/src/server/core/lib/utils/buildGroupNameLookup";
 
 export interface IGroupLifecycleHandler {
   createNewGroup(
@@ -35,7 +34,6 @@ export interface IMembershipHandler {
     user_id: AuthenticatedUserId | undefined | null,
     group_id: GroupSchemaType["id"],
   ): Promise<GroupMemberSchemaType["role"]>;
-  getGroupHeadCount(group_id: GroupSchemaType["id"]): Promise<number>;
 }
 
 export interface IGroupQueryHandler {
@@ -47,16 +45,9 @@ export interface IGroupQueryHandler {
     id: GroupSchemaType["id"],
   ): Promise<ArchivedEventSchemaType[]>;
   getGroupCategories(): Promise<CategoriesSchemaType>;
-  getCategoryById(
-    id: CategorySchemaType["id"],
-  ): Promise<CategorySchemaType | undefined>;
-  getGroupNameDictionary(): Promise<NameSlugDescriptionLookup>;
   discovery(): Promise<GroupSchemaType[]>;
   searchGroups(query: string): Promise<GroupSchemaType[]>;
   suggestGroups(query: string): Promise<GroupSchemaType[]>;
-  getAllGroupMembers(group_id: string): Promise<GroupMemberSchemaType[]>;
-  getOrganizerEmail(group_id: string): Promise<{ email: string }>;
-  getGroupFromSlug(slug: string): Promise<GroupSchemaType>;
   byCategory(
     categoryName: CategorySchemaType["name"],
   ): Promise<GroupSchemaType[]>;

@@ -10,16 +10,10 @@ dayjs.extend(utc);
 export interface IEventAttendantsSelector {
   rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]>;
   allRecords(): Promise<EventAttendantsSchemaType[]>;
-
   rsvp(
     user_id: string,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]>;
-  attendant(
-    user_id: string,
-    event_id: string,
-  ): Promise<EventAttendantsSchemaType>;
-  attendants(event_id: string): Promise<EventAttendantsSchemaType[]>;
 }
 
 export class EventAttendantsSelector implements IEventAttendantsSelector {
@@ -45,18 +39,5 @@ export class EventAttendantsSelector implements IEventAttendantsSelector {
   async rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]> {
     const raw = await this.read.rsvps(user_id);
     return this.validator.parseRsvps(raw);
-  }
-
-  async attendant(
-    user_id: string,
-    event_id: string,
-  ): Promise<EventAttendantsSchemaType> {
-    const raw = await this.read.rawAttendant({ user_id, event_id });
-    return this.validator.parseRawAttendant(raw);
-  }
-
-  async attendants(event_id: string): Promise<EventAttendantsSchemaType[]> {
-    const raw = await this.read.allRawAttendants(event_id);
-    return this.validator.parseRawAttendants(raw);
   }
 }

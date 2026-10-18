@@ -1,13 +1,7 @@
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type {
-  EventSchemaType,
-  GroupEventSummarySchemaType,
-} from "@/src/schemas/events/eventSchema";
+import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import {
-  EventAttendantsSchemaType,
-  EventAttendantStatusSchemaType,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { IServiceDomains } from "./domains/types";
 
 export interface IApplicationServices {
@@ -48,11 +42,6 @@ export type GroupCreatedResult = {
   organizer: GroupMemberSchemaType;
 };
 
-export type PastEventAttendanceLookup = Record<
-  EventAttendantsSchemaType["event_id"],
-  number
->;
-
 export type GroupAction =
   | "manage group"
   | "manage events"
@@ -64,8 +53,3 @@ export type Permissions = Record<
   GroupMemberSchemaType["role"],
   Array<GroupAction>
 >;
-
-export type PastEventsResults = {
-  history: GroupEventSummarySchemaType[];
-  pastEventsRecords: PastEventAttendanceLookup;
-};

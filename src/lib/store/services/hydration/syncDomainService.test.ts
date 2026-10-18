@@ -5,13 +5,11 @@ const clientWith = (results: {
   events: () => Promise<unknown>;
   groups: () => Promise<unknown>;
   categories: () => Promise<unknown>;
-  names: () => Promise<unknown>;
 }) =>
   ({
-    events: { layout: { allActive: { query: jest.fn(results.events) } } },
+    layouts: { events: { discovery: { query: jest.fn(results.events) } } },
     groups: {
-      read: { select: { discovery: { query: jest.fn(results.groups) } } },
-      lookup: { groupNames: { query: jest.fn(results.names) } },
+      read: { select: { list: { query: jest.fn(results.groups) } } },
     },
     categories: {
       getAllCategories: { query: jest.fn(results.categories) },
@@ -24,14 +22,12 @@ describe("SyncDomainsService", () => {
       events: [[{ id: "event-1" }]],
       groups: [{ id: "group-1" }],
       categories: [{ id: "category-1" }],
-      groupNameDictionary: { "group-1": { name: "Group" } },
     };
     const service = new SyncDomainsService(
       clientWith({
         events: () => Promise.resolve(data.events),
         groups: () => Promise.resolve(data.groups),
         categories: () => Promise.resolve(data.categories),
-        names: () => Promise.resolve(data.groupNameDictionary),
       }),
     );
 
@@ -45,13 +41,12 @@ describe("SyncDomainsService", () => {
         events: () => Promise.reject(new Error("events")),
         groups: () => Promise.resolve(groups),
         categories: () => Promise.reject(new Error("categories")),
-        names: () => Promise.reject(new Error("names")),
       }),
     );
 
     await expect(service.sync()).resolves.toEqual({
       status: "fulfilled",
-      data: { events: [], groups, categories: [], groupNameDictionary: {} },
+      data: { events: [], groups, categories: [] },
     });
   });
 
@@ -62,7 +57,6 @@ describe("SyncDomainsService", () => {
         events: rejected,
         groups: rejected,
         categories: rejected,
-        names: rejected,
       }),
     );
 

@@ -1,24 +1,11 @@
 import type { EventsPages } from "../../store/slices/events/types";
-import type {
-  GroupsSchemaType,
-  GroupSchemaType,
-} from "@/src/schemas/groups/groupSchema";
+import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
-
-export type NameSlugDescriptionLookup = Record<
-  GroupSchemaType["id"],
-  {
-    name: GroupSchemaType["name"];
-    slug: GroupSchemaType["slug"];
-    group_description: GroupSchemaType["description"];
-  }
->;
 
 type DomainStateType = {
   events: EventsPages;
   groups: GroupsSchemaType;
   categories: CategoriesSchemaType;
-  groupNameDictionary: NameSlugDescriptionLookup;
 };
 
 type SyncDomainsType =

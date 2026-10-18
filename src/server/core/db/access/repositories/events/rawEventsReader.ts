@@ -167,14 +167,6 @@ export class RawEventsReader {
     });
   }
 
-  async allRawEvents() {
-    return await this.db
-      .selectFrom("events")
-      .selectAll()
-      .orderBy("starts_at", "asc")
-      .execute();
-  }
-
   async allRawScheduledEvents(): Promise<Selectable<Events>[]> {
     return this.db
       .selectFrom("events")
@@ -241,15 +233,6 @@ export class RawEventsReader {
     }
   }
 
-  async rawById(id: EventSchemaType["id"]): Promise<Selectable<Events>> {
-    return await this.db
-      .selectFrom("events")
-      .selectAll()
-      .where("id", "=", id)
-      .limit(1)
-      .executeTakeFirstOrThrow();
-  }
-
   async rawByIds(ids: EventSchemaType["id"][]) {
     const result = await this.db
       .selectFrom("events as e")
@@ -306,30 +289,6 @@ export class RawEventsReader {
         },
       };
     });
-  }
-
-  async rawByGroupId(
-    group_id: Selectable<Events>["group_id"],
-  ): Promise<Selectable<Events>[]> {
-    return await this.db
-      .selectFrom("events")
-      .selectAll()
-      .where("group_id", "=", group_id)
-      .where("status", "=", "scheduled")
-      .orderBy("starts_at", "asc")
-      .execute();
-  }
-
-  async rawCancelledByGroupId(
-    group_id: GroupSchemaType["id"],
-  ): Promise<Selectable<Events>[]> {
-    return await this.db
-      .selectFrom("events")
-      .selectAll()
-      .where("group_id", "=", group_id)
-      .where("status", "=", "cancelled")
-      .orderBy("starts_at", "asc")
-      .execute();
   }
 
   async rawSuggestByTitle(

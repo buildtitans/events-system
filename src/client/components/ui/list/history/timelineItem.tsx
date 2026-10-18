@@ -29,9 +29,7 @@ import {
 } from "@/src/client/styles/sx/groupHistoryListItem";
 
 type TimelineItemProps = {
-  historyLog: GroupEventSummarySchemaType;
-  rsvpStatus: EventAttendantsSchemaType["status"];
-  isMobile: boolean;
+  historyLog: GroupEventSummarySchemaType["event"];
   attendanceRecord: string;
 };
 

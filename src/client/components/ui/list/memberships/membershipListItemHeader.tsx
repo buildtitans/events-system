@@ -1,5 +1,8 @@
 import { JSX } from "react";
-import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import {
+  UserMembershipSchemaType,
+  UserMembershipSurfaceSchemaType,
+} from "@/src/schemas/groups/userMembershipSchema";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -20,11 +23,13 @@ import {
 } from "@/src/client/styles/sx/membershipListItem";
 
 type MembershipListItemHeaderProps = {
-  membership: UserMembershipSchemaType;
+  membership: UserMembershipSurfaceSchemaType["membership"];
+  meta: UserMembershipSurfaceSchemaType["meta"];
   handleClick: (slug: UserMembershipSchemaType["group_slug"]) => void;
 };
 
 export default function MembershipListItemHeader({
+  meta,
   membership,
   handleClick,
 }: MembershipListItemHeaderProps): JSX.Element {
@@ -63,7 +68,8 @@ export default function MembershipListItemHeader({
         <Box sx={getMembershipMetaChipSx(true)}>
           <GroupsRoundedIcon sx={getMembershipMetaIconSx(true)} />
           <Typography variant="caption" sx={{ fontWeight: 700 }}>
-            {membership.member_count} {getGroupHeadcountDetails(membership.member_count)}
+            {meta.member_headcount}{" "}
+            {getGroupHeadcountDetails(meta.member_headcount)}
           </Typography>
         </Box>
 
@@ -81,8 +87,7 @@ export default function MembershipListItemHeader({
 }
 
 function getGroupHeadcountDetails(count: number): string {
-
-  if(count >= 2) return "members";
+  if (count >= 2) return "members";
 
   return "member";
-};
+}

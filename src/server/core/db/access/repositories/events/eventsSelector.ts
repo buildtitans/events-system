@@ -21,10 +21,7 @@ export interface IEventsSelector {
   nextEventByGroupId(
     group_id: string,
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
-  allStatuses(): Promise<EventSchemaType[]>;
   allScheduled(): Promise<EventSchemaType[]>;
-  cancelledByGroupId(group_id: string): Promise<EventSchemaType[]>;
-  byId(event_id: EventSchemaType["id"]): Promise<EventSchemaType>;
   byIds(
     ids: EventSchemaType["id"][],
   ): Promise<EventDiscoverySummarySchemaType[]>;
@@ -70,25 +67,9 @@ export class EventsSelector implements IEventsSelector {
     return this.validate.nextEvent(nextEvent);
   }
 
-  async allStatuses(): Promise<EventSchemaType[]> {
-    const raw = await this.read.allRawEvents();
-    return this.validate.events(raw);
-  }
-
   async allScheduled(): Promise<EventSchemaType[]> {
     const raw = await this.read.allRawScheduledEvents();
     return this.validate.events(raw);
-  }
-
-  async cancelledByGroupId(group_id: string): Promise<EventSchemaType[]> {
-    const raw = await this.read.rawCancelledByGroupId(group_id);
-    return this.validate.events(raw);
-  }
-
-  async byId(event_id: EventSchemaType["id"]): Promise<EventSchemaType> {
-    const raw = await this.read.rawById(event_id);
-
-    return this.validate.event(raw);
   }
 
   async byIds(ids: EventSchemaType["id"][]) {

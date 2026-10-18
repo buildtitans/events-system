@@ -19,19 +19,17 @@ export class SyncDomainsService implements ISyncDomainsService {
   }
 
   private async runSync(): Promise<SyncResults> {
-    const [events, groups, categories, groupNameDictionary] =
+    const [events, groups, categories] =
       await Promise.allSettled([
-        this.client.events.layout.allActive.query(),
-        this.client.groups.read.select.discovery.query(),
+        this.client.layouts.events.discovery.query(),
+        this.client.groups.read.select.list.query(),
         this.client.categories.getAllCategories.query(),
-        this.client.groups.lookup.groupNames.query(),
       ]);
 
     return {
       events,
       groups,
       categories,
-      groupNameDictionary,
     } satisfies SyncResults;
   }
 
@@ -54,10 +52,6 @@ export class SyncDomainsService implements ISyncDomainsService {
         events: this.valueOrFallback(results.events, []),
         groups: this.valueOrFallback(results.groups, []),
         categories: this.valueOrFallback(results.categories, []),
-        groupNameDictionary: this.valueOrFallback(
-          results.groupNameDictionary,
-          {},
-        ),
       } satisfies DomainStateType,
     };
   }

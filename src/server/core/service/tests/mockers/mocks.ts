@@ -113,11 +113,8 @@ function createMockEventsRepo() {
     select: {
       hydrate: jest.fn(),
       search: jest.fn(),
-      allStatuses: jest.fn(),
       allScheduled: jest.fn(),
       discovery: jest.fn(),
-      cancelledByGroupId: jest.fn(),
-      byId: jest.fn(),
       byIds: jest.fn(),
       byGroupId: jest.fn(),
     },
@@ -134,9 +131,6 @@ function createMockGroupsRepo() {
       popular: jest.fn(),
       archives: jest.fn(),
       all: jest.fn(),
-      byId: jest.fn(),
-      byIds: jest.fn(),
-      bySlug: jest.fn(),
       byOrganizerId: jest.fn(),
       search: jest.fn(),
     },
@@ -149,14 +143,9 @@ function createMockGroupsRepo() {
 function createMockGroupMembersRepo() {
   return {
     select: {
-      all: jest.fn(),
-      byUserId: jest.fn(),
-      allMembers: jest.fn(),
       memberIds: jest.fn(),
       role: jest.fn(),
-      organizer: jest.fn(),
       memberships: jest.fn(),
-      memberCount: jest.fn(),
     },
     write: {
       addOrganizer: jest.fn(),
@@ -172,8 +161,6 @@ function createMockEventAttendantsRepo() {
       allRecords: jest.fn(),
       rsvps: jest.fn(),
       rsvp: jest.fn(),
-      attendant: jest.fn(),
-      attendants: jest.fn(),
     },
     write: {
       updateAttendanceStatus: jest.fn(),

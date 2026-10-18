@@ -10,9 +10,6 @@ import {
 export interface IGroupsSelector {
   hydrateGroup(id: GroupSchemaType["id"]): Promise<GroupHydratedSchemaType>;
   all(): Promise<GroupSchemaType[]>;
-  byId(id: GroupSchemaType["id"]): Promise<GroupSchemaType>;
-  byIds(ids: GroupSchemaType["id"][]): Promise<GroupSchemaType[]>;
-  bySlug(slug: GroupSchemaType["slug"]): Promise<GroupSchemaType>;
   byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
   ): Promise<GroupSchemaType[]>;
@@ -49,21 +46,6 @@ export class GroupsSelector implements IGroupsSelector {
   async archives(id: GroupSchemaType["id"]) {
     const archives = await this.read.archivedEventsWithAttendance(id);
     return this.validator.archives(archives);
-  }
-
-  async byId(id: GroupSchemaType["id"]): Promise<GroupSchemaType> {
-    const raw = await this.read.rawById(id);
-    return this.validator.group(raw);
-  }
-
-  async byIds(ids: GroupSchemaType["id"][]): Promise<GroupSchemaType[]> {
-    const raw = await this.read.rawByIds(ids);
-    return this.validator.groups(raw);
-  }
-
-  async bySlug(slug: GroupSchemaType["slug"]): Promise<GroupSchemaType> {
-    const raw = await this.read.rawBySlug(slug);
-    return this.validator.group(raw);
   }
 
   async byOrganizerId(

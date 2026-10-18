@@ -1,6 +1,5 @@
 import { Selectable } from "kysely";
 import { EventAttendants } from "@/src/server/core/db/types/db";
-import { SelectedAttendant } from "../../types/types";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IEventAttendantsReader {
@@ -13,14 +12,6 @@ export interface IEventAttendantsReader {
     event_id: string;
   }): Promise<{ status: string } | undefined>;
   allRawRecords(): Promise<Selectable<EventAttendants>[]>;
-  rawAttendant({
-    user_id,
-    event_id,
-  }: {
-    user_id: string;
-    event_id: string;
-  }): Promise<SelectedAttendant>;
-  allRawAttendants(event_id: string): Promise<Selectable<EventAttendants>[]>;
 }
 
 export type RawRsvp = {

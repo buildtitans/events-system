@@ -17,7 +17,6 @@ describe("MembershipHandler", () => {
   let addNewMemberInDb: jest.Mock;
   let removeMemberInDb: jest.Mock;
   let getMembershipRoleInDb: jest.Mock;
-  let getMemberCountInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -25,7 +24,6 @@ describe("MembershipHandler", () => {
     addNewMemberInDb = db.groupMembers.write.newMember as jest.Mock;
     removeMemberInDb = db.groupMembers.write.removeMember as jest.Mock;
     getMembershipRoleInDb = db.groupMembers.select.role as jest.Mock;
-    getMemberCountInDb = db.groupMembers.select.memberCount as jest.Mock;
     handler = new MembershipHandler(db, policyMock);
   });
 
@@ -161,16 +159,6 @@ describe("MembershipHandler", () => {
       );
 
       expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
-    });
-  });
-
-  describe("getGroupHeadCount", () => {
-    it("returns the number of members in the group", async () => {
-      getMemberCountInDb.mockResolvedValue(3);
-
-      await expect(handler.getGroupHeadCount(groupId)).resolves.toBe(3);
-
-      expect(getMemberCountInDb).toHaveBeenCalledWith(groupId);
     });
   });
 });

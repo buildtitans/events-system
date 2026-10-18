@@ -1,15 +1,11 @@
-import { Kysely, Selectable } from "kysely";
-import { DB, GroupMembers } from "@/src/server/core/db/types/db";
+import { Kysely } from "kysely";
+import { DB } from "@/src/server/core/db/types/db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 import { GroupScheduleSchemaType } from "../../../../../../schemas/groups/userMembershipSchema";
 
 export class RawGroupMembersReader {
   constructor(private readonly db: Kysely<DB>) {}
-
-  async allRawMembers(): Promise<Selectable<GroupMembers>[]> {
-    return await this.db.selectFrom("group_members").selectAll().execute();
-  }
 
   async byUserId(user_id: AuthenticatedUserId) {
     const todayStart = new Date();
@@ -95,39 +91,6 @@ export class RawGroupMembersReader {
     });
   }
 
-  async rawMemberCount(group_id: GroupMemberSchemaType["group_id"]) {
-    return await this.db
-      .selectFrom("group_members")
-      .where("group_id", "=", group_id)
-      .select((eb) => [
-        eb.fn
-          .countAll()
-          .filterWhere("role", "in", ["member", "organizer"])
-          .as("member_count"),
-      ])
-      .executeTakeFirstOrThrow();
-  }
-
-  async rawByUserId(
-    user_id: GroupMemberSchemaType["user_id"],
-  ): Promise<Selectable<GroupMembers>[]> {
-    return await this.db
-      .selectFrom("group_members")
-      .selectAll()
-      .where("user_id", "=", user_id)
-      .execute();
-  }
-
-  async rawByGroupId(
-    group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<Selectable<GroupMembers>[]> {
-    return await this.db
-      .selectFrom("group_members")
-      .selectAll()
-      .where("group_id", "=", group_id)
-      .execute();
-  }
-
   async rawRoleInGroup(
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
@@ -139,17 +102,6 @@ export class RawGroupMembersReader {
       .select("role")
       .orderBy("joined_at", "asc")
       .executeTakeFirst();
-  }
-
-  async rawOrganizer(
-    group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<Selectable<GroupMembers>> {
-    return await this.db
-      .selectFrom("group_members")
-      .selectAll()
-      .where("group_id", "=", group_id)
-      .where("role", "=", "organizer")
-      .executeTakeFirstOrThrow();
   }
 
   async rawMemberIds(
