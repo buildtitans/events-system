@@ -10,7 +10,7 @@ export default function ScheduledEvents({ layout }: { layout: LayoutSlotSchemaTy
     return (
         <Box
         >
-            <RenderEventsLayout 
+            <RenderEventsLayout withinGroup
             slots={layout}
             handleBlur={handleBlur}
             handleFocus={handleFocus}

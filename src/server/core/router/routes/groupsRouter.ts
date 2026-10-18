@@ -6,63 +6,74 @@ import {
 import {
   searchInputValidator,
   newGroupInputValidator,
-  groupSlugInputValidator,
-  groupsByCategoryInputValidator,
   groupIdInputValidator,
+  groupSlugInput,
 } from "../inputValidators/inputValidation";
 
-const selectGroupsRouter = router({
-  all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.getAllGroups();
+const groupHydrationRouter = router({
+  group: publicProcedure.input(groupSlugInput).query(async ({ ctx, input }) => {
+    return await ctx.api.services.domains.groups.query.hydrateGroup(input);
   }),
+});
 
-  bySlug: publicProcedure
-    .input(groupSlugInputValidator)
+const selectGroupEvents = router({
+  nextEvent: publicProcedure
+    .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getGroupFromSlug(
+      return await ctx.api.services.domains.events.query.nextEventForGroup(
         input,
       );
     }),
-
-  categoryById: publicProcedure
+  history: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getCategoryById(input);
+      return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
+        input,
+      );
     }),
-
-  byCategory: publicProcedure
-    .input(groupsByCategoryInputValidator)
+  list: publicProcedure
+    .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.byCategory(input);
+      return await ctx.api.services.domains.events.query.getGroupEvents(input);
     }),
+  archives: protectedProcedure
+    .input(groupIdInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.archives(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+});
 
+const searchGroups = router({
+  list: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.groups.query.discovery();
+  }),
   popular: publicProcedure.query(async ({ ctx }) => {
     return await ctx.api.services.domains.participations.census.getPopularGroups();
   }),
-
   search: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.groups.query.searchGroups(input);
     }),
-
   suggest: publicProcedure
     .input(searchInputValidator)
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.groups.query.suggestGroups(input);
     }),
+  byCategory: publicProcedure
+    .input(searchInputValidator)
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.byCategory(input);
+    }),
 });
 
-const lookupRouter = router({
-  groupNames: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.getGroupNameDictionary();
-  }),
-
-  nextEvents: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.events.timeline.getNextEventMap(
-      ctx.req.user?.id,
-    );
-  }),
+const readGroupsRouter = router({
+  hydrate: groupHydrationRouter,
+  events: selectGroupEvents,
+  select: searchGroups,
 });
 
 const writeGroupsRouter = router({
@@ -77,7 +88,6 @@ const writeGroupsRouter = router({
 });
 
 export const groupRouter = router({
-  select: selectGroupsRouter,
+  read: readGroupsRouter,
   write: writeGroupsRouter,
-  lookup: lookupRouter,
 });

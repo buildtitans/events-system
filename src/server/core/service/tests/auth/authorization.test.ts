@@ -1,9 +1,8 @@
-import {
-  AuthenticatedUserId,
-  Authorization,
-} from "@/src/server/core/service/auth/authorization";
+import { USER_ID } from "../mockers/mockValues";
+import { Authorization } from "@/src/server/core/service/auth/authorization";
 import { TRPCResolverError } from "@/src/server/core/lib/errors/trpcResolverError";
 import { authMock } from "@/src/server/core/service/tests/mockers/mocks";
+import { AuthenticatedUserId } from "../../handlers/session/SessionHandler";
 
 describe("Authorization", () => {
   let policy: Authorization;
@@ -12,12 +11,12 @@ describe("Authorization", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     policy = new Authorization(authMock);
-    actor = policy.requireAuthenticated("user-1");
+    actor = policy.requireAuthenticated(USER_ID);
   });
 
   describe("requireAuthenticated", () => {
     it("returns the user id when one is provided", () => {
-      expect(policy.requireAuthenticated("user-1")).toBe("user-1");
+      expect(policy.requireAuthenticated(USER_ID)).toBe("user-1");
     });
 
     it("throws a 401 error when the user is not authenticated", () => {
@@ -59,9 +58,9 @@ describe("Authorization", () => {
     it("throws a 403 error when the user is not permitted to create an event", async () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
-      await expect(
-        policy.requireOrganizer(actor, "group-1"),
-      ).rejects.toThrow("Permission to manage this group denied");
+      await expect(policy.requireOrganizer(actor, "group-1")).rejects.toThrow(
+        "Permission to manage this group denied",
+      );
     });
   });
 
@@ -83,9 +82,9 @@ describe("Authorization", () => {
     it("throws a 403 error when the user is not permitted to manage the group", async () => {
       (authMock.can as jest.Mock).mockResolvedValue(false);
 
-      await expect(
-        policy.requireOrganizer(actor, "group-1"),
-      ).rejects.toThrow("Permission to manage this group denied");
+      await expect(policy.requireOrganizer(actor, "group-1")).rejects.toThrow(
+        "Permission to manage this group denied",
+      );
     });
   });
 

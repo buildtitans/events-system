@@ -8,15 +8,16 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
+import { NextEventForGroupSummarySchemaType } from "@/src/schemas/groups/groupSchema";
 
 export type UpNextEventProps = {
-  event: EventSchemaType;
+  hydrated: NextEventForGroupSummarySchemaType;
   onAction: (eventId: EventSchemaType["id"]) => void;
   actionLabel?: string;
 };
 
-export default function UpNextEvent({ event, onAction }: UpNextEventProps) {
-  const startsAt = new Date(event.starts_at);
+export default function UpNextEvent({ hydrated, onAction }: UpNextEventProps) {
+  const startsAt = new Date(hydrated.event.starts_at);
   const month = startsAt.toLocaleDateString(undefined, { month: "short" });
   const day = startsAt.toLocaleDateString(undefined, { day: "numeric" });
 
@@ -24,11 +25,11 @@ export default function UpNextEvent({ event, onAction }: UpNextEventProps) {
     <Box
       component="article"
       sx={andHoverSx}
-      onClick={() => onAction(event.id)}
+      onClick={() => onAction(hydrated.event.id)}
       onKeyDown={(keyboardEvent) => {
         if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
           keyboardEvent.preventDefault();
-          onAction(event.id);
+          onAction(hydrated.event.id);
         }
       }}
       role="button"
@@ -57,28 +58,30 @@ export default function UpNextEvent({ event, onAction }: UpNextEventProps) {
           </Stack>
 
           <Stack gap={1} minWidth={0}>
-            {event.tag && <Chip label={event.tag} size="small" sx={tagSx} />}
+            {hydrated.event.tag && (
+              <Chip label={hydrated.event.tag} size="small" sx={tagSx} />
+            )}
             <Typography component="h3" sx={titleSx}>
-              {event.title}
+              {hydrated.event.title}
             </Typography>
           </Stack>
         </Stack>
 
         <Typography component="p" sx={descriptionSx}>
-          {event.description}
+          {hydrated.event.description}
         </Typography>
 
         <Stack gap={1.25} sx={detailsSx}>
           <Stack direction="row" alignItems="center" gap={1}>
             <CalendarMonthRoundedIcon sx={detailIconSx} />
             <Typography component="span" sx={detailTextSx}>
-              {toMonthDayYearHour(event.starts_at)}
+              {toMonthDayYearHour(hydrated.event.starts_at)}
             </Typography>
           </Stack>
           <Stack direction="row" alignItems="center" gap={1}>
             <LocationOnRoundedIcon sx={detailIconSx} />
             <Typography component="span" sx={detailTextSx}>
-              {event.meeting_location}
+              {hydrated.event.meeting_location}
             </Typography>
           </Stack>
         </Stack>

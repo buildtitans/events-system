@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import type {
-  GroupArchivesState,
-  GroupCategoryState,
-  NextEventState,
-} from "@/src/lib/store/slices/groups/types";
+import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
   GroupEventsCalandarState,
   GroupHydrated,
@@ -13,49 +9,33 @@ import type {
   CurrentDisplay,
 } from "@/src/lib/store/slices/groups/types";
 import type { OpenedGroupPayload } from "../../services/types";
-import { EventsPages } from "../events/types";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
   hydrateGroup,
   refreshGroupEvents,
   refreshArchivedEvents,
   scheduleNewEvent,
 } from "./thunks";
-import { PastEventAttendanceLookup } from "@/src/server/core/service/types";
+
+import { ArchivedEventSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type InitialState = {
   group: GroupHydrated;
-  category: GroupCategoryState;
   events: EventsOfGroup;
   currPage: number;
   activeSection: CurrentDisplay;
   history: GroupHistoryType;
   archives: GroupArchivesState;
-  numMembers: number;
-  organizerEmail: string;
   calandar: GroupEventsCalandarState;
-  nextEvent: NextEventState;
-  attendanceHistoryLookup: Record<
-    EventAttendantsSchemaType["event_id"],
-    number
-  >;
-  archivesAttendance: Record<EventAttendantsSchemaType["event_id"], number>;
 };
 
 const initialState: InitialState = {
   group: { status: "initial" },
-  category: { status: "initial" },
   events: { status: "initial" },
   history: { status: "initial" },
   archives: { status: "initial" },
   currPage: 0,
   activeSection: "overview",
-  numMembers: 0,
-  nextEvent: { status: "initial" },
-  organizerEmail: "N/A",
   calandar: { status: "initial" },
-  attendanceHistoryLookup: {},
-  archivesAttendance: {},
 };
 
 const OpenedGroupSlice = createSlice({
@@ -93,32 +73,12 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.archives = action.payload;
     },
-    getNumMembers: (state: InitialState, action: PayloadAction<number>) => {
-      state.numMembers = action.payload;
-    },
     getCalandarEvents: (
       state: InitialState,
       action: PayloadAction<GroupEventsCalandarState>,
     ) => {
       state.calandar = action.payload;
     },
-    getPastEventsAttendanceRecords: (
-      state: InitialState,
-      action: PayloadAction<
-        Record<EventAttendantsSchemaType["event_id"], number>
-      >,
-    ) => {
-      state.attendanceHistoryLookup = action.payload;
-    },
-    getArchivesAttendanceRecords: (
-      state: InitialState,
-      action: PayloadAction<
-        Record<EventAttendantsSchemaType["event_id"], number>
-      >,
-    ) => {
-      state.archivesAttendance = action.payload;
-    },
-
     clearOpenedGroupSlice: () => initialState,
   },
 
@@ -132,7 +92,6 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to refresh archived events",
       };
-      state.archivesAttendance = {};
     });
 
     builder.addCase(refreshArchivedEvents.pending, (state: InitialState) => {
@@ -143,21 +102,16 @@ const OpenedGroupSlice = createSlice({
       refreshArchivedEvents.fulfilled,
       (
         state: InitialState,
-        action: PayloadAction<{
-          archives: EventSchemaType[];
-          archivedAttendanceRecords: PastEventAttendanceLookup;
-        }>,
+        action: PayloadAction<ArchivedEventSchemaType[]>,
       ) => {
         const payload = action.payload;
-        if (payload.archives.length > 0) {
-          state.archives = { status: "ready", data: payload.archives };
-          state.archivesAttendance = payload.archivedAttendanceRecords;
+        if (payload.length > 0) {
+          state.archives = { status: "ready", data: payload };
         } else {
           state.archives = {
             status: "n/a",
             message: "This group has no archived events",
           };
-          state.archivesAttendance = {};
         }
       },
     );
@@ -171,36 +125,19 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to refresh group calandar",
       };
-      state.nextEvent = {
-        status: "failed",
-        error: "Failed to refresh soonest upcoming event",
-      };
     });
     builder.addCase(refreshGroupEvents.pending, (state: InitialState) => {
       state.calandar = { status: "pending" };
       state.events = { status: "refreshing" };
-      state.nextEvent = { status: "pending" };
     });
     builder.addCase(
       refreshGroupEvents.fulfilled,
-      (
-        state: InitialState,
-        action: PayloadAction<{
-          refreshedEventsLayout: EventsPages;
-          calandarEvents: EventSchemaType[];
-          nextEvent: EventSchemaType | undefined;
-        }>,
-      ) => {
+      (state: InitialState, action) => {
         const { refreshedEventsLayout, calandarEvents, nextEvent } =
           action.payload;
 
-        if (nextEvent) {
-          state.nextEvent = { status: "ready", data: nextEvent };
-        } else {
-          state.nextEvent = {
-            status: "n/a",
-            message: "This Group does not have any upcoming events",
-          };
+        if (state.group.status === "ready") {
+          state.group.data.meta.next_event = nextEvent;
         }
 
         if (refreshedEventsLayout.length > 0) {
@@ -236,14 +173,6 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to hydrate selected group and associated schedule",
       };
-      state.nextEvent = {
-        status: "failed",
-        error: "Failed to find the next scheduled event for this group",
-      };
-      state.category = {
-        status: "failed",
-        error: "Failed to find the category of this group",
-      };
     });
 
     builder.addCase(hydrateGroup.pending, (state: InitialState) => {
@@ -251,26 +180,14 @@ const OpenedGroupSlice = createSlice({
       state.events = { status: "pending" };
       state.calandar = { status: "pending" };
       state.history = { status: "initial" };
-      state.nextEvent = { status: "pending" };
-      state.category = { status: "pending" };
     });
 
     builder.addCase(
       hydrateGroup.fulfilled,
       (state: InitialState, action: PayloadAction<OpenedGroupPayload>) => {
-        const {
-          group,
-          layout,
-          calandar,
-          numMembers,
-          organizerEmail,
-          nextEvent,
-          category,
-        } = action.payload;
+        const { hydrated, layout, calandar } = action.payload;
 
-        state.group = { status: "ready", data: group };
-        state.numMembers = numMembers;
-        state.organizerEmail = organizerEmail;
+        state.group = { status: "ready", data: hydrated };
 
         if (layout.length > 0) {
           state.events = { status: "ready", data: layout };
@@ -278,24 +195,6 @@ const OpenedGroupSlice = createSlice({
           state.events = {
             status: "n/a",
             message: "No events have been scheduled for this group",
-          };
-        }
-
-        if (category) {
-          state.category = { status: "ready", data: category };
-        } else {
-          state.category = {
-            status: "n/a",
-            message: "Could not find a valid category for this group",
-          };
-        }
-
-        if (nextEvent) {
-          state.nextEvent = { status: "ready", data: nextEvent };
-        } else {
-          state.nextEvent = {
-            status: "n/a",
-            message: "This Group does not have any upcoming events",
           };
         }
 
@@ -319,10 +218,7 @@ export const {
   getGroupHistory,
   populateGroupArchives,
   clearOpenedGroupSlice,
-  getNumMembers,
   getCalandarEvents,
-  getPastEventsAttendanceRecords,
-  getArchivesAttendanceRecords,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

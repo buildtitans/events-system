@@ -1,19 +1,17 @@
 "use client";
 import List from "@mui/material/List";
 import Container from "@mui/material/Container";
-import {
-  EventsArraySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
+import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import { createArchivedEventHeadcount } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import { useCallback } from "react";
+import { ArchivedEventSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type HistoryTimelineProps = {
-  archivedEvents: EventsArraySchemaType;
+  archivedEvents: ArchivedEventSchemaType[];
   isMobile: boolean;
 };
 
@@ -23,9 +21,6 @@ export default function Archives({
 }: HistoryTimelineProps) {
   const { handleOpenEvent } = useSelectEvent();
   const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
-  const archivedRecords = useSelector(
-    (s: RootState) => s.openGroup.archivesAttendance,
-  );
 
   const openArchivedEvent = useCallback(
     async (event_id: EventSchemaType["id"]) => {
@@ -53,18 +48,17 @@ export default function Archives({
           gap: 2,
         }}
       >
-        {archivedEvents.map((archive: EventSchemaType) => {
-          const numberMarkedAttending = archivedRecords[archive.id];
+        {archivedEvents.map((archive) => {
+          const attending =
+            archive.attendance.interested + archive.attendance.going;
 
           return (
             <ArchivedEvent
               isMobile={isMobile}
-              archivedEvent={archive}
-              key={archive.id}
-              rsvpStatus={attendance[archive.id]}
-              attendanceRecord={createArchivedEventHeadcount(
-                numberMarkedAttending,
-              )}
+              archivedEvent={archive.event}
+              key={archive.event.id}
+              rsvpStatus={attendance[archive.event.id]}
+              attendanceRecord={createArchivedEventHeadcount(attending)}
               openArchivedEvent={openArchivedEvent}
             />
           );

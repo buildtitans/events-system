@@ -1,8 +1,7 @@
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../slices/events/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 
 export type SyncOpenGroupPayload =
   | {
@@ -15,12 +14,8 @@ export type SyncOpenGroupPayload =
     };
 
 export type OpenedGroupPayload = {
-  group: GroupSchemaType;
+  hydrated: GroupHydratedSchemaType;
   layout: EventsPages;
   role: GroupMemberSchemaType["role"];
-  numMembers: number;
-  organizerEmail: string;
-  calandar: EventSchemaType[];
-  nextEvent: EventSchemaType | undefined;
-  category: CategorySchemaType | undefined;
+  calandar: GroupEventSummarySchemaType[];
 };

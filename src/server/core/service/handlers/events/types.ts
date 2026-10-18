@@ -1,24 +1,22 @@
 import {
+  GroupEventSummarySchemaType,
   EventSchemaType,
   HydratedEventSchemaType,
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,
+  EventSurfaceSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
-import {
-  EventAttendantsSchemaType,
-  EventAttendantStatusSchemaType,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
+import { HydratedEvent } from "@/src/server/core/service/types";
 import {
-  HydratedEvent,
-  PastEventAttendanceLookup,
-  PastEventsResults,
-  UpComingEventsLookup,
-} from "@/src/server/core/service/types";
-import { GroupSchemaType } from "@/src/schemas//groups/groupSchema";
+  GroupSchemaType,
+  NextEventForGroupSummarySchemaType,
+} from "@/src/schemas//groups/groupSchema";
 import { IDBClient } from "../../../db/access/client/dbClient";
 import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export type EventHydrationDb = Pick<
   IDBClient,
@@ -29,34 +27,27 @@ export type EventQueryDb = Pick<IDBClient, "events" | "eventAttendants">;
 
 export type EventLayoutDb = Pick<IDBClient, "events" | "eventAttendants">;
 
-export type EventTimelineDb = Pick<
-  IDBClient,
-  "events" | "eventAttendants" | "groupMembers"
->;
+export type EventTimelineDb = Pick<IDBClient, "events">;
 
 export type EventLifecycleDb = Pick<IDBClient, "events">;
 
 export interface IEventQueryHandler {
-  getAllEvents(): Promise<EventSchemaType[]>;
-  allActive(): Promise<EventSchemaType[]>;
   nextEventForGroup(
     group_id: GroupSchemaType["id"],
-  ): Promise<EventSchemaType | undefined>;
+  ): Promise<NextEventForGroupSummarySchemaType | undefined>;
   searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
   suggestEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
-  getEventById(event_id: string): Promise<EventSchemaType>;
-  getEventAttendants(event_id: string): Promise<EventAttendantsSchemaType[]>;
-  getGroupEvents(group_id: string): Promise<EventSchemaType[]>;
+  getGroupEvents(group_id: string): Promise<GroupEventSummarySchemaType[]>;
 }
 
 export interface IEventLifecycleHandler {
   updateEventStatus(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }>;
   createEvent(
     newEvent: NewEventInputSchemaType,
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   >;
@@ -64,35 +55,25 @@ export interface IEventLifecycleHandler {
 
 export interface IEventLayoutHandler {
   byIds(ids: EventSchemaType["id"][]): Promise<PaginatedLayoutSchemaType>;
-  all(): Promise<PaginatedLayoutSchemaType>;
-  active(): Promise<PaginatedLayoutSchemaType>;
+  discovery(): Promise<PaginatedLayoutSchemaType>;
   forGroup(groupId: string): Promise<PaginatedLayoutSchemaType>;
   popular(): Promise<PaginatedLayoutSchemaType>;
   upcoming(): Promise<PaginatedLayoutSchemaType>;
 }
 
 export interface IEventLayoutComposer {
-  compileLayout(events: EventSchemaType[]): PaginatedLayoutSchemaType;
+  compileLayout(events: EventSurfaceSchemaType[]): PaginatedLayoutSchemaType;
 }
 
 export interface IEventTimelineHandler {
-  getPastEventsForGroup(group_id: string): Promise<PastEventsResults>;
-  getAttendantsOfPastEvents(ids: string[]): Promise<PastEventAttendanceLookup>;
-  getArchivedGroupEvents(
-    user_id: string | null | undefined,
+  getPastEventsForGroup(
     group_id: string,
-  ): Promise<{
-    archives: EventSchemaType[];
-    archivedAttendanceRecords: PastEventAttendanceLookup;
-  }>;
-  getNextEventMap(
-    user_id: string | null | undefined,
-  ): Promise<UpComingEventsLookup>;
+  ): Promise<GroupEventSummarySchemaType[]>;
 }
 
 export interface IEventHydrationHandler {
   event(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
   ): Promise<HydratedEventSchemaType>;
 }

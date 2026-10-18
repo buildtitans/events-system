@@ -1,20 +1,15 @@
-import {
-  AsyncThunkConfig,
-  createAsyncThunk,
-  createSlice,
-  GetThunkAPI,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
-import { trpcClient } from "@/src/trpc/trpcClient";
-import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { enqueueDrawer } from "../rendering/RenderingSlice";
+import { hydrateEventDrawer } from "./thunks";
 
-export type OpenedEventState = AsyncState<EventSchemaType, "Event not found">;
+export type OpenedEventState = AsyncState<
+  HydratedEventSchemaType,
+  "Event not found"
+>;
 
 export type NumberOfAttendantsType =
   | { status: "initial" }
@@ -49,68 +44,18 @@ const initialState: InitialState = {
   drawerViewerRole: "anonymous",
 };
 
-export const hydrateEventDrawer = createAsyncThunk(
-  "EventDrawer/hydrate",
-  async (
-    id: EventSchemaType["id"],
-    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
-  ) => {
-    thunkAPI.dispatch(enqueueDrawer("event drawer"));
-
-    try {
-      const result = await trpcClient.events.select.hydrateEvent.query(id);
-
-      if (!result) {
-        throw new Error("Failed to hydrate selected event");
-      }
-
-      return result;
-    } catch (err) {
-      logCaughtError("hydrateEventDrawer()", err);
-      return thunkAPI.rejectWithValue(err);
-    }
-  },
-);
-
 const EventDrawerSlice = createSlice({
   name: "EventDrawer",
   initialState: initialState,
   reducers: {
-    fillEventDrawer: (
-      state: InitialState,
-      action: PayloadAction<OpenedEventState>,
-    ) => {
-      state.event = action.payload;
-    },
-    getDrawerViewerRole: (
-      state: InitialState,
-      action: PayloadAction<GroupMemberSchemaType["role"]>,
-    ) => {
-      state.drawerViewerRole = action.payload;
-    },
-    getNumAttendants: (
-      state: InitialState,
-      action: PayloadAction<NumberOfAttendantsType>,
-    ) => {
-      state.numberAttending = action.payload;
-    },
-    getNumInterested: (
-      state: InitialState,
-      action: PayloadAction<NumberOfAttendantsType>,
-    ) => {
-      state.numberInterested = action.payload;
-    },
-    getGroupName: (state: InitialState, action: PayloadAction<NameOfGroup>) => {
-      state.groupName = action.payload;
-    },
-    getGroupSlug: (state: InitialState, action: PayloadAction<GroupSlug>) => {
-      state.groupSlug = action.payload;
-    },
-    getUserAttendanceStatus: (
+    updateRsvpStatus: (
       state: InitialState,
       action: PayloadAction<EventAttendantsSchemaType["status"]>,
     ) => {
       state.viewerAttendanceStatus = action.payload;
+      if (state.event.status === "ready") {
+        state.event.data.meta.user.status = action.payload;
+      }
     },
     closeEventDrawer: () => initialState,
   },
@@ -124,24 +69,7 @@ const EventDrawerSlice = createSlice({
     builder.addCase(
       hydrateEventDrawer.fulfilled,
       (state: InitialState, action) => {
-        const { meta, event } = action.payload;
-        const eventMeta = meta.event;
-        const userMeta = meta.user;
-
-        state.groupName = { status: "ready", data: eventMeta.group_name };
-        state.drawerViewerRole = userMeta.role;
-        state.groupSlug = { status: "ready", data: eventMeta.group_slug };
-        state.numberAttending = {
-          status: "ready",
-          data: eventMeta.attendants.going,
-        };
-        state.numberInterested = {
-          status: "ready",
-          data: eventMeta.attendants.interested,
-        };
-        state.viewerAttendanceStatus = userMeta.status;
-
-        state.event = { status: "ready", data: event };
+        state.event = { status: "ready", data: action.payload };
       },
     );
 
@@ -153,15 +81,6 @@ const EventDrawerSlice = createSlice({
 
 export type EventDrawerSliceType = ReturnType<typeof EventDrawerSlice.reducer>;
 
-export const {
-  fillEventDrawer,
-  closeEventDrawer,
-  getNumAttendants,
-  getNumInterested,
-  getGroupName,
-  getGroupSlug,
-  getUserAttendanceStatus,
-  getDrawerViewerRole,
-} = EventDrawerSlice.actions;
+export const { closeEventDrawer, updateRsvpStatus } = EventDrawerSlice.actions;
 
 export default EventDrawerSlice.reducer;

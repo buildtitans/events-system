@@ -12,6 +12,46 @@ import { wait } from "@/src/lib/utils/rendering/wait";
 import { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
 import { resetPassword } from "./userSlice";
 
+export const hydrateUserMemberships = createAsyncThunk(
+  "UserSlice/hydrateUserMemberships",
+  async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+    try {
+      const result = await trpcClient.groupMembers.select.memberships.query();
+
+      if (!result) {
+        throw new Error(`Failed to hydrate user memberships`);
+      }
+
+      return result;
+    } catch (err) {
+      logCaughtError("UserSlice.hydrateUserMemberships()", err);
+      return thunkAPI.rejectWithValue(
+        err instanceof Error ? err.message : "Failed to hydrate memberships",
+      );
+    }
+  },
+);
+
+export const hydrateUserRsvps = createAsyncThunk(
+  "UserSlice/hydrateUserRsvps",
+  async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+    try {
+      const result = await trpcClient.eventAttendants.select.rsvps.query();
+
+      if (!result) {
+        throw new Error(`Failed to hydrate user rsvps`);
+      }
+
+      return result;
+    } catch (err) {
+      logCaughtError("UserSlice.hydrateUserRsvps()", err);
+      return thunkAPI.rejectWithValue(
+        err instanceof Error ? err.message : "Failed to hydrate memberships",
+      );
+    }
+  },
+);
+
 export const leaveGroup = createAsyncThunk(
   "UserSlice/leaveGroup",
   async (

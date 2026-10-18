@@ -1,6 +1,9 @@
 "use client";
 import { JSX } from "react";
-import type { RsvpSchemaType } from "@/src/schemas/events/rsvpSchema";
+import type {
+  RsvpSchemaType,
+  RsvpSurfaceSchemaType,
+} from "@/src/schemas/events/rsvpSchema";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
@@ -33,9 +36,11 @@ import {
 } from "@/src/client/styles/sx/rsvpListItem";
 
 type RsvpListItemProps = {
-  rsvp: RsvpSchemaType;
+  rsvp: RsvpSurfaceSchemaType;
   handleOpenEvent: (event_id: EventSchemaType["id"]) => Promise<void>;
-  handleNavigateToGroup: (slug: RsvpSchemaType["group_slug"]) => void;
+  handleNavigateToGroup: (
+    slug: RsvpSurfaceSchemaType["meta"]["group_slug"],
+  ) => void;
 };
 
 export default function RsvpListItem({
@@ -43,7 +48,7 @@ export default function RsvpListItem({
   handleOpenEvent,
   handleNavigateToGroup,
 }: RsvpListItemProps): JSX.Element {
-  const attendanceLabel = formatAttendanceStatus(rsvp.attendance_status);
+  const attendanceLabel = formatAttendanceStatus(rsvp.rsvp.attendance_status);
 
   return (
     <ListItem component="li" disablePadding sx={rsvpListItemSx}>
@@ -53,14 +58,14 @@ export default function RsvpListItem({
             <Chip
               clickable
               component="div"
-              onClick={() => handleNavigateToGroup(rsvp.group_slug)}
+              onClick={() => handleNavigateToGroup(rsvp.meta.group_slug)}
               size="small"
-              label={rsvp.group_name}
+              label={rsvp.meta.group_name}
               sx={rsvpGroupChipSx}
               icon={<GroupRoundedIcon fontSize="small" />}
             />
 
-            {rsvp.scheduled_status === "cancelled" && (
+            {rsvp.rsvp.scheduled_status === "cancelled" && (
               <Chip
                 size="small"
                 label="Cancelled"
@@ -71,22 +76,22 @@ export default function RsvpListItem({
           </Box>
 
           <Typography variant="h6" sx={rsvpEventTitleSx}>
-            {rsvp.event_title}
+            {rsvp.rsvp.event_title}
           </Typography>
 
           <Stack direction="row" sx={rsvpMetaRowSx}>
             <Box sx={getRsvpMetaChipSx(true)}>
               <EventRoundedIcon sx={getRsvpMetaIconSx(true)} />
               <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                {toMonthDayYearHour(rsvp.starts_at)}
+                {toMonthDayYearHour(rsvp.rsvp.starts_at)}
               </Typography>
             </Box>
 
-            {rsvp.location && (
+            {rsvp.rsvp.location && (
               <Box sx={getRsvpMetaChipSx()}>
                 <LocationOnRoundedIcon sx={getRsvpMetaIconSx()} />
                 <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                  {rsvp.location}
+                  {rsvp.rsvp.location}
                 </Typography>
               </Box>
             )}
@@ -102,11 +107,11 @@ export default function RsvpListItem({
               label={attendanceLabel}
               variant="filled"
               size="small"
-              sx={getRsvpAttendanceChipSx(rsvp.attendance_status)}
+              sx={getRsvpAttendanceChipSx(rsvp.rsvp.attendance_status)}
             />
             <IconButton
               aria-label="Edit RSVP status"
-              onClick={() => handleOpenEvent(rsvp.event_id)}
+              onClick={() => handleOpenEvent(rsvp.rsvp.event_id)}
               sx={rsvpEditButtonSx}
             >
               <EditIcon fontSize="small" />

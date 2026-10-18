@@ -1,3 +1,4 @@
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { EventAttendantStatusSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import {
   EventReadModelSchemaType,
@@ -14,13 +15,16 @@ export class EventHydrationHandler implements IEventHydrationHandler {
   constructor(private readonly db: EventHydrationDb) {}
 
   async event(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
   ): Promise<HydratedEventSchemaType> {
     return await this.hydrate(user_id, event_id);
   }
 
-  private async hydrate(user_id: string | undefined | null, event_id: string) {
+  private async hydrate(
+    user_id: AuthenticatedUserId | undefined | null,
+    event_id: string,
+  ) {
     const event = await this.db.events.select.hydrate(event_id);
     const userMeta = await this.getRoleAndStatus(
       user_id,
@@ -31,7 +35,7 @@ export class EventHydrationHandler implements IEventHydrationHandler {
   }
 
   private async getRoleAndStatus(
-    user_id: string | undefined | null,
+    user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
     group_id: string,
   ) {

@@ -2,28 +2,14 @@
 import List from "@mui/material/List";
 import TimelineItem from "@/src/client/components/ui/list/history/timelineItem";
 import Container from "@mui/material/Container";
-import {
-  EventsArraySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
+import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import { createAttendanceMessage } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 
 type HistoryTimelineProps = {
-  history: EventsArraySchemaType;
-  isMobile: boolean;
+  history: GroupEventSummarySchemaType[];
 };
 
-export default function HistoryTimeline({
-  history,
-  isMobile,
-}: HistoryTimelineProps) {
-  const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
-  const pastEventsRecords = useSelector(
-    (s: RootState) => s.openGroup.attendanceHistoryLookup,
-  );
-
+export default function HistoryTimeline({ history }: HistoryTimelineProps) {
   return (
     <Container
       sx={{
@@ -43,16 +29,14 @@ export default function HistoryTimeline({
           gap: 2,
         }}
       >
-        {history.map((log: EventSchemaType) => {
-          const numberAttended = pastEventsRecords[log.id];
+        {history.map((log: GroupEventSummarySchemaType) => {
+          const headcount = log.meta.attendance.going;
 
           return (
             <TimelineItem
-              isMobile={isMobile}
-              historyLog={log}
-              key={log.id}
-              rsvpStatus={attendance[log.id]}
-              attendanceRecord={createAttendanceMessage(numberAttended)}
+              historyLog={log.event}
+              key={log.event.id}
+              attendanceRecord={createAttendanceMessage(headcount)}
             />
           );
         })}

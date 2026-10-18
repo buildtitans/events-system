@@ -1,36 +1,49 @@
-import { EventsValidator } from "./eventsValidator";
+import { IEventsValidator } from "./eventsValidator";
 import { RawEventsReader } from "./rawEventsReader";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
+  GroupSchemaType,
+  NextEventForGroupSummarySchemaType,
+} from "@/src/schemas/groups/groupSchema";
+import {
+  EventDiscoverySummarySchemaType,
   EventReadModelSchemaType,
   EventsArraySchemaType,
   EventSchemaType,
+  GroupEventSummarySchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 
 export interface IEventsSelector {
+  discovery(): Promise<EventDiscoverySummarySchemaType[]>;
   hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
   search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
   suggest(query: SearchSchemaType): Promise<EventSchemaType[]>;
-  nextEventByGroupId(group_id: string): Promise<EventSchemaType | undefined>;
-  allStatuses(): Promise<EventSchemaType[]>;
+  nextEventByGroupId(
+    group_id: string,
+  ): Promise<NextEventForGroupSummarySchemaType | undefined>;
   allScheduled(): Promise<EventSchemaType[]>;
-  cancelledByGroupId(group_id: string): Promise<EventSchemaType[]>;
-  byId(event_id: EventSchemaType["id"]): Promise<EventSchemaType>;
-  byIds(ids: EventSchemaType["id"][]): Promise<EventsArraySchemaType>;
-  byGroupId(group_id: GroupSchemaType["id"]): Promise<EventsArraySchemaType>;
-  byGroupIds(groupIds: GroupSchemaType["id"][]): Promise<EventsArraySchemaType>;
+  byIds(
+    ids: EventSchemaType["id"][],
+  ): Promise<EventDiscoverySummarySchemaType[]>;
+  byGroupId(
+    group_id: GroupSchemaType["id"],
+  ): Promise<GroupEventSummarySchemaType[]>;
 }
 
 export class EventsSelector implements IEventsSelector {
   constructor(
-    private readonly validate: EventsValidator,
+    private readonly validate: IEventsValidator,
     private readonly read: RawEventsReader,
   ) {}
 
   async hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType> {
     const raw = await this.read.rawHydratedWithGroupDetails(id);
     return this.validate.eventWithGroupDetails(raw);
+  }
+
+  async discovery(): Promise<EventDiscoverySummarySchemaType[]> {
+    const raw = await this.read.discovery();
+    return this.validate.eventsForDiscovery(raw);
   }
 
   async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
@@ -46,14 +59,12 @@ export class EventsSelector implements IEventsSelector {
 
   async nextEventByGroupId(
     group_id: string,
-  ): Promise<EventSchemaType | undefined> {
-    const raw = await this.read.rawNextEventByGroupId(group_id);
-    return raw ? this.validate.event(raw) : undefined;
-  }
+  ): Promise<NextEventForGroupSummarySchemaType | undefined> {
+    const nextEvent = await this.read.rawNextEventByGroupId(group_id);
 
-  async allStatuses(): Promise<EventSchemaType[]> {
-    const raw = await this.read.allRawEvents();
-    return this.validate.events(raw);
+    if (!nextEvent) return undefined;
+
+    return this.validate.nextEvent(nextEvent);
   }
 
   async allScheduled(): Promise<EventSchemaType[]> {
@@ -61,37 +72,16 @@ export class EventsSelector implements IEventsSelector {
     return this.validate.events(raw);
   }
 
-  async cancelledByGroupId(group_id: string): Promise<EventSchemaType[]> {
-    const raw = await this.read.rawCancelledByGroupId(group_id);
-    return this.validate.events(raw);
-  }
-
-  async byId(event_id: EventSchemaType["id"]): Promise<EventSchemaType> {
-    const raw = await this.read.rawById(event_id);
-
-    return this.validate.event(raw);
-  }
-
-  async byIds(ids: EventSchemaType["id"][]): Promise<EventsArraySchemaType> {
+  async byIds(ids: EventSchemaType["id"][]) {
     const raw = await this.read.rawByIds(ids);
-    return this.validate.events(raw);
+    return this.validate.eventsForDiscovery(raw);
   }
 
   async byGroupId(
     group_id: GroupSchemaType["id"],
-  ): Promise<EventsArraySchemaType> {
-    const raw = await this.read.rawByGroupId(group_id);
+  ): Promise<GroupEventSummarySchemaType[]> {
+    const raw = await this.read.byGroupId(group_id);
 
-    return this.validate.events(raw);
-  }
-
-  async byGroupIds(
-    groupIds: GroupSchemaType["id"][],
-  ): Promise<EventsArraySchemaType> {
-    if (groupIds.length === 0) return [];
-
-    const raw = await this.read.rawByGroupIds(groupIds);
-
-    return this.validate.events(raw);
+    return this.validate.eventsForGroup(raw);
   }
 }

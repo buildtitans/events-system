@@ -4,11 +4,28 @@ import {
   EventReadModelSchema,
   EventSchemaType,
   EventReadModelSchemaType,
+  EventDiscoverySummarySchemaType,
+  EventsForDiscoverySchema,
+  GroupEventSummarySchemaType,
+  EventsForGoupSchema,
 } from "@/src/schemas/events/eventSchema";
 import { Selectable } from "kysely";
 import { Events } from "../../../types/db";
+import {
+  NextEventForGroupSummarySchema,
+  NextEventForGroupSummarySchemaType,
+} from "../../../../../../schemas/groups/groupSchema";
 
-export class EventsValidator {
+export interface IEventsValidator {
+  events(rows: Selectable<Events>[]): EventSchemaType[];
+  event(raw: Selectable<Events>): EventSchemaType;
+  eventWithGroupDetails(data: unknown): EventReadModelSchemaType;
+  eventsForDiscovery(data: unknown[]): EventDiscoverySummarySchemaType[];
+  eventsForGroup(data: unknown): GroupEventSummarySchemaType[];
+  nextEvent(event: unknown): NextEventForGroupSummarySchemaType;
+}
+
+export class EventsValidator implements IEventsValidator {
   events(rows: Selectable<Events>[]): EventSchemaType[] {
     return rows.map((row) => {
       const startsAtMs = row.starts_at.getTime();
@@ -28,6 +45,18 @@ export class EventsValidator {
         status: row.status,
       });
     });
+  }
+
+  nextEvent(event: unknown): NextEventForGroupSummarySchemaType {
+    return validateOrThrow(NextEventForGroupSummarySchema, event);
+  }
+
+  eventsForDiscovery(data: unknown[]): EventDiscoverySummarySchemaType[] {
+    return validateOrThrow(EventsForDiscoverySchema, data);
+  }
+
+  eventsForGroup(data: unknown): GroupEventSummarySchemaType[] {
+    return validateOrThrow(EventsForGoupSchema, data);
   }
 
   eventWithGroupDetails(data: unknown): EventReadModelSchemaType {

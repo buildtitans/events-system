@@ -2,19 +2,17 @@ import { SyncDomainsService } from "@/src/lib/store/services/hydration/syncDomai
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 
 const clientWith = (results: {
-  events: unknown;
-  groups: unknown;
-  categories: unknown;
-  names: unknown;
+  events: () => Promise<unknown>;
+  groups: () => Promise<unknown>;
+  categories: () => Promise<unknown>;
 }) =>
   ({
-    events: { layout: { allActive: { query: jest.fn(() => results.events) } } },
+    layouts: { events: { discovery: { query: jest.fn(results.events) } } },
     groups: {
-      select: { all: { query: jest.fn(() => results.groups) } },
-      lookup: { groupNames: { query: jest.fn(() => results.names) } },
+      read: { select: { list: { query: jest.fn(results.groups) } } },
     },
     categories: {
-      getAllCategories: { query: jest.fn(() => results.categories) },
+      getAllCategories: { query: jest.fn(results.categories) },
     },
   }) as unknown as TrpcClientType;
 
@@ -24,14 +22,12 @@ describe("SyncDomainsService", () => {
       events: [[{ id: "event-1" }]],
       groups: [{ id: "group-1" }],
       categories: [{ id: "category-1" }],
-      groupNameDictionary: { "group-1": { name: "Group" } },
     };
     const service = new SyncDomainsService(
       clientWith({
-        events: Promise.resolve(data.events),
-        groups: Promise.resolve(data.groups),
-        categories: Promise.resolve(data.categories),
-        names: Promise.resolve(data.groupNameDictionary),
+        events: () => Promise.resolve(data.events),
+        groups: () => Promise.resolve(data.groups),
+        categories: () => Promise.resolve(data.categories),
       }),
     );
 
@@ -42,16 +38,15 @@ describe("SyncDomainsService", () => {
     const groups = [{ id: "group-1" }];
     const service = new SyncDomainsService(
       clientWith({
-        events: Promise.reject(new Error("events")),
-        groups: Promise.resolve(groups),
-        categories: Promise.reject(new Error("categories")),
-        names: Promise.reject(new Error("names")),
+        events: () => Promise.reject(new Error("events")),
+        groups: () => Promise.resolve(groups),
+        categories: () => Promise.reject(new Error("categories")),
       }),
     );
 
     await expect(service.sync()).resolves.toEqual({
       status: "fulfilled",
-      data: { events: [], groups, categories: [], groupNameDictionary: {} },
+      data: { events: [], groups, categories: [] },
     });
   });
 
@@ -59,10 +54,9 @@ describe("SyncDomainsService", () => {
     const rejected = () => Promise.reject(new Error("offline"));
     const service = new SyncDomainsService(
       clientWith({
-        events: rejected(),
-        groups: rejected(),
-        categories: rejected(),
-        names: rejected(),
+        events: rejected,
+        groups: rejected,
+        categories: rejected,
       }),
     );
 

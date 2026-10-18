@@ -1,18 +1,10 @@
+import { UserMembershipSurfaceSchemaType } from "../../../../../../schemas/groups/userMembershipSchema";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 import { GroupMembersValidator } from "./groupMembersValidator";
 import { RawGroupMembersReader } from "./rawGroupMembersReader";
-import {
-  GroupMemberSchemaType,
-  MemberCountSchemaType,
-} from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 
 export interface IGroupMembersSelector {
-  all(): Promise<GroupMemberSchemaType[]>;
-  byUserId(
-    user_id: GroupMemberSchemaType["user_id"],
-  ): Promise<GroupMemberSchemaType[]>;
-  allMembers(
-    group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<GroupMemberSchemaType[]>;
   memberIds(
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["group_id"][]>;
@@ -20,12 +12,9 @@ export interface IGroupMembersSelector {
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["role"]>;
-  organizer(
-    group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<GroupMemberSchemaType>;
-  memberCounts(
-    groupIds: GroupMemberSchemaType["group_id"][],
-  ): Promise<MemberCountSchemaType>;
+  memberships(
+    user_id: AuthenticatedUserId,
+  ): Promise<UserMembershipSurfaceSchemaType[]>;
 }
 
 export class GroupMembersSelector implements IGroupMembersSelector {
@@ -34,21 +23,11 @@ export class GroupMembersSelector implements IGroupMembersSelector {
     private readonly validator: GroupMembersValidator,
   ) {}
 
-  async all(): Promise<GroupMemberSchemaType[]> {
-    const raw = await this.read.allRawMembers();
-    return this.validator.members(raw);
-  }
-
-  async byUserId(
-    user_id: GroupMemberSchemaType["user_id"],
-  ): Promise<GroupMemberSchemaType[]> {
-    const raw = await this.read.rawByUserId(user_id);
-    return this.validator.members(raw);
-  }
-
-  async allMembers(group_id: GroupMemberSchemaType["group_id"]) {
-    const raw = await this.read.rawByGroupId(group_id);
-    return this.validator.members(raw);
+  async memberships(
+    user_id: AuthenticatedUserId,
+  ): Promise<UserMembershipSurfaceSchemaType[]> {
+    const raw = await this.read.byUserId(user_id);
+    return this.validator.memberships(raw);
   }
 
   async memberIds(
@@ -62,34 +41,15 @@ export class GroupMembersSelector implements IGroupMembersSelector {
     user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["role"]> {
+    let role: string;
+
     const raw = await this.read.rawRoleInGroup(user_id, group_id);
-
-    if (raw === undefined) {
-      return "anonymous";
+    if (raw) {
+      role = raw.role;
+    } else {
+      role = "anonymous";
     }
 
-    return this.validator.role(raw.role);
-  }
-
-  async organizer(
-    group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<GroupMemberSchemaType> {
-    const raw = await this.read.rawOrganizer(group_id);
-    return this.validator.member(raw);
-  }
-
-  async memberCounts(
-    groupIds: GroupMemberSchemaType["group_id"][],
-  ): Promise<MemberCountSchemaType> {
-    if (groupIds.length === 0) return {};
-    const rows = await this.read.rawMemberCounts(groupIds);
-
-    const counts: Record<string, number> = {};
-
-    for (const row of rows) {
-      counts[row.group_id] = Number(row.member_count);
-    }
-
-    return this.validator.memberCount(counts);
+    return this.validator.role(role);
   }
 }

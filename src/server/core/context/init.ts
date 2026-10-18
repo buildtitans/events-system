@@ -10,9 +10,9 @@ const router = t.router;
 const publicProcedure = t.procedure;
 
 const requireAuth = t.middleware(({ ctx, next }) => {
-  const authenticatedUser = ctx.req.user;
+  const authenticatedUserId = ctx.req.user?.id;
 
-  if (!authenticatedUser?.id) {
+  if (!authenticatedUserId) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Authentication required to access this resource",

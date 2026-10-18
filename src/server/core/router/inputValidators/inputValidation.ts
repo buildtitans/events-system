@@ -28,6 +28,7 @@ import {
   GroupSlugSchemaType,
   CompiledGroupSlugSchema,
   NewGroupInputSchemaType,
+  GroupSlugSchema,
 } from "@/src/schemas/groups/groupSchema";
 import {
   CompiledCreateNotificationSchema,
@@ -77,6 +78,9 @@ export const MemberToRemoveInputValidator =
 export const groupIdInputValidator = typeboxInput<GroupIDForInsertSchemaType>(
   GroupIDForInsertSchemaValidator,
 );
+
+export const groupSlugInput =
+  typeboxInput<GroupSlugSchemaType>(CompiledGroupSlugSchema);
 
 export const searchInputValidator =
   typeboxInput<SearchSchemaType>(CompiledSearchSchema);

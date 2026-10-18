@@ -1,41 +1,34 @@
-"use client"
+"use client";
 import GroupName from "./groupName";
 import EventTitle from "./eventTitle";
 import OpenedEventImage from "../../../box/cards/openedEventImage";
 import EventMeta from "./eventMeta";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import {
-  GroupSlug,
-  NameOfGroup,
-  NumberOfAttendantsType,
-} from "@/src/lib/store/slices/events/EventDrawerSlice";
+import type { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
 import React from "react";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 type OpenedEventHeadProps = {
-  event: EventSchemaType;
-  numAttendants?: NumberOfAttendantsType;
-  numInterested?: NumberOfAttendantsType;
-  name: NameOfGroup;
-  slug: GroupSlug;
+  hydrated: HydratedEventSchemaType;
 };
 
-export default function OpenedEventHead({
-  event,
-  slug,
-  name,
-}: OpenedEventHeadProps) {
-  const thumbnail = event.img;
-  const startTime = toMonthDayYearHour(event.starts_at);
+export default function OpenedEventHead({ hydrated }: OpenedEventHeadProps) {
+  const thumbnail = hydrated.event.img;
+  const startTime = toMonthDayYearHour(hydrated.event.starts_at);
   return (
     <React.Fragment>
-      <GroupName slug={slug} name={name} />
+      <GroupName
+        slug={hydrated.meta.event.group_slug}
+        name={hydrated.meta.event.group_name}
+      />
 
-      <EventTitle title={event.title} />
+      <EventTitle title={hydrated.event.title} />
 
       <OpenedEventImage thumbnail={thumbnail} />
 
-      <EventMeta startTime={startTime} location={event.meeting_location} />
+      <EventMeta
+        startTime={startTime}
+        location={hydrated.event.meeting_location}
+      />
     </React.Fragment>
   );
 }

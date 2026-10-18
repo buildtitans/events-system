@@ -3,13 +3,16 @@ import {
   EventAttendantStatusSchema,
   EventAttendantsSchema,
   type EventAttendantsSchemaType,
-  type EventHeadCountSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
 import type { Selectable } from "kysely";
 import type { EventAttendants } from "@/src/server/core/db/types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
+import {
+  RsvpSurfaceSchemaType,
+  RsvpSurfacesSchema,
+} from "../../../../../../schemas/events/rsvpSchema";
 dayjs.extend(utc);
 
 export class EventAttendantsValidator {
@@ -31,6 +34,10 @@ export class EventAttendantsValidator {
         updated_at,
       });
     });
+  }
+
+  parseRsvps(rsvps: unknown[]): RsvpSurfaceSchemaType[] {
+    return validateOrThrow(RsvpSurfacesSchema, rsvps);
   }
 
   parseRawAttendant(

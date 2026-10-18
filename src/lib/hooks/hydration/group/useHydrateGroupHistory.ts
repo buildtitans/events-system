@@ -16,7 +16,7 @@ export const useHydrateGroupHistory = () => {
     if (openedGroup.status !== "ready") return;
 
     const executeHydrateGroupHistory = async () => {
-      await dispatch(hydrateGroupHistory(openedGroup.data.id));
+      await dispatch(hydrateGroupHistory(openedGroup.data.group.id));
     };
 
     void executeHydrateGroupHistory();

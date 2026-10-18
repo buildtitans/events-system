@@ -47,9 +47,7 @@ export function RenderGroupDisplay({
           state={history}
           empty={() => <OpenedGroupFallback />}
         >
-          {(history) => (
-            <HistoryTimeline history={history} isMobile={isMobile} />
-          )}
+          {(history) => <HistoryTimeline history={history} />}
         </AsyncStateRenderer>
       );
     }

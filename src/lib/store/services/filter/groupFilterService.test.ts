@@ -9,9 +9,9 @@ describe("GroupFilterService.filter", () => {
     const byCategory = jest.fn().mockResolvedValue(groups);
     const trpc = {
       groups: {
-        select: {
-          byCategory: {
-            query: byCategory,
+        read: {
+          select: {
+            byCategory: { query: byCategory },
           },
         },
       },

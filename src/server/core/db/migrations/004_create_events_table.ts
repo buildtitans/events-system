@@ -13,7 +13,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.references("groups.id").onDelete("cascade").notNull(),
     )
     .addColumn("status", "text", (col) => col.notNull())
-    .addColumn("img", "text", (col) => col.defaultTo(null))
+    .addColumn("img", "text", (col) => col.notNull())
     .addColumn("tag", "text", (col) => col.defaultTo(null))
     .addColumn("title", "text", (col) => col.notNull())
     .addColumn("description", "text", (col) => col.notNull())

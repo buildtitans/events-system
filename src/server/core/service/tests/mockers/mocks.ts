@@ -1,4 +1,4 @@
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { EventSchemaType, EventDiscoverySummarySchemaType, GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
@@ -45,19 +45,16 @@ export const rsvps = [
     event_id: EVENT_ID_1,
     group_id: GROUP_ID_1,
     attendance_status: "going",
-    group_name: "new group 1",
   }),
   makeRsvp({
     event_id: EVENT_ID_2,
     group_id: GROUP_ID_2,
     attendance_status: "interested",
-    group_name: "new group 2",
   }),
   makeRsvp({
     event_id: EVENT_ID_3,
     group_id: GROUP_ID_3,
     attendance_status: "going",
-    group_name: "new group 3",
   }),
 ];
 
@@ -68,7 +65,6 @@ export const dtoMemberships: UserMembershipSchemaType[] = [
     group_description: groups[0].description ?? "",
     location: groups[0].location ?? "",
     group_slug: groups[0].slug,
-    member_count: 3,
   }),
   makeDtoMembership({
     group_id: GROUP_ID_2,
@@ -76,7 +72,6 @@ export const dtoMemberships: UserMembershipSchemaType[] = [
     group_description: groups[1].description ?? "",
     location: groups[1].location ?? "",
     group_slug: groups[1].slug,
-    member_count: 5,
   }),
   makeDtoMembership({
     group_id: GROUP_ID_3,
@@ -84,7 +79,6 @@ export const dtoMemberships: UserMembershipSchemaType[] = [
     group_description: groups[2].description ?? "",
     location: groups[2].location ?? "",
     group_slug: groups[2].slug,
-    member_count: 7,
   }),
 ];
 
@@ -119,13 +113,10 @@ function createMockEventsRepo() {
     select: {
       hydrate: jest.fn(),
       search: jest.fn(),
-      allStatuses: jest.fn(),
       allScheduled: jest.fn(),
-      cancelledByGroupId: jest.fn(),
-      byId: jest.fn(),
+      discovery: jest.fn(),
       byIds: jest.fn(),
       byGroupId: jest.fn(),
-      byGroupIds: jest.fn(),
     },
     write: {
       update: jest.fn(),
@@ -137,10 +128,9 @@ function createMockEventsRepo() {
 function createMockGroupsRepo() {
   return {
     select: {
+      popular: jest.fn(),
+      archives: jest.fn(),
       all: jest.fn(),
-      byId: jest.fn(),
-      byIds: jest.fn(),
-      bySlug: jest.fn(),
       byOrganizerId: jest.fn(),
       search: jest.fn(),
     },
@@ -153,13 +143,9 @@ function createMockGroupsRepo() {
 function createMockGroupMembersRepo() {
   return {
     select: {
-      all: jest.fn(),
-      byUserId: jest.fn(),
-      allMembers: jest.fn(),
       memberIds: jest.fn(),
       role: jest.fn(),
-      organizer: jest.fn(),
-      memberCounts: jest.fn(),
+      memberships: jest.fn(),
     },
     write: {
       addOrganizer: jest.fn(),
@@ -173,11 +159,8 @@ function createMockEventAttendantsRepo() {
   return {
     select: {
       allRecords: jest.fn(),
-      userRecords: jest.fn(),
+      rsvps: jest.fn(),
       rsvp: jest.fn(),
-      pastRecords: jest.fn(),
-      attendant: jest.fn(),
-      attendants: jest.fn(),
     },
     write: {
       updateAttendanceStatus: jest.fn(),
@@ -247,6 +230,22 @@ export function makeEvent(
     updated_at: "2026-04-01T19:57:58.721Z",
     status: "scheduled",
     ...overrides,
+  };
+}
+
+export function makeEventSummary(
+  overrides: Partial<EventSchemaType> = {},
+  meta: Partial<EventDiscoverySummarySchemaType["meta"]> = {},
+): EventDiscoverySummarySchemaType {
+  const { id, group_id, status, starts_at, starts_at_ms, img, tag, title } = makeEvent(overrides);
+  return {
+    event: { id, group_id, status, starts_at, starts_at_ms, img, tag, title },
+    meta: {
+      group_name: "new group",
+      group_location: "Online",
+      attendance: { going: 0, interested: 0 },
+      ...meta,
+    },
   };
 }
 
@@ -335,7 +334,6 @@ export function makeDtoMembership(
     group_description: "group description",
     group_name: "group name",
     location: "online",
-    member_count: 3,
     group_slug: "some-group-slug",
     roleInGroup: "member",
     ...overrides,
@@ -345,9 +343,7 @@ export function makeDtoMembership(
 export function makeRsvp(overrides: Partial<RsvpSchemaType>): RsvpSchemaType {
   return {
     group_id: "5cf76d94-83c9-46de-90ac-fe4047a00000",
-    group_name: "new group",
     location: "Online",
-    group_slug: "new-group-slug-name",
     attendance_status: "going",
     event_id: "event-1",
     event_title: "Design Trends Worth Paying Attention To in 2026",
@@ -355,5 +351,16 @@ export function makeRsvp(overrides: Partial<RsvpSchemaType>): RsvpSchemaType {
     starts_at_ms: new Date("2026-04-15T17:30:00.000Z").getTime(),
     scheduled_status: "scheduled",
     ...overrides,
+  };
+}
+
+export function makeGroupEventSummary(
+  overrides: Partial<EventSchemaType> = {},
+  meta: Partial<GroupEventSummarySchemaType["meta"]> = {},
+): GroupEventSummarySchemaType {
+  const { id, group_id, status, starts_at, starts_at_ms, img, tag, title, meeting_location } = makeEvent(overrides);
+  return {
+    event: { id, group_id, status, starts_at, starts_at_ms, img, tag, title, meeting_location },
+    meta: { attendance: { going: 0, interested: 0 }, ...meta },
   };
 }

@@ -1,10 +1,7 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import {
-  EventAttendantsReader,
-  IEventAttendantsReader,
-} from "./eventAttendantsReader";
+import { EventAttendantsReader } from "./eventAttendantsReader";
 import {
   EventAttendantsSelector,
   IEventAttendantsSelector,
@@ -13,6 +10,7 @@ import {
   EventAttendantsWriter,
   IEventAttendantsWriter,
 } from "./eventAttendantsWriter";
+import { IEventAttendantsReader } from "./types";
 
 export interface IEventAttendantsRepository {
   readonly select: IEventAttendantsSelector;

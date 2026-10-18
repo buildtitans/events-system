@@ -34,16 +34,16 @@ export class GroupFilterService implements IGroupFilterService {
   }
 
   private async noFilter(): Promise<GroupSchemaType[]> {
-    return await this.trpc.groups.select.all.query();
+    return await this.trpc.groups.read.select.list.query();
   }
 
   private async filterPopular(): Promise<GroupSchemaType[]> {
-    return await this.trpc.groups.select.popular.query();
+    return await this.trpc.groups.read.select.popular.query();
   }
 
   private async byCategory(
     category: CategorySchemaType["name"],
   ): Promise<GroupSchemaType[]> {
-    return await this.trpc.groups.select.byCategory.query(category);
+    return await this.trpc.groups.read.select.byCategory.query(category);
   }
 }

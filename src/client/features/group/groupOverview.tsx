@@ -13,7 +13,7 @@ import UpNextEventFallback from "./upNextEventFallback";
 
 export default function GroupOverview(): JSX.Element {
   const calandar = useSelector((s: RootState) => s.openGroup.calandar);
-  const nextEvent = useSelector((s: RootState) => s.openGroup.nextEvent);
+  const hydrated = useSelector((s: RootState) => s.openGroup.group);
   const { handleOpenEvent } = useSelectEvent();
 
   return (
@@ -25,17 +25,23 @@ export default function GroupOverview(): JSX.Element {
         {(state) => <Calandar history={state} />}
       </AsyncStateRenderer>
       <AsyncStateRenderer
-        state={nextEvent}
+        state={hydrated}
         pending={() => <UpNextEventSkeleton />}
         empty={() => <UpNextEventFallback />}
       >
-        {(state) => (
-          <UpNextEvent
-            event={state}
-            onAction={handleOpenEvent}
-            actionLabel="View Event"
-          />
-        )}
+        {(state) => {
+          if (state.meta.next_event) {
+            return (
+              <UpNextEvent
+                hydrated={state.meta.next_event}
+                onAction={handleOpenEvent}
+                actionLabel="View Event"
+              />
+            );
+          } else {
+            return <UpNextEventFallback />;
+          }
+        }}
       </AsyncStateRenderer>
     </Stack>
   );

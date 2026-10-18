@@ -36,11 +36,93 @@ const EventSchema = Type.Object({
   updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
 });
 
+const EventForDiscovery = Type.Pick(EventSchema, [
+  "id",
+  "group_id",
+  "status",
+  "starts_at",
+  "starts_at_ms",
+  "img",
+  "tag",
+  "title",
+]);
+
+const EventDiscoverySummaryMeta = Type.Object({
+  group_name: Type.String(),
+  group_location: Type.String(),
+  attendance: EventHeadCountSchema,
+  category_name: Type.Optional(Type.String({ minLength: 1 })),
+});
+
+const GroupEventSummaryMetaDataSchema = Type.Pick(EventDiscoverySummaryMeta, [
+  "attendance",
+  "category_name",
+]);
+
+const GroupEventSummary = Type.Pick(EventSchema, [
+  "id",
+  "group_id",
+  "status",
+  "starts_at",
+  "starts_at_ms",
+  "img",
+  "tag",
+  "title",
+  "meeting_location",
+]);
+
+export const EventDiscoverySummarySchema = Type.Object({
+  meta: EventDiscoverySummaryMeta,
+  event: EventForDiscovery,
+});
+
+export const EventsForDiscoverySchema = Type.Array(EventDiscoverySummarySchema);
+
+export type EventDiscoverySummarySchemaType = Static<
+  typeof EventDiscoverySummarySchema
+>;
+
 const EventMetaDataSchema = Type.Object({
   group_name: Type.String(),
   group_slug: Type.String(),
   attendants: EventHeadCountSchema,
 });
+
+export const GroupEventSummarySchema = Type.Object({
+  event: GroupEventSummary,
+  meta: GroupEventSummaryMetaDataSchema,
+});
+
+export const EventsForGoupSchema = Type.Array(GroupEventSummarySchema);
+
+export type GroupEventSummarySchemaType = Static<
+  typeof GroupEventSummarySchema
+>;
+
+const EventDiscoverySurfaceSchema = Type.Object({
+  for: Type.Literal("discovery"),
+  content: EventDiscoverySummarySchema,
+});
+
+const GroupEventSummarySurfaceSchema = Type.Object({
+  for: Type.Literal("withinGroup"),
+  content: GroupEventSummarySchema,
+});
+
+export type EventDiscoverySurfaceSchemaType = Static<
+  typeof EventDiscoverySurfaceSchema
+>;
+
+export type GroupEventSummarySurfaceSchemaType = Static<
+  typeof GroupEventSummarySurfaceSchema
+>;
+
+export const EventSurfaceSchema = Type.Union([
+  EventDiscoverySurfaceSchema,
+  GroupEventSummarySurfaceSchema,
+]);
+
+export type EventSurfaceSchemaType = Static<typeof EventSurfaceSchema>;
 
 export const UserSpecificEventMetaDataSchema = Type.Object({
   status: EventAttendantStatusSchema,
@@ -97,18 +179,11 @@ const EventsReponseSchema = Type.Object({
   }),
 });
 
-export const EventsByGroupIdSchema = Type.Record(
-  Type.String(),
-  EventsArraySchema,
-);
-
 const UpdateEventArgsSchema = Type.Object({
   event_id: Type.String({ format: "uuid" }),
   status: EventStatusSchema,
   group_id: Type.String({ format: "uuid" }),
 });
-
-export type EventsByGroupIdSchemaType = Static<typeof EventsByGroupIdSchema>;
 
 type UpdateEventArgsSchemaType = Static<typeof UpdateEventArgsSchema>;
 

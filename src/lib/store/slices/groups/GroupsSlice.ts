@@ -3,14 +3,12 @@ import type {
   GroupSchemaType,
   GroupsSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { NameSlugDescriptionLookup } from "@/src/lib/types/server/types";
 import { initializeDomains } from "../rendering/RenderingSlice";
 import { GroupsFilter } from "./types";
 
 type GroupsInitialState = {
   communities: GroupsSchemaType;
   currentPage: number;
-  groupNameLookup: NameSlugDescriptionLookup;
   popularCommunities: GroupsSchemaType;
   groupsDisplayed: GroupsFilter;
 };
@@ -18,7 +16,6 @@ type GroupsInitialState = {
 const initialState: GroupsInitialState = {
   communities: [],
   currentPage: 0,
-  groupNameLookup: {},
   popularCommunities: [],
   groupsDisplayed: "all",
 };
@@ -32,12 +29,6 @@ const GroupsSlice = createSlice({
       action: PayloadAction<GroupsInitialState["communities"]>,
     ) => {
       state.communities = action.payload;
-    },
-    getNameLookup: (
-      state: GroupsInitialState,
-      action: PayloadAction<NameSlugDescriptionLookup>,
-    ) => {
-      state.groupNameLookup = action.payload;
     },
     addGroup: (
       state: GroupsInitialState,
@@ -65,7 +56,6 @@ const GroupsSlice = createSlice({
 
       if (result.status === "fulfilled") {
         state.communities = result.data.groups;
-        state.groupNameLookup = result.data.groupNameDictionary;
       }
     });
   },
@@ -75,7 +65,6 @@ export const {
   getAllGroups,
   addGroup,
   paginateGroups,
-  getNameLookup,
   changeDisplayedGroupFilter,
 } = GroupsSlice.actions;
 

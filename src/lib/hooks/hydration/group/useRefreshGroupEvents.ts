@@ -15,7 +15,7 @@ export const useRefreshGroupEvents = () => {
     if (group.status !== "ready" || events.status !== "refreshing") return;
 
     const executeGroupEventsRefresh = async () => {
-      await dispatch(refreshGroupEvents(group.data.id));
+      await dispatch(refreshGroupEvents(group.data.group.id));
     };
 
     void executeGroupEventsRefresh();

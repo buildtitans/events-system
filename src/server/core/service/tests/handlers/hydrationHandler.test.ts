@@ -1,3 +1,4 @@
+import { USER_ID } from "../mockers/mockValues";
 import type { EventReadModelSchemaType } from "@/src/schemas/events/eventSchema";
 import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@/src/server/core/service/tests/mockers/mocks";
 
 describe("EventHydrationHandler", () => {
-  const userId = "user-1";
+  const userId = USER_ID;
   const eventId = "event-1";
   const groupId = "group-1";
   const group = makeGroup({ id: groupId });
@@ -52,9 +53,6 @@ describe("EventHydrationHandler", () => {
       expect(hydrateEvent).toHaveBeenCalledWith(eventId);
       expect(getRsvp).toHaveBeenCalledWith(userId, eventId);
       expect(getRole).toHaveBeenCalledWith(userId, groupId);
-      expect(db.events.select.byId).not.toHaveBeenCalled();
-      expect(db.groups.select.byId).not.toHaveBeenCalled();
-      expect(db.eventAttendants.select.attendants).not.toHaveBeenCalled();
     });
 
     it.each([undefined, null])(

@@ -1,4 +1,4 @@
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
 import { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderGroupDisplay";
 import {
@@ -10,26 +10,23 @@ import ActiveDisplayHeader from "../head/activeDisplayHeader";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 type OpenedGroupContentProps = {
-  group: GroupSchemaType;
+  hydrated: GroupHydratedSchemaType;
   displayed: CurrentDisplay;
   isMobile: boolean;
-  category: CategorySchemaType["name"];
 };
 
 export default function OpenedGroupPanel({
-  group,
+  hydrated,
   displayed,
   isMobile,
-  category,
 }: OpenedGroupContentProps) {
   return (
     <Container component="section">
       <Box minHeight={"100svh"} paddingY={4} sx={openedGroupHeroRootSx}>
         <Box sx={openedGroupHeroPanelSx}>
-          <OpenedGroupHero group={group} category={category} />
+          <OpenedGroupHero hydrated={hydrated} />
           <Container
             sx={{
               padding: 2,

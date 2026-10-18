@@ -1,7 +1,6 @@
 "use client";
 import { JSX, useEffect } from "react";
 import Stack from "@mui/material/Stack";
-import { useHydrateUser } from "@/src/lib/hooks/hydration/user/useHydrateUser";
 import DashboardPanel from "../sections/user/dashboardPanel";
 import { useDetectActiveSession } from "@/src/lib/hooks/auth/session/useDetectActiveSession";
 import { useDispatch } from "react-redux";
@@ -10,7 +9,6 @@ import { enqueueSidebar } from "@/src/lib/store/slices/rendering/RenderingSlice"
 
 export default function UserAccount(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
-  useHydrateUser();
   useDetectActiveSession();
 
   useEffect(() => {

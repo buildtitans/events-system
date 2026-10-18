@@ -1,5 +1,17 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { IDBClient } from "../db/access/client/dbClient";
+import type { AuthenticatedUserId } from "../service/handlers/session/SessionHandler";
+import type { AuthenticatedUser } from "../main/fastify";
+
+function toAuthenticatedUser(
+  user: { email: string; id: string } | null,
+): AuthenticatedUser | undefined {
+  if (user?.id) {
+    return { id: user.id as AuthenticatedUserId };
+  } else {
+    return undefined;
+  }
+}
 
 async function detectSession(
   app: FastifyInstance,
@@ -9,9 +21,9 @@ async function detectSession(
   try {
     const token = req.cookies.session;
     const user = await db.auth.authenticate(token);
-    req.user = user ? { id: user.id } : null;
+    req.user = toAuthenticatedUser(user);
   } catch (err) {
-    req.user = null;
+    req.user = undefined;
     app.log.error({ err }, "Session authentication failed");
   }
 }

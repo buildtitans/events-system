@@ -1,26 +1,25 @@
 "use client";
 import { type JSX } from "react";
-import type { RootState } from "@/src/lib/store";
+
 import Container from "@mui/material/Container";
-import { useSelector } from "react-redux";
-import MembershipListItem from "@/src/client/components/ui/list/memberships/membership"
+
+import MembershipListItem from "@/src/client/components/ui/list/memberships/membership";
 import List from "@mui/material/List";
-import { UserMembershipSchemaType } from "@/src/schemas/groups/userMembershipSchema";
+import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { useRouter } from "next/navigation";
 
 type MyMembershipsProps = {
-  memberships: UserMembershipSchemaType[];
+  memberships: UserMembershipSurfaceSchemaType[];
 };
 
 export default function MyMemberships({
   memberships,
 }: MyMembershipsProps): JSX.Element | null {
   const router = useRouter();
-  const nextEventLookup = useSelector(
-    (s: RootState) => s.user.nextEventLookup,
-  );
 
-  const handleClick = (slug: UserMembershipSchemaType["group_slug"]) => {
+  const handleClick = (
+    slug: UserMembershipSurfaceSchemaType["membership"]["group_slug"],
+  ) => {
     const path = `/group/${slug}`;
     router.push(path);
   };
@@ -37,10 +36,9 @@ export default function MyMemberships({
       >
         {memberships.map((membership) => (
           <MembershipListItem
-            key={membership.group_id}
+            key={membership.membership.group_id}
             handleClick={handleClick}
             membership={membership}
-            nextEvent={nextEventLookup[membership.group_id]}
           />
         ))}
       </List>

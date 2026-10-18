@@ -1,7 +1,7 @@
 import type { Kysely } from "kysely";
 import type { DB } from "@/src/server/core/db/types/db";
 import { EventsSelector, IEventsSelector } from "./eventsSelector";
-import { EventsValidator } from "./eventsValidator";
+import { EventsValidator, IEventsValidator } from "./eventsValidator";
 import { EventsWriter, IEventsWriter } from "./eventsWriter";
 import { RawEventsReader } from "./rawEventsReader";
 
@@ -14,7 +14,7 @@ export class EventsRepository implements IEventsRepository {
   public readonly select: IEventsSelector;
   public readonly write: IEventsWriter;
   private readonly read: RawEventsReader;
-  private readonly validate: EventsValidator;
+  private readonly validate: IEventsValidator;
   constructor(private readonly db: Kysely<DB>) {
     this.validate = new EventsValidator();
     this.read = new RawEventsReader(this.db);

@@ -1,26 +1,19 @@
-import {
-  EventAttendantsSchemaType,
-  EventHeadCountSchemaType,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import { IEventAttendantsReader } from "./eventAttendantsReader";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
+import { RsvpSurfaceSchemaType } from "../../../../../../schemas/events/rsvpSchema";
+import { IEventAttendantsReader } from "./types";
 dayjs.extend(utc);
 
 export interface IEventAttendantsSelector {
+  rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]>;
   allRecords(): Promise<EventAttendantsSchemaType[]>;
-  userRecords(user_id: string): Promise<EventAttendantsSchemaType[]>;
   rsvp(
     user_id: string,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]>;
-  pastRecords(ids: string[]): Promise<EventAttendantsSchemaType[]>;
-  attendant(
-    user_id: string,
-    event_id: string,
-  ): Promise<EventAttendantsSchemaType>;
-  attendants(event_id: string): Promise<EventAttendantsSchemaType[]>;
 }
 
 export class EventAttendantsSelector implements IEventAttendantsSelector {
@@ -34,11 +27,6 @@ export class EventAttendantsSelector implements IEventAttendantsSelector {
     return this.validator.parseRawAttendants(raw);
   }
 
-  async userRecords(user_id: string): Promise<EventAttendantsSchemaType[]> {
-    const raw = await this.read.userRecords(user_id);
-    return this.validator.parseRawAttendants(raw);
-  }
-
   async rsvp(
     user_id: string,
     event_id: string,
@@ -48,21 +36,8 @@ export class EventAttendantsSelector implements IEventAttendantsSelector {
     return this.validator.parseRsvpStatusResult(status);
   }
 
-  async pastRecords(ids: string[]): Promise<EventAttendantsSchemaType[]> {
-    const raw = await this.read.rawPastRecords(ids);
-    return this.validator.parseRawAttendants(raw);
-  }
-
-  async attendant(
-    user_id: string,
-    event_id: string,
-  ): Promise<EventAttendantsSchemaType> {
-    const raw = await this.read.rawAttendant({ user_id, event_id });
-    return this.validator.parseRawAttendant(raw);
-  }
-
-  async attendants(event_id: string): Promise<EventAttendantsSchemaType[]> {
-    const raw = await this.read.allRawAttendants(event_id);
-    return this.validator.parseRawAttendants(raw);
+  async rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]> {
+    const raw = await this.read.rsvps(user_id);
+    return this.validator.parseRsvps(raw);
   }
 }

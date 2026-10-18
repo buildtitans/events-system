@@ -15,8 +15,8 @@ import {
   enqueueDrawer,
   enqueueSnackbar,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { getUserAttendanceStatus } from "./EventDrawerSlice";
 import { getGroupEvents } from "../groups/OpenedGroupSlice";
+import { updateRsvpStatus } from "./EventDrawerSlice";
 
 type UpdateRsvpParams = {
   event_id: EventSchemaType["id"];
@@ -41,7 +41,7 @@ export const updateRSVP = createAsyncThunk(
       thunkAPI.dispatch(
         enqueueAlert({ action: "updateAttendance", kind: "success" }),
       );
-      thunkAPI.dispatch(getUserAttendanceStatus(result.status));
+      thunkAPI.dispatch(updateRsvpStatus(result.status));
       return result;
     } catch (err) {
       logCaughtError("EventSlice.updateRSVP()", err);
@@ -90,6 +90,29 @@ export const updateEventStatus = createAsyncThunk(
       thunkAPI.dispatch(
         enqueueSnackbar({ kind: "changeEventScheduling", status: "failed" }),
       );
+      return thunkAPI.rejectWithValue(err);
+    }
+  },
+);
+
+export const hydrateEventDrawer = createAsyncThunk(
+  "EventDrawer/hydrate",
+  async (
+    id: EventSchemaType["id"],
+    thunkAPI: GetThunkAPI<AsyncThunkConfig>,
+  ) => {
+    thunkAPI.dispatch(enqueueDrawer("event drawer"));
+
+    try {
+      const result = await trpcClient.events.select.hydrateEvent.query(id);
+
+      if (!result) {
+        throw new Error("Failed to hydrate selected event");
+      }
+
+      return result;
+    } catch (err) {
+      logCaughtError("hydrateEventDrawer()", err);
       return thunkAPI.rejectWithValue(err);
     }
   },

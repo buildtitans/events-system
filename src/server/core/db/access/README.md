@@ -73,9 +73,11 @@ persistence capability.
 
 ### Reader
 
-A reader owns raw read queries and returns database-shaped Kysely results such
-as `Selectable<Table>`. Reader methods are normally private to the repository
-composition and are consumed by selectors rather than by services directly.
+A reader owns Kysely read queries. It can return database rows such as
+`Selectable<Table>` or assemble a focused read model using joins, aggregates,
+and query-result mapping. Summary and hydration readers also normalize dates
+and numeric counts before returning their results to selectors. Readers are
+consumed through the repository composition rather than directly by services.
 
 The `Raw*Reader` prefix makes this boundary explicit in several domains. A raw
 reader may encode persistence concerns such as joins, filters, ordering, and
@@ -105,9 +107,10 @@ do not require atomicity.
 
 ### Validator
 
-A validator maps database rows into shared schema representations and performs
-runtime validation. This is where database-specific values such as `Date`
-objects are converted to the serialized forms expected by the application.
+A validator performs runtime validation against shared schemas. Some validators
+also normalize database rows; purpose-built readers may already have serialized
+dates and converted counts. The selector still validates that read model before
+returning it to services.
 
 Keep this separate when the mapping is reused by reads and writes or is large
 enough to obscure query intent. Small repositories may keep focused validation
@@ -122,6 +125,20 @@ expands one application notification into insertable rows for multiple members.
 Use a parser when both directions of a persistence transformation belong
 together. A parser does not replace runtime schema validation for values leaving
 the persistence boundary.
+
+## Summary and Hydration Reads
+
+Event discovery and within-group reads return `{ event, meta }` summaries
+with attendance and contextual metadata. Discovery includes group name and
+location; within-group summaries include the event meeting location. Layout
+services add the `for` discriminant and pass these summaries to the composer,
+rather than hydrating a full event for every card.
+
+Group hydration returns `{ group, meta }`, including member count, organizer
+email, category name, and an optional next-event summary. RSVP and membership
+reads likewise supply their own metadata instead of requiring service-built
+lookup dictionaries. Services retain authentication, authorization, and
+application orchestration responsibilities.
 
 ## Boundary Rules
 

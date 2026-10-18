@@ -5,6 +5,7 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { EventLifecycleDb, IEventLifecycleHandler } from "./types";
+import { AuthenticatedUserId } from "../session/SessionHandler";
 
 export class EventLifecycleHandler implements IEventLifecycleHandler {
   constructor(
@@ -13,7 +14,7 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
   ) {}
 
   async updateEventStatus(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
     statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }> {
     return await this.executeUpdateEventStatus(user_id, statusUpdate);
@@ -21,7 +22,7 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
 
   async createEvent(
     newEvent: NewEventInputSchemaType,
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   > {
@@ -30,7 +31,7 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
 
   private async executeCreateEvent(
     newEvent: NewEventInputSchemaType,
-    user_id: string | undefined,
+    user_id: AuthenticatedUserId | undefined | null,
   ): Promise<
     { ok: true; data: EventSchemaType } | { ok: false; error: string }
   > {
@@ -40,7 +41,7 @@ export class EventLifecycleHandler implements IEventLifecycleHandler {
   }
 
   private async executeUpdateEventStatus(
-    user_id: string | null | undefined,
+    user_id: AuthenticatedUserId | null | undefined,
     statusUpdate: UpdateEventArgsSchemaType,
   ): Promise<{ updateStatus: "success" | "failure" }> {
     const userId = this.policy.requireAuthenticated(user_id);

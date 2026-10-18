@@ -1,6 +1,10 @@
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type {
+  EventSchemaType,
+  EventDiscoverySummarySchemaType,
+  EventSurfaceSchemaType,
+  GroupEventSummarySchemaType,
+} from "@/src/schemas/events/eventSchema";
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
-import { filterActiveEvents } from "@/src/server/core/lib/utils/filterActiveEvents";
 import { EventLayoutComposer } from "./eventLayoutComposer";
 import { IEventLayoutHandler, EventLayoutDb } from "./types";
 import { curatePopularEventsIds } from "../../../lib/utils/curatePopularEventsIds";
@@ -13,21 +17,19 @@ export class EventLayoutHandler implements IEventLayoutHandler {
     private readonly composer: EventLayoutComposer,
   ) {}
 
+  async discovery(): Promise<PaginatedLayoutSchemaType> {
+    const events = await this.db.events.select.discovery();
+    const eventSurfaces = this.toEventDiscoverySurfaces(events);
+    return this.compileFutureEvents(eventSurfaces);
+  }
+
   async byIds(
     ids: EventSchemaType["id"][],
   ): Promise<PaginatedLayoutSchemaType> {
+    if (ids.length === 0) return [];
     const events = await this.db.events.select.byIds(ids);
-    return this.composer.compileLayout(events);
-  }
-
-  async all(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.select.allStatuses();
-    return this.composer.compileLayout(events);
-  }
-
-  async active(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.select.allScheduled();
-    return this.composer.compileLayout(filterActiveEvents(events));
+    const eventSurfaces = this.toEventDiscoverySurfaces(events);
+    return this.composer.compileLayout(eventSurfaces);
   }
 
   async popular(): Promise<PaginatedLayoutSchemaType> {
@@ -37,13 +39,42 @@ export class EventLayoutHandler implements IEventLayoutHandler {
 
   async forGroup(groupId: string): Promise<PaginatedLayoutSchemaType> {
     const events = await this.db.events.select.byGroupId(groupId);
-    return this.composer.compileLayout(filterActiveEvents(events));
+    const eventSurfaces = this.toGroupEventSurfaces(events);
+    return this.compileFutureEvents(eventSurfaces);
   }
 
   async upcoming(): Promise<PaginatedLayoutSchemaType> {
     const events = await this.db.events.select.allScheduled();
     const ids = this.extractUpcoming(events);
     return await this.byIds(ids);
+  }
+
+  private toEventDiscoverySurfaces(
+    events: EventDiscoverySummarySchemaType[],
+  ): Extract<EventSurfaceSchemaType, { for: "discovery" }>[] {
+    return events.map((content) => ({
+      for: "discovery",
+      content,
+    }));
+  }
+
+  private toGroupEventSurfaces(
+    events: GroupEventSummarySchemaType[],
+  ): Extract<EventSurfaceSchemaType, { for: "withinGroup" }>[] {
+    return events.map((content) => ({
+      for: "withinGroup",
+      content,
+    }));
+  }
+
+  private compileFutureEvents(events: EventSurfaceSchemaType[]) {
+    const now = Date.now();
+    const upcoming = events
+      .filter(({ content: { event } }) => event.starts_at_ms > now)
+      .sort(
+        (a, b) => a.content.event.starts_at_ms - b.content.event.starts_at_ms,
+      );
+    return this.composer.compileLayout(upcoming);
   }
 
   private async getPopularEventIds() {

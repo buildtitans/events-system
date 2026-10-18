@@ -9,14 +9,6 @@ import {
 } from "../inputValidators/inputValidation";
 
 const selectMembersRouter = router({
-  forGroup: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getAllGroupMembers(
-        input,
-      );
-    }),
-
   role: publicProcedure
     .input(groupIdInputValidator)
     .query(async ({ ctx, input }) => {
@@ -26,19 +18,9 @@ const selectMembersRouter = router({
       );
     }),
 
-  userMemberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.getMemberships(
-      ctx.req.user?.id,
-    );
+  memberships: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.api.services.domains.users.memberships(ctx.req.user?.id);
   }),
-
-  organizerEmail: publicProcedure
-    .input(groupIdInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.getOrganizerEmail(
-        input,
-      );
-    }),
 });
 
 const writeMembersRouter = router({

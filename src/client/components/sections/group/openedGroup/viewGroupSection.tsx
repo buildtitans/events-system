@@ -1,6 +1,6 @@
 "use client";
-import { useMemo, type JSX } from "react";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { type JSX } from "react";
+import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
@@ -10,22 +10,16 @@ import { useTheme } from "@mui/material/styles";
 import OpenedGroupPanel from "@/src/client/components/sections/group/openedGroup/displays/openedGroupPanel";
 
 type ViewGroupSectionProps = {
-  group: GroupSchemaType;
+  hydrated: GroupHydratedSchemaType;
 };
 
 export default function ViewGroupSection({
-  group,
+  hydrated,
 }: ViewGroupSectionProps): JSX.Element {
   const theme = useTheme();
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const displayed = useSelector((s: RootState) => s.openGroup.activeSection);
-  const category = useSelector((s: RootState) => s.openGroup.category);
-  const categoryName = useMemo(() => {
-    if (category.status === "ready") return category.data.name;
-
-    return "Category not found";
-  }, [category]);
   useHydrateGroupHistory();
 
   return (
@@ -41,10 +35,9 @@ export default function ViewGroupSection({
       gap={4}
     >
       <OpenedGroupPanel
-        category={categoryName}
         displayed={displayed}
         isMobile={isMobile}
-        group={group}
+        hydrated={hydrated}
       />
     </Stack>
   );

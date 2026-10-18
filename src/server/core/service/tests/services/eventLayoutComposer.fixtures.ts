@@ -1,17 +1,17 @@
-import { makeEvent } from "@/src/server/core/service/tests/mockers/mocks";
+import { makeEventSummary } from "@/src/server/core/service/tests/mockers/mocks";
 
 export const sixEvents = Array.from({ length: 6 }, (_, index) =>
-  makeEvent({
+  ({ for: "discovery" as const, content: makeEventSummary({
     id: `event-${index + 1}`,
     title: `Event ${index + 1}`,
-  }),
+  }) }),
 );
 
 export const sevenEvents = Array.from({ length: 7 }, (_, index) =>
-  makeEvent({
+  ({ for: "discovery" as const, content: makeEventSummary({
     id: `event-${index + 1}`,
     title: `Event ${index + 1}`,
-  }),
+  }) }),
 );
 
 export const fullPage = [

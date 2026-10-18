@@ -11,11 +11,11 @@ export default function NewEventDrawerContents() {
 
     return (
         <CreateEventDrawerShell
-            groupName={group.data.name}
-            groupLocation={group.data.location}
+            groupName={group.data.group.name}
+            groupLocation={group.data.group.location}
         >
             <NewEventForm
-                group_id={group.data.id}
+                group_id={group.data.group.id}
             />
         </CreateEventDrawerShell>
     )

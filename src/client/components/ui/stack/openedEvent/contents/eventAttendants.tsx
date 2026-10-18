@@ -1,10 +1,7 @@
-
 "use client";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import type {
-  NumberOfAttendantsType,
-} from "@/src/lib/store/slices/events/EventDrawerSlice";
+import type { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
 import {
   openedEventAttendancePanelSx,
   openedEventAttendancePrimarySx,
@@ -13,50 +10,35 @@ import {
 } from "@/src/client/styles/sx/openedEventDrawer";
 
 export default function EventAttendants({
-  numAttendants,
-  numInterested,
+  attendance: { going, interested },
   isCurrent,
 }: {
-  numAttendants: NumberOfAttendantsType;
+  attendance: HydratedEventSchemaType["meta"]["event"]["attendants"];
   isCurrent: boolean;
-  numInterested?: NumberOfAttendantsType;
 }) {
+  const attendanceMessage =
+    going === 0
+      ? isCurrent
+        ? "Nobody is attending yet"
+        : "This event had no attendants"
+      : `${going} ${going === 1 ? "person" : "people"} ${
+          isCurrent ? (going === 1 ? "is going" : "are going") : "went"
+        }`;
+
   return (
     <Box sx={openedEventAttendancePanelSx}>
       <Typography component="span" sx={openedEventSectionLabelSx}>
         Attendance
       </Typography>
-      {isCurrent && (
-        <>
-          {numAttendants.status === "ready" && (
-            <Typography sx={openedEventAttendancePrimarySx}>
-              {numAttendants.data > 1 &&
-                `${numAttendants.data} people are going`}
-              {numAttendants.data === 1 &&
-                `${numAttendants.data} person is going`}
-              {numAttendants.data === 0 && "Nobody is attending yet"}
-            </Typography>
-          )}
-
-          {numInterested && numInterested.status === "ready" && (
-            <Typography sx={openedEventAttendanceSecondarySx}>
-              {numInterested.data > 1 &&
-                `${numInterested.data} people have expressed interest`}
-              {numInterested.data === 1 &&
-                `${numInterested.data} person is interested`}
-            </Typography>
-          )}
-        </>
-      )}
-
-      {!isCurrent && numAttendants.status === "ready" && (
-        <>
-          <Typography sx={openedEventAttendancePrimarySx}>
-            {numAttendants.data > 1 && `${numAttendants.data} people went`}
-            {numAttendants.data === 1 && `${numAttendants.data} person went`}
-            {numAttendants.data < 1 && "This event had no attendants"}
-          </Typography>
-        </>
+      <Typography sx={openedEventAttendancePrimarySx}>
+        {attendanceMessage}
+      </Typography>
+      {isCurrent && interested > 0 && (
+        <Typography sx={openedEventAttendanceSecondarySx}>
+          {interested === 1
+            ? "1 person is interested"
+            : `${interested} people have expressed interest`}
+        </Typography>
       )}
     </Box>
   );

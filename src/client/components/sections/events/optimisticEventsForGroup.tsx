@@ -48,7 +48,7 @@ function EventsLayout({ eventsPages }: { eventsPages: EventsPages }): JSX.Elemen
                     contain: "layout paint style",
                 }}
             >
-                <RenderEventsLayout 
+                <RenderEventsLayout withinGroup
                 slots={page}
                 handleBlur={handleBlur}
                 handleFocus={handleFocus}

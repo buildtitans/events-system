@@ -147,7 +147,7 @@ work directly; others expose smaller handler facets.
 | --- | --- | --- |
 | Events | `query`, `lifecycle`, `timeline`, `layout`, `hydrate` | Event reads, mutations, history, layout, and drawer hydration |
 | Groups | `query`, `groupLifecycle`, `memberships` | Group discovery, creation, membership, and group metadata |
-| Participations | `rsvps`, `census` | RSVP state, attendance shaping, counts, and popularity |
+| Participations | `attendance`, `census` | Authenticated RSVP reads, attendance updates, and popular groups |
 | Session | Direct service methods | Login, logout, recovery, and password reset |
 | Users | Direct service methods | Account lookup, memberships, and created groups |
 | Notifications | Direct service methods | Notification creation, retrieval, and seen state |
@@ -190,8 +190,8 @@ A public method that only forwards one database call does not need a private
 wrapper:
 
 ```ts
-async getEventById(eventId) {
-  return await this.db.events.select.byId(eventId);
+async getGroupEvents(groupId) {
+  return await this.db.events.select.byGroupId(groupId);
 }
 ```
 
@@ -203,28 +203,29 @@ reusable transformations that support a handler's private workflow.
 
 - `EventQueryHandler` performs event reads and search.
 - `EventLifecycleHandler` creates events and changes scheduling status.
-- `EventTimelineHandler` builds past, archived, and next-event views.
-- `EventLayoutHandler` loads event sets for client layout use cases.
+- `EventTimelineHandler` filters group summaries to past events and sorts them
+  chronologically, returning the summary array directly.
+- `EventLayoutHandler` loads summaries and wraps them as discovery or
+  within-group surfaces for client layouts.
 - `EventLayoutComposer` paginates events and produces validated layout slots.
-- `EventHydrationHandler` assembles event, group, role, RSVP, and count metadata
-  for the opened-event drawer.
+- `EventHydrationHandler` adds viewer role and RSVP status to the validated
+  event read model supplied by persistence for the opened-event drawer.
 
 ### Groups
 
-- `GroupQueryHandler` performs group, category, member, organizer, and slug
-  lookups.
+- `GroupQueryHandler` exposes group hydration, discovery, search, category
+  filtering, and organizer-authorized archives. Group hydration includes member
+  count, organizer email, category name, and an optional next-event summary.
 - `GroupLifecycleHandler` creates a group and assigns its organizer membership.
 - `MembershipHandler` joins users to groups, removes memberships, and resolves
-  roles and head counts.
+  roles.
 
 ### Participations
 
-- `RsvpHandler` updates attendance, retrieves viewer RSVP data, creates the
-  attendance dictionary, and assembles user RSVP history.
-- `ParticipationDtoHandler` converts event, group, and attendance data into the
-  client-facing RSVP shape.
-- `CensusHandler` calculates attendance counts and derives popular groups and
-  events.
+- `RsvpHandler` updates attendance and retrieves authenticated RSVP surfaces
+  through the persistence selector.
+- `CensusHandler` returns popular groups selected by persistence. Popular event
+  selection belongs to `EventLayoutHandler`.
 
 ### Session
 
@@ -247,40 +248,41 @@ again in this layer.
 
 ### Authenticated User IDs
 
-`requireAuthenticated()` performs the runtime authentication check and returns
-an `AuthenticatedUserId`. This branded string records, in the type system, that
-the application has already established the authentication invariant.
+Session authentication establishes the identity and brands the request's user ID.
+`requireAuthenticated()` checks that this already-branded ID is present and returns
+it. This branded string records, in the type system, that the application has
+already established the authentication invariant.
 
 ```text
-string | null | undefined
+AuthenticatedUserId | undefined | null
         ↓ requireAuthenticated()
 AuthenticatedUserId
         ↓
 authenticated private workflow
 ```
 
-Public service and handler methods accept raw request IDs and call
-`requireAuthenticated()` at the application boundary. Private workflows that
+Public service and handler methods accept branded request IDs or an absent user
+and call `requireAuthenticated()` when authentication is required. Private workflows that
 require an authenticated actor accept `AuthenticatedUserId` rather than a
 plain `string`:
 
 ```ts
-async getMemberships(userId: string | null | undefined) {
+async getMemberships(userId: AuthenticatedUserId | undefined | null) {
   const actor = this.policy.requireAuthenticated(userId);
   return await this.membershipsOfUser(actor);
 }
 
 private async membershipsOfUser(actor: AuthenticatedUserId) {
-  return await this.db.groupMembers.select.byUserId(actor);
+  return await this.db.groupMembers.select.memberships(actor);
 }
 ```
 
 The brand prevents accidental use of an unchecked ID inside authenticated
 workflows. It does not replace runtime authorization: TypeScript types are not
-present when the server executes. The cast that creates an
-`AuthenticatedUserId` remains centralized inside `Authorization`, immediately
-after the runtime check; application code should obtain the type through
-`requireAuthenticated()` rather than casting IDs directly.
+present when the server executes. Casts that create an `AuthenticatedUserId`
+belong at the successful session or login boundary. Service code preserves the
+brand and uses `requireAuthenticated()` to reject absent users rather than
+casting arbitrary strings.
 
 `RoleBasedAccessHandler` resolves the user's group role through the
 `groupMembers` repository and evaluates it against the centralized permissions
@@ -368,17 +370,11 @@ The handler:
 
 ### Loading a user's RSVPs
 
-The router delegates to `domains.participations.rsvps.getRsvpdEvents(userId)`.
+The router delegates to `domains.participations.attendance.rsvps(userId)`.
 
-The handler:
-
-1. requires authentication;
-2. retrieves the user's attendance records;
-3. removes records that are not meaningful active RSVPs;
-4. returns early when no qualifying records remain;
-5. loads the corresponding events and group names;
-6. delegates response shaping to `ParticipationDtoHandler`;
-7. validates the resulting RSVP collection.
+The handler requires authentication and returns the validated RSVP surfaces from
+`db.eventAttendants.select.rsvps(userId)`. The persistence read supplies the event
+and group metadata directly.
 
 ### Creating a group
 

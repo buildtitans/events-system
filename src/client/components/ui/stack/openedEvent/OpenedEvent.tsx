@@ -2,13 +2,9 @@
 import Stack from "@mui/material/Stack";
 import FadeInOutBox from "@/src/client/components/ui/box/motionboxes/fadeInOutBox";
 import { type JSX } from "react";
-import { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
 import OpenedEventImage from "@/src/client/components/ui/box/cards/openedEventImage";
-import {
-  GroupSlug,
-  NameOfGroup,
-  NumberOfAttendantsType,
-} from "@/src/lib/store/slices/events/EventDrawerSlice";
+
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import EventAttendants from "@/src/client/components/ui/stack/openedEvent/contents/eventAttendants";
@@ -19,41 +15,37 @@ import EventMeta from "@/src/client/components/ui/stack/openedEvent/contents/eve
 import { openedEventHeroSx } from "@/src/client/styles/sx/openedEventDrawer";
 
 type OpenedEventProps = {
-  event: EventSchemaType;
-  numAttendants?: NumberOfAttendantsType;
-  numInterested?: NumberOfAttendantsType;
-  name: NameOfGroup;
-  slug: GroupSlug;
+  hydrated: HydratedEventSchemaType;
 };
 
-
 export default function OpenedEvent({
-  event,
-  numAttendants,
-  numInterested,
-  name,
-  slug,
+  hydrated,
 }: OpenedEventProps): JSX.Element {
-  const thumbnail = event.img;
-  const startTime = toMonthDayYearHour(event.starts_at);
-  const isCurrent = isFutureOrNow(new Date(event.starts_at));
+  const thumbnail = hydrated.event.img;
+  const startTime = toMonthDayYearHour(hydrated.event.starts_at);
+  const isCurrent = isFutureOrNow(new Date(hydrated.event.starts_at));
   return (
     <FadeInOutBox>
       <Stack sx={openedEventHeroSx} spacing={1}>
-        <GroupName slug={slug} name={name} />
+        <GroupName
+          slug={hydrated.meta.event.group_slug}
+          name={hydrated.meta.event.group_name}
+        />
 
-        <EventTitle title={event.title} />
+        <EventTitle title={hydrated.event.title} />
 
         <OpenedEventImage thumbnail={thumbnail} />
 
-        <EventMeta startTime={startTime} location={event.meeting_location} />
+        <EventMeta
+          startTime={startTime}
+          location={hydrated.event.meeting_location}
+        />
 
-        <EventDescription description={event.description} />
+        <EventDescription description={hydrated.event.description} />
 
-        {numAttendants && event.status === "scheduled" && (
+        {hydrated.event.status === "scheduled" && (
           <EventAttendants
-            numAttendants={numAttendants}
-            numInterested={numInterested}
+            attendance={hydrated.meta.event.attendants}
             isCurrent={isCurrent}
           />
         )}

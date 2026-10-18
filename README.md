@@ -222,7 +222,7 @@ including:
 - Role-based permissions
 - Event lifecycle and timeline behavior
 - Group creation and membership workflows
-- RSVP updates, attendance aggregation, and DTO shaping
+- RSVP updates, attendance metadata, and validated summary/hydration read models
 - Notifications and password-reset orchestration
 - Event layout composition
 - Search service orchestration and relevance-ranked result compilation
