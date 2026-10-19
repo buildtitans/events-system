@@ -1,5 +1,5 @@
 import { IEventsValidator } from "./eventsValidator";
-import { RawEventsReader } from "./rawEventsReader";
+import { EventsReader, IEventsReader } from "./rawEventsReader";
 import {
   GroupSchemaType,
   NextEventForGroupSummarySchemaType,
@@ -33,11 +33,11 @@ export interface IEventsSelector {
 export class EventsSelector implements IEventsSelector {
   constructor(
     private readonly validate: IEventsValidator,
-    private readonly read: RawEventsReader,
+    private readonly read: IEventsReader,
   ) {}
 
   async hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType> {
-    const raw = await this.read.rawHydratedWithGroupDetails(id);
+    const raw = await this.read.hydrateEvent(id);
     return this.validate.eventWithGroupDetails(raw);
   }
 
@@ -47,20 +47,20 @@ export class EventsSelector implements IEventsSelector {
   }
 
   async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
-    const raw = await this.read.rawSearchByTitle(query);
+    const raw = await this.read.search(query);
 
     return this.validate.events(raw);
   }
 
   async suggest(query: SearchSchemaType): Promise<EventSchemaType[]> {
-    const raw = await this.read.rawSuggestByTitle(query);
+    const raw = await this.read.suggest(query);
     return this.validate.events(raw);
   }
 
   async nextEventByGroupId(
     group_id: string,
   ): Promise<NextEventForGroupSummarySchemaType | undefined> {
-    const nextEvent = await this.read.rawNextEventByGroupId(group_id);
+    const nextEvent = await this.read.nextEvent(group_id);
 
     if (!nextEvent) return undefined;
 
@@ -73,7 +73,7 @@ export class EventsSelector implements IEventsSelector {
   }
 
   async byIds(ids: EventSchemaType["id"][]) {
-    const raw = await this.read.rawByIds(ids);
+    const raw = await this.read.byIds(ids);
     return this.validate.eventsForDiscovery(raw);
   }
 

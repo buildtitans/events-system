@@ -133,8 +133,7 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(
       refreshGroupEvents.fulfilled,
       (state: InitialState, action) => {
-        const { refreshedEventsLayout, calandarEvents, nextEvent } =
-          action.payload;
+        const { refreshedEventsLayout, calandar, nextEvent } = action.payload;
 
         if (state.group.status === "ready") {
           state.group.data.meta.next_event = nextEvent;
@@ -149,8 +148,8 @@ const OpenedGroupSlice = createSlice({
           };
         }
 
-        if (calandarEvents.length > 0) {
-          state.calandar = { status: "ready", data: calandarEvents };
+        if (calandar.length > 0) {
+          state.calandar = { status: "ready", data: calandar };
         } else {
           state.calandar = {
             status: "n/a",

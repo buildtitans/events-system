@@ -14,7 +14,6 @@ import {
   IEventLayoutHandler,
   IEventLifecycleHandler,
   IEventQueryHandler,
-  IEventTimelineHandler,
 } from "../handlers/events/types";
 import {
   IGroupLifecycleHandler,
@@ -25,6 +24,7 @@ import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
 import { IUserSelectHandler } from "../handlers/user/userSelectHandler";
 import { IUserWriteHandler } from "../handlers/user/userWriteHandler";
 import { LoginCredentialsSchemaType } from "../../../../schemas/auth/loginCredentialsSchema";
+import { IGroupHydrationHandler } from "../handlers/groups/groupHydrationHandler";
 
 export type SessionServiceDb = Pick<IDBClient, "auth">;
 
@@ -64,7 +64,6 @@ export interface IPasswordResetEmailService {
 export interface IEventService {
   readonly hydrate: IEventHydrationHandler;
   readonly query: IEventQueryHandler;
-  readonly timeline: IEventTimelineHandler;
   readonly layout: IEventLayoutHandler;
   readonly lifecycle: IEventLifecycleHandler;
 }
@@ -73,6 +72,7 @@ export interface IGroupService {
   readonly groupLifecycle: IGroupLifecycleHandler;
   readonly memberships: IMembershipHandler;
   readonly query: IGroupQueryHandler;
+  readonly hydrate: IGroupHydrationHandler;
 }
 
 export interface IParticipationsService {

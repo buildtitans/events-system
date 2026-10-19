@@ -20,7 +20,7 @@ jest.mock("./thunks", () => {
   };
 });
 
-import { makeHydratedGroup, makeHydrationPayload, makeNextEvent } from "../../services/hydration/groupHydration.fixtures";
+import { makeHydratedGroup, makeHydrationPayload, makeNextEvent, makeTimelineItem } from "../../services/hydration/groupHydration.fixtures";
 import openedGroupReducer from "./OpenedGroupSlice";
 import { hydrateGroup, refreshGroupEvents } from "./thunks";
 
@@ -54,16 +54,17 @@ describe("OpenedGroupSlice", () => {
     expect(pending.calandar.status).toBe("pending");
     expect(pending.group).toEqual(initial.group);
     const nextEvent = makeNextEvent();
+    const timelineItem = makeTimelineItem();
     const state = openedGroupReducer(pending, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandarEvents: [nextEvent], nextEvent,
+      refreshedEventsLayout: [], calandar: [timelineItem], nextEvent,
     }, "refresh-1", "group-1"));
-    expect(state.calandar).toEqual({ status: "ready", data: [nextEvent] });
+    expect(state.calandar).toEqual({ status: "ready", data: [timelineItem] });
     expect(state.events.status).toBe("n/a");
   });
 
   it("settles an empty calendar refresh as unavailable", () => {
     const state = openedGroupReducer(undefined, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandarEvents: [], nextEvent: undefined,
+      refreshedEventsLayout: [], calandar: [], nextEvent: undefined,
     }, "refresh-1", "group-1"));
     expect(state.calandar.status).toBe("n/a");
     expect(state.events.status).toBe("n/a");
@@ -102,12 +103,33 @@ describe("OpenedGroupSlice", () => {
     ));
 
     const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandarEvents: [], nextEvent,
+      refreshedEventsLayout: [], calandar: [], nextEvent,
     }, "refresh-1", hydrated.group.id));
 
     expect(state.group).toEqual({
       status: "ready",
       data: { ...hydrated, meta: { ...hydrated.meta, next_event: nextEvent } },
     });
+  });
+});
+
+describe("OpenedGroupSlice timeline variants", () => {
+  it.each([
+    makeTimelineItem({ timeline_status: "upcoming" }),
+    makeTimelineItem({ timeline_status: "past", meta: { number_attendend: 4 } }),
+    makeTimelineItem({ timeline_status: "today", event_phase: "upcoming" }),
+    makeTimelineItem({ timeline_status: "today", event_phase: "ongoing" }),
+    makeTimelineItem({ timeline_status: "today", event_phase: "completed" }),
+  ])("preserves timeline metadata through hydration and refresh (%#)", (item) => {
+    const payload = makeHydrationPayload({ calandar: [item] });
+    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
+      payload, "hydrate-1", payload.hydrated.group.slug,
+    ));
+    expect(initial.calandar).toEqual({ status: "ready", data: [item] });
+
+    const refreshed = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
+      refreshedEventsLayout: [], calandar: [item], nextEvent: undefined,
+    }, "refresh-1", payload.hydrated.group.id));
+    expect(refreshed.calandar).toEqual({ status: "ready", data: [item] });
   });
 });

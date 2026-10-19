@@ -90,11 +90,13 @@ export const refreshGroupEvents = createAsyncThunk(
     try {
       const refreshedEventsLayout =
         await trpcClient.hydrate.events.layouts.forGroup.query(id);
-      const calandarEvents = await trpcClient.entities.group.events.list.query(id);
-      const nextEvent = await trpcClient.entities.group.events.nextEvent.query(id);
+      const calandar =
+        await trpcClient.entities.group.events.timeline.query(id);
+      const nextEvent =
+        await trpcClient.entities.group.events.nextEvent.query(id);
       return {
         refreshedEventsLayout,
-        calandarEvents,
+        calandar,
         nextEvent,
       };
     } catch (err) {
@@ -113,7 +115,8 @@ export const refreshArchivedEvents = createAsyncThunk(
     thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
 
     try {
-      const result = await trpcClient.entities.group.organizer.archives.query(id);
+      const result =
+        await trpcClient.entities.group.organizer.archives.query(id);
 
       return result;
     } catch (err) {
@@ -197,7 +200,8 @@ export const makeMembership = createAsyncThunk(
     );
 
     try {
-      const result = await trpcClient.entities.group.member.joinGroup.mutate(group_id);
+      const result =
+        await trpcClient.entities.group.member.joinGroup.mutate(group_id);
       thunkAPI.dispatch(
         enqueueSnackbar({ kind: "joiningGroup", status: "success" }),
       );

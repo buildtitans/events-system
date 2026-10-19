@@ -11,6 +11,7 @@ import {
 } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
 export type GroupsFilter = "all" | "popular" | "category";
 
@@ -35,7 +36,7 @@ export type GroupCategoryState = AsyncState<
 >;
 
 export type GroupEventsCalandarState = AsyncState<
-  GroupEventSummarySchemaType[],
+  TimelineElementSchemaType[],
   "No Events held for this group"
 >;
 

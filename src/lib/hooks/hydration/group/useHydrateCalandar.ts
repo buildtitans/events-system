@@ -1,28 +1,19 @@
 "use client";
 import { useMemo } from "react";
 import dayjs from "dayjs";
-import {
-  GroupEventSummarySchemaType,
-  EventSchemaType,
-} from "@/src/schemas/events/eventSchema";
+import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
-export type CalendarLookup = Map<string, Set<EventSchemaType["status"]>>;
+export type CalendarLookup = Map<string, TimelineElementSchemaType>;
 
 export function useHydrateCalendar(
-  events: GroupEventSummarySchemaType[],
+  events: TimelineElementSchemaType[],
 ): CalendarLookup {
   return useMemo(() => {
     const lookup: CalendarLookup = new Map();
 
     for (const el of events) {
       const dayKey = dayjs(el.event.starts_at_ms).format("YYYY-MM-DD");
-      const statusesForDay = lookup.get(dayKey);
-
-      if (statusesForDay) {
-        statusesForDay.add(el.event.status);
-      } else {
-        lookup.set(dayKey, new Set([el.event.status]));
-      }
+      lookup.set(dayKey, el);
     }
 
     return lookup;

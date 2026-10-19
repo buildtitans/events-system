@@ -1,6 +1,6 @@
 import { HydrateOpenGroupService } from "./hydrateOpenGroupService";
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
-import { makeHydratedGroup, makeNextEvent } from "./groupHydration.fixtures";
+import { makeHydratedGroup, makeNextEvent, makeTimelineItem } from "./groupHydration.fixtures";
 
 function setup(hydrated = makeHydratedGroup()) {
   const groupQuery = jest.fn().mockResolvedValue(hydrated);
@@ -14,7 +14,7 @@ function setup(hydrated = makeHydratedGroup()) {
     },
     entities: {
       group: {
-        events: { list: { query: calendarQuery } },
+        events: { timeline: { query: calendarQuery } },
         member: { role: { query: roleQuery } },
       },
     },
@@ -26,7 +26,7 @@ describe("HydrateOpenGroupService", () => {
   it("combines hydrated metadata with role, layout, and calendar", async () => {
     const hydrated = makeHydratedGroup({ next_event: makeNextEvent() });
     const { service, groupQuery, roleQuery, layoutQuery, calendarQuery } = setup(hydrated);
-    const calendar = [makeNextEvent()];
+    const calendar = [makeTimelineItem()];
     calendarQuery.mockResolvedValue(calendar);
     await expect(service.hydrate(hydrated.group.slug)).resolves.toEqual({
       ok: true, data: { hydrated, role: "member", layout: [], calandar: calendar },

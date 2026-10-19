@@ -1,3 +1,51 @@
+import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
+
+export type RawtimelineItem =
+  | {
+      timeline_status: "today";
+      event: {
+        id: string;
+        created_at: string;
+        starts_at: string;
+        image: string;
+        starts_at_ms: number;
+      };
+      event_phase: "upcoming" | "ongoing" | "completed";
+    }
+  | {
+      timeline_status: "upcoming";
+      event: {
+        id: string;
+        created_at: string;
+        starts_at: string;
+        image: string;
+        starts_at_ms: number;
+      };
+    }
+  | {
+      timeline_status: "past";
+      event: {
+        id: string;
+        created_at: string;
+        starts_at: string;
+        image: string;
+        starts_at_ms: number;
+      };
+      meta: {
+        number_attendend: number;
+      };
+    };
+
+export type ReadTimelineItem = {
+  group_id: string;
+  created_at: Date;
+  id: string;
+  starts_at: Date;
+  timeline_status: "past" | "today" | "upcoming";
+  image: EventSchemaType["img"];
+  number_attended: number;
+};
+
 export type RawHydratedGroup = {
   group: {
     id: string;

@@ -3,17 +3,14 @@ import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import {
   ArchivedEventSchemaType,
-  GroupHydratedSchemaType,
   GroupSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import {
-  CategoriesSchemaType,
-  CategorySchemaType,
-} from "@/src/schemas/groups/categoriesSchema";
+import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { IGroupQueryHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
 import { IAuthorization } from "../../auth/authorization";
+import { TimelineElementSchemaType } from "../../../../../schemas/groups/timelineSchema";
+import { GroupEventSummarySchemaType } from "../../../../../schemas/events/eventSchema";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
   constructor(
@@ -21,28 +18,14 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     private readonly policy: IAuthorization,
   ) {}
 
-  async hydrateGroup(
-    group_id: GroupSchemaType["id"],
-  ): Promise<GroupHydratedSchemaType> {
-    return await this.db.groups.select.hydrateGroup(group_id);
+  async calandar(
+    id: GroupSchemaType["id"],
+  ): Promise<TimelineElementSchemaType[]> {
+    return this.db.groups.select.timeline(id);
   }
 
-  async getGroupCategories(): Promise<CategoriesSchemaType> {
+  async categories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
-  }
-
-  async discovery(): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.all();
-  }
-
-  async popular(): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.popular();
-  }
-
-  async byCategory(
-    categoryId: CategorySchemaType["id"],
-  ): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.byCategory(categoryId);
   }
 
   async suggestGroups(query: string): Promise<GroupSchemaType[]> {
@@ -64,5 +47,21 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, id);
     return await this.db.groups.select.archives(id);
+  }
+
+  async pastEvents(id: GroupSchemaType["id"]) {
+    const groupEvents = await this.db.events.select.byGroupId(id);
+    const history: GroupEventSummarySchemaType[] = [];
+    const now = Date.now();
+
+    for (const { event, meta } of groupEvents) {
+      if (event.starts_at_ms < now) {
+        const data = { event, meta };
+        history.push(data);
+      }
+    }
+    history.sort((a, b) => a.event.starts_at_ms - b.event.starts_at_ms);
+
+    return history;
   }
 }

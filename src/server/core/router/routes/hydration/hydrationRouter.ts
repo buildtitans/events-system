@@ -6,8 +6,8 @@ export const hydrationRouter = router({
   app: publicProcedure.query(async ({ ctx }) => {
     const [events, groups, categories] = await Promise.all([
       ctx.api.services.domains.events.layout.discovery(),
-      ctx.api.services.domains.groups.query.discovery(),
-      ctx.api.services.domains.groups.query.getGroupCategories(),
+      ctx.api.services.domains.groups.hydrate.list.discovery(),
+      ctx.api.services.domains.groups.query.categories(),
     ]);
     return {
       events,

@@ -4,11 +4,29 @@ import { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { textSearchRelevance } from "../../../../lib/utils/queries/textSearchRelevance";
+import {
+  EventById,
+  RawDiscoverableEvent,
+  RawGroupEvent,
+  RawHydratedEvent,
+  RawNextEvent,
+} from "./types";
 
-export class RawEventsReader {
+export interface IEventsReader {
+  hydrateEvent(id: EventSchemaType["id"]): Promise<RawHydratedEvent>;
+  discovery(): Promise<RawDiscoverableEvent[]>;
+  byGroupId(group_id: EventSchemaType["group_id"]): Promise<RawGroupEvent[]>;
+  allRawScheduledEvents(): Promise<Selectable<Events>[]>;
+  nextEvent(group_id: GroupSchemaType["id"]): Promise<RawNextEvent | undefined>;
+  byIds(ids: EventSchemaType["id"][]): Promise<EventById[]>;
+  suggest(query: SearchSchemaType): Promise<Selectable<Events>[]>;
+  search(query: SearchSchemaType): Promise<Selectable<Events>[]>;
+}
+
+export class EventsReader implements IEventsReader {
   constructor(private readonly db: Kysely<DB>) {}
 
-  async rawHydratedWithGroupDetails(id: EventSchemaType["id"]) {
+  async hydrateEvent(id: EventSchemaType["id"]) {
     const { group_name, group_slug, going, interested, ...event } =
       await this.db
         .selectFrom("events")
@@ -176,7 +194,9 @@ export class RawEventsReader {
       .execute();
   }
 
-  async rawNextEventByGroupId(group_id: GroupSchemaType["id"]) {
+  async nextEvent(
+    group_id: GroupSchemaType["id"],
+  ): Promise<RawNextEvent | undefined> {
     const result = await this.db
       .selectFrom("events as e")
       .leftJoin("event_attendants as ea", "e.id", "ea.event_id")
@@ -233,10 +253,11 @@ export class RawEventsReader {
     }
   }
 
-  async rawByIds(ids: EventSchemaType["id"][]) {
+  async byIds(ids: EventSchemaType["id"][]): Promise<EventById[]> {
     const result = await this.db
       .selectFrom("events as e")
       .innerJoin("groups as g", "g.id", "e.group_id")
+      .innerJoin("categories as c", "g.category_id", "c.id")
       .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
       .where("e.status", "=", "scheduled")
       .where("e.id", "in", ids)
@@ -251,6 +272,7 @@ export class RawEventsReader {
         "e.title",
         "g.name as group_name",
         "g.location as group_location",
+        "c.name as category_name",
 
         eb.fn
           .countAll<number>()
@@ -262,7 +284,7 @@ export class RawEventsReader {
           .filterWhere("ea.status", "=", "interested")
           .as("interested_count"),
       ])
-      .groupBy(["e.id", "g.id"])
+      .groupBy(["e.id", "g.id", "c.name"])
       .execute();
 
     return result.map((event) => {
@@ -270,6 +292,7 @@ export class RawEventsReader {
         going_count,
         interested_count,
         group_name,
+        category_name,
         group_location,
         starts_at,
         ...rest
@@ -277,6 +300,7 @@ export class RawEventsReader {
       return {
         event: {
           ...rest,
+          starts_at: starts_at.toISOString(),
           starts_at_ms: starts_at.getTime(),
         },
         meta: {
@@ -286,14 +310,13 @@ export class RawEventsReader {
           },
           group_name,
           group_location: group_location ?? "Online",
+          category_name,
         },
       };
     });
   }
 
-  async rawSuggestByTitle(
-    query: SearchSchemaType,
-  ): Promise<Selectable<Events>[]> {
+  async suggest(query: SearchSchemaType): Promise<Selectable<Events>[]> {
     return this.db
       .selectFrom("events")
       .selectAll()
@@ -308,9 +331,7 @@ export class RawEventsReader {
       .execute();
   }
 
-  async rawSearchByTitle(
-    query: SearchSchemaType,
-  ): Promise<Selectable<Events>[]> {
+  async search(query: SearchSchemaType): Promise<Selectable<Events>[]> {
     return this.db
       .selectFrom("events")
       .selectAll()

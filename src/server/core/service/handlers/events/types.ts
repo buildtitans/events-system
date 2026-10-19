@@ -65,12 +65,6 @@ export interface IEventLayoutComposer {
   compileLayout(events: EventSurfaceSchemaType[]): PaginatedLayoutSchemaType;
 }
 
-export interface IEventTimelineHandler {
-  getPastEventsForGroup(
-    group_id: string,
-  ): Promise<GroupEventSummarySchemaType[]>;
-}
-
 export interface IEventHydrationHandler {
   event(
     user_id: AuthenticatedUserId | undefined | null,

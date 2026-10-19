@@ -1,3 +1,4 @@
+import type { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 import type { GroupHydratedSchemaType, NextEventForGroupSummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import type { OpenedGroupPayload } from "../types";
 
@@ -55,5 +56,23 @@ export function makeHydrationPayload(
     role: "member",
     calandar: [],
     ...overrides,
+  };
+}
+
+export function makeTimelineItem(
+  variant: Omit<Extract<TimelineElementSchemaType, { timeline_status: "today" }>, "event">
+    | Omit<Extract<TimelineElementSchemaType, { timeline_status: "past" }>, "event">
+    | Omit<Extract<TimelineElementSchemaType, { timeline_status: "upcoming" }>, "event">
+    = { timeline_status: "upcoming" },
+): TimelineElementSchemaType {
+  return {
+    ...variant,
+    event: {
+      id: "event-1",
+      starts_at: "2026-08-19T18:00:00.000Z",
+      starts_at_ms: Date.parse("2026-08-19T18:00:00.000Z"),
+      created_at: "2026-08-01T12:00:00.000Z",
+      image: "event.jpg",
+    },
   };
 }

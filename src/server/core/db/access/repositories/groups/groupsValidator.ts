@@ -13,9 +13,17 @@ import type { Selectable } from "kysely";
 import type { Groups } from "@/src/server/core/db/types/db";
 import { EventsValidator } from "../events/eventsValidator";
 import type { RawArchives } from "./rawGroupsReader";
+import {
+  TimelineElementSchemaType,
+  TimelineSchema,
+} from "../../../../../../schemas/groups/timelineSchema";
 
 export class GroupsValidator {
   constructor(private readonly eventsValidator: EventsValidator) {}
+
+  timeline(data: unknown): TimelineElementSchemaType[] {
+    return validateOrThrow(TimelineSchema, data);
+  }
 
   hydrated(data: unknown): GroupHydratedSchemaType {
     return validateOrThrow(GroupHydratedSchema, data);

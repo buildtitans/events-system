@@ -6,9 +6,11 @@ import {
   GroupHydratedSchemaType,
   GroupSchemaType,
 } from "@/src/schemas/groups/groupSchema";
+import { TimelineElementSchemaType } from "../../../../../../schemas/groups/timelineSchema";
 
 export interface IGroupsSelector {
   hydrateGroup(id: GroupSchemaType["id"]): Promise<GroupHydratedSchemaType>;
+  timeline(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
   all(): Promise<GroupSchemaType[]>;
   byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
@@ -31,6 +33,11 @@ export class GroupsSelector implements IGroupsSelector {
   async hydrateGroup(id: GroupSchemaType["id"]) {
     const hydratedGroup = await this.read.hydrateGroup(id);
     return this.validator.hydrated(hydratedGroup);
+  }
+
+  async timeline(id: GroupSchemaType["id"]) {
+    const timeline = await this.read.timeline(id);
+    return this.validator.timeline(timeline);
   }
 
   async all(): Promise<GroupSchemaType[]> {

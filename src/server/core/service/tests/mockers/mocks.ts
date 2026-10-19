@@ -128,6 +128,7 @@ function createMockEventsRepo() {
 function createMockGroupsRepo() {
   return {
     select: {
+      timeline: jest.fn(),
       popular: jest.fn(),
       archives: jest.fn(),
       all: jest.fn(),
@@ -243,6 +244,7 @@ export function makeEventSummary(
     meta: {
       group_name: "new group",
       group_location: "Online",
+      category_name: "Technology",
       attendance: { going: 0, interested: 0 },
       ...meta,
     },
@@ -361,6 +363,6 @@ export function makeGroupEventSummary(
   const { id, group_id, status, starts_at, starts_at_ms, img, tag, title, meeting_location } = makeEvent(overrides);
   return {
     event: { id, group_id, status, starts_at, starts_at_ms, img, tag, title, meeting_location },
-    meta: { attendance: { going: 0, interested: 0 }, ...meta },
+    meta: { category_name: "Technology", attendance: { going: 0, interested: 0 }, ...meta },
   };
 }

@@ -1,10 +1,20 @@
 import { Kysely, Selectable, sql } from "kysely";
 import { DB, Events, Groups } from "@/src/server/core/db/types/db";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type {
+  EventPhaseSchemaType,
+  TimelineElementSchemaType,
+} from "@/src/schemas/groups/timelineSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { textSearchRelevance } from "@/src/server/core/lib/utils/queries/textSearchRelevance";
 import { jsonObjectFrom } from "kysely/helpers/postgres";
-import { HydratedGroupRead, HydratedGroupResult } from "./types";
+import {
+  HydratedGroupRead,
+  HydratedGroupResult,
+  RawtimelineItem,
+  ReadTimelineItem,
+} from "./types";
+import { assertNever } from "../../../../lib/asserts/assertNever";
 
 export type RawArchives = {
   event: Selectable<Events>;
@@ -15,6 +25,7 @@ export type RawArchives = {
 }[];
 
 export interface IGroupsReader {
+  timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]>;
   allGroups(): Promise<Selectable<Groups>[]>;
   hydrateGroup(slug: GroupSchemaType["slug"]): Promise<HydratedGroupRead>;
   popularGroups(): Promise<Selectable<Groups>[]>;
@@ -93,6 +104,48 @@ export class RawGroupsReader implements IGroupsReader {
       .executeTakeFirstOrThrow(); // row;
 
     return this.toRawHydratedGroupDto(result);
+  }
+
+  async timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]> {
+    const result = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "e.group_id", "g.id")
+      .leftJoin("event_attendants as ea", "e.id", "ea.event_id")
+      .where("g.id", "=", id)
+      .where("e.status", "=", "scheduled")
+      .select((eb) => [
+        "e.starts_at",
+        "e.id",
+        "e.group_id",
+        "e.created_at",
+        "e.img as image",
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "going")
+          .as("number_attended"),
+
+        eb
+          .case()
+          .when(
+            eb.cast<string>("e.starts_at", "date"),
+            "<",
+            sql<string>`current_date`,
+          )
+          .then("past" as const)
+          .when(
+            eb.cast<string>("e.starts_at", "date"),
+            "=",
+            sql<string>`current_date`,
+          )
+          .then("today" as const)
+          .else("upcoming" as const)
+          .end()
+          .as("timeline_status"),
+      ])
+      .groupBy("e.id")
+      .execute();
+
+    return this.toTimeline(result);
   }
 
   async popularGroups(): Promise<Selectable<Groups>[]> {
@@ -256,5 +309,66 @@ export class RawGroupsReader implements IGroupsReader {
         },
       };
     }
+  }
+
+  toTimeline(items: ReadTimelineItem[]): TimelineElementSchemaType[] {
+    return items.map((item) => this.toTimelineItem(item));
+  }
+
+  private toTimelineItem(item: ReadTimelineItem): TimelineElementSchemaType {
+    const { timeline_status, starts_at, created_at, number_attended, ...rest } =
+      item;
+    const event = {
+      starts_at_ms: starts_at.getTime(),
+      starts_at: starts_at.toISOString(),
+      created_at: created_at.toISOString(),
+      ...rest,
+    };
+
+    switch (timeline_status) {
+      case "upcoming": {
+        return {
+          event,
+          timeline_status: timeline_status,
+        };
+      }
+      case "past": {
+        return {
+          event,
+          timeline_status,
+          meta: {
+            number_attendend: Number(number_attended),
+          },
+        };
+      }
+
+      case "today": {
+        return {
+          event,
+          timeline_status,
+          event_phase: this.toEventPhase(starts_at),
+        };
+      }
+
+      default: {
+        return assertNever(timeline_status);
+      }
+    }
+  }
+
+  private toEventPhase(scheduledDate: Date): EventPhaseSchemaType {
+    const startsAtMs = scheduledDate.getTime();
+    const endsAtMs = startsAtMs + 2 * 60 * 60 * 1000;
+    const nowMs = Date.now();
+
+    if (nowMs < startsAtMs) {
+      return "upcoming";
+    }
+
+    if (nowMs < endsAtMs) {
+      return "ongoing";
+    }
+
+    return "completed";
   }
 }

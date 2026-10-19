@@ -6,6 +6,7 @@ import {
   createMockDb,
   makeGroup,
   makeEvent,
+  makeGroupEventSummary,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -144,3 +145,46 @@ describe("GroupService.query.archives", () => {
     await expect(service.query.archives(USER_ID, groupId)).rejects.toThrow("Database unavailable");
   });
 });
+
+describe("GroupService.query.pastEvents", () => {
+  let service: GroupService;
+  let db: ReturnType<typeof createMockDb>;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
+    db = createMockDb();
+    service = new GroupService(db, policyMock);
+  });
+
+  afterEach(() => jest.useRealTimers());
+
+  it("returns past summaries with their included going counts in chronological order", async () => {
+    const older = makeGroupEventSummary(
+      { id: "past-1", starts_at_ms: Date.parse("2026-03-20T12:00:00.000Z") },
+      { attendance: { going: 0, interested: 3 } },
+    );
+    const recent = makeGroupEventSummary(
+      { id: "past-2", starts_at_ms: Date.parse("2026-04-05T12:00:00.000Z") },
+      { attendance: { going: 2, interested: 4 } },
+    );
+    const future = makeGroupEventSummary({ id: "future", starts_at_ms: Date.now() + 1 });
+    const now = makeGroupEventSummary({ id: "now", starts_at_ms: Date.now() });
+    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([recent, future, now, older]);
+
+    await expect(service.query.pastEvents("group-1")).resolves.toEqual([older, recent]);
+    expect(db.events.select.byGroupId).toHaveBeenCalledWith("group-1");
+  });
+
+  it.each([
+    { events: [] },
+    { events: [makeGroupEventSummary({ starts_at_ms: Date.parse("2026-04-08T00:00:00.000Z") })] },
+  ])(
+    "returns empty history when there are no past events (%#)",
+    async ({ events }) => {
+      (db.events.select.byGroupId as jest.Mock).mockResolvedValue(events);
+      await expect(service.query.pastEvents("group-1")).resolves.toEqual([]);
+    },
+  );
+});
+

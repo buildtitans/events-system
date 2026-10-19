@@ -25,7 +25,7 @@ const EventSchema = Type.Object({
   id: Type.String(),
   group_id: Type.String(),
   status: EventStatusSchema,
-  starts_at: Type.String(),
+  starts_at: Type.String({ format: "date-time" }),
   starts_at_ms: Type.Integer({ minimum: 0 }),
   img: Type.String(),
   tag: EventTagSchema,
@@ -51,7 +51,7 @@ const EventDiscoverySummaryMeta = Type.Object({
   group_name: Type.String(),
   group_location: Type.String(),
   attendance: EventHeadCountSchema,
-  category_name: Type.Optional(Type.String({ minLength: 1 })),
+  category_name: Type.String({ minLength: 1 }),
 });
 
 const GroupEventSummaryMetaDataSchema = Type.Pick(EventDiscoverySummaryMeta, [

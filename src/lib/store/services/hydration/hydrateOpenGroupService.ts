@@ -56,7 +56,7 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
     const [layoutResult, role, calandar] = await Promise.all([
       this.trpc.hydrate.events.layouts.forGroup.query(group_id),
       this.trpc.entities.group.member.role.query(group_id),
-      this.trpc.entities.group.events.list.query(group_id),
+      this.trpc.entities.group.events.timeline.query(group_id),
     ]);
 
     return {
