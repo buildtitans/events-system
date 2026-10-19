@@ -1,14 +1,15 @@
 import { EventFilterService } from "@/src/lib/store/services/filter/eventFilterService";
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 
-const asClient = (value: unknown) => value as TrpcClientType;
+const asClient = (layouts: Partial<TrpcClientType["hydrate"]["events"]["layouts"]>) =>
+  ({ hydrate: { events: { layouts } } }) as TrpcClientType;
 
 describe("EventFilterService", () => {
   it("returns the active event layout", async () => {
     const events = [[{ id: "event-1" }]];
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
-      asClient({ layouts: { events: { discovery: { query } } } }),
+      asClient({ discovery: { query } }),
     );
 
     await expect(service.all()).resolves.toEqual({ ok: true, events });
@@ -20,7 +21,7 @@ describe("EventFilterService", () => {
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
       asClient({
-        layouts: { events: { popular: { query } } },
+        popular: { query },
       }),
     );
 
@@ -33,7 +34,7 @@ describe("EventFilterService", () => {
     const query = jest.fn().mockResolvedValue(events);
     const service = new EventFilterService(
       asClient({
-        layouts: { events: { upcoming: { query } } },
+        upcoming: { query },
       }),
     );
 
@@ -44,11 +45,7 @@ describe("EventFilterService", () => {
   it("returns a failure result when a filter query rejects", async () => {
     const service = new EventFilterService(
       asClient({
-        layouts: {
-          events: {
-            discovery: { query: jest.fn().mockRejectedValue(new Error("nope")) },
-          },
-        },
+        discovery: { query: jest.fn().mockRejectedValue(new Error("nope")) },
       }),
     );
 

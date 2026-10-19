@@ -35,6 +35,10 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.groups.select.all();
   }
 
+  async popular(): Promise<GroupSchemaType[]> {
+    return await this.db.groups.select.popular();
+  }
+
   async byCategory(
     categoryId: CategorySchemaType["id"],
   ): Promise<GroupSchemaType[]> {

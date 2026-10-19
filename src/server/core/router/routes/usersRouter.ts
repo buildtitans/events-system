@@ -1,53 +1,21 @@
-import {
-  router,
-  protectedProcedure,
-  publicProcedure,
-} from "@/src/server/core/context/init";
-import {
-  TokenAndPasswordValidator,
-  UserEmailInputValidator,
-} from "../inputValidators/inputValidation";
+import { router, protectedProcedure } from "@/src/server/core/context/init";
 
-const selectUserRouter = router({
+export const userRouter = router({
   email: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.getEmailById(ctx.req.user?.id);
+    return await ctx.api.services.domains.users.select.email(ctx.req.user?.id);
   }),
 
   memberships: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.memberships(ctx.req.user?.id);
+    return await ctx.api.services.domains.users.select.memberships(
+      ctx.req.user?.id,
+    );
   }),
 
   rsvps: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.participations.attendance.rsvps(
-      ctx.req.user?.id,
-    );
+    return await ctx.api.services.domains.users.select.rsvps(ctx.req.user?.id);
   }),
 
   createdGroups: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.users.getGroupsCreated(
-      ctx.req.user?.id,
-    );
+    return await ctx.api.services.domains.users.select.groups(ctx.req.user?.id);
   }),
-});
-
-const userCredentialsRouter = router({
-  requestPasswordReset: publicProcedure
-    .input(UserEmailInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.session.emailForPwReset(input);
-    }),
-
-  resetPassword: publicProcedure
-    .input(TokenAndPasswordValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.session.resetPassword(
-        input.token,
-        input.password,
-      );
-    }),
-});
-
-export const userRouter = router({
-  select: selectUserRouter,
-  credentials: userCredentialsRouter,
 });

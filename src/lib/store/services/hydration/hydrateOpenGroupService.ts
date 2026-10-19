@@ -20,7 +20,7 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
     slug: GroupSchemaType["slug"],
   ): Promise<SyncOpenGroupPayload> {
     try {
-      const hydrated = await this.trpc.groups.read.hydrate.group.query(slug);
+      const hydrated = await this.trpc.hydrate.groups.single.query(slug);
 
       if (!hydrated) {
         throw new Error(`Failed to hydrate group by slug: ${slug}`);
@@ -54,9 +54,9 @@ export class HydrateOpenGroupService implements IHydrateOpenGroupService {
 
   private async getGroupMetaData(group_id: GroupSchemaType["id"]) {
     const [layoutResult, role, calandar] = await Promise.all([
-      this.trpc.layouts.events.forGroup.query(group_id),
-      this.trpc.groupMembers.select.role.query(group_id),
-      this.trpc.groups.read.events.list.query(group_id),
+      this.trpc.hydrate.events.layouts.forGroup.query(group_id),
+      this.trpc.entities.group.member.role.query(group_id),
+      this.trpc.entities.group.events.list.query(group_id),
     ]);
 
     return {

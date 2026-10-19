@@ -23,7 +23,7 @@ describe("ScheduleNotificationService", () => {
   beforeEach(() => {
     mutate = jest.fn().mockResolvedValue({ ok: true });
     service = new ScheduleNotificationService({
-      notifications: { write: { create: { mutate } } },
+      entities: { notifications: { write: { create: { mutate } } } },
     } as unknown as TrpcClientType);
   });
 

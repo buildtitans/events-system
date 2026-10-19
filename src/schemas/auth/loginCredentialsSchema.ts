@@ -33,7 +33,7 @@ export const CompiledTokenAndPasswordSchema = TypeCompiler.Compile(
 
 export type AuthenticationSchemaType = Static<typeof AuthenticationSchema>;
 
-export { LoginCredentialsSchema, EmailSchema };
+export { LoginCredentialsSchema, EmailSchema, TokenAndPasswordSchema };
 
 export type {
   LoginCredentialsSchemaType,

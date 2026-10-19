@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import type { SyncDomainsType } from "@/src/lib/types/server/types";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { SyncDomainsService } from "@/src/lib/store/services/hydration/syncDomainService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 
 type InitializeDomainsHook = {
@@ -24,14 +23,16 @@ export const useInitializeDomains = ({
     async function executeHydrateDomains() {
       try {
         onStart();
-        const service = new SyncDomainsService(trpcClient);
-        const result = await service.sync();
+        const result = await trpcClient.hydrate.app.query();
 
-        if (result.status === "rejected") {
-          onFailure();
-        }
-
-        setSyncResult(result);
+        setSyncResult({
+          status: "fulfilled",
+          data: {
+            events: result.events,
+            groups: result.groups,
+            categories: result.categories,
+          },
+        });
       } catch (err) {
         logCaughtError(
           "hook/useInitializeDomains.executeHydrateDomains.SyncDomainsService.sync()",

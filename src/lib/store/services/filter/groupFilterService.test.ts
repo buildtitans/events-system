@@ -8,10 +8,10 @@ describe("GroupFilterService.filter", () => {
     const groups: GroupSchemaType[] = [];
     const byCategory = jest.fn().mockResolvedValue(groups);
     const trpc = {
-      groups: {
-        read: {
-          select: {
-            byCategory: { query: byCategory },
+      hydrate: {
+        groups: {
+          list: {
+            fromCategory: { query: byCategory },
           },
         },
       },

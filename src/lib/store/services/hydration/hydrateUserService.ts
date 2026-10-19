@@ -34,6 +34,6 @@ export class HydrateUserService implements IHydrateUserService {
     new: NotificationSchemaType[];
     seen: NotificationSchemaType[];
   }> {
-    return await this.trpc.notifications.select.newAndViewed.query();
+    return await this.trpc.entities.notifications.select.newAndViewed.query();
   }
 }

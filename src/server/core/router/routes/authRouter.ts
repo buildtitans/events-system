@@ -1,13 +1,16 @@
+import { validateRouterInput } from "../adaptors/validateRouterInput";
+import {
+  EmailSchema,
+  LoginCredentialsSchema,
+  TokenAndPasswordSchema,
+} from "@/src/schemas/auth/loginCredentialsSchema";
 import { router, publicProcedure } from "@/src/server/core/context/init";
-import type { LoginCredentialsSchemaType } from "@/src/schemas/auth/loginCredentialsSchema";
-import { CompiledLoginCredentials } from "@/src/schemas/auth/loginCredentialsSchema";
-import { typeboxInput } from "../adaptors/typeBoxValidation";
 import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
 import { TRPCError } from "@trpc/server";
 
 const sessionRouter = router({
   login: publicProcedure
-    .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
+    .input(validateRouterInput(LoginCredentialsSchema))
     .mutation(async ({ ctx, input }) => {
       let result: Awaited<
         ReturnType<typeof ctx.api.services.domains.session.login>
@@ -51,10 +54,22 @@ const sessionRouter = router({
 
 const writeAuthRouter = router({
   signup: publicProcedure
-    .input(typeboxInput<LoginCredentialsSchemaType>(CompiledLoginCredentials))
+    .input(validateRouterInput(LoginCredentialsSchema))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.users.createNewUser(
-        input.email,
+      return await ctx.api.services.domains.session.signUp(input);
+    }),
+
+  requestPasswordReset: publicProcedure
+    .input(validateRouterInput(EmailSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.session.emailForPwReset(input);
+    }),
+
+  resetPassword: publicProcedure
+    .input(validateRouterInput(TokenAndPasswordSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.session.resetPassword(
+        input.token,
         input.password,
       );
     }),
@@ -71,7 +86,7 @@ const statusRouter = router({
       return null;
     }
 
-    const email = await ctx.api.services.domains.users.getEmailById(
+    const email = await ctx.api.services.domains.users.select.email(
       ctx.req.user?.id,
     );
 

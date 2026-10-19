@@ -41,8 +41,8 @@ export class AppSearchService implements IAppSearchService {
     query: string,
   ): Promise<{ events: EventSchemaType[]; groups: GroupSchemaType[] }> {
     const [events, groups] = await Promise.all([
-      this.trpc.events.select.search.query(query),
-      this.trpc.groups.read.select.search.query(query),
+      this.trpc.discovery.search.events.query(query),
+      this.trpc.discovery.search.groups.query(query),
     ]);
 
     return {
@@ -55,8 +55,8 @@ export class AppSearchService implements IAppSearchService {
     query: string,
   ): Promise<{ events: EventSchemaType[]; groups: GroupSchemaType[] }> {
     const [events, groups] = await Promise.all([
-      this.trpc.events.select.suggest.query(query),
-      this.trpc.groups.read.select.suggest.query(query),
+      this.trpc.discovery.suggest.events.query(query),
+      this.trpc.discovery.suggest.groups.query(query),
     ]);
 
     return {

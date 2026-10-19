@@ -10,18 +10,14 @@ const makeClient = ({
   suggestGroups = jest.fn(),
 } = {}) =>
   ({
-    events: {
-      select: {
-        search: { query: searchEvents },
-        suggest: { query: suggestEvents },
+    discovery: {
+      search: {
+        events: { query: searchEvents },
+        groups: { query: searchGroups },
       },
-    },
-    groups: {
-      read: {
-        select: {
-          search: { query: searchGroups },
-          suggest: { query: suggestGroups },
-        },
+      suggest: {
+        events: { query: suggestEvents },
+        groups: { query: suggestGroups },
       },
     },
   }) as unknown as TrpcClientType;

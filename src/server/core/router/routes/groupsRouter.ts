@@ -1,43 +1,109 @@
+import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { GroupIDForInsertSchema } from "@/src/schemas/groups/groupMembersSchema";
+import { NewGroupInputSchema } from "@/src/schemas/groups/groupSchema";
 import {
   router,
   publicProcedure,
   protectedProcedure,
 } from "@/src/server/core/context/init";
 import {
-  searchInputValidator,
-  newGroupInputValidator,
-  groupIdInputValidator,
-  groupSlugInput,
-} from "../inputValidators/inputValidation";
+  GroupIdSchema,
+  NewEventInputSchema,
+  UpdateEventArgsSchema,
+} from "../../../../schemas/events/eventSchema";
+import { AttendanceUpdateInputSchema } from "../../../../schemas/events/eventAttendantsSchema";
 
-const groupHydrationRouter = router({
-  group: publicProcedure.input(groupSlugInput).query(async ({ ctx, input }) => {
-    return await ctx.api.services.domains.groups.query.hydrateGroup(input);
-  }),
-});
-
-const selectGroupEvents = router({
+const groupEventsRoute = router({
   nextEvent: publicProcedure
-    .input(groupIdInputValidator)
+    .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.query.nextEventForGroup(
         input,
       );
     }),
   history: publicProcedure
-    .input(groupIdInputValidator)
+    .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
         input,
       );
     }),
   list: publicProcedure
-    .input(groupIdInputValidator)
+    .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.events.query.getGroupEvents(input);
     }),
+});
+
+const membersRoute = router({
+  role: publicProcedure
+    .input(validateRouterInput(GroupIdSchema))
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.users.select.roleInGroup(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  rsvp: protectedProcedure
+    .input(validateRouterInput(AttendanceUpdateInputSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.users.write.rsvp(
+        ctx.req.user?.id,
+        input.event_id,
+        input.newStatus,
+      );
+    }),
+
+  joinGroup: protectedProcedure
+    .input(validateRouterInput(GroupIdSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.users.write.joinGroup(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  leaveGroup: protectedProcedure
+    .input(validateRouterInput(GroupIdSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.users.write.leaveGroup(
+        input,
+        ctx.req.user?.id,
+      );
+    }),
+});
+
+const organizerRoute = router({
+  newGroup: protectedProcedure
+    .input(validateRouterInput(NewGroupInputSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.groupLifecycle.createNewGroup(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
+  newEvent: protectedProcedure
+    .input(validateRouterInput(NewEventInputSchema))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.api.services.domains.events.lifecycle.createEvent(
+        input,
+        ctx.req.user?.id,
+      );
+    }),
+
+  updateEvent: protectedProcedure
+    .input(validateRouterInput(UpdateEventArgsSchema))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.events.lifecycle.updateEventStatus(
+        ctx.req.user?.id,
+        input,
+      );
+    }),
+
   archives: protectedProcedure
-    .input(groupIdInputValidator)
+    .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.groups.query.archives(
         ctx.req.user?.id,
@@ -46,48 +112,8 @@ const selectGroupEvents = router({
     }),
 });
 
-const searchGroups = router({
-  list: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.discovery();
-  }),
-  popular: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.participations.census.getPopularGroups();
-  }),
-  search: publicProcedure
-    .input(searchInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.searchGroups(input);
-    }),
-  suggest: publicProcedure
-    .input(searchInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.suggestGroups(input);
-    }),
-  byCategory: publicProcedure
-    .input(searchInputValidator)
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.byCategory(input);
-    }),
-});
-
-const readGroupsRouter = router({
-  hydrate: groupHydrationRouter,
-  events: selectGroupEvents,
-  select: searchGroups,
-});
-
-const writeGroupsRouter = router({
-  newGroup: protectedProcedure
-    .input(newGroupInputValidator)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.groupLifecycle.createNewGroup(
-        ctx.req.user?.id,
-        input,
-      );
-    }),
-});
-
 export const groupRouter = router({
-  read: readGroupsRouter,
-  write: writeGroupsRouter,
+  events: groupEventsRoute,
+  organizer: organizerRoute,
+  member: membersRoute,
 });

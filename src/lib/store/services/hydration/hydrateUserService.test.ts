@@ -66,10 +66,12 @@ describe("HydrateUserService", () => {
     };
 
     const service = new HydrateUserService({
-      notifications: {
-        select: {
-          newAndViewed: {
-            query: jest.fn().mockResolvedValue(notifications),
+      entities: {
+        notifications: {
+          select: {
+            newAndViewed: {
+              query: jest.fn().mockResolvedValue(notifications),
+            },
           },
         },
       },

@@ -22,6 +22,9 @@ import {
   IMembershipHandler,
 } from "../handlers/groups/types";
 import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
+import { IUserSelectHandler } from "../handlers/user/userSelectHandler";
+import { IUserWriteHandler } from "../handlers/user/userWriteHandler";
+import { LoginCredentialsSchemaType } from "../../../../schemas/auth/loginCredentialsSchema";
 
 export type SessionServiceDb = Pick<IDBClient, "auth">;
 
@@ -93,6 +96,7 @@ export interface INotificationService {
 }
 
 export interface ISessionService {
+  signUp(credentials: LoginCredentialsSchemaType): Promise<NewUserResponse>;
   login(
     emailInput: string,
     passwordInput: string,
@@ -108,17 +112,6 @@ export interface ISessionService {
 }
 
 export interface IUserService {
-  memberships(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<UserMembershipSurfaceSchemaType[]>;
-  createNewUser(
-    emailInput: string,
-    passwordInput: string,
-  ): Promise<NewUserResponse>;
-  getGroupsCreated(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<GroupSchemaType[][]>;
-  getEmailById(
-    user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<DbUserSchemaType["email"]>;
+  readonly select: IUserSelectHandler;
+  readonly write: IUserWriteHandler;
 }

@@ -58,7 +58,7 @@ export const hydrateGroupHistory = createAsyncThunk(
     thunkAPI.dispatch(getGroupHistory({ status: "pending" }));
 
     try {
-      const result = await trpcClient.groups.read.events.history.query(id);
+      const result = await trpcClient.entities.group.events.history.query(id);
 
       if (result.length > 0) {
         const sorted = sortByDate(result);
@@ -89,9 +89,9 @@ export const refreshGroupEvents = createAsyncThunk(
   ) => {
     try {
       const refreshedEventsLayout =
-        await trpcClient.layouts.events.forGroup.query(id);
-      const calandarEvents = await trpcClient.groups.read.events.list.query(id);
-      const nextEvent = await trpcClient.groups.read.events.nextEvent.query(id);
+        await trpcClient.hydrate.events.layouts.forGroup.query(id);
+      const calandarEvents = await trpcClient.entities.group.events.list.query(id);
+      const nextEvent = await trpcClient.entities.group.events.nextEvent.query(id);
       return {
         refreshedEventsLayout,
         calandarEvents,
@@ -113,7 +113,7 @@ export const refreshArchivedEvents = createAsyncThunk(
     thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
 
     try {
-      const result = await trpcClient.groups.read.events.archives.query(id);
+      const result = await trpcClient.entities.group.organizer.archives.query(id);
 
       return result;
     } catch (err) {
@@ -132,7 +132,8 @@ export const scheduleNewEvent = createAsyncThunk(
     thunkAPI.dispatch(enqueueSnackbar({ kind: "newEvent", status: "pending" }));
 
     try {
-      const result = await trpcClient.events.write.create.mutate(event);
+      const result =
+        await trpcClient.entities.group.organizer.newEvent.mutate(event);
 
       if (!result.ok) {
         throw new Error(`${result.error}`);
@@ -164,7 +165,8 @@ export const createGroup = createAsyncThunk(
     thunkAPI.dispatch(enqueueSnackbar({ kind: "newGroup", status: "pending" }));
 
     try {
-      const result = await trpcClient.groups.write.newGroup.mutate(group);
+      const result =
+        await trpcClient.entities.group.organizer.newGroup.mutate(group);
       if (!result.ok) {
         throw new Error(result.error);
       }
@@ -195,7 +197,7 @@ export const makeMembership = createAsyncThunk(
     );
 
     try {
-      const result = await trpcClient.groupMembers.write.join.mutate(group_id);
+      const result = await trpcClient.entities.group.member.joinGroup.mutate(group_id);
       thunkAPI.dispatch(
         enqueueSnackbar({ kind: "joiningGroup", status: "success" }),
       );
