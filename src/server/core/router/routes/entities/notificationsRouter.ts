@@ -1,4 +1,4 @@
-import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import {
   CreateNotificationSchema,
   NotificationIdsSchema,

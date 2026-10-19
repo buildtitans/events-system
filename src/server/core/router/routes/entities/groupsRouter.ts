@@ -1,4 +1,4 @@
-import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import { GroupIDForInsertSchema } from "@/src/schemas/groups/groupMembersSchema";
 import { NewGroupInputSchema } from "@/src/schemas/groups/groupSchema";
 import {
@@ -10,8 +10,8 @@ import {
   GroupIdSchema,
   NewEventInputSchema,
   UpdateEventArgsSchema,
-} from "../../../../schemas/events/eventSchema";
-import { AttendanceUpdateInputSchema } from "../../../../schemas/events/eventAttendantsSchema";
+} from "@/src/schemas/events/eventSchema";
+import { AttendanceUpdateInputSchema } from "@/src/schemas/events/eventAttendantsSchema";
 
 const groupEventsRoute = router({
   nextEvent: publicProcedure

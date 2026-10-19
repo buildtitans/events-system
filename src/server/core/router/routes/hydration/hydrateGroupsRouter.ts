@@ -1,7 +1,7 @@
-import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import { router, publicProcedure } from "@/src/server/core/context/init";
-import { GroupSlugSchema } from "../../../../schemas/groups/groupSchema";
-import { SearchSchema } from "../../../../schemas/search/searchSchema";
+import { GroupSlugSchema } from "@/src/schemas/groups/groupSchema";
+import { SearchSchema } from "@/src/schemas/search/searchSchema";
 
 const listGroupsRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {

@@ -1,11 +1,11 @@
-import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import {
   EmailSchema,
   LoginCredentialsSchema,
   TokenAndPasswordSchema,
 } from "@/src/schemas/auth/loginCredentialsSchema";
 import { router, publicProcedure } from "@/src/server/core/context/init";
-import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
+import { InvalidCredentialsError } from "@/src/server/core/lib/errors/invalidCredentialsError";
 import { TRPCError } from "@trpc/server";
 
 const sessionRouter = router({

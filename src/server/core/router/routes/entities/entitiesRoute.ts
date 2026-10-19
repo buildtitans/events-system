@@ -1,4 +1,4 @@
-import { router } from "../../context/init";
+import { router } from "@/src/server/core/context/init";
 import { groupRouter } from "./groupsRouter";
 import { notificationRouter } from "./notificationsRouter";
 import { userRouter } from "./usersRouter";

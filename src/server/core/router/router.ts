@@ -1,8 +1,8 @@
 import { router } from "@/src/server/core/context/init";
-import { authRouter } from "./routes/authRouter";
-import { hydrationRouter } from "./routes/hydrationRouter";
-import { discoveryRoute } from "./routes/discoveryRoute";
-import { entitiesRoute } from "./routes/entitiesRoute";
+import { authRouter } from "./routes/auth/authRouter";
+import { hydrationRouter } from "./routes/hydration/hydrationRouter";
+import { discoveryRoute } from "./routes/discovery/discoveryRoute";
+import { entitiesRoute } from "./routes/entities/entitiesRoute";
 
 export const appRouter = router({
   entities: entitiesRoute,

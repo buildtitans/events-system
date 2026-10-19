@@ -1,7 +1,7 @@
 import "@/src/schemas/format";
 import type { TRPCContext } from "@/src/server/core/context/types";
 import { InvalidCredentialsError } from "@/src/server/core/lib/errors/invalidCredentialsError";
-import { authRouter } from "@/src/server/core/router/routes/authRouter";
+import { authRouter } from "@/src/server/core/router/routes/auth/authRouter";
 
 jest.mock("superjson", () => ({
   __esModule: true,

@@ -1,6 +1,6 @@
-import { SearchSchema } from "../../../../schemas/search/searchSchema";
-import { publicProcedure, router } from "../../context/init";
-import { validateRouterInput } from "../adaptors/validateRouterInput";
+import { SearchSchema } from "@/src/schemas/search/searchSchema";
+import { publicProcedure, router } from "@/src/server/core/context/init";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 
 const searchRoutes = router({
   events: publicProcedure
