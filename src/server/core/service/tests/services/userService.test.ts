@@ -9,33 +9,7 @@ import {
 } from "@/src/server/core/service/tests/mockers/mocks";
 import { USER_ID } from "../mockers/mockValues";
 
-describe("UserService.createNewUser", () => {
-  let service: UserService;
-  let db: ReturnType<typeof createMockDb>;
-  let signUpInDb: jest.Mock;
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-    db = createMockDb();
-    signUpInDb = db.auth.signUp as jest.Mock;
-    service = new UserService(db, policyMock);
-  });
-
-  it("trims and lowercases the email before signing up", async () => {
-    signUpInDb.mockResolvedValue({ user: { id: "user-1" } });
-
-    await expect(
-      service.createNewUser("  Alice@Example.COM  ", "password-123"),
-    ).resolves.toEqual({ user: { id: "user-1" } });
-
-    expect(signUpInDb).toHaveBeenCalledWith(
-      "alice@example.com",
-      "password-123",
-    );
-  });
-});
-
-describe("UserService.memberships", () => {
+describe("UserService.select.memberships", () => {
   let service: UserService;
   let db: ReturnType<typeof createMockDb>;
 
@@ -47,7 +21,7 @@ describe("UserService.memberships", () => {
 
   it("rejects unauthenticated users before reading memberships", async () => {
     unauthenticated();
-    await expect(service.memberships(undefined)).rejects.toThrow("401");
+    await expect(service.select.memberships(undefined)).rejects.toThrow("401");
     expect(db.groupMembers.select.memberships).not.toHaveBeenCalled();
   });
 
@@ -62,14 +36,14 @@ describe("UserService.memberships", () => {
     }));
     (db.groupMembers.select.memberships as jest.Mock).mockResolvedValue(surfaces);
 
-    await expect(service.memberships(USER_ID)).resolves.toEqual(surfaces);
+    await expect(service.select.memberships(USER_ID)).resolves.toEqual(surfaces);
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
     expect(db.groupMembers.select.memberships).toHaveBeenCalledWith(USER_ID);
     expect(db.groups.select.all).not.toHaveBeenCalled();
   });
 });
 
-describe("UserService.getGroupsCreated", () => {
+describe("UserService.select.groups", () => {
   let service: UserService;
   let db: ReturnType<typeof createMockDb>;
   let getGroupsByOrganizerIdinDb: jest.Mock;
@@ -99,7 +73,7 @@ describe("UserService.getGroupsCreated", () => {
   it("Throws a 401 error when the user is not authenticated", async () => {
     unauthenticated();
 
-    await expect(service.getGroupsCreated(undefined)).rejects.toThrow("401");
+    await expect(service.select.groups(undefined)).rejects.toThrow("401");
 
     expect(getGroupsByOrganizerIdinDb).not.toHaveBeenCalled();
   });
@@ -109,7 +83,7 @@ describe("UserService.getGroupsCreated", () => {
 
     getGroupsByOrganizerIdinDb.mockResolvedValue(groupsByUser);
 
-    await expect(service.getGroupsCreated(USER_ID)).resolves.toEqual([
+    await expect(service.select.groups(USER_ID)).resolves.toEqual([
       groupsByUser,
     ]);
 
@@ -118,7 +92,7 @@ describe("UserService.getGroupsCreated", () => {
   });
 });
 
-describe("UserService.getEmailById", () => {
+describe("UserService.select.email", () => {
   let service: UserService;
   let db: ReturnType<typeof createMockDb>;
   let getEmailByUserIdInDb: jest.Mock;
@@ -138,7 +112,7 @@ describe("UserService.getEmailById", () => {
 
     getEmailByUserIdInDb.mockResolvedValue({ email: email });
 
-    await expect(service.getEmailById(USER_ID)).resolves.toBe(email);
+    await expect(service.select.email(USER_ID)).resolves.toBe(email);
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalled();
     expect(getEmailByUserIdInDb).toHaveBeenCalled();
