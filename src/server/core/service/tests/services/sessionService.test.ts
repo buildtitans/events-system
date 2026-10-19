@@ -5,6 +5,32 @@ import {
   emailServiceMock,
 } from "@/src/server/core/service/tests/mockers/mocks";
 
+describe("SessionService.signUp", () => {
+  let service: SessionService;
+  let db: ReturnType<typeof createMockDb>;
+  let signUpInDb: jest.Mock;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    db = createMockDb();
+    signUpInDb = db.auth.signUp as jest.Mock;
+    service = new SessionService(db, policyMock, emailServiceMock);
+  });
+
+  it("trims and lowercases the email before signing up", async () => {
+    signUpInDb.mockResolvedValue({ user: { id: "user-1" } });
+
+    await expect(
+      service.signUp({ email: "  Alice@Example.COM  ", password: "password-123" }),
+    ).resolves.toEqual({ user: { id: "user-1" } });
+
+    expect(signUpInDb).toHaveBeenCalledWith(
+      "alice@example.com",
+      "password-123",
+    );
+  });
+});
+
 describe("SessionService.login", () => {
   let service: SessionService;
   let db: ReturnType<typeof createMockDb>;

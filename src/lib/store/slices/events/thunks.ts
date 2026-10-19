@@ -31,7 +31,7 @@ export const updateRSVP = createAsyncThunk(
     );
 
     try {
-      const result = await trpcClient.eventAttendants.write.rsvp.mutate({
+      const result = await trpcClient.entities.group.member.rsvp.mutate({
         event_id: update.event_id,
         newStatus: update.newStatus,
       });
@@ -66,7 +66,8 @@ export const updateEventStatus = createAsyncThunk(
     );
 
     try {
-      const result = await trpcClient.events.write.update.mutate(args);
+      const result =
+        await trpcClient.entities.group.organizer.updateEvent.mutate(args);
 
       if (!result?.updateStatus) {
         throw new Error(`Error attempting to cancel event`);
@@ -104,7 +105,7 @@ export const hydrateEventDrawer = createAsyncThunk(
     thunkAPI.dispatch(enqueueDrawer("event drawer"));
 
     try {
-      const result = await trpcClient.events.select.hydrateEvent.query(id);
+      const result = await trpcClient.hydrate.events.single.query(id);
 
       if (!result) {
         throw new Error("Failed to hydrate selected event");

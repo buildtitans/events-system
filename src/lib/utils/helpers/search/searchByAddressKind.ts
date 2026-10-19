@@ -7,10 +7,10 @@ export async function searchByAddressKind(
 ): Promise<AddressSearchResults> {
   switch (searchKind) {
     case "city": {
-      return await trpcClient.addressSearch.citySearchSuggestions.query(query);
+      return await trpcClient.discovery.suggest.cities.query(query);
     }
     case "street": {
-      return await trpcClient.addressSearch.addressSuggestions.query(query);
+      return await trpcClient.discovery.suggest.addresses.query(query);
     }
   }
 }

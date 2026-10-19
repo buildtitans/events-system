@@ -60,6 +60,31 @@ request, reply, shared application API, and a request-scoped session handler.
 7. Repositories perform Kysely reads and writes against PostgreSQL, and the
    result returns through the service and router boundaries.
 
+## Public API Organization
+
+The root router exposes four branches, organized under `router/routes/`:
+
+| Branch | Directory | Responsibility |
+| --- | --- | --- |
+| `entities` | `entities/` | Group events, member and organizer operations, current-user reads, and notifications |
+| `hydrate` | `hydration/` | Initial application data, single group/event views, group lists, and event layouts |
+| `discovery` | `discovery/` | User-entered searches and event, group, city, and address suggestions |
+| `auth` | `auth/` | Authentication, sessions, signup, and password recovery |
+
+Examples include `entities.group.member.rsvp`, `entities.group.organizer.newEvent`,
+`entities.user.memberships`, `hydrate.groups.single`, `hydrate.events.layouts.discovery`,
+`discovery.search.events`, and `auth.write.resetPassword`.
+
+Input-bearing procedures use `validateRouterInput(existingSchema)` from
+`router/adaptors/validateRouterInput.ts`. It registers TypeBox formats, caches
+compiled validators by schema object identity, infers parser output types,
+and rejects invalid input with `BAD_REQUEST`.
+
+The client inherits the API shape through `AppRouter` in `src/trpc/trpcClient.ts`.
+Path changes require updating client calls and test mocks. API paths need not
+mirror service paths: `entities.group.member.rsvp` delegates to
+`domains.users.write.rsvp`.
+
 ## Dependency Rules
 
 - Keep router procedures limited to transport concerns: input validation,

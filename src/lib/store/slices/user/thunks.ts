@@ -16,7 +16,7 @@ export const hydrateUserMemberships = createAsyncThunk(
   "UserSlice/hydrateUserMemberships",
   async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
     try {
-      const result = await trpcClient.groupMembers.select.memberships.query();
+      const result = await trpcClient.entities.user.memberships.query();
 
       if (!result) {
         throw new Error(`Failed to hydrate user memberships`);
@@ -36,7 +36,7 @@ export const hydrateUserRsvps = createAsyncThunk(
   "UserSlice/hydrateUserRsvps",
   async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
     try {
-      const result = await trpcClient.eventAttendants.select.rsvps.query();
+      const result = await trpcClient.entities.user.rsvps.query();
 
       if (!result) {
         throw new Error(`Failed to hydrate user rsvps`);
@@ -63,9 +63,8 @@ export const leaveGroup = createAsyncThunk(
     );
 
     try {
-      const successful = await trpcClient.groupMembers.write.leave.mutate({
-        group_id,
-      });
+      const successful =
+        await trpcClient.entities.group.member.leaveGroup.mutate(group_id);
 
       if (!successful) {
         throw new Error(`Failed to leave group with group_id: ${group_id}`);
@@ -95,7 +94,7 @@ export const resetUserPassword = createAsyncThunk(
     thunkAPI.dispatch(resetPassword({ status: "pending" }));
 
     try {
-      const result = await trpcClient.users.credentials.resetPassword.mutate({
+      const result = await trpcClient.auth.write.resetPassword.mutate({
         password: args.newPassword,
         token: args.token,
       });

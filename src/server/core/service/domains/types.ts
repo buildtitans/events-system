@@ -8,7 +8,6 @@ import {
 } from "../services/types";
 
 export interface IServiceDomains {
-  readonly participations: IParticipationsService;
   readonly users: IUserService;
   readonly session: ISessionService;
   readonly groups: IGroupService;

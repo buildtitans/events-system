@@ -51,7 +51,7 @@ type GroupIDForInsertSchemaType = Static<typeof GroupIDForInsertSchema>;
 
 type GroupRoleSchemaType = Static<typeof GroupRoleSchema>;
 
-export { GroupMemberSchema, GroupIDForInsertSchema };
+export { GroupMemberSchema, GroupIDForInsertSchema, MemberToRemoveSchema };
 
 export type {
   GroupMemberSchemaType,

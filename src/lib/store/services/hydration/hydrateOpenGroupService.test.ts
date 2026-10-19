@@ -8,12 +8,16 @@ function setup(hydrated = makeHydratedGroup()) {
   const layoutQuery = jest.fn().mockResolvedValue([]);
   const calendarQuery = jest.fn().mockResolvedValue([]);
   const client = {
-    groups: { read: {
-      hydrate: { group: { query: groupQuery } },
-      events: { list: { query: calendarQuery } },
-    } },
-    layouts: { events: { forGroup: { query: layoutQuery } } },
-    groupMembers: { select: { role: { query: roleQuery } } },
+    hydrate: {
+      groups: { single: { query: groupQuery } },
+      events: { layouts: { forGroup: { query: layoutQuery } } },
+    },
+    entities: {
+      group: {
+        events: { list: { query: calendarQuery } },
+        member: { role: { query: roleQuery } },
+      },
+    },
   } as unknown as TrpcClientType;
   return { service: new HydrateOpenGroupService(client), groupQuery, roleQuery, layoutQuery, calendarQuery };
 }

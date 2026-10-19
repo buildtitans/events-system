@@ -37,7 +37,7 @@ export class ScheduleNotificationService implements IScheduleNotificationService
       message: ` New event: ${event.title} scheduled for ${date}`,
     } satisfies CreateNotificationSchemaType;
 
-    return await this.trpc.notifications.write.create.mutate(notification);
+    return await this.trpc.entities.notifications.write.create.mutate(notification);
   }
 
   public async createScheduleNotification(
@@ -50,7 +50,7 @@ export class ScheduleNotificationService implements IScheduleNotificationService
       subject: "Event Status Update",
       message: this.getScheduleNotificationMessage(event, updates),
     } satisfies CreateNotificationSchemaType;
-    return await this.trpc.notifications.write.create.mutate(notification);
+    return await this.trpc.entities.notifications.write.create.mutate(notification);
   }
 
   private getScheduleNotificationMessage(

@@ -1,8 +1,9 @@
-import { router, protectedProcedure } from "@/src/server/core/context/init";
+import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import {
-  createNotificationInput,
-  SeenNotificationsInput,
-} from "../inputValidators/inputValidation";
+  CreateNotificationSchema,
+  NotificationIdsSchema,
+} from "@/src/schemas/notifications/notificationsSchema";
+import { router, protectedProcedure } from "@/src/server/core/context/init";
 
 const selectNotificationRouter = router({
   newAndViewed: protectedProcedure.query(async ({ ctx }) => {
@@ -14,7 +15,7 @@ const selectNotificationRouter = router({
 
 const writeNotificationRouter = router({
   create: protectedProcedure
-    .input(createNotificationInput)
+    .input(validateRouterInput(CreateNotificationSchema))
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.services.domains.notifications.createNotification(
         input,
@@ -23,7 +24,7 @@ const writeNotificationRouter = router({
     }),
 
   markOpened: protectedProcedure
-    .input(SeenNotificationsInput)
+    .input(validateRouterInput(NotificationIdsSchema))
     .mutation(async ({ ctx, input }) => {
       return await ctx.api.services.domains.notifications.markSeen(
         ctx.req.user?.id,

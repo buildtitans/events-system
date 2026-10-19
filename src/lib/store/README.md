@@ -229,7 +229,7 @@ feedback/event-state consequences:
 ```text
 updateRSVP
   -> pending snackbar
-  -> eventAttendants.write.rsvp
+  -> entities.group.member.rsvp
   -> update viewer attendance status
   -> success or failure feedback
 ```
@@ -278,8 +278,6 @@ Current examples include:
 - `EventFilterService`, which resolves filters into event layouts;
 - `HydrateOpenGroupService`, which loads a group and its related metadata;
 - `HydrateUserService`, which retrieves user dashboard data;
-- `SyncDomainsService`, which initializes independent application domains with
-  partial-failure handling;
 - `SearchResultsCompiler`, which transforms server responses into suggestion
   shapes and relevance-ranked, unified event and group results.
 
@@ -386,8 +384,8 @@ from each summary's metadata; no separate attendance dictionary is synchronized.
 
 ### Refreshing Group Events
 
-`refreshGroupEvents` requests `layouts.events.forGroup`,
-`groups.read.events.list`, and `groups.read.events.nextEvent`. Its fulfilled
+`refreshGroupEvents` requests `hydrate.events.layouts.forGroup`,
+`entities.group.events.list`, and `entities.group.events.nextEvent`. Its fulfilled
 reducer updates layout and calendar state together and, while the group is ready,
 assigns `meta.next_event` directly from the response. This handles first assignment,
 replacement, updated data for the same event ID, and clearing a missing next event.
@@ -400,16 +398,15 @@ without discarding the group. This flow does not rerun full group hydration.
 
 Startup hydration is treated as a coordinated domain sync:
 
-1. `useInitializeDomains` starts `SyncDomainsService`.
-2. The service requests event discovery layouts, groups, and categories with
-   `Promise.allSettled`. There is no group-name dictionary request.
-3. Individual failures receive safe fallbacks.
-4. A complete outage returns a rejected sync result.
-5. `initializeDomains` distributes the result to bootstrap and domain slices.
+1. `useInitializeDomains` calls `trpcClient.hydrate.app.query()`. The server loads
+   events, groups, and categories together using `Promise.all`; any failed read
+   rejects the whole request, replacing the former partial-failure workflow.
+2. On success, the hook wraps the response in a fulfilled sync result.
+3. `initializeDomains` distributes the result to bootstrap and domain slices.
+4. On request failure, the hook logs the error and invokes `onFailure`.
 
-This allows the application to remain usable when one noncritical initial
-dataset fails while still providing a dedicated unavailable state when the
-entire API cannot initialize.
+Startup hydration now succeeds or fails as one request; it does not substitute
+fallback datasets for individual failed reads.
 
 ## Error Handling
 
