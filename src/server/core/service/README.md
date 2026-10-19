@@ -106,7 +106,6 @@ This assembles the database-backed portion of the application graph.
 - `users`
 - `groups`
 - `events`
-- `participations`
 - `notifications`
 
 Routers access them through `ctx.api.services.domains`.
@@ -147,13 +146,17 @@ work directly; others expose smaller handler facets.
 | --- | --- | --- |
 | Events | `query`, `lifecycle`, `timeline`, `layout`, `hydrate` | Event reads, mutations, history, layout, and drawer hydration |
 | Groups | `query`, `groupLifecycle`, `memberships` | Group discovery, creation, membership, and group metadata |
-| Participations | `attendance`, `census` | Authenticated RSVP reads, attendance updates, and popular groups |
-| Session | Direct service methods | Login, logout, recovery, and password reset |
-| Users | Direct service methods | Account lookup, memberships, and created groups |
+| Session | Direct service methods | Signup, login, logout, recovery, and password reset |
+| Users | `select`, `write` | Account lookup, memberships, created groups, role lookup, and RSVP/membership changes |
 | Notifications | Direct service methods | Notification creation, retrieval, and seen state |
 
 The interfaces in `services/types.ts` define these public surfaces so routers
 and domain composition depend on contracts rather than concrete classes.
+
+Signup and login both use `validateLoginCredentials` to trim and lowercase the
+email before calling the auth repository. Signup belongs to `SessionService`.
+Popular groups are exposed through `domains.groups.query.popular()`. The older
+participation service files remain but are not registered in `ServiceDomains`.
 
 ## Handlers
 
@@ -332,8 +335,7 @@ Current service-level database requirements are:
 | Service | Repository capabilities |
 | --- | --- |
 | `SessionService` | `auth` |
-| `UserService` | `auth`, `groups`, `groupMembers` |
-| `ParticipationsService` | `events`, `groups`, `groupMembers`, `eventAttendants` |
+| `UserService` | `auth`, `groups`, `groupMembers`, `eventAttendants` |
 | `EventService` | `events`, `groups`, `groupMembers`, `eventAttendants` |
 | `NotificationService` | `notifications`, `groupMembers` |
 | `PasswordResetEmailService` | `auth` |
@@ -358,8 +360,8 @@ details from spreading through routers and domain services.
 
 ### Creating an event
 
-`eventRouter` delegates to
-`domains.events.lifecycle.createEvent(newEvent, groupId, userId)`.
+`entities.group.organizer.newEvent` delegates to
+`domains.events.lifecycle.createEvent(newEvent, userId)`.
 
 The handler:
 
@@ -370,7 +372,7 @@ The handler:
 
 ### Loading a user's RSVPs
 
-The router delegates to `domains.participations.attendance.rsvps(userId)`.
+`entities.user.rsvps` delegates to `domains.users.select.rsvps(userId)`.
 
 The handler requires authentication and returns the validated RSVP surfaces from
 `db.eventAttendants.select.rsvps(userId)`. The persistence read supplies the event
