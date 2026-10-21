@@ -1,6 +1,7 @@
 import {
   GroupHydratedSchemaType,
   GroupSchemaType,
+  GroupDiscoverySummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { GroupServiceDb } from "../../services/types";
@@ -23,24 +24,24 @@ export class GroupHydrationHandler implements IGroupHydrationHandler {
 }
 
 interface IListGroupsHandler {
-  discovery(): Promise<GroupSchemaType[]>;
-  popular(): Promise<GroupSchemaType[]>;
-  byCategory(categoryId: CategorySchemaType["id"]): Promise<GroupSchemaType[]>;
+  discovery(): Promise<GroupDiscoverySummarySchemaType[]>;
+  popular(): Promise<GroupDiscoverySummarySchemaType[]>;
+  byCategory(categoryId: CategorySchemaType["id"]): Promise<GroupDiscoverySummarySchemaType[]>;
 }
 
 class ListGroupsHandler implements IListGroupsHandler {
   constructor(private readonly db: GroupServiceDb) {}
-  async discovery(): Promise<GroupSchemaType[]> {
+  async discovery(): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.db.groups.select.all();
   }
 
-  async popular(): Promise<GroupSchemaType[]> {
+  async popular(): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.db.groups.select.popular();
   }
 
   async byCategory(
     categoryId: CategorySchemaType["id"],
-  ): Promise<GroupSchemaType[]> {
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.db.groups.select.byCategory(categoryId);
   }
 }

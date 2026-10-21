@@ -1,4 +1,59 @@
+import { Selectable } from "kysely";
 import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
+import { Events } from "../../../types/db";
+
+export type RawGroupForDiscovery = {
+  description: string | null;
+  id: string;
+  name: string;
+  slug: string;
+  location: string | null;
+  category_name: string;
+  member_count: string | number | bigint | null;
+  next_event: {
+    id: string;
+    description: string;
+    starts_at: string;
+    title: string;
+    going: string | number;
+    interested: string | number;
+  } | null;
+};
+
+export type RawArchives = {
+  event: Selectable<Events>;
+  attendance: {
+    going: number;
+    interested: number;
+  };
+}[];
+
+export type RawReadArchivedEvent = {
+  created_at: Date;
+  description: string;
+  id: string;
+  updated_at: Date;
+  group_id: string;
+  img: string;
+  meeting_location: string;
+  starts_at: Date;
+  status: string;
+  tag: string | null;
+  title: string;
+  going: string | number | bigint;
+  interested: string | number | bigint;
+};
+
+export type RawSearchResult = {
+  description: string | null;
+  id: string;
+  location: string | null;
+  name: string;
+  slug: string;
+  category_name: string;
+  member_count: string | number | bigint | null;
+  next_event_scheduled: Date | null;
+};
 
 export type RawtimelineItem =
   | {

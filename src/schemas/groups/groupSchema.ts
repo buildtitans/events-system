@@ -29,10 +29,65 @@ const NextEventSchema = Type.Pick(EventSchema, [
   "meeting_location",
 ]);
 
+const GroupSummarySchema = Type.Omit(GroupSchema, [
+  "organizer_id",
+  "created_at",
+  "updated_at",
+  "category_id",
+]);
+
+const GroupMemberCountSchema = Type.Integer({ minimum: 0 });
+
 const NextEventMetadataSchema = Type.Object({
   attendance: EventHeadCountSchema,
   category_name: CategorySchema.properties.name,
 });
+
+const GroupDiscoveryNextEvent = Type.Object({
+  event: Type.Pick(EventSchema, [
+    "id",
+    "title",
+    "description",
+    "starts_at",
+    "starts_at_ms",
+  ]),
+  meta: Type.Pick(NextEventMetadataSchema, ["attendance"]),
+});
+
+const GroupDiscoverySummaryMetadata = Type.Object(
+  {
+    category_name: CategorySchema.properties.name,
+    member_count: GroupMemberCountSchema,
+    kind: Type.Literal("no_next_event"),
+  },
+  { additionalProperties: false },
+);
+
+const GroupDiscoveryMetadataWithNextEvent = Type.Object(
+  {
+    category_name: CategorySchema.properties.name,
+    member_count: GroupMemberCountSchema,
+    next_event: GroupDiscoveryNextEvent,
+    kind: Type.Literal("has_next_event"),
+  },
+  { additionalProperties: false },
+);
+
+const GroupDiscoverySummaryMeta = Type.Union([
+  GroupDiscoveryMetadataWithNextEvent,
+  GroupDiscoverySummaryMetadata,
+]);
+
+export const GroupDiscoverySummarySchema = Type.Object({
+  group: GroupSummarySchema,
+  meta: GroupDiscoverySummaryMeta,
+});
+
+export const GroupDiscoverySchema = Type.Array(GroupDiscoverySummarySchema);
+
+export type GroupDiscoverySummarySchemaType = Static<
+  typeof GroupDiscoverySummarySchema
+>;
 
 export const NextEventForGroupSummarySchema = Type.Object({
   event: NextEventSchema,
@@ -44,7 +99,7 @@ export type NextEventForGroupSummarySchemaType = Static<
 >;
 
 const GroupMetadataSchema = Type.Object({
-  member_count: Type.Number(),
+  member_count: GroupMemberCountSchema,
   organizer_email: Type.String({ format: "email" }),
   category_name: CategorySchema.properties.name,
   next_event: Type.Optional(NextEventForGroupSummarySchema),

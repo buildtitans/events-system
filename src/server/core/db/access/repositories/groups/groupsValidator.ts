@@ -2,6 +2,8 @@ import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
   ArchivedEventSchemaType,
   GroupArchivesSchema,
+  GroupDiscoverySchema,
+  GroupDiscoverySummarySchemaType,
   GroupHydratedSchema,
   GroupHydratedSchemaType,
   GroupSchema,
@@ -12,14 +14,18 @@ import {
 import type { Selectable } from "kysely";
 import type { Groups } from "@/src/server/core/db/types/db";
 import { EventsValidator } from "../events/eventsValidator";
-import type { RawArchives } from "./rawGroupsReader";
 import {
   TimelineElementSchemaType,
   TimelineSchema,
 } from "../../../../../../schemas/groups/timelineSchema";
+import { RawArchives } from "./types";
 
 export class GroupsValidator {
   constructor(private readonly eventsValidator: EventsValidator) {}
+
+  discovery(data: unknown): GroupDiscoverySummarySchemaType[] {
+    return validateOrThrow(GroupDiscoverySchema, data);
+  }
 
   timeline(data: unknown): TimelineElementSchemaType[] {
     return validateOrThrow(TimelineSchema, data);

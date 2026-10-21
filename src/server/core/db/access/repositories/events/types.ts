@@ -1,3 +1,110 @@
+export type RawReadHydratedEvent = {
+  id: string;
+  group_id: string;
+  status: string;
+  starts_at: Date;
+  img: string;
+  tag: string | null;
+  title: string;
+  description: string;
+  meeting_location: string;
+  created_at: Date;
+  updated_at: Date;
+  group_name: string;
+  group_slug: string;
+  going: string | number | bigint;
+  interested: string | number | bigint;
+};
+
+export type ReadSearchResult = {
+  id: string;
+  description: string;
+  group_id: string;
+  img: string;
+  starts_at: Date;
+  tag: string | null;
+  title: string;
+  group_name: string;
+  group_location: string | null;
+  group_slug: string;
+  going: string | number | bigint;
+  interested: string | number | bigint;
+  timeline_status: "past" | "today" | "upcoming";
+  event_phase: "ended" | "ongoing" | "not_yet_held";
+};
+
+export type ReadSuggestedEvent = {
+  id: string;
+  group_id: string;
+  starts_at: Date;
+  title: string;
+  group_name: string;
+  group_location: string | null;
+  group_slug: string;
+};
+
+export type ReadEventById = {
+  group_id: string;
+  id: string;
+  status: string;
+  starts_at: Date;
+  img: string;
+  tag: string | null;
+  title: string;
+  meeting_location: string;
+  group_name: string;
+  group_location: string | null;
+  category_name: string;
+  going_count: number;
+  interested_count: number;
+};
+
+export type ReadNextEvent =
+  | {
+      group_id: string;
+      description: string;
+      id: string;
+      img: string;
+      meeting_location: string;
+      starts_at: Date;
+      status: string;
+      tag: string | null;
+      title: string;
+      category_name: string;
+      going: number;
+      interested: number;
+    }
+  | undefined;
+
+export type ReadGroupEvent = {
+  group_id: string;
+  id: string;
+  status: string;
+  starts_at: Date;
+  img: string;
+  tag: string | null;
+  title: string;
+  meeting_location: string;
+  category_name: string | null;
+  going_count: number;
+  interested_count: number;
+};
+
+export type EventForDiscovery = {
+  group_id: string;
+  id: string;
+  status: string;
+  starts_at: Date;
+  img: string;
+  tag: string | null;
+  title: string;
+  group_name: string;
+  group_location: string | null;
+  category_name: string | null;
+  going_count: number;
+  interested_count: number;
+};
+
 export type RawHydratedEvent = {
   event: {
     starts_at: string;

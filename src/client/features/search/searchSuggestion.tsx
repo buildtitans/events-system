@@ -18,7 +18,6 @@ export default function SearchSuggestion({
   props,
 }: SearchSuggestionProps) {
 
-
   return (
     <Box
       component="li"
@@ -54,7 +53,7 @@ export default function SearchSuggestion({
         primary={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {option.label}
+              {option.data.meta.label}
             </Typography>
 
             <Chip
@@ -73,7 +72,7 @@ export default function SearchSuggestion({
         secondary={
           <Typography variant="caption" sx={{ opacity: 0.8 }}>
             {option.kind === "event"
-              ? `in /group/${option.slug}`
+              ? `in /group/${option.data.meta.group.group_slug}`
               : `Go to group page`}
           </Typography>
         }

@@ -21,7 +21,7 @@ export const RsvpSurfaceSchema = Type.Object({
   meta: Type.Object({
     group_name: GroupSchema.properties.name,
     group_slug: GroupSchema.properties.slug,
-    category_name: Type.Optional(CategorySchema.properties.name),
+    category_name: CategorySchema.properties.name,
   }),
 });
 

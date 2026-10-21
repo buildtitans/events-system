@@ -6,7 +6,7 @@ type SlugByGroupIdLookup = Partial<
 >;
 
 type SlugByGroupIdParams = {
-  groups: GroupSchemaType[];
+  groups: Pick<GroupSchemaType, "id" | "slug">[];
   notifications: NotificationSchemaType[];
 };
 

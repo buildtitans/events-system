@@ -7,19 +7,21 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import type { EventSearchResultSchemaType } from "@/src/schemas/search/searchSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 
 export type EventSearchResultItemProps = {
-  event: EventSchemaType;
-  onAction: (eventId: EventSchemaType["id"]) => void;
+  event: EventSearchResultSchemaType["data"]["event"];
+  onAction: (eventId: EventSearchResultSchemaType["data"]["event"]["id"]) => void;
   groupName?: string | null;
+  groupLocation: string | null;
 };
 
 export default function EventSearchResultItem({
   event,
   onAction,
   groupName,
+  groupLocation,
 }: EventSearchResultItemProps) {
   const startsAt = new Date(event.starts_at);
   const month = startsAt.toLocaleDateString(undefined, { month: "short" });
@@ -102,7 +104,7 @@ export default function EventSearchResultItem({
             <Stack direction="row" alignItems="center" gap={0.75} sx={metaSx}>
               <LocationOnRoundedIcon sx={metaIconSx} />
               <Typography component="span" sx={metaTextSx}>
-                {event.meeting_location}
+                {groupLocation ?? "Location not specified"}
               </Typography>
             </Stack>
           </Stack>

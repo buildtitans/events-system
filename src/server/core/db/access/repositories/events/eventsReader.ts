@@ -1,3 +1,7 @@
+import {
+  EventSearchResultSchemaType,
+  EventSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
 import { Kysely, Selectable, sql } from "kysely";
 import { DB, Events } from "../../../types/db";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
@@ -11,6 +15,7 @@ import {
   RawHydratedEvent,
   RawNextEvent,
 } from "./types";
+import { IEventsParser } from "./eventsParser";
 
 export interface IEventsReader {
   hydrateEvent(id: EventSchemaType["id"]): Promise<RawHydratedEvent>;
@@ -19,52 +24,38 @@ export interface IEventsReader {
   allRawScheduledEvents(): Promise<Selectable<Events>[]>;
   nextEvent(group_id: GroupSchemaType["id"]): Promise<RawNextEvent | undefined>;
   byIds(ids: EventSchemaType["id"][]): Promise<EventById[]>;
-  suggest(query: SearchSchemaType): Promise<Selectable<Events>[]>;
-  search(query: SearchSchemaType): Promise<Selectable<Events>[]>;
+  suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
+  search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
 }
 
 export class EventsReader implements IEventsReader {
-  constructor(private readonly db: Kysely<DB>) {}
+  constructor(
+    private readonly db: Kysely<DB>,
+    private readonly parser: IEventsParser,
+  ) {}
 
   async hydrateEvent(id: EventSchemaType["id"]) {
-    const { group_name, group_slug, going, interested, ...event } =
-      await this.db
-        .selectFrom("events")
-        .innerJoin("groups", "groups.id", "events.group_id")
-        .leftJoin("event_attendants", "event_attendants.event_id", "events.id")
-        .selectAll("events")
-        .select(["groups.name as group_name", "groups.slug as group_slug"])
-        .select((eb) => [
-          eb.fn
-            .countAll()
-            .filterWhere("event_attendants.status", "=", "going")
-            .as("going"),
-          eb.fn
-            .countAll()
-            .filterWhere("event_attendants.status", "=", "interested")
-            .as("interested"),
-        ])
-        .where("events.id", "=", id)
-        .groupBy(["events.id", "groups.id"])
-        .executeTakeFirstOrThrow();
+    const result = await this.db
+      .selectFrom("events")
+      .innerJoin("groups", "groups.id", "events.group_id")
+      .leftJoin("event_attendants", "event_attendants.event_id", "events.id")
+      .selectAll("events")
+      .select(["groups.name as group_name", "groups.slug as group_slug"])
+      .select((eb) => [
+        eb.fn
+          .countAll()
+          .filterWhere("event_attendants.status", "=", "going")
+          .as("going"),
+        eb.fn
+          .countAll()
+          .filterWhere("event_attendants.status", "=", "interested")
+          .as("interested"),
+      ])
+      .where("events.id", "=", id)
+      .groupBy(["events.id", "groups.id"])
+      .executeTakeFirstOrThrow();
 
-    return {
-      event: {
-        ...event,
-        starts_at: event.starts_at.toISOString(),
-        starts_at_ms: event.starts_at.getTime(),
-        created_at: event.created_at.toISOString(),
-        updated_at: event.updated_at?.toISOString() ?? null,
-      },
-      meta: {
-        group_name,
-        group_slug,
-        attendants: {
-          going: Number(going),
-          interested: Number(interested),
-        },
-      },
-    };
+    return this.parser.toHydratedEvent(result);
   }
 
   async discovery() {
@@ -99,33 +90,7 @@ export class EventsReader implements IEventsReader {
       .groupBy(["e.id", "g.id", "c.name"])
       .execute();
 
-    return result.map((event) => {
-      const {
-        going_count,
-        interested_count,
-        group_name,
-        group_location,
-        starts_at,
-        category_name,
-        ...rest
-      } = event;
-      return {
-        event: {
-          ...rest,
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-        },
-        meta: {
-          category_name: category_name ?? undefined,
-          attendance: {
-            going: Number(going_count),
-            interested: Number(interested_count),
-          },
-          group_name,
-          group_location: group_location ?? "Online",
-        },
-      };
-    });
+    return this.parser.toDiscoverableEvents(result);
   }
 
   async byGroupId(group_id: EventSchemaType["group_id"]) {
@@ -160,29 +125,7 @@ export class EventsReader implements IEventsReader {
       .groupBy(["e.id", "g.id", "c.name"])
       .execute();
 
-    return result.map((event) => {
-      const {
-        going_count,
-        interested_count,
-        starts_at,
-        category_name,
-        ...rest
-      } = event;
-      return {
-        event: {
-          ...rest,
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-        },
-        meta: {
-          category_name: category_name ?? undefined,
-          attendance: {
-            going: Number(going_count),
-            interested: Number(interested_count),
-          },
-        },
-      };
-    });
+    return this.parser.toGroupEvents(result);
   }
 
   async allRawScheduledEvents(): Promise<Selectable<Events>[]> {
@@ -233,24 +176,7 @@ export class EventsReader implements IEventsReader {
       .limit(1)
       .executeTakeFirst();
 
-    if (result) {
-      const { category_name, going, interested, starts_at, ...rest } = result;
-
-      return {
-        event: {
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-          ...rest,
-        },
-        meta: {
-          attendance: {
-            going: Number(going),
-            interested: Number(interested),
-          },
-          category_name,
-        },
-      };
-    }
+    return this.parser.toNextEvent(result);
   }
 
   async byIds(ids: EventSchemaType["id"][]): Promise<EventById[]> {
@@ -287,61 +213,81 @@ export class EventsReader implements IEventsReader {
       .groupBy(["e.id", "g.id", "c.name"])
       .execute();
 
-    return result.map((event) => {
-      const {
-        going_count,
-        interested_count,
-        group_name,
-        category_name,
-        group_location,
-        starts_at,
-        ...rest
-      } = event;
-      return {
-        event: {
-          ...rest,
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-        },
-        meta: {
-          attendance: {
-            going: Number(going_count),
-            interested: Number(interested_count),
-          },
-          group_name,
-          group_location: group_location ?? "Online",
-          category_name,
-        },
-      };
-    });
+    return this.parser.toEventsByIds(result);
   }
 
-  async suggest(query: SearchSchemaType): Promise<Selectable<Events>[]> {
-    return this.db
-      .selectFrom("events")
-      .selectAll()
-      .where("title", "ilike", `%${query}%`)
-      .where("status", "=", "scheduled")
-      .where("starts_at", ">=", new Date())
-      .orderBy(textSearchRelevance(sql.ref("events.title"), query), "asc")
-      .orderBy("starts_at", "asc")
-      .orderBy("title", "asc")
-      .orderBy("id", "asc")
+  async suggest(
+    query: SearchSchemaType,
+  ): Promise<EventSearchSuggestionSchemaType[]> {
+    const rows = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "e.group_id", "g.id")
+      .select([
+        "e.id",
+        "e.group_id",
+        "e.title",
+        "e.starts_at",
+        "g.name as group_name",
+        "g.location as group_location",
+        "g.slug as group_slug",
+      ])
+      .where("e.title", "ilike", `%${query}%`)
+      .where("e.status", "=", "scheduled")
+      .where("e.starts_at", ">=", new Date())
+      .orderBy(textSearchRelevance(sql.ref("e.title"), query), "asc")
+      .orderBy("e.starts_at", "asc")
+      .orderBy("e.title", "asc")
+      .orderBy("e.id", "asc")
       .limit(5)
       .execute();
+    return this.parser.toSuggestions(rows);
   }
 
-  async search(query: SearchSchemaType): Promise<Selectable<Events>[]> {
-    return this.db
-      .selectFrom("events")
-      .selectAll()
-      .where("title", "ilike", `%${query}%`)
-      .where("status", "=", "scheduled")
-      .orderBy(textSearchRelevance(sql.ref("events.title"), query), "asc")
-      .orderBy("starts_at", "asc")
-      .orderBy("title", "asc")
-      .orderBy("id", "asc")
+  async search(
+    query: SearchSchemaType,
+  ): Promise<EventSearchResultSchemaType[]> {
+    const rows = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "e.group_id", "g.id")
+      .leftJoin("event_attendants as ea", "e.id", "ea.event_id")
+      .select([
+        "e.id",
+        "e.title",
+        "e.description",
+        "e.tag",
+        "e.starts_at",
+        "e.img",
+        "e.group_id",
+        "g.name as group_name",
+        "g.location as group_location",
+        "g.slug as group_slug",
+      ])
+      .select((eb) => [
+        eb.fn.countAll().filterWhere("ea.status", "=", "going").as("going"),
+        eb.fn
+          .countAll()
+          .filterWhere("ea.status", "=", "interested")
+          .as("interested"),
+        sql<
+          "past" | "today" | "upcoming"
+        >`case when e.starts_at::date = current_date then 'today' when e.starts_at::date < current_date then 'past' else 'upcoming' end`.as(
+          "timeline_status",
+        ),
+        sql<
+          "ended" | "ongoing" | "not_yet_held"
+        >`case when current_timestamp < e.starts_at then 'not_yet_held' when current_timestamp < e.starts_at + interval '2 hours' then 'ongoing' else 'ended' end`.as(
+          "event_phase",
+        ),
+      ])
+      .where("e.title", "ilike", `%${query}%`)
+      .where("e.status", "=", "scheduled")
+      .groupBy(["e.id", "g.id"])
+      .orderBy(textSearchRelevance(sql.ref("e.title"), query), "asc")
+      .orderBy("e.starts_at", "asc")
+      .orderBy("e.title", "asc")
+      .orderBy("e.id", "asc")
       .limit(25)
       .execute();
+    return this.parser.toSearchResults(rows);
   }
 }

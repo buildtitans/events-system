@@ -1,3 +1,10 @@
+import {
+  GroupSearchResultSchemaType,
+  GroupSearchSuggestionSchemaType,
+  GroupSearchResultSchema,
+  GroupSearchSuggestionSchema,
+} from "@/src/schemas/search/searchSchema";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { GroupsValidator } from "./groupsValidator";
 import { IGroupsReader } from "./rawGroupsReader";
@@ -5,23 +12,24 @@ import {
   ArchivedEventSchemaType,
   GroupHydratedSchemaType,
   GroupSchemaType,
+  GroupDiscoverySummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { TimelineElementSchemaType } from "../../../../../../schemas/groups/timelineSchema";
 
 export interface IGroupsSelector {
   hydrateGroup(id: GroupSchemaType["id"]): Promise<GroupHydratedSchemaType>;
   timeline(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
-  all(): Promise<GroupSchemaType[]>;
+  all(): Promise<GroupDiscoverySummarySchemaType[]>;
   byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
-  ): Promise<GroupSchemaType[]>;
-  search(query: string): Promise<GroupSchemaType[]>;
+  ): Promise<GroupDiscoverySummarySchemaType[]>;
+  search(query: string): Promise<GroupSearchResultSchemaType[]>;
   byCategory(
     category_id: CategorySchemaType["name"],
-  ): Promise<GroupSchemaType[]>;
-  suggestByName(query: string): Promise<GroupSchemaType[]>;
+  ): Promise<GroupDiscoverySummarySchemaType[]>;
+  suggestByName(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
   archives(id: GroupSchemaType["id"]): Promise<ArchivedEventSchemaType[]>;
-  popular(): Promise<GroupSchemaType[]>;
+  popular(): Promise<GroupDiscoverySummarySchemaType[]>;
 }
 
 export class GroupsSelector implements IGroupsSelector {
@@ -40,14 +48,14 @@ export class GroupsSelector implements IGroupsSelector {
     return this.validator.timeline(timeline);
   }
 
-  async all(): Promise<GroupSchemaType[]> {
+  async all(): Promise<GroupDiscoverySummarySchemaType[]> {
     const raw = await this.read.allGroups();
-    return this.validator.groups(raw);
+    return this.validator.discovery(raw);
   }
 
-  async popular(): Promise<GroupSchemaType[]> {
+  async popular(): Promise<GroupDiscoverySummarySchemaType[]> {
     const raw = await this.read.popularGroups();
-    return this.validator.groups(raw);
+    return this.validator.discovery(raw);
   }
 
   async archives(id: GroupSchemaType["id"]) {
@@ -57,25 +65,27 @@ export class GroupsSelector implements IGroupsSelector {
 
   async byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
-  ): Promise<GroupSchemaType[]> {
-    const raw = await this.read.rawByOrganizerId(organizer_id);
-    return this.validator.groups(raw);
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
+    const raw = await this.read.byOrganizerId(organizer_id);
+    return this.validator.discovery(raw);
   }
 
   async byCategory(
     category_id: CategorySchemaType["name"],
-  ): Promise<GroupSchemaType[]> {
-    const raw = await this.read.rawByCategoryId(category_id);
-    return this.validator.groups(raw);
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
+    const raw = await this.read.byCategoryId(category_id);
+    return this.validator.discovery(raw);
   }
 
-  async suggestByName(query: string): Promise<GroupSchemaType[]> {
-    const raw = await this.read.rawSuggestByName(query);
-    return this.validator.groups(raw);
+  async suggestByName(
+    query: string,
+  ): Promise<GroupSearchSuggestionSchemaType[]> {
+    const raw = await this.read.suggestions(query);
+    return raw.map((row) => validateOrThrow(GroupSearchSuggestionSchema, row));
   }
 
-  async search(query: string): Promise<GroupSchemaType[]> {
-    const raw = await this.read.rawSearchByName(query);
-    return this.validator.groups(raw);
+  async search(query: string): Promise<GroupSearchResultSchemaType[]> {
+    const raw = await this.read.search(query);
+    return raw.map((row) => validateOrThrow(GroupSearchResultSchema, row));
   }
 }

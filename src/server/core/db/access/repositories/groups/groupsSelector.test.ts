@@ -10,10 +10,10 @@ function setup() {
     hydrateGroup: jest.fn(),
     popularGroups: jest.fn(),
     archivedEventsWithAttendance: jest.fn(),
-    rawSearchByName: jest.fn(),
-    rawSuggestByName: jest.fn(),
-    rawByCategoryId: jest.fn(),
-    rawByOrganizerId: jest.fn(),
+    search: jest.fn(),
+    suggestions: jest.fn(),
+    byCategoryId: jest.fn(),
+    byOrganizerId: jest.fn(),
   } satisfies IGroupsReader;
   const selector = new GroupsSelector(read, new GroupsValidator(new EventsValidator()));
   return { read, selector };

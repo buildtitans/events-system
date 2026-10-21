@@ -1,6 +1,5 @@
 import {
   CategoryLookupType,
-  createCategoryLookup,
 } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
 import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import type { SyncDomainsType } from "@/src/lib/types/server/types";
@@ -49,7 +48,12 @@ const CategoriesSlice = createSlice({
 
         if (result.status === "fulfilled") {
           state.categories = result.data.categories;
-          const lookup = createCategoryLookup(result.data.groups);
+          const lookup: CategoryLookupType = {};
+          for (const category of result.data.categories) {
+            lookup[category.id] = result.data.groups
+              .filter(({ meta }) => meta.category_name === category.name)
+              .map(({ group }) => group.id);
+          }
           state.categoryLookup = {
             status: "ready",
             data: lookup,

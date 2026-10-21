@@ -1,5 +1,12 @@
+import {
+  EventSearchResultSchemaType,
+  EventSearchSuggestionSchemaType,
+  EventSearchResultSchema,
+  EventSearchSuggestionSchema,
+} from "@/src/schemas/search/searchSchema";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { IEventsValidator } from "./eventsValidator";
-import { EventsReader, IEventsReader } from "./rawEventsReader";
+import { IEventsReader } from "./eventsReader";
 import {
   GroupSchemaType,
   NextEventForGroupSummarySchemaType,
@@ -7,7 +14,6 @@ import {
 import {
   EventDiscoverySummarySchemaType,
   EventReadModelSchemaType,
-  EventsArraySchemaType,
   EventSchemaType,
   GroupEventSummarySchemaType,
 } from "@/src/schemas/events/eventSchema";
@@ -16,8 +22,8 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 export interface IEventsSelector {
   discovery(): Promise<EventDiscoverySummarySchemaType[]>;
   hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
-  search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
-  suggest(query: SearchSchemaType): Promise<EventSchemaType[]>;
+  search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
+  suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
   nextEventByGroupId(
     group_id: string,
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
@@ -46,15 +52,18 @@ export class EventsSelector implements IEventsSelector {
     return this.validate.eventsForDiscovery(raw);
   }
 
-  async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
+  async search(
+    query: SearchSchemaType,
+  ): Promise<EventSearchResultSchemaType[]> {
     const raw = await this.read.search(query);
-
-    return this.validate.events(raw);
+    return raw.map((row) => validateOrThrow(EventSearchResultSchema, row));
   }
 
-  async suggest(query: SearchSchemaType): Promise<EventSchemaType[]> {
+  async suggest(
+    query: SearchSchemaType,
+  ): Promise<EventSearchSuggestionSchemaType[]> {
     const raw = await this.read.suggest(query);
-    return this.validate.events(raw);
+    return raw.map((row) => validateOrThrow(EventSearchSuggestionSchema, row));
   }
 
   async nextEventByGroupId(

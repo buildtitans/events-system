@@ -7,11 +7,11 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupSearchResultSchemaType } from "@/src/schemas/search/searchSchema";
 
 export type GroupSearchResultItemProps = {
-  group: GroupSchemaType;
-  onAction: (slug: GroupSchemaType["slug"]) => void;
+  group: GroupSearchResultSchemaType["data"]["group"];
+  onAction: (slug: GroupSearchResultSchemaType["data"]["group"]["slug"]) => void;
   categoryName?: string | null;
 };
 

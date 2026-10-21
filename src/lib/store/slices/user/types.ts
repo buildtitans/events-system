@@ -1,4 +1,4 @@
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { RsvpSurfaceSchemaType } from "@/src/schemas/events/rsvpSchema";
 import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
@@ -17,7 +17,7 @@ type MembershipsState = AsyncState<
   "No records of any memberships"
 >;
 
-type MyGroupsState = AsyncState<GroupSchemaType[][], "No groups created yet">;
+type MyGroupsState = AsyncState<GroupDiscoverySummarySchemaType[][], "No groups created yet">;
 
 export type RequestPwResetState = AsyncState<{ ok: true }>;
 

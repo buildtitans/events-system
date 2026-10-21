@@ -1,3 +1,7 @@
+import type {
+  GroupSearchResultSchemaType,
+  GroupSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
@@ -28,13 +32,13 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.categories.getCategories();
   }
 
-  async suggestGroups(query: string): Promise<GroupSchemaType[]> {
+  async suggestGroups(query: string): Promise<GroupSearchSuggestionSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.suggestByName(validatedQuery);
   }
 
-  async searchGroups(query: string): Promise<GroupSchemaType[]> {
+  async searchGroups(query: string): Promise<GroupSearchResultSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.search(validatedQuery);

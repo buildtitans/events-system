@@ -1,45 +1,40 @@
-import { Kysely, Selectable, sql } from "kysely";
-import { DB, Events, Groups } from "@/src/server/core/db/types/db";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type {
-  EventPhaseSchemaType,
-  TimelineElementSchemaType,
-} from "@/src/schemas/groups/timelineSchema";
+import {
+  GroupSearchResultSchemaType,
+  GroupSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
+import { Kysely, sql } from "kysely";
+import { DB } from "@/src/server/core/db/types/db";
+import {
+  GroupSchemaType,
+  GroupDiscoverySummarySchemaType,
+} from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { textSearchRelevance } from "@/src/server/core/lib/utils/queries/textSearchRelevance";
 import { jsonObjectFrom } from "kysely/helpers/postgres";
-import {
-  HydratedGroupRead,
-  HydratedGroupResult,
-  RawtimelineItem,
-  ReadTimelineItem,
-} from "./types";
-import { assertNever } from "../../../../lib/asserts/assertNever";
-
-export type RawArchives = {
-  event: Selectable<Events>;
-  attendance: {
-    going: number;
-    interested: number;
-  };
-}[];
+import { HydratedGroupRead, RawArchives, RawtimelineItem } from "./types";
+import { IGroupsParser } from "./groupsParser";
 
 export interface IGroupsReader {
   timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]>;
-  allGroups(): Promise<Selectable<Groups>[]>;
+  allGroups(): Promise<GroupDiscoverySummarySchemaType[]>;
   hydrateGroup(slug: GroupSchemaType["slug"]): Promise<HydratedGroupRead>;
-  popularGroups(): Promise<Selectable<Groups>[]>;
+  popularGroups(): Promise<GroupDiscoverySummarySchemaType[]>;
   archivedEventsWithAttendance(id: GroupSchemaType["id"]): Promise<RawArchives>;
-  rawSearchByName(query: string): Promise<Selectable<Groups>[]>;
-  rawSuggestByName(query: string): Promise<Selectable<Groups>[]>;
-  rawByCategoryId(id: CategorySchemaType["id"]): Promise<Selectable<Groups>[]>;
-  rawByOrganizerId(
+  search(query: string): Promise<GroupSearchResultSchemaType[]>;
+  suggestions(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
+  byCategoryId(
+    id: CategorySchemaType["id"],
+  ): Promise<GroupDiscoverySummarySchemaType[]>;
+  byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
-  ): Promise<Selectable<Groups>[]>;
+  ): Promise<GroupDiscoverySummarySchemaType[]>;
 }
 
 export class RawGroupsReader implements IGroupsReader {
-  constructor(private readonly db: Kysely<DB>) {}
+  constructor(
+    private readonly db: Kysely<DB>,
+    private readonly parser: IGroupsParser,
+  ) {}
 
   async hydrateGroup(
     slug: GroupSchemaType["slug"],
@@ -101,9 +96,9 @@ export class RawGroupsReader implements IGroupsReader {
         ).as("next_event"),
       ])
       .groupBy(["g.id", "c.name", "u.email"])
-      .executeTakeFirstOrThrow(); // row;
+      .executeTakeFirstOrThrow();
 
-    return this.toRawHydratedGroupDto(result);
+    return this.parser.toHydratedGroup(result);
   }
 
   async timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]> {
@@ -145,24 +140,23 @@ export class RawGroupsReader implements IGroupsReader {
       .groupBy("e.id")
       .execute();
 
-    return this.toTimeline(result);
+    return this.parser.toTimeline(result);
   }
 
-  async popularGroups(): Promise<Selectable<Groups>[]> {
-    return await this.db
-      .selectFrom("groups")
-      .leftJoin("group_members", "group_members.group_id", "groups.id")
-      .selectAll("groups")
-      .groupBy("groups.id")
-      .having(
+  async popularGroups(): Promise<GroupDiscoverySummarySchemaType[]> {
+    const rows = await this.discoveryGroups()
+      .where(
         (eb) =>
-          eb.fn
-            .countAll()
-            .filterWhere("group_members.role", "in", ["member", "organizer"]),
+          eb
+            .selectFrom("group_members as gm")
+            .select((eb) => eb.fn.countAll().as("count"))
+            .whereRef("gm.group_id", "=", "g.id")
+            .where("gm.role", "in", ["member", "organizer"]),
         ">=",
         4,
       )
       .execute();
+    return this.parser.toDiscoveryGroups(rows);
   }
 
   async archivedEventsWithAttendance(
@@ -188,187 +182,122 @@ export class RawGroupsReader implements IGroupsReader {
       .orderBy("events.starts_at", "desc")
       .execute();
 
-    return rows.map(({ going, interested, ...event }) => ({
-      event,
-      attendance: {
-        going: Number(going),
-        interested: Number(interested),
-      },
-    }));
+    return this.parser.toArchives(rows);
   }
 
-  async allGroups(): Promise<Selectable<Groups>[]> {
+  private discoveryGroups() {
     return this.db
-      .selectFrom("groups")
-      .selectAll()
-      .orderBy("created_at", "desc")
-      .execute();
+      .selectFrom("groups as g")
+      .innerJoin("categories as c", "g.category_id", "c.id")
+      .select([
+        "g.id",
+        "g.name",
+        "g.slug",
+        "g.description",
+        "g.location",
+        "c.name as category_name",
+      ])
+      .select((eb) => [
+        eb
+          .selectFrom("group_members as gm")
+          .select((eb) => eb.fn.countAll().as("count"))
+          .whereRef("gm.group_id", "=", "g.id")
+          .where("gm.role", "in", ["member", "organizer"])
+          .as("member_count"),
+        jsonObjectFrom(
+          eb
+            .selectFrom("events as e")
+            .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
+            .select(["e.id", "e.title", "e.description", "e.starts_at"])
+            .select((eb) => [
+              eb.fn
+                .countAll()
+                .filterWhere("ea.status", "=", "going")
+                .as("going"),
+              eb.fn
+                .countAll()
+                .filterWhere("ea.status", "=", "interested")
+                .as("interested"),
+            ])
+            .whereRef("e.group_id", "=", "g.id")
+            .where("e.status", "=", "scheduled")
+            .where("e.starts_at", ">=", new Date())
+            .groupBy("e.id")
+            .orderBy("e.starts_at", "asc")
+            .orderBy("e.id", "asc")
+            .limit(1),
+        ).as("next_event"),
+      ])
+      .orderBy("g.created_at", "desc")
+      .orderBy("g.id", "asc");
   }
 
-  async rawByOrganizerId(
+  async allGroups(): Promise<GroupDiscoverySummarySchemaType[]> {
+    return this.parser.toDiscoveryGroups(
+      await this.discoveryGroups().execute(),
+    );
+  }
+
+  async byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
-  ): Promise<Selectable<Groups>[]> {
-    return await this.db
-      .selectFrom("groups")
-      .selectAll()
-      .where("organizer_id", "=", organizer_id)
-      .execute();
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
+    return this.parser.toDiscoveryGroups(
+      await this.discoveryGroups()
+        .where("g.organizer_id", "=", organizer_id)
+        .execute(),
+    );
   }
 
-  async rawSearchByName(query: string): Promise<Selectable<Groups>[]> {
+  private searchGroups(query: string, limit: number) {
     return this.db
-      .selectFrom("groups")
-      .selectAll()
-      .where("name", "ilike", `%${query}%`)
-      .orderBy(textSearchRelevance(sql.ref("groups.name"), query), "asc")
-      .orderBy("name", "asc")
-      .orderBy("id", "asc")
-      .limit(25)
+      .selectFrom("groups as g")
+      .innerJoin("categories as c", "c.id", "g.category_id")
+      .select([
+        "g.id",
+        "g.name",
+        "g.slug",
+        "g.description",
+        "g.location",
+        "c.name as category_name",
+      ])
+      .select((eb) => [
+        eb
+          .selectFrom("group_members as gm")
+          .select((eb) => eb.fn.countAll().as("count"))
+          .whereRef("gm.group_id", "=", "g.id")
+          .where("gm.role", "in", ["member", "organizer"])
+          .as("member_count"),
+        eb
+          .selectFrom("events as e")
+          .select((eb) => eb.fn.min("e.starts_at").as("next"))
+          .whereRef("e.group_id", "=", "g.id")
+          .where("e.status", "=", "scheduled")
+          .where("e.starts_at", ">=", new Date())
+          .as("next_event_scheduled"),
+      ])
+      .where("g.name", "ilike", `%${query}%`)
+      .orderBy(textSearchRelevance(sql.ref("g.name"), query), "asc")
+      .orderBy("g.name", "asc")
+      .orderBy("g.id", "asc")
+      .limit(limit)
       .execute();
   }
 
-  async rawSuggestByName(query: string): Promise<Selectable<Groups>[]> {
-    return await this.db
-      .selectFrom("groups")
-      .selectAll()
-      .where("name", "ilike", `%${query}%`)
-      .orderBy(textSearchRelevance(sql.ref("groups.name"), query), "asc")
-      .orderBy("name", "asc")
-      .orderBy("id", "asc")
-      .limit(5)
-      .execute();
+  async search(query: string): Promise<GroupSearchResultSchemaType[]> {
+    const results = await this.searchGroups(query, 25);
+    return this.parser.toSearchResults(results);
   }
 
-  async rawByCategoryId(
+  async suggestions(query: string): Promise<GroupSearchSuggestionSchemaType[]> {
+    const suggestions = await this.searchGroups(query, 5);
+    return this.parser.toSuggestions(suggestions);
+  }
+
+  async byCategoryId(
     id: CategorySchemaType["id"],
-  ): Promise<Selectable<Groups>[]> {
-    return await this.db
-      .selectFrom("groups")
-      .selectAll()
-      .where("category_id", "=", id)
-      .execute();
-  }
-
-  private toRawHydratedGroupDto(
-    result: HydratedGroupResult,
-  ): HydratedGroupRead {
-    const {
-      organizer_email,
-      organizer_id,
-      category_name,
-      member_count,
-      next_event,
-      created_at,
-      updated_at,
-      ...rest
-    } = result;
-
-    if (next_event) {
-      const { starts_at, going_count, interested_count, ...event } = next_event;
-      const startsAt = new Date(starts_at);
-
-      return {
-        group: {
-          created_at: created_at.toISOString(),
-          updated_at: updated_at.toISOString(),
-          organizer_id,
-          ...rest,
-        },
-        meta: {
-          organizer_email: organizer_email,
-          category_name: category_name,
-          member_count: Number(member_count),
-          next_event: {
-            event: {
-              ...event,
-              starts_at: startsAt.toISOString(),
-              starts_at_ms: startsAt.getTime(),
-            },
-            meta: {
-              attendance: {
-                going: Number(going_count),
-                interested: Number(interested_count),
-              },
-              category_name,
-            },
-          },
-        },
-      };
-    } else {
-      return {
-        group: {
-          created_at: created_at.toISOString(),
-          updated_at: updated_at.toISOString(),
-          organizer_id,
-          ...rest,
-        },
-        meta: {
-          organizer_email: organizer_email,
-          category_name: category_name ?? undefined,
-          member_count: Number(member_count),
-        },
-      };
-    }
-  }
-
-  toTimeline(items: ReadTimelineItem[]): TimelineElementSchemaType[] {
-    return items.map((item) => this.toTimelineItem(item));
-  }
-
-  private toTimelineItem(item: ReadTimelineItem): TimelineElementSchemaType {
-    const { timeline_status, starts_at, created_at, number_attended, ...rest } =
-      item;
-    const event = {
-      starts_at_ms: starts_at.getTime(),
-      starts_at: starts_at.toISOString(),
-      created_at: created_at.toISOString(),
-      ...rest,
-    };
-
-    switch (timeline_status) {
-      case "upcoming": {
-        return {
-          event,
-          timeline_status: timeline_status,
-        };
-      }
-      case "past": {
-        return {
-          event,
-          timeline_status,
-          meta: {
-            number_attendend: Number(number_attended),
-          },
-        };
-      }
-
-      case "today": {
-        return {
-          event,
-          timeline_status,
-          event_phase: this.toEventPhase(starts_at),
-        };
-      }
-
-      default: {
-        return assertNever(timeline_status);
-      }
-    }
-  }
-
-  private toEventPhase(scheduledDate: Date): EventPhaseSchemaType {
-    const startsAtMs = scheduledDate.getTime();
-    const endsAtMs = startsAtMs + 2 * 60 * 60 * 1000;
-    const nowMs = Date.now();
-
-    if (nowMs < startsAtMs) {
-      return "upcoming";
-    }
-
-    if (nowMs < endsAtMs) {
-      return "ongoing";
-    }
-
-    return "completed";
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
+    return this.parser.toDiscoveryGroups(
+      await this.discoveryGroups().where("g.category_id", "=", id).execute(),
+    );
   }
 }

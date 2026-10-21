@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import {
   GroupSchemaType,
-  GroupsSchemaType,
+  GroupDiscoverySummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { assertIsDefined } from "@/src/lib/utils/helpers/assertIsDefined";
 import type { GroupCardVariant } from "@/src/client/components/ui/box/cards/group";
@@ -22,11 +22,11 @@ export default function GroupsPagesContainer({
   silenceHeader,
   cardVariant = "landing",
 }: {
-  groupsPages: GroupsSchemaType[];
+  groupsPages: GroupDiscoverySummarySchemaType[][];
   silenceHeader?: boolean;
   cardVariant?: GroupCardVariant;
 }): JSX.Element | null {
-  const { currentPage, categoryMap, columns } = useGroupPages(groupsPages);
+  const { currentPage, columns } = useGroupPages(groupsPages);
   const router = useRouter();
 
   const handleGroupClicked = useCallback(
@@ -52,9 +52,8 @@ export default function GroupsPagesContainer({
         {groupsPages[currentPage] && (
           <GroupsPage
             handleGroupClicked={handleGroupClicked}
-            key={groupsPages[currentPage][0].id}
+            key={groupsPages[currentPage][0].group.id}
             page={groupsPages[currentPage]}
-            categoryMap={categoryMap}
             columns={columns}
             cardVariant={cardVariant}
           />

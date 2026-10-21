@@ -1,10 +1,10 @@
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import { RsvpSurfaceSchemaType } from "@/src/schemas/events/rsvpSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 
 export interface ICensusHandler {
-  getPopularGroups(): Promise<GroupSchemaType[]>;
+  getPopularGroups(): Promise<GroupDiscoverySummarySchemaType[]>;
 }
 
 export interface IRsvpHandler {

@@ -18,7 +18,7 @@ import {
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
-import { addGroup } from "./GroupsSlice";
+import { getAllGroups } from "./GroupsSlice";
 import { getGroupHistory, populateGroupArchives } from "./OpenedGroupSlice";
 import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
 
@@ -173,7 +173,12 @@ export const createGroup = createAsyncThunk(
       if (!result.ok) {
         throw new Error(result.error);
       }
-      thunkAPI.dispatch(addGroup(result.data));
+      try {
+        const groups = await trpcClient.hydrate.groups.list.all.query();
+        thunkAPI.dispatch(getAllGroups(groups));
+      } catch (error) {
+        logCaughtError("createGroup.refreshDiscovery()", error);
+      }
       thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
       thunkAPI.dispatch(
         enqueueAlert({ kind: "success", action: "createGroup" }),

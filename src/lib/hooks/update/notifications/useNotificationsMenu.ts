@@ -34,7 +34,7 @@ export const useNotificationsMenu = () => {
   }, [notifications]);
 
   const lookup = useMemo(() => {
-    return slugByGroupId({ groups, notifications: newAndSeen });
+    return slugByGroupId({ groups: groups.map(({ group }) => group), notifications: newAndSeen });
   }, [groups, newAndSeen]);
 
   const handleOpen = (e: MouseEvent<HTMLElement>) => {

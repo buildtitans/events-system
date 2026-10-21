@@ -1,10 +1,10 @@
 "use client";
-import { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import GroupsPagesContainer from "../../../sections/group/containers/groupsPages";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 
 type RenderGroupsOrFallbackProps = {
-  pages: GroupsSchemaType[];
+  pages: GroupDiscoverySummarySchemaType[][];
 };
 
 export default function RenderMyGroups({ pages }: RenderGroupsOrFallbackProps) {

@@ -1,3 +1,7 @@
+import type {
+  EventSearchResultSchemaType,
+  EventSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
 import {
   GroupEventSummarySchemaType,
   EventSchemaType,
@@ -35,8 +39,8 @@ export interface IEventQueryHandler {
   nextEventForGroup(
     group_id: GroupSchemaType["id"],
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
-  searchEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
-  suggestEvents(query: SearchSchemaType): Promise<EventSchemaType[]>;
+  searchEvents(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
+  suggestEvents(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
   getGroupEvents(group_id: string): Promise<GroupEventSummarySchemaType[]>;
 }
 

@@ -3,12 +3,12 @@ import type { GetThunkAPI, AsyncThunkConfig } from "@reduxjs/toolkit";
 import { AppSearchService } from "../../services/search/appSearchService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+
 const service = new AppSearchService(trpcClient);
 
 type SuggestionQueryParams = {
   query: string;
-  storedGroups: GroupSchemaType[];
+
 };
 
 type SearchAppParams = {
@@ -22,10 +22,7 @@ export const querySuggestions = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const results = await service.suggestions(
-        params.query,
-        params.storedGroups,
-      );
+      const results = await service.suggestions(params.query);
 
       return results;
     } catch (err) {

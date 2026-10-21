@@ -1,7 +1,8 @@
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { CensusHandler } from "@/src/server/core/service/handlers/participations/censusHandler";
 import {
   createMockDb,
-  makeGroup,
+
 } from "../mockers/mocks";
 
 describe("CensusHandler.getPopularGroups", () => {
@@ -17,7 +18,10 @@ describe("CensusHandler.getPopularGroups", () => {
   });
 
   it("returns the groups selected as popular", async () => {
-    const groups = [makeGroup({ id: "group-1" }), makeGroup({ id: "group-3" })];
+    const groups: GroupDiscoverySummarySchemaType[] = [{
+      group: { id: "group-1", name: "Group", slug: "group", description: null, location: null },
+      meta: { kind: "no_next_event", category_name: "Technology", member_count: 0 },
+    }];
     getPopularGroups.mockResolvedValue(groups);
 
     await expect(handler.getPopularGroups()).resolves.toEqual(groups);

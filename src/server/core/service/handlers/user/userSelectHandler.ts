@@ -1,3 +1,4 @@
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { RsvpSurfaceSchemaType } from "../../../../../schemas/events/rsvpSchema";
 import { GroupRoleSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
@@ -16,7 +17,7 @@ export interface IUserSelectHandler {
   ): Promise<UserMembershipSurfaceSchemaType[]>;
   groups(
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<GroupSchemaType[][]>;
+  ): Promise<GroupDiscoverySummarySchemaType[][]>;
   roleInGroup(
     user_id: AuthenticatedUserId | undefined | null,
     group_id: GroupSchemaType["id"],
@@ -54,7 +55,7 @@ export class UserSelectHandler implements IUserSelectHandler {
 
   public async groups(
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<GroupSchemaType[][]> {
+  ): Promise<GroupDiscoverySummarySchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
     const createdGroups = await this.db.groups.select.byOrganizerId(userId);
     return chunkUserGroupsIntoPages(createdGroups);
