@@ -23,7 +23,11 @@ export const hydrateGroupsRouter = router({
   single: publicProcedure
     .input(validateRouterInput(GroupSlugSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.hydrate.single(input);
+      const userId = ctx.req.user?.id;
+      return await ctx.api.services.domains.groups.hydrate.single(
+        input,
+        userId,
+      );
     }),
 
   list: listGroupsRouter,

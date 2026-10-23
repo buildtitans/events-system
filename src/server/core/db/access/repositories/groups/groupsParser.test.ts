@@ -1,8 +1,8 @@
 import { GroupsParser } from "./groupsParser";
-import type { ReadTimelineItem, HydratedGroupResult } from "./types";
+import type { ReadTimelineItem, ReadHydratedGroupResult } from "./types";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { TimelineSchema } from "@/src/schemas/groups/timelineSchema";
-import { GroupHydratedSchema } from "@/src/schemas/groups/groupSchema";
+import { GroupHydrationReadSchema } from "@/src/schemas/groups/groupSchema";
 
 const startsAt = new Date("2030-01-01T18:00:00.000Z");
 
@@ -15,7 +15,7 @@ function makeTimelineItem(overrides: Partial<ReadTimelineItem> = {}): ReadTimeli
   };
 }
 
-function makeHydratedGroup(overrides: Partial<HydratedGroupResult> = {}): HydratedGroupResult {
+function makeHydratedGroup(overrides: Partial<ReadHydratedGroupResult> = {}): ReadHydratedGroupResult {
   return {
     id: "group-1", name: "React Community", slug: "react-community",
     description: null, location: null,
@@ -24,6 +24,7 @@ function makeHydratedGroup(overrides: Partial<HydratedGroupResult> = {}): Hydrat
     organizer_email: "organizer@example.com", member_count: 1,
     created_at: new Date("2029-12-01T12:00:00.000Z"),
     updated_at: new Date("2029-12-02T12:00:00.000Z"), next_event: null,
+    group_events: [], calandar: [], viewer_role: "anonymous",
     ...overrides,
   };
 }
@@ -32,6 +33,26 @@ describe("GroupsParser", () => {
   const parser = new GroupsParser();
 
   afterEach(() => jest.useRealTimers());
+
+  it("normalizes calendar JSON timestamps and counts through the existing timeline parser", () => {
+    jest.useFakeTimers().setSystemTime(startsAt);
+    const item = makeTimelineItem();
+    const result = parser.toHydratedGroup(makeHydratedGroup({
+      viewer_role: "member",
+      calandar: [
+        { ...item, starts_at: item.starts_at.toISOString(), created_at: item.created_at.toISOString(), number_attended: "4", timeline_status: "past" },
+        { ...item, starts_at: item.starts_at.toISOString(), created_at: item.created_at.toISOString(), number_attended: "0" },
+      ],
+      group_events: [{ id: "event-1", group_id: "group-1", status: "scheduled", starts_at: startsAt.toISOString(), img: "event.png", tag: null, title: "Meetup", meeting_location: "Library", going_count: "0", interested_count: "2" }],
+    }));
+    expect(validateOrThrow(GroupHydrationReadSchema, result)).toEqual(result);
+    expect(result.meta.viewer_role).toBe("member");
+    expect(result.meta.calandar[0]).toMatchObject({ timeline_status: "past", meta: { number_attendend: 4 } });
+    expect(result.meta.calandar[1]).toMatchObject({ timeline_status: "today", event_phase: "ongoing", event: { starts_at_ms: startsAt.getTime() } });
+    expect(result.meta.group_events[0]).toMatchObject({ event: { starts_at_ms: startsAt.getTime() }, meta: { category_name: "Technology", attendance: { going: 0, interested: 2 } } });
+    expect(result.group).not.toHaveProperty("calandar");
+  });
+
 
   it.each([
     [-1, "upcoming"],
@@ -60,7 +81,7 @@ describe("GroupsParser", () => {
 
   it("serializes a hydrated group without fabricating a next event", () => {
     const result = parser.toHydratedGroup(makeHydratedGroup());
-    expect(validateOrThrow(GroupHydratedSchema, result)).toEqual(result);
+    expect(validateOrThrow(GroupHydrationReadSchema, result)).toEqual(result);
     expect(result.group.created_at).toBe("2029-12-01T12:00:00.000Z");
     expect(result.meta).not.toHaveProperty("next_event");
   });
@@ -73,7 +94,7 @@ describe("GroupsParser", () => {
         starts_at: "2030-01-01T18:00:00+00:00", going_count: "0", interested_count: "2",
       },
     }));
-    expect(validateOrThrow(GroupHydratedSchema, result)).toEqual(result);
+    expect(validateOrThrow(GroupHydrationReadSchema, result)).toEqual(result);
     expect(result.meta).toMatchObject({
       next_event: {
         event: { starts_at: startsAt.toISOString(), starts_at_ms: startsAt.getTime() },

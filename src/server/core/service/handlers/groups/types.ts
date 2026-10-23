@@ -47,5 +47,5 @@ export interface IGroupQueryHandler {
   categories(): Promise<CategoriesSchemaType>;
   searchGroups(query: string): Promise<GroupSearchResultSchemaType[]>;
   suggestGroups(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
-  pastEvents(id: string): Promise<GroupEventSummarySchemaType[]>;
+  history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
 }

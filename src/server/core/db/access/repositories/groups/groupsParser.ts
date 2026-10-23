@@ -8,25 +8,27 @@ import {
   GroupSearchSuggestionSchemaType,
 } from "../../../../../../schemas/search/searchSchema";
 import { assertNever } from "../../../../lib/asserts/assertNever";
+import { RawGroupEvent, ReadGroupEvent } from "../events/types";
 import {
   HydratedGroupRead,
-  HydratedGroupResult,
   RawArchives,
   RawGroupForDiscovery,
   RawReadArchivedEvent,
   RawSearchResult,
+  ReadHydratedGroupResult,
   ReadTimelineItem,
 } from "./types";
 
 export interface IGroupsParser {
   toTimeline(items: ReadTimelineItem[]): TimelineElementSchemaType[];
-  toHydratedGroup(result: HydratedGroupResult): HydratedGroupRead;
+  toHydratedGroup(result: ReadHydratedGroupResult): HydratedGroupRead;
   toSuggestions(results: RawSearchResult[]): GroupSearchSuggestionSchemaType[];
   toDiscoveryGroups(
     rows: RawGroupForDiscovery[],
   ): GroupDiscoverySummarySchemaType[];
   toArchives(rows: RawReadArchivedEvent[]): RawArchives;
   toSearchResults(results: RawSearchResult[]): GroupSearchResultSchemaType[];
+  toGroupEvents(results: ReadGroupEvent[]): RawGroupEvent[];
 }
 
 export class GroupsParser implements IGroupsParser {
@@ -40,7 +42,7 @@ export class GroupsParser implements IGroupsParser {
     }));
   }
 
-  public toHydratedGroup(result: HydratedGroupResult): HydratedGroupRead {
+  public toHydratedGroup(result: ReadHydratedGroupResult): HydratedGroupRead {
     const {
       organizer_email,
       organizer_id,
@@ -49,8 +51,32 @@ export class GroupsParser implements IGroupsParser {
       next_event,
       created_at,
       updated_at,
+      viewer_role,
+      group_events,
+      calandar,
+
       ...rest
     } = result;
+    const groupEvents = this.toGroupEvents(
+      group_events.map(
+        (event): ReadGroupEvent => ({
+          ...event,
+          starts_at: new Date(event.starts_at),
+          category_name,
+          going_count: Number(event.going_count),
+          interested_count: Number(event.interested_count),
+        }),
+      ),
+    );
+
+    const calendar = this.toTimeline(
+      calandar.map((item): ReadTimelineItem => ({
+        ...item,
+        starts_at: new Date(item.starts_at),
+        created_at: new Date(item.created_at),
+        number_attended: Number(item.number_attended),
+      })),
+    );
 
     if (next_event) {
       const { starts_at, going_count, interested_count, ...event } = next_event;
@@ -67,6 +93,9 @@ export class GroupsParser implements IGroupsParser {
           organizer_email: organizer_email,
           category_name: category_name,
           member_count: Number(member_count),
+          group_events: groupEvents,
+          calandar: calendar,
+          viewer_role,
           next_event: {
             event: {
               ...event,
@@ -95,6 +124,9 @@ export class GroupsParser implements IGroupsParser {
           organizer_email: organizer_email,
           category_name: category_name ?? undefined,
           member_count: Number(member_count),
+          viewer_role,
+          group_events: groupEvents,
+          calandar: calendar,
         },
       };
     }
@@ -174,6 +206,32 @@ export class GroupsParser implements IGroupsParser {
                 interested: Number(next_event.interested),
               },
             },
+          },
+        },
+      };
+    });
+  }
+
+  public toGroupEvents(results: ReadGroupEvent[]): RawGroupEvent[] {
+    return results.map((event) => {
+      const {
+        going_count,
+        interested_count,
+        starts_at,
+        category_name,
+        ...rest
+      } = event;
+      return {
+        event: {
+          ...rest,
+          starts_at: starts_at.toISOString(),
+          starts_at_ms: starts_at.getTime(),
+        },
+        meta: {
+          category_name: category_name ?? undefined,
+          attendance: {
+            going: Number(going_count),
+            interested: Number(interested_count),
           },
         },
       };

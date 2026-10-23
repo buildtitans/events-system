@@ -8,7 +8,6 @@ import type {
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import {
-  EventAttendantsSchemaType,
   EventAttendantStatusSchemaType,
 } from "@/src/schemas/events/eventAttendantsSchema";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -36,11 +35,6 @@ export type NewEventInput = {
 };
 
 export type FilterType = EventDisplayFilter | "initial";
-
-export type AttendanceDictionaryType = Record<
-  EventAttendantsSchemaType["event_id"],
-  EventAttendantsSchemaType["status"]
->;
 
 type AppSearchSuggestionsHook = {
   input: string;

@@ -6,6 +6,8 @@ import {
   GroupDiscoverySummarySchemaType,
   GroupHydratedSchema,
   GroupHydratedSchemaType,
+  GroupHydrationReadSchema,
+  GroupHydrationReadSchemaType,
   GroupSchema,
   GroupsSchema,
   type GroupSchemaType,
@@ -19,6 +21,10 @@ import {
   TimelineSchema,
 } from "../../../../../../schemas/groups/timelineSchema";
 import { RawArchives } from "./types";
+import {
+  EventsForGoupSchema,
+  GroupEventSummarySchemaType,
+} from "../../../../../../schemas/events/eventSchema";
 
 export class GroupsValidator {
   constructor(private readonly eventsValidator: EventsValidator) {}
@@ -31,8 +37,8 @@ export class GroupsValidator {
     return validateOrThrow(TimelineSchema, data);
   }
 
-  hydrated(data: unknown): GroupHydratedSchemaType {
-    return validateOrThrow(GroupHydratedSchema, data);
+  hydrated(data: unknown): GroupHydrationReadSchemaType {
+    return validateOrThrow(GroupHydrationReadSchema, data);
   }
 
   groups(groups: Selectable<Groups>[]): GroupsSchemaType {
@@ -45,6 +51,10 @@ export class GroupsValidator {
 
     const validGroups = validateOrThrow(GroupsSchema, formatted);
     return validGroups;
+  }
+
+  eventsForGroup(data: unknown): GroupEventSummarySchemaType[] {
+    return validateOrThrow(EventsForGoupSchema, data);
   }
 
   archives(archives: RawArchives): ArchivedEventSchemaType[] {

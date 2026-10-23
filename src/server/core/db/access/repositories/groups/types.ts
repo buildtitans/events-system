@@ -1,6 +1,8 @@
+import type { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 import { Selectable } from "kysely";
 import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
 import { Events } from "../../../types/db";
+import { RawGroupEvent, ReadGroupEvent } from "../events/types";
 
 export type RawGroupForDiscovery = {
   description: string | null;
@@ -140,12 +142,18 @@ type HydratedGroupReadMetadata =
       organizer_email: string;
       category_name: string;
       member_count: number;
+      viewer_role: string;
+      group_events: RawGroupEvent[];
+      calandar: TimelineElementSchemaType[];
       next_event: NextEventForGroupRead;
     }
   | {
       organizer_email: string;
       category_name: string;
       member_count: number;
+      viewer_role: string;
+      group_events: RawGroupEvent[];
+      calandar: TimelineElementSchemaType[];
     };
 
 type GroupPrimaryData = {
@@ -163,6 +171,52 @@ type GroupPrimaryData = {
 export type HydratedGroupRead = {
   group: GroupPrimaryData;
   meta: HydratedGroupReadMetadata;
+};
+
+type GroupEventQueryResult = Omit<
+  ReadGroupEvent,
+  "starts_at" | "category_name" | "going_count" | "interested_count"
+> & {
+  starts_at: string;
+  going_count: string | number;
+  interested_count: string | number;
+};
+
+type NextGroupEventRead = {
+  id: string;
+  description: string;
+  group_id: string;
+  img: string;
+  meeting_location: string;
+  starts_at: string;
+  status: string;
+  tag: string | null;
+  title: string;
+  going_count: string | number;
+  interested_count: string | number;
+} | null;
+
+export type ReadHydratedGroupResult = {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+  description: string | null;
+  name: string;
+  slug: string;
+  location: string | null;
+  category_id: string;
+  category_name: string;
+  organizer_id: string;
+  organizer_email: string;
+  member_count: number;
+  next_event: NextGroupEventRead;
+  group_events: GroupEventQueryResult[];
+  calandar: (Omit<ReadTimelineItem, "starts_at" | "created_at" | "number_attended"> & {
+    starts_at: string;
+    created_at: string;
+    number_attended: string | number;
+  })[];
+  viewer_role: string;
 };
 
 export type HydratedGroupResult = {

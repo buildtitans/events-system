@@ -2,11 +2,15 @@ import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/ses
 import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
-import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import {
+  NotificationSchemaType,
+  UserNotificationsSchemaType,
+} from "@/src/schemas/notifications/notificationsSchema";
 import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   AuthClientLoginResponse,
   NewUserResponse,
+  RecoveredSession,
   StoredSession,
 } from "@/src/server/core/db/access/types/types";
 import {
@@ -20,6 +24,7 @@ import {
   IGroupQueryHandler,
   IMembershipHandler,
 } from "../handlers/groups/types";
+import type { RecoveredSessionSchemaType } from "@/src/schemas/auth/recoveredSessionSchema";
 import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
 import { IUserSelectHandler } from "../handlers/user/userSelectHandler";
 import { IUserWriteHandler } from "../handlers/user/userWriteHandler";
@@ -81,14 +86,13 @@ export interface IParticipationsService {
 }
 
 export interface INotificationService {
-  getNotifications(user_id: AuthenticatedUserId | undefined | null): Promise<{
-    new: NotificationSchemaType[];
-    seen: NotificationSchemaType[];
-  }>;
+  getNotifications(
+    user_id: AuthenticatedUserId | undefined | null,
+  ): Promise<UserNotificationsSchemaType>;
   createNotification(
     notification: NewNotification,
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<NotificationSchemaType | undefined>;
+  ): Promise<UserNotificationsSchemaType["new"][number] | undefined>;
   markSeen(
     user_id: AuthenticatedUserId | undefined | null,
     ids: NotificationSchemaType["id"][],
@@ -104,7 +108,7 @@ export interface ISessionService {
   logout(token: string | undefined): Promise<boolean>;
   recoverSession(
     token: string | undefined | null,
-  ): Promise<StoredSession | undefined>;
+  ): Promise<RecoveredSessionSchemaType>;
   resetPassword(token: string, password: string): Promise<{ ok: true }>;
   emailForPwReset(email: string): Promise<{
     ok: true;

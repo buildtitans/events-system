@@ -21,6 +21,8 @@ import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
 
 export interface IEventsSelector {
   discovery(): Promise<EventDiscoverySummarySchemaType[]>;
+  upcoming(): Promise<EventDiscoverySummarySchemaType[]>;
+  popular(): Promise<EventDiscoverySummarySchemaType[]>;
   hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
   search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
   suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
@@ -52,6 +54,11 @@ export class EventsSelector implements IEventsSelector {
     return this.validate.eventsForDiscovery(raw);
   }
 
+  async popular(): Promise<EventDiscoverySummarySchemaType[]> {
+    const raw = await this.read.popular();
+    return this.validate.eventsForDiscovery(raw);
+  }
+
   async search(
     query: SearchSchemaType,
   ): Promise<EventSearchResultSchemaType[]> {
@@ -77,8 +84,13 @@ export class EventsSelector implements IEventsSelector {
   }
 
   async allScheduled(): Promise<EventSchemaType[]> {
-    const raw = await this.read.allRawScheduledEvents();
+    const raw = await this.read.scheduled();
     return this.validate.events(raw);
+  }
+
+  async upcoming(): Promise<EventDiscoverySummarySchemaType[]> {
+    const raw = await this.read.upcoming();
+    return this.validate.eventsForDiscovery(raw);
   }
 
   async byIds(ids: EventSchemaType["id"][]) {

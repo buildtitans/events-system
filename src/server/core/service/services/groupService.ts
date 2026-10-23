@@ -12,6 +12,7 @@ import {
   GroupHydrationHandler,
   IGroupHydrationHandler,
 } from "../handlers/groups/groupHydrationHandler";
+import { EventLayoutComposer } from "../handlers/events/eventLayoutComposer";
 
 export class GroupService implements IGroupService {
   public readonly hydrate: IGroupHydrationHandler;
@@ -25,6 +26,9 @@ export class GroupService implements IGroupService {
     this.groupLifecycle = new GroupLifecycleHandler(this.db, this.policy);
     this.memberships = new MembershipHandler(this.db, this.policy);
     this.query = new GroupQueryHandler(this.db, this.policy);
-    this.hydrate = new GroupHydrationHandler(this.db);
+    this.hydrate = new GroupHydrationHandler(
+      this.db,
+      new EventLayoutComposer(),
+    );
   }
 }

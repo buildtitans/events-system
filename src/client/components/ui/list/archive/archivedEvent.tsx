@@ -1,6 +1,5 @@
 import type { JSX } from "react";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import ListItem from "@mui/material/ListItem";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
@@ -37,7 +36,6 @@ import Stack from "@mui/material/Stack";
 
 type TimelineItemProps = {
   archivedEvent: EventSchemaType;
-  rsvpStatus: EventAttendantsSchemaType["status"];
   isMobile: boolean;
   attendanceRecord: string;
   openArchivedEvent: (event_id: EventSchemaType["id"]) => Promise<void>;

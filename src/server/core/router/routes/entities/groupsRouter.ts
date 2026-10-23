@@ -24,7 +24,7 @@ const groupEventsRoute = router({
   history: publicProcedure
     .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.pastEvents(input);
+      return await ctx.api.services.domains.groups.query.history(input);
     }),
   timeline: publicProcedure
     .input(validateRouterInput(GroupIdSchema))

@@ -1,11 +1,10 @@
+import { makeNewNotification, makeSeenNotification } from "@/src/test/fixtures/notifications";
 import { USER_ID } from "../mockers/mockValues";
 import { NotificationService } from "@/src/server/core/service/services/notificationService";
 import type { NewNotification } from "@/src/server/core/service/services/types";
 import {
   createMockDb,
   policyMock,
-  makeNotificationNewOrSeen,
-  makeNotification,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -13,7 +12,7 @@ import {
 describe("NotificationService.createNotification", () => {
   const requireOrganizer = policyMock.requireOrganizer as jest.Mock;
 
-  const memberIds = ["00000000-83c9-46de-90ac-fe4047a00000"];
+
 
   const newNotification = {
     group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",
@@ -22,18 +21,18 @@ describe("NotificationService.createNotification", () => {
     subject: "string",
   } satisfies NewNotification;
 
-  const notificationResponse = makeNotification(newNotification);
+  const notificationResponse = makeNewNotification(newNotification);
 
   let service: NotificationService;
   let db: ReturnType<typeof createMockDb>;
-  let addNewNotificationsInDb: jest.Mock;
+  let newNotificationInDb: jest.Mock;
   let getMemberIdsInDb: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    addNewNotificationsInDb = db.notifications.write
-      .addNewNotifications as jest.Mock;
+    newNotificationInDb = db.notifications.write
+      .newNotification as jest.Mock;
     getMemberIdsInDb = db.groupMembers.select.memberIds as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
@@ -48,7 +47,7 @@ describe("NotificationService.createNotification", () => {
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
     expect(requireOrganizer).not.toHaveBeenCalled();
     expect(getMemberIdsInDb).not.toHaveBeenCalled();
-    expect(addNewNotificationsInDb).not.toHaveBeenCalled();
+    expect(newNotificationInDb).not.toHaveBeenCalled();
   });
 
   it("throws a 403 error when the authenticated user cannot manage the group", async () => {
@@ -67,17 +66,16 @@ describe("NotificationService.createNotification", () => {
       newNotification.group_id,
     );
     expect(getMemberIdsInDb).not.toHaveBeenCalled();
-    expect(addNewNotificationsInDb).not.toHaveBeenCalled();
+    expect(newNotificationInDb).not.toHaveBeenCalled();
   });
 
   it("creates a new notification for members of the group when the user is authenticated and authorized", async () => {
     authenticateAs();
     requireOrganizer.mockResolvedValue(undefined);
 
-    getMemberIdsInDb.mockResolvedValue(memberIds);
 
-    addNewNotificationsInDb.mockResolvedValue(
-      makeNotification(newNotification),
+    newNotificationInDb.mockResolvedValue(
+      makeNewNotification(newNotification),
     );
 
     await expect(
@@ -89,10 +87,9 @@ describe("NotificationService.createNotification", () => {
       "user-1",
       newNotification.group_id,
     );
-    expect(getMemberIdsInDb).toHaveBeenCalledWith(newNotification.group_id);
-    expect(addNewNotificationsInDb).toHaveBeenCalledWith(
+    expect(getMemberIdsInDb).not.toHaveBeenCalled();
+    expect(newNotificationInDb).toHaveBeenCalledWith(
       newNotification,
-      memberIds,
       "user-1",
     );
   });
@@ -101,14 +98,13 @@ describe("NotificationService.createNotification", () => {
 describe("NotificationService.getNotifications", () => {
   let service: NotificationService;
   let db: ReturnType<typeof createMockDb>;
-  let getUnseenNotificationsInDb: jest.Mock;
-  let getOpenedNotificationsInDb: jest.Mock;
+  let getNotificationsInDb: jest.Mock;
 
   const newNotifications = [
-    makeNotificationNewOrSeen({ id: "new-1", status: "new" }),
+    makeNewNotification({ id: "new-1", status: "new" }),
   ];
   const seenNotifications = [
-    makeNotificationNewOrSeen({
+    makeSeenNotification({
       id: "seen-1",
       status: "viewed",
       updated_at: "2026-08-10T12:00:00.000Z",
@@ -118,10 +114,7 @@ describe("NotificationService.getNotifications", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     db = createMockDb();
-    getUnseenNotificationsInDb = db.notifications.select
-      .getUnseenNotifications as jest.Mock;
-    getOpenedNotificationsInDb = db.notifications.select
-      .getOpenedNotifications as jest.Mock;
+    getNotificationsInDb = db.notifications.select.getNotifications as jest.Mock;
     service = new NotificationService(db, policyMock);
   });
 
@@ -131,22 +124,20 @@ describe("NotificationService.getNotifications", () => {
     await expect(service.getNotifications(null)).rejects.toThrow("401");
 
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(null);
-    expect(getUnseenNotificationsInDb).not.toHaveBeenCalled();
-    expect(getOpenedNotificationsInDb).not.toHaveBeenCalled();
+    expect(getNotificationsInDb).not.toHaveBeenCalled();
   });
 
   it("returns new and viewed notifications for the authenticated user", async () => {
     authenticateAs(USER_ID);
-    getUnseenNotificationsInDb.mockResolvedValue(newNotifications);
-    getOpenedNotificationsInDb.mockResolvedValue(seenNotifications);
+    getNotificationsInDb.mockResolvedValue({ new: newNotifications, seen: seenNotifications });
 
     await expect(service.getNotifications(USER_ID)).resolves.toEqual({
       new: newNotifications,
       seen: seenNotifications,
     });
 
-    expect(getUnseenNotificationsInDb).toHaveBeenCalledWith("user-1");
-    expect(getOpenedNotificationsInDb).toHaveBeenCalledWith("user-1");
+    expect(getNotificationsInDb).toHaveBeenCalledTimes(1);
+    expect(getNotificationsInDb).toHaveBeenCalledWith("user-1");
   });
 });
 

@@ -22,8 +22,8 @@ describe("ParticipationsService", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     db = createMockDb();
-    updateAttendanceStatusInDb =
-      db.eventAttendants.write.updateAttendanceStatus as jest.Mock;
+    updateAttendanceStatusInDb = db.eventAttendants.write
+      .updateAttendanceStatus as jest.Mock;
     service = new ParticipationsService(db, policyMock);
   });
 
@@ -68,7 +68,6 @@ describe("ParticipationsService", () => {
     });
   });
 
-
   describe("rsvps", () => {
     it("does not read RSVPs when authentication fails", async () => {
       unauthenticated();
@@ -79,11 +78,19 @@ describe("ParticipationsService", () => {
 
     it("returns the authenticated user's RSVP surfaces", async () => {
       authenticateAs();
-      const surfaces: RsvpSurfaceSchemaType[] = [{
-        rsvp: makeRsvp({ event_id: EVENT_ID }),
-        meta: { group_name: "Test group", group_slug: "test-group" },
-      }];
-      (db.eventAttendants.select.rsvps as jest.Mock).mockResolvedValue(surfaces);
+      const surfaces: RsvpSurfaceSchemaType[] = [
+        {
+          rsvp: makeRsvp({ event_id: EVENT_ID }),
+          meta: {
+            group_name: "Test group",
+            group_slug: "test-group",
+            category_name: "technology",
+          },
+        },
+      ];
+      (db.eventAttendants.select.rsvps as jest.Mock).mockResolvedValue(
+        surfaces,
+      );
 
       await expect(service.attendance.rsvps(USER_ID)).resolves.toBe(surfaces);
       expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);

@@ -1,11 +1,8 @@
 "use client";
 import Menu from "@mui/material/Menu";
 import type { JSX } from "react";
-import type {
-  NotificationSchemaArrayType,
-  NotificationSchemaType,
-} from "@/src/schemas/notifications/notificationsSchema";
-import NotificationListItem from "./notificationListItem";
+import type { UserNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import RenderNotificationListItem from "./renderNotificationListItem";
 import { navMenuListSx, navMenuPaperSx } from "@/src/client/styles/sx/nav";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
@@ -13,11 +10,11 @@ export type NotificationsListProps = {
   anchorEl: null | HTMLElement;
   handleClose: () => void;
   open: boolean;
-  handleClick: (group_id: GroupSchemaType["id"]) => void;
+  handleClick: (groupSlug: GroupSchemaType["slug"]) => void;
 };
 
 export type NotificationList = {
-  notifications: NotificationSchemaArrayType;
+  notifications: UserNotificationSchemaType[];
   props: NotificationsListProps;
 };
 
@@ -58,9 +55,9 @@ export default function NotificationsList({
       transformOrigin={{ horizontal: "right", vertical: "top" }}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
-      {notifications.map((notification: NotificationSchemaType) => (
-        <NotificationListItem
-          key={notification.id}
+      {notifications.map((notification) => (
+        <RenderNotificationListItem
+          key={notification.data.id}
           notification={notification}
           handleClick={handleClick}
         />

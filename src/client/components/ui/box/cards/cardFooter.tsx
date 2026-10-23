@@ -27,7 +27,6 @@ function CardFooter({
   groupName,
   isFutureDateOrNow,
 }: CardFooterProps): JSX.Element | null {
-
   return (
     <Box sx={eventCardFooterSx}>
       {location && (
@@ -62,7 +61,7 @@ function CardFooter({
 
 export { CardFooter };
 
-function RenderScheduleIcon({
+export function RenderScheduleIcon({
   scheduled_at,
   isFutureDateOrNow,
 }: {

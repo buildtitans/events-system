@@ -3,18 +3,16 @@ import { useCallback, useMemo, useState } from "react";
 import type { AppDispatch, RootState } from "@/src/lib/store";
 import type { MouseEvent } from "react";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import type { UserNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import { useDispatch, useSelector } from "react-redux";
 import {
   markOpenedNotifications,
   refreshNotifications,
 } from "@/src/lib/store/slices/notifications/thunks";
 import { useRouter } from "next/navigation";
-import { slugByGroupId } from "@/src/lib/utils/rendering/slugByGroupId";
 
 export const useNotificationsMenu = () => {
   const router = useRouter();
-  const groups = useSelector((s: RootState) => s.groups.communities);
   const notifications = useSelector(
     (s: RootState) => s.notifications.notifications,
   );
@@ -26,16 +24,12 @@ export const useNotificationsMenu = () => {
   }, [notifications]);
 
   const newAndSeen = useMemo(() => {
-    let notifs: NotificationSchemaType[] = [];
+    let notifs: UserNotificationSchemaType[] = [];
     if (notifications.status === "ready") {
       notifs = [...notifications.data.new, ...notifications.data.seen];
     }
     return notifs;
   }, [notifications]);
-
-  const lookup = useMemo(() => {
-    return slugByGroupId({ groups: groups.map(({ group }) => group), notifications: newAndSeen });
-  }, [groups, newAndSeen]);
 
   const handleOpen = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -55,15 +49,11 @@ export const useNotificationsMenu = () => {
   };
 
   const handleClick = useCallback(
-    (group_id: GroupSchemaType["id"]) => {
-      const groupSlug = lookup[group_id];
-
-      if (groupSlug === undefined) return;
-
+    (groupSlug: GroupSchemaType["slug"]) => {
       const location = `/group/${groupSlug}`;
       router.push(location);
     },
-    [lookup, router],
+    [router],
   );
 
   return {

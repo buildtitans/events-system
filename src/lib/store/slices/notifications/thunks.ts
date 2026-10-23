@@ -10,9 +10,7 @@ import { appendNewNotification, markSeen } from "./notificationSlice";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
-import { HydrateUserService } from "../../services/hydration/hydrateUserService";
 const service = new ScheduleNotificationService(trpcClient);
-const hydrateUserService = new HydrateUserService(trpcClient);
 
 type NotifyNewEventParams = {
   event: EventSchemaType;
@@ -23,7 +21,7 @@ export const hydrateNotifications = createAsyncThunk(
   "NotificationSlice/hydrateNotifications",
   async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
     try {
-      return await hydrateUserService.notifications();
+      return await trpcClient.entities.notifications.select.newAndViewed.query();
     } catch (err) {
       logCaughtError("NotificationSlice.hydrateNotifications()", err);
       return thunkAPI.rejectWithValue(err);
@@ -61,7 +59,7 @@ export const refreshNotifications = createAsyncThunk(
   "NotificationSlice/refreshNotifications",
   async (_, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
     try {
-      return await hydrateUserService.notifications();
+      return await trpcClient.entities.notifications.select.newAndViewed.query();
     } catch (err) {
       logCaughtError("NotificationSlice/refreshNotifications", err);
       return thunkAPI.rejectWithValue(err);
@@ -75,7 +73,7 @@ export const markOpenedNotifications = createAsyncThunk(
     newNotifications: NewAndSeenNotifications["new"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
-    const ids = newNotifications.map((notification) => notification.id);
+    const ids = newNotifications.map((notification) => notification.data.id);
     try {
       const result =
         await trpcClient.entities.notifications.write.markOpened.mutate(ids);

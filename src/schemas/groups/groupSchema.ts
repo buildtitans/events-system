@@ -1,8 +1,11 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { EventSchema } from "../events/eventSchema";
+import { EventSchema, GroupEventSummarySchema } from "../events/eventSchema";
 import { CategorySchema } from "./categoriesSchema";
 import { EventHeadCountSchema } from "../events/eventAttendantsSchema";
+import { PaginatedLayoutSchema } from "../events/layoutSlotSchema";
+import { GroupMemberSchema } from "./groupMembersSchema";
+import { TimelineSchema } from "./timelineSchema";
 
 export const GroupSchema = Type.Object({
   id: Type.String(),
@@ -98,17 +101,43 @@ export type NextEventForGroupSummarySchemaType = Static<
   typeof NextEventForGroupSummarySchema
 >;
 
+const GroupEventMetadata = Type.Object({
+  next_event: Type.Optional(NextEventForGroupSummarySchema),
+  group_events: PaginatedLayoutSchema,
+  calandar: TimelineSchema,
+});
+
 const GroupMetadataSchema = Type.Object({
+  events: GroupEventMetadata,
   member_count: GroupMemberCountSchema,
   organizer_email: Type.String({ format: "email" }),
   category_name: CategorySchema.properties.name,
+  viewer_role: GroupMemberSchema.properties.role,
+});
+
+const GroupHydrationReadMetadata = Type.Object({
+  member_count: GroupMemberCountSchema,
+  organizer_email: Type.String({ format: "email" }),
+  category_name: CategorySchema.properties.name,
+  viewer_role: GroupMemberSchema.properties.role,
   next_event: Type.Optional(NextEventForGroupSummarySchema),
+  group_events: Type.Array(GroupEventSummarySchema),
+  calandar: TimelineSchema,
 });
 
 export const GroupHydratedSchema = Type.Object({
   group: GroupSchema,
   meta: GroupMetadataSchema,
 });
+
+export const GroupHydrationReadSchema = Type.Object({
+  group: GroupSchema,
+  meta: GroupHydrationReadMetadata,
+});
+
+export type GroupHydrationReadSchemaType = Static<
+  typeof GroupHydrationReadSchema
+>;
 
 export type GroupHydratedSchemaType = Static<typeof GroupHydratedSchema>;
 

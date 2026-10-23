@@ -30,10 +30,10 @@ export default function GroupOverview(): JSX.Element {
         empty={() => <UpNextEventFallback />}
       >
         {(state) => {
-          if (state.meta.next_event) {
+          if (state.meta.events.next_event) {
             return (
               <UpNextEvent
-                hydrated={state.meta.next_event}
+                hydrated={state.meta.events.next_event}
                 onAction={handleOpenEvent}
                 actionLabel="View Event"
               />

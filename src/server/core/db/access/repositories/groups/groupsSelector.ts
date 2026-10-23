@@ -10,15 +10,21 @@ import { GroupsValidator } from "./groupsValidator";
 import { IGroupsReader } from "./rawGroupsReader";
 import {
   ArchivedEventSchemaType,
-  GroupHydratedSchemaType,
   GroupSchemaType,
   GroupDiscoverySummarySchemaType,
+  GroupHydrationReadSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { TimelineElementSchemaType } from "../../../../../../schemas/groups/timelineSchema";
+import { GroupEventSummarySchemaType } from "../../../../../../schemas/events/eventSchema";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IGroupsSelector {
-  hydrateGroup(id: GroupSchemaType["id"]): Promise<GroupHydratedSchemaType>;
+  hydrateGroup(
+    slug: GroupSchemaType["slug"],
+    userId?: AuthenticatedUserId,
+  ): Promise<GroupHydrationReadSchemaType>;
   timeline(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
+  history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
   all(): Promise<GroupDiscoverySummarySchemaType[]>;
   byOrganizerId(
     organizer_id: GroupSchemaType["organizer_id"],
@@ -38,8 +44,11 @@ export class GroupsSelector implements IGroupsSelector {
     private readonly validator: GroupsValidator,
   ) {}
 
-  async hydrateGroup(id: GroupSchemaType["id"]) {
-    const hydratedGroup = await this.read.hydrateGroup(id);
+  async hydrateGroup(
+    slug: GroupSchemaType["slug"],
+    userId?: AuthenticatedUserId,
+  ) {
+    const hydratedGroup = await this.read.hydrateGroup(slug, userId);
     return this.validator.hydrated(hydratedGroup);
   }
 
@@ -56,6 +65,15 @@ export class GroupsSelector implements IGroupsSelector {
   async popular(): Promise<GroupDiscoverySummarySchemaType[]> {
     const raw = await this.read.popularGroups();
     return this.validator.discovery(raw);
+  }
+
+  async groupEvents(id: GroupSchemaType["id"]) {}
+
+  async history(
+    id: GroupSchemaType["id"],
+  ): Promise<GroupEventSummarySchemaType[]> {
+    const history = await this.read.history(id);
+    return this.validator.eventsForGroup(history);
   }
 
   async archives(id: GroupSchemaType["id"]) {

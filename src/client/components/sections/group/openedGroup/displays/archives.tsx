@@ -2,8 +2,6 @@
 import List from "@mui/material/List";
 import Container from "@mui/material/Container";
 import { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
 import { createArchivedEventHeadcount } from "@/src/lib/utils/helpers/messages/createAttendanceMessage";
 import ArchivedEvent from "@/src/client/components/ui/list/archive/archivedEvent";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
@@ -20,7 +18,6 @@ export default function Archives({
   isMobile,
 }: HistoryTimelineProps) {
   const { handleOpenEvent } = useSelectEvent();
-  const attendance = useSelector((s: RootState) => s.viewer.viewerAttendance);
 
   const openArchivedEvent = useCallback(
     async (event_id: EventSchemaType["id"]) => {
@@ -57,7 +54,6 @@ export default function Archives({
               isMobile={isMobile}
               archivedEvent={archive.event}
               key={archive.event.id}
-              rsvpStatus={attendance[archive.event.id]}
               attendanceRecord={createArchivedEventHeadcount(attending)}
               openArchivedEvent={openArchivedEvent}
             />

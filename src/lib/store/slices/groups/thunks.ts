@@ -8,7 +8,6 @@ import {
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { getCurrentRole } from "../viewer/ViewerSlice";
 import {
   enqueueAlert,
   enqueueDrawer,
@@ -16,10 +15,13 @@ import {
   enqueueSnackbar,
 } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 import { getAllGroups } from "./GroupsSlice";
-import { getGroupHistory, populateGroupArchives } from "./OpenedGroupSlice";
+import {
+  getCurrentRole,
+  getGroupHistory,
+  populateGroupArchives,
+} from "./OpenedGroupSlice";
 import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
 
 export const hydrateGroup = createAsyncThunk(
@@ -28,20 +30,10 @@ export const hydrateGroup = createAsyncThunk(
     slug: GroupSchemaType["slug"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
-    const service = new HydrateOpenGroupService(trpcClient);
-
     thunkAPI.dispatch(enqueueSidebar("group"));
 
     try {
-      const results = await service.hydrate(slug);
-
-      if (!results.ok) {
-        throw new Error("Failed to hydrate group selected");
-      }
-
-      thunkAPI.dispatch(getCurrentRole(results.data.role));
-
-      return results.data;
+      return await trpcClient.hydrate.groups.single.query(slug);
     } catch (err) {
       logCaughtError("OpenedGroupSlice.hydrateGroup()", err);
       return thunkAPI.rejectWithValue(err);

@@ -115,6 +115,8 @@ function createMockEventsRepo() {
       search: jest.fn(),
       allScheduled: jest.fn(),
       discovery: jest.fn(),
+      popular: jest.fn(),
+      upcoming: jest.fn(),
       byIds: jest.fn(),
       byGroupId: jest.fn(),
     },
@@ -129,6 +131,7 @@ function createMockGroupsRepo() {
   return {
     select: {
       timeline: jest.fn(),
+      history: jest.fn(),
       popular: jest.fn(),
       archives: jest.fn(),
       all: jest.fn(),
@@ -176,7 +179,7 @@ function createMockAuthRepo() {
     login: jest.fn(),
     logOut: jest.fn(),
     getEmailByUserId: jest.fn(),
-    getSession: jest.fn(),
+    recover: jest.fn(),
     requestPasswordReset: jest.fn(),
     resetPassword: jest.fn(),
   } as unknown as AuthRepository;
@@ -185,12 +188,11 @@ function createMockAuthRepo() {
 function createMockNotificationsRepo() {
   return {
     select: {
-      getUnseenNotifications: jest.fn(),
-      getOpenedNotifications: jest.fn(),
+      getNotifications: jest.fn(),
     },
     write: {
       markOpenedNotifications: jest.fn(),
-      addNewNotifications: jest.fn(),
+      newNotification: jest.fn(),
     },
   } as unknown as NotificationsRepository;
 }

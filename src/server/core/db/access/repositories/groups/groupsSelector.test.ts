@@ -6,6 +6,7 @@ import type { IGroupsReader } from "./rawGroupsReader";
 function setup() {
   const read = {
     timeline: jest.fn<ReturnType<IGroupsReader["timeline"]>, Parameters<IGroupsReader["timeline"]>>(),
+    history: jest.fn(),
     allGroups: jest.fn(),
     hydrateGroup: jest.fn(),
     popularGroups: jest.fn(),

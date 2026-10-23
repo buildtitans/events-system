@@ -7,9 +7,7 @@ import { loginSuccess, logout } from "@/src/lib/store/slices/auth/AuthSlice";
 import { storeUserEmail } from "@/src/lib/store/slices/user/userSlice";
 import { clearNotificationSlice } from "@/src/lib/store/slices/notifications/notificationSlice";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { HydrateUserService } from "@/src/lib/store/services/hydration/hydrateUserService";
-import { clearPermissionsSlice } from "@/src/lib/store/slices/viewer/ViewerSlice";
-const service = new HydrateUserService(trpcClient);
+import { getCurrentRole } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 const useRecoverSession = (): void => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,22 +15,26 @@ const useRecoverSession = (): void => {
   useEffect(() => {
     const executeRecoverSession = async (): Promise<void> => {
       try {
-        const session = await service.recoverSession();
+        const result = await trpcClient.auth.status.recover.query();
 
-        if (!session?.email) {
+        if (result.kind === "anonymous") {
           dispatch(logout());
           dispatch(clearNotificationSlice());
-          dispatch(clearPermissionsSlice());
+          dispatch(getCurrentRole("anonymous"));
           return;
         }
 
-        dispatch(storeUserEmail({ status: "ready", data: session.email }));
+        const {
+          data: { user },
+        } = result;
+
+        dispatch(storeUserEmail({ status: "ready", data: user.email }));
         dispatch(loginSuccess());
       } catch (error) {
         logCaughtError("useRecoverSession.recoverSession()", error);
         dispatch(logout());
         dispatch(clearNotificationSlice());
-        dispatch(clearPermissionsSlice());
+        dispatch(getCurrentRole("anonymous"));
         return;
       }
     };

@@ -23,6 +23,7 @@ function setup(rows: Record<string, unknown>[]) {
     innerJoin: jest.fn().mockReturnThis(), leftJoin: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(), where: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(), groupBy: jest.fn().mockReturnThis(),
+    having: jest.fn().mockReturnThis(),
     limit: jest.fn().mockReturnThis(), execute: jest.fn().mockResolvedValue(rows),
   };
   const db = { selectFrom: jest.fn().mockReturnValue(query) } as unknown as Kysely<DB>;
@@ -136,5 +137,46 @@ describe("search readers", () => {
     expect(query.where).toHaveBeenCalledWith("g.category_id", "=", "category-1");
     await expect(groups.byOrganizerId("organizer-1")).resolves.toEqual([]);
     expect(query.where).toHaveBeenCalledWith("g.organizer_id", "=", "organizer-1");
+  });
+});
+
+describe("event list query constraints", () => {
+  afterEach(() => jest.useRealTimers());
+
+  it("selects the inclusive 30-day window with stable chronological ordering", async () => {
+    const now = new Date("2030-01-01T18:00:00Z");
+    jest.useFakeTimers().setSystemTime(now);
+    const { events, query } = setup([]);
+    await events.upcoming();
+    expect(query.where).toHaveBeenCalledWith("e.status", "=", "scheduled");
+    expect(query.where).toHaveBeenCalledWith("e.starts_at", ">=", now);
+    expect(query.where).toHaveBeenCalledWith("e.starts_at", "<=", new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000));
+    expect(query.orderBy.mock.calls).toEqual([["e.starts_at", "asc"], ["e.id", "asc"]]);
+    expect(query.having).not.toHaveBeenCalled();
+  });
+
+  it("counts going and interested together with a threshold of three for future events", async () => {
+    const now = new Date("2030-01-01T18:00:00Z");
+    jest.useFakeTimers().setSystemTime(now);
+    const { events, query } = setup([]);
+    await events.popular();
+    expect(query.where).toHaveBeenCalledWith("e.starts_at", ">", now);
+    expect(query.where).toHaveBeenCalledWith("e.status", "=", "scheduled");
+    expect(query.having).toHaveBeenCalledWith(expect.any(Function), ">=", 3);
+    const filterWhere = jest.fn().mockReturnValue({});
+    query.having.mock.calls[0][0]({ fn: { countAll: () => ({ filterWhere }) } });
+    expect(filterWhere).toHaveBeenCalledWith("ea.status", "in", ["going", "interested"]);
+    expect(query.orderBy.mock.calls).toEqual([["e.starts_at", "asc"], ["e.id", "asc"]]);
+  });
+
+  it("restricts group history to past scheduled events and orders chronologically", async () => {
+    const now = new Date("2030-01-01T18:00:00Z");
+    jest.useFakeTimers().setSystemTime(now);
+    const { groups, query } = setup([]);
+    await groups.history("group-1");
+    expect(query.where).toHaveBeenCalledWith("e.starts_at", "<", now);
+    expect(query.where).toHaveBeenCalledWith("e.group_id", "=", "group-1");
+    expect(query.where).toHaveBeenCalledWith("e.status", "=", "scheduled");
+    expect(query.orderBy.mock.calls).toEqual([["e.starts_at", "asc"], ["e.id", "asc"]]);
   });
 });

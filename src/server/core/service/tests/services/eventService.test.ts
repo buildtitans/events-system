@@ -10,7 +10,6 @@ import {
   makeEvent,
   makeEventSummary,
   makeGroupEventSummary,
-  makeAttendanceUpdate,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -127,78 +126,24 @@ describe("EventService summary consumers", () => {
 });
 
 describe("EventService.layout curated filters", () => {
-  let service: EventService;
-  let db: ReturnType<typeof createMockDb>;
-  let getScheduledEvents: jest.Mock;
-  let getEventsByIds: jest.Mock;
-  let getAttendanceRecords: jest.Mock;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
-    db = createMockDb();
-    getScheduledEvents = db.events.select.allScheduled as jest.Mock;
-    getEventsByIds = db.events.select.byIds as jest.Mock;
-    getAttendanceRecords = db.eventAttendants.select.allRecords as jest.Mock;
-    service = new EventService(db, policyMock);
+  it.each(["popular", "upcoming"] as const)("composes %s summaries directly without broad reads or an ID refetch", async filter => {
+    const db = createMockDb();
+    const summaries = [makeEventSummary({ id: "first" }), makeEventSummary({ id: "second" })];
+    jest.mocked(db.events.select[filter]).mockResolvedValue(summaries);
+    const service = new EventService(db, policyMock);
+    const pages = await service.layout[filter]();
+    expect(pages[0].map(slot => slot.kind === "card" ? slot.event.content : undefined)).toEqual(summaries);
+    expect(db.events.select[filter]).toHaveBeenCalledTimes(1);
+    expect(db.events.select.allScheduled).not.toHaveBeenCalled();
+    expect(db.events.select.byIds).not.toHaveBeenCalled();
+    expect(db.eventAttendants.select.allRecords).not.toHaveBeenCalled();
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  it("builds a layout from active events meeting the popularity threshold", async () => {
-    const popularEvent = makeEvent({
-      id: "active-popular",
-      starts_at: "2026-04-08T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-08T12:00:00.000Z").getTime(),
-    });
-    const pastEvent = makeEvent({
-      id: "past-popular",
-      starts_at: "2026-04-01T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
-    });
-    getScheduledEvents.mockResolvedValue([popularEvent, pastEvent]);
-    getAttendanceRecords.mockResolvedValue([
-      ...["user-1", "user-2", "user-3", "user-4"].map((user_id) =>
-        makeAttendanceUpdate({ event_id: popularEvent.id, user_id }, "going"),
-      ),
-      ...["user-5", "user-6", "user-7", "user-8"].map((user_id) =>
-        makeAttendanceUpdate({ event_id: pastEvent.id, user_id }, "going"),
-      ),
-    ]);
-    getEventsByIds.mockResolvedValue([makeEventSummary(popularEvent)]);
-
-    await expect(service.layout.popular()).resolves.toHaveLength(1);
-    expect(getEventsByIds).toHaveBeenCalledWith([popularEvent.id]);
-  });
-
-  it("builds a layout from events occurring within the next 30 days", async () => {
-    const now = Date.now();
-    const event = (id: string, starts_at_ms: number) =>
-      makeEvent({
-        id,
-        starts_at: new Date(starts_at_ms).toISOString(),
-        starts_at_ms,
-      });
-    const events = [
-      event("past", now - 1),
-      event("now", now),
-      event("inside", now + 15 * 24 * 60 * 60 * 1000),
-      event("boundary", now + 30 * 24 * 60 * 60 * 1000),
-      event("later", now + 31 * 24 * 60 * 60 * 1000),
-    ];
-    const upcomingEvents = [events[1], events[2], events[3]];
-    getScheduledEvents.mockResolvedValue(events);
-    getEventsByIds.mockResolvedValue(upcomingEvents.map((event) => makeEventSummary(event)));
-
-    await expect(service.layout.upcoming()).resolves.toHaveLength(1);
-    expect(getEventsByIds).toHaveBeenCalledWith([
-      "now",
-      "inside",
-      "boundary",
-    ]);
+  it.each(["popular", "upcoming"] as const)("returns an empty layout for empty %s results", async filter => {
+    const db = createMockDb();
+    jest.mocked(db.events.select[filter]).mockResolvedValue([]);
+    const service = new EventService(db, policyMock);
+    await expect(service.layout[filter]()).resolves.toEqual([]);
   });
 });
 

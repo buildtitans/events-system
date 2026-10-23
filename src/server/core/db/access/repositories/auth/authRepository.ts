@@ -12,8 +12,11 @@ import type {
 } from "../../types/types";
 import { AuthWriter } from "./authWriter";
 import { AuthReader } from "./authReader";
+import { RecoveredSessionSchemaType } from "../../../../../../schemas/auth/recoveredSessionSchema";
+import { AuthValidator } from "./authValidator";
 
 export interface IAuthRepository {
+  recover(token: string): Promise<RecoveredSessionSchemaType>;
   authenticate(token: string | undefined): Promise<PublicUserSchemaType | null>;
   signUp(email: string, password: string): Promise<NewUserResponse>;
   login(
@@ -22,7 +25,6 @@ export interface IAuthRepository {
   ): Promise<AuthClientLoginResponse>;
   logOut(token: string): Promise<boolean>;
   getEmailByUserId(user_id: DbUserSchemaType["id"]): Promise<{ email: string }>;
-  getSession(token: string): Promise<StoredSession | undefined>;
   resetPassword(token: string, password: string): Promise<boolean>;
   requestPasswordReset(emailInput: string): PasswordResetRequestResult;
 }
@@ -30,9 +32,11 @@ export interface IAuthRepository {
 export class AuthRepository implements IAuthRepository {
   private readonly write: AuthWriter;
   private readonly read: AuthReader;
+  private readonly validate: AuthValidator;
   constructor(private readonly db: Kysely<DB>) {
     this.write = new AuthWriter(this.db);
     this.read = new AuthReader(this.db);
+    this.validate = new AuthValidator();
   }
 
   async authenticate(
@@ -40,11 +44,8 @@ export class AuthRepository implements IAuthRepository {
   ): Promise<PublicUserSchemaType | null> {
     if (!token) return null;
 
-    const session = await this.getSession(token);
-
-    if (!session?.user_id) return null;
-
-    return await this.read.getUser(session.user_id);
+    const user = await this.read.authenticatedUser(token);
+    return user ?? null;
   }
 
   async signUp(email: string, password: string): Promise<NewUserResponse> {
@@ -80,8 +81,9 @@ export class AuthRepository implements IAuthRepository {
     return await this.write.recordPasswordResetRequest(id);
   }
 
-  async getSession(token: string): Promise<StoredSession | undefined> {
-    return await this.read.checkSession(token);
+  async recover(token: string): Promise<RecoveredSessionSchemaType> {
+    const result = await this.read.recoverSession(token);
+    return this.validate.recoveredSession(result);
   }
 
   async resetPassword(token: string, password: string): Promise<boolean> {

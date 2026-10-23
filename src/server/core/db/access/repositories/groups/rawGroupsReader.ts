@@ -10,14 +10,20 @@ import {
 } from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { textSearchRelevance } from "@/src/server/core/lib/utils/queries/textSearchRelevance";
-import { jsonObjectFrom } from "kysely/helpers/postgres";
+import { jsonObjectFrom, jsonArrayFrom } from "kysely/helpers/postgres";
 import { HydratedGroupRead, RawArchives, RawtimelineItem } from "./types";
 import { IGroupsParser } from "./groupsParser";
+import { RawGroupEvent } from "../events/types";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IGroupsReader {
   timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]>;
+  history(group_id: GroupSchemaType["id"]): Promise<RawGroupEvent[]>;
   allGroups(): Promise<GroupDiscoverySummarySchemaType[]>;
-  hydrateGroup(slug: GroupSchemaType["slug"]): Promise<HydratedGroupRead>;
+  hydrateGroup(
+    slug: GroupSchemaType["slug"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedGroupRead>;
   popularGroups(): Promise<GroupDiscoverySummarySchemaType[]>;
   archivedEventsWithAttendance(id: GroupSchemaType["id"]): Promise<RawArchives>;
   search(query: string): Promise<GroupSearchResultSchemaType[]>;
@@ -38,6 +44,7 @@ export class RawGroupsReader implements IGroupsReader {
 
   async hydrateGroup(
     slug: GroupSchemaType["slug"],
+    userId?: AuthenticatedUserId,
   ): Promise<HydratedGroupRead> {
     const result = await this.db
       .selectFrom("groups as g")
@@ -57,6 +64,19 @@ export class RawGroupsReader implements IGroupsReader {
         "g.slug",
         "g.description",
         "u.email as organizer_email",
+
+        userId
+          ? eb.fn
+              .coalesce(
+                eb
+                  .selectFrom("group_members as viewer")
+                  .select("viewer.role")
+                  .whereRef("viewer.group_id", "=", "g.id")
+                  .where("viewer.user_id", "=", userId),
+                eb.val("anonymous"),
+              )
+              .as("viewer_role")
+          : eb.val("anonymous").as("viewer_role"),
 
         eb.fn
           .countAll<number>()
@@ -94,11 +114,87 @@ export class RawGroupsReader implements IGroupsReader {
             .orderBy("next.id", "asc")
             .limit(1),
         ).as("next_event"),
+
+        jsonArrayFrom(
+          eb
+            .selectFrom("events as e")
+            .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
+            .where("e.status", "=", "scheduled")
+            .where("e.starts_at", ">=", new Date())
+            .whereRef("e.group_id", "=", "g.id")
+            .select((eb) => [
+              "e.id",
+              "e.group_id",
+              "e.status",
+              "e.starts_at",
+              "e.meeting_location",
+              "e.img",
+              "e.tag",
+              "e.title",
+
+              eb.fn
+                .countAll()
+                .filterWhere("ea.status", "=", "going")
+                .as("going_count"),
+
+              eb.fn
+                .countAll()
+                .filterWhere("ea.status", "=", "interested")
+                .as("interested_count"),
+            ])
+            .groupBy("e.id")
+            .orderBy("e.starts_at", "asc")
+            .orderBy("e.id", "asc"),
+        ).as("group_events"),
+        jsonArrayFrom(
+          eb
+            .selectFrom("events as timeline_event")
+            .leftJoin("event_attendants as timeline_attendant", "timeline_event.id", "timeline_attendant.event_id")
+            .whereRef("timeline_event.group_id", "=", "g.id")
+            .where("timeline_event.status", "=", "scheduled")
+            .select((eb) => [
+              "timeline_event.starts_at",
+              "timeline_event.id",
+              "timeline_event.group_id",
+              "timeline_event.created_at",
+              "timeline_event.img as image",
+              eb.fn.countAll().filterWhere("timeline_attendant.status", "=", "going").as("number_attended"),
+              eb.case()
+                .when(eb.cast<string>("timeline_event.starts_at", "date"), "<", sql<string>`current_date`)
+                .then("past" as const)
+                .when(eb.cast<string>("timeline_event.starts_at", "date"), "=", sql<string>`current_date`)
+                .then("today" as const)
+                .else("upcoming" as const)
+                .end()
+                .as("timeline_status"),
+            ])
+            .groupBy("timeline_event.id")
+            .orderBy("timeline_event.starts_at", "asc")
+            .orderBy("timeline_event.id", "asc"),
+        ).as("calandar"),
       ])
       .groupBy(["g.id", "c.name", "u.email"])
       .executeTakeFirstOrThrow();
 
     return this.parser.toHydratedGroup(result);
+  }
+
+  async search(query: string): Promise<GroupSearchResultSchemaType[]> {
+    const results = await this.searchGroups(query, 25);
+    return this.parser.toSearchResults(results);
+  }
+
+  async suggestions(query: string): Promise<GroupSearchSuggestionSchemaType[]> {
+    const suggestions = await this.searchGroups(query, 5);
+    return this.parser.toSuggestions(suggestions);
+  }
+
+  async byCategoryId(
+    id: CategorySchemaType["id"],
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
+    return this.parser.toDiscoveryGroups(
+      await this.discoveryGroups().where("g.category_id", "=", id).execute(),
+    );
   }
 
   async timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]> {
@@ -183,6 +279,44 @@ export class RawGroupsReader implements IGroupsReader {
       .execute();
 
     return this.parser.toArchives(rows);
+  }
+
+  async history(group_id: GroupSchemaType["id"]): Promise<RawGroupEvent[]> {
+    const result = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "g.id", "e.group_id")
+      .leftJoin("categories as c", "c.id", "g.category_id")
+      .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
+      .where("e.status", "=", "scheduled")
+      .where("e.starts_at", "<", new Date())
+      .where("e.group_id", "=", group_id)
+      .select((eb) => [
+        "e.id",
+        "e.group_id",
+        "e.status",
+        "e.starts_at",
+        "e.meeting_location",
+        "e.img",
+        "e.tag",
+        "e.title",
+        "c.name as category_name",
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "going")
+          .as("going_count"),
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "interested")
+          .as("interested_count"),
+      ])
+      .groupBy(["e.id", "g.id", "c.name"])
+      .orderBy("e.starts_at", "asc")
+      .orderBy("e.id", "asc")
+      .execute();
+
+    return this.parser.toGroupEvents(result);
   }
 
   private discoveryGroups() {
@@ -281,23 +415,5 @@ export class RawGroupsReader implements IGroupsReader {
       .orderBy("g.id", "asc")
       .limit(limit)
       .execute();
-  }
-
-  async search(query: string): Promise<GroupSearchResultSchemaType[]> {
-    const results = await this.searchGroups(query, 25);
-    return this.parser.toSearchResults(results);
-  }
-
-  async suggestions(query: string): Promise<GroupSearchSuggestionSchemaType[]> {
-    const suggestions = await this.searchGroups(query, 5);
-    return this.parser.toSuggestions(suggestions);
-  }
-
-  async byCategoryId(
-    id: CategorySchemaType["id"],
-  ): Promise<GroupDiscoverySummarySchemaType[]> {
-    return this.parser.toDiscoveryGroups(
-      await this.discoveryGroups().where("g.category_id", "=", id).execute(),
-    );
   }
 }

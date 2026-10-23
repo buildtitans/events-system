@@ -20,12 +20,14 @@ import { IEventsParser } from "./eventsParser";
 export interface IEventsReader {
   hydrateEvent(id: EventSchemaType["id"]): Promise<RawHydratedEvent>;
   discovery(): Promise<RawDiscoverableEvent[]>;
+  popular(): Promise<RawDiscoverableEvent[]>;
   byGroupId(group_id: EventSchemaType["group_id"]): Promise<RawGroupEvent[]>;
-  allRawScheduledEvents(): Promise<Selectable<Events>[]>;
+  scheduled(): Promise<Selectable<Events>[]>;
   nextEvent(group_id: GroupSchemaType["id"]): Promise<RawNextEvent | undefined>;
   byIds(ids: EventSchemaType["id"][]): Promise<EventById[]>;
   suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
   search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
+  upcoming(): Promise<RawDiscoverableEvent[]>;
 }
 
 export class EventsReader implements IEventsReader {
@@ -65,6 +67,7 @@ export class EventsReader implements IEventsReader {
       .leftJoin("categories as c", "c.id", "g.category_id")
       .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
       .where("e.status", "=", "scheduled")
+      .where("e.starts_at", ">", new Date())
       .select((eb) => [
         "e.id",
         "e.group_id",
@@ -88,6 +91,94 @@ export class EventsReader implements IEventsReader {
           .as("interested_count"),
       ])
       .groupBy(["e.id", "g.id", "c.name"])
+      .execute();
+
+    return this.parser.toDiscoverableEvents(result);
+  }
+
+  async popular(): Promise<RawDiscoverableEvent[]> {
+    const result = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "g.id", "e.group_id")
+      .leftJoin("categories as c", "c.id", "g.category_id")
+      .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
+      .where("e.starts_at", ">", new Date())
+      .where("e.status", "=", "scheduled")
+      .select((eb) => [
+        "e.id",
+        "e.group_id",
+        "e.status",
+        "e.starts_at",
+        "e.img",
+        "e.tag",
+        "e.title",
+        "g.name as group_name",
+        "g.location as group_location",
+        "c.name as category_name",
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "going")
+          .as("going_count"),
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "interested")
+          .as("interested_count"),
+      ])
+      .groupBy(["e.id", "g.id", "c.name"])
+      .having(
+        (eb) =>
+          eb.fn
+            .countAll()
+            .filterWhere("ea.status", "in", ["going", "interested"]),
+        ">=",
+        3,
+      )
+      .orderBy("e.starts_at", "asc")
+      .orderBy("e.id", "asc")
+      .execute();
+
+    return this.parser.toDiscoverableEvents(result);
+  }
+
+  async upcoming(): Promise<RawDiscoverableEvent[]> {
+    const now = new Date();
+    const windowEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const result = await this.db
+      .selectFrom("events as e")
+      .innerJoin("groups as g", "g.id", "e.group_id")
+      .leftJoin("categories as c", "c.id", "g.category_id")
+      .leftJoin("event_attendants as ea", "ea.event_id", "e.id")
+      .where("e.status", "=", "scheduled")
+      .where("e.starts_at", ">=", now)
+      .where("e.starts_at", "<=", windowEnd)
+      .select((eb) => [
+        "e.id",
+        "e.group_id",
+        "e.status",
+        "e.starts_at",
+        "e.img",
+        "e.tag",
+        "e.title",
+        "g.name as group_name",
+        "g.location as group_location",
+        "c.name as category_name",
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "going")
+          .as("going_count"),
+
+        eb.fn
+          .countAll<number>()
+          .filterWhere("ea.status", "=", "interested")
+          .as("interested_count"),
+      ])
+      .groupBy(["e.id", "g.id", "c.name"])
+      .orderBy("e.starts_at", "asc")
+      .orderBy("e.id", "asc")
       .execute();
 
     return this.parser.toDiscoverableEvents(result);
@@ -128,7 +219,7 @@ export class EventsReader implements IEventsReader {
     return this.parser.toGroupEvents(result);
   }
 
-  async allRawScheduledEvents(): Promise<Selectable<Events>[]> {
+  async scheduled(): Promise<Selectable<Events>[]> {
     return this.db
       .selectFrom("events")
       .selectAll()

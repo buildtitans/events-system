@@ -32,7 +32,9 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.categories.getCategories();
   }
 
-  async suggestGroups(query: string): Promise<GroupSearchSuggestionSchemaType[]> {
+  async suggestGroups(
+    query: string,
+  ): Promise<GroupSearchSuggestionSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.suggestByName(validatedQuery);
@@ -53,19 +55,9 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     return await this.db.groups.select.archives(id);
   }
 
-  async pastEvents(id: GroupSchemaType["id"]) {
-    const groupEvents = await this.db.events.select.byGroupId(id);
-    const history: GroupEventSummarySchemaType[] = [];
-    const now = Date.now();
-
-    for (const { event, meta } of groupEvents) {
-      if (event.starts_at_ms < now) {
-        const data = { event, meta };
-        history.push(data);
-      }
-    }
-    history.sort((a, b) => a.event.starts_at_ms - b.event.starts_at_ms);
-
-    return history;
+  async history(
+    id: GroupSchemaType["id"],
+  ): Promise<GroupEventSummarySchemaType[]> {
+    return await this.db.groups.select.history(id);
   }
 }

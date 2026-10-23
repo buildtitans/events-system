@@ -107,12 +107,12 @@ describe("SessionService.logout", () => {
 describe("SessionService.recoverSession", () => {
   let service: SessionService;
   let db: ReturnType<typeof createMockDb>;
-  let getSessionInDb: jest.Mock;
+  let recoverInDb: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
     db = createMockDb();
-    getSessionInDb = db.auth.getSession as jest.Mock;
+    recoverInDb = db.auth.recover as jest.Mock;
     service = new SessionService(db, policyMock, emailServiceMock);
   });
 
@@ -124,25 +124,24 @@ describe("SessionService.recoverSession", () => {
     await expect(service.recoverSession(null)).rejects.toThrow("404");
 
     expect(policyMock.requireToken).toHaveBeenCalledWith(null);
-    expect(getSessionInDb).not.toHaveBeenCalled();
+    expect(recoverInDb).not.toHaveBeenCalled();
   });
 
   it("returns the recovered session for a valid token", async () => {
     const session = {
-      id: "session-1",
-      user_id: "user-1",
-      expires_at: "2026-05-01T00:00:00.000Z",
+      kind: "authenticated" as const,
+      data: { session: { id: "session-1", expires_at: "2026-05-01T00:00:00.000Z", created_at: "2026-04-01T00:00:00.000Z" }, user: { email: "viewer@example.com" } },
     };
 
     (policyMock.requireToken as jest.Mock).mockReturnValue("session-token");
-    getSessionInDb.mockResolvedValue(session);
+    recoverInDb.mockResolvedValue(session);
 
     await expect(service.recoverSession("session-token")).resolves.toEqual(
       session,
     );
 
     expect(policyMock.requireToken).toHaveBeenCalledWith("session-token");
-    expect(getSessionInDb).toHaveBeenCalledWith("session-token");
+    expect(recoverInDb).toHaveBeenCalledWith("session-token");
   });
 });
 
