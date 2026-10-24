@@ -12,13 +12,17 @@ import {
   EventById,
   RawDiscoverableEvent,
   RawGroupEvent,
-  RawHydratedEvent,
+  RawHydratedEventShape,
   RawNextEvent,
 } from "./types";
 import { IEventsParser } from "./eventsParser";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IEventsReader {
-  hydrateEvent(id: EventSchemaType["id"]): Promise<RawHydratedEvent>;
+  hydrateEvent(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<RawHydratedEventShape>;
   discovery(): Promise<RawDiscoverableEvent[]>;
   popular(): Promise<RawDiscoverableEvent[]>;
   byGroupId(group_id: EventSchemaType["group_id"]): Promise<RawGroupEvent[]>;
@@ -36,7 +40,7 @@ export class EventsReader implements IEventsReader {
     private readonly parser: IEventsParser,
   ) {}
 
-  async hydrateEvent(id: EventSchemaType["id"]) {
+  async hydrateEvent(id: EventSchemaType["id"], userId?: AuthenticatedUserId) {
     const result = await this.db
       .selectFrom("events")
       .innerJoin("groups", "groups.id", "events.group_id")
@@ -44,6 +48,33 @@ export class EventsReader implements IEventsReader {
       .selectAll("events")
       .select(["groups.name as group_name", "groups.slug as group_slug"])
       .select((eb) => [
+        userId
+          ? eb.fn
+              .coalesce(
+                eb
+                  .selectFrom("group_members as viewer")
+                  .select("viewer.role")
+                  .whereRef("viewer.group_id", "=", "groups.id")
+                  .where("viewer.user_id", "=", userId),
+                eb.val("anonymous"),
+              )
+              .as("viewer_role")
+          : eb.val("anonymous").as("viewer_role"),
+
+        userId
+          ? eb.fn
+              .coalesce(
+                eb
+                  .selectFrom("event_attendants as ea")
+                  .select("ea.status")
+
+                  .whereRef("ea.event_id", "=", "events.id")
+                  .where("ea.user_id", "=", userId),
+                eb.val("not_going"),
+              )
+              .as("viewer_status")
+          : eb.val("not_going").as("viewer_status"),
+
         eb.fn
           .countAll()
           .filterWhere("event_attendants.status", "=", "going")

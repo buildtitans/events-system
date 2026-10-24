@@ -1,3 +1,4 @@
+import { EventsValidator } from "./eventsValidator";
 import { EventsParser } from "./eventsParser";
 import type {
   EventForDiscovery,
@@ -27,12 +28,17 @@ function makeDiscoveryRow(overrides: Partial<EventForDiscovery> = {}): EventForD
 describe("EventsParser", () => {
   const parser = new EventsParser();
 
-  it("serializes hydrated dates and converts database counts", () => {
+  it.each([
+    ["anonymous", "not_going"],
+    ["member", "going"],
+    ["organizer", "interested"],
+    ["member", "not_going"],
+  ])("serializes hydrated events with viewer role %s and status %s", (viewer_role, viewer_status) => {
     const row: RawReadHydratedEvent = {
       ...makeEvent(), created_at: new Date("2029-12-01T12:00:00Z"),
       updated_at: new Date("2029-12-02T12:00:00Z"),
       group_name: "React Community", group_slug: "react-community",
-      going: "0", interested: BigInt(2),
+      going: "0", interested: BigInt(2), viewer_role, viewer_status,
     };
     const result = parser.toHydratedEvent(row);
     expect(result.event).toMatchObject({
@@ -40,10 +46,14 @@ describe("EventsParser", () => {
       created_at: "2029-12-01T12:00:00.000Z", updated_at: "2029-12-02T12:00:00.000Z",
     });
     expect(result.meta).toEqual({
-      group_name: "React Community", group_slug: "react-community",
-      attendants: { going: 0, interested: 2 },
+      event: { group_name: "React Community", group_slug: "react-community", attendants: { going: 0, interested: 2 } },
+      user: { role: viewer_role, status: viewer_status },
     });
     expect(result.event).not.toHaveProperty("going");
+    expect(result.event).not.toHaveProperty("viewer_role");
+    expect(result.event).not.toHaveProperty("viewer_status");
+    expect(new EventsValidator().hydratedEvent(result)).toEqual(result);
+    expect(() => new EventsValidator().hydratedEvent({ ...result, meta: { ...result.meta, user: { role: viewer_role, status: "anonymous" } } })).toThrow("Invalid Schema");
   });
 
   it("preserves the discovery location fallback and absent category", () => {

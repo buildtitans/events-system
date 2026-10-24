@@ -32,10 +32,8 @@ export const hydrateEventsRouter = router({
   single: publicProcedure
     .input(validateRouterInput(EventIdSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.hydrate.event(
-        ctx.req.user?.id,
-        input,
-      );
+      const userId = ctx.req.user?.id;
+      return await ctx.api.services.domains.events.query.hydrate(input, userId);
     }),
   layouts: eventLayoutRouter,
 });

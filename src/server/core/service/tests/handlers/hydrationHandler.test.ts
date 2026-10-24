@@ -1,85 +1,31 @@
 import { USER_ID } from "../mockers/mockValues";
-import type { EventReadModelSchemaType } from "@/src/schemas/events/eventSchema";
-import { EventHydrationHandler } from "@/src/server/core/service/handlers/events/eventHydrationHandler";
-import {
-  createMockDb,
-  makeEvent,
-  makeGroup,
-} from "@/src/server/core/service/tests/mockers/mocks";
+import type { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
+import { EventQueryHandler } from "@/src/server/core/service/handlers/events/eventQueryHandler";
+import { createMockDb, makeEvent, makeGroup } from "../mockers/mocks";
 
-describe("EventHydrationHandler", () => {
-  const userId = USER_ID;
-  const eventId = "event-1";
-  const groupId = "group-1";
-  const group = makeGroup({ id: groupId });
-  const event = makeEvent({ id: eventId, group_id: groupId });
-  let handler: EventHydrationHandler;
-  let db: ReturnType<typeof createMockDb>;
-  let hydrateEvent: jest.Mock;
-  let getRsvp: jest.Mock;
-  let getRole: jest.Mock;
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-    db = createMockDb();
-    hydrateEvent = db.events.select.hydrate as jest.Mock;
-    getRsvp = db.eventAttendants.select.rsvp as jest.Mock;
-    getRole = db.groupMembers.select.role as jest.Mock;
-    handler = new EventHydrationHandler(db);
+ describe("EventQueryHandler.hydrate", () => {
+  it.each([USER_ID, undefined])("returns the complete persistence read without additional user lookups (%s)", async userId => {
+    const db = createMockDb();
+    const group = makeGroup();
+    const result: HydratedEventSchemaType = {
+      event: makeEvent(),
+      meta: {
+        event: { group_name: group.name, group_slug: group.slug, attendants: { going: 2, interested: 1 } },
+        user: userId ? { status: "interested", role: "organizer" } : { status: "not_going", role: "anonymous" },
+      },
+    };
+    const hydrate = jest.mocked(db.events.select.hydrate);
+    hydrate.mockResolvedValue(result);
+    await expect(new EventQueryHandler(db).hydrate(result.event.id, userId)).resolves.toEqual(result);
+    expect(hydrate).toHaveBeenCalledWith(result.event.id, userId);
+    expect(hydrate).toHaveBeenCalledTimes(1);
+    expect(db.eventAttendants.select.rsvp).not.toHaveBeenCalled();
+    expect(db.groupMembers.select.role).not.toHaveBeenCalled();
   });
 
-  describe("event", () => {
-    it("combines the event read model with authenticated user metadata", async () => {
-      const readModel: EventReadModelSchemaType = {
-        event,
-        meta: {
-          group_name: group.name,
-          group_slug: group.slug,
-          attendants: { going: 2, interested: 1 },
-        },
-      };
-      hydrateEvent.mockResolvedValue(readModel);
-      getRsvp.mockResolvedValue("interested");
-      getRole.mockResolvedValue("organizer");
-
-      await expect(handler.event(userId, eventId)).resolves.toEqual({
-        event,
-        meta: {
-          event: readModel.meta,
-          user: { status: "interested", role: "organizer" },
-        },
-      });
-
-      expect(hydrateEvent).toHaveBeenCalledWith(eventId);
-      expect(getRsvp).toHaveBeenCalledWith(userId, eventId);
-      expect(getRole).toHaveBeenCalledWith(userId, groupId);
-    });
-
-    it.each([undefined, null])(
-      "uses anonymous metadata without user lookups when user ID is %s",
-      async (anonymousUserId) => {
-        const readModel: EventReadModelSchemaType = {
-          event,
-          meta: {
-            group_name: group.name,
-            group_slug: group.slug,
-            attendants: { going: 1, interested: 1 },
-          },
-        };
-        hydrateEvent.mockResolvedValue(readModel);
-
-        await expect(handler.event(anonymousUserId, eventId)).resolves.toEqual({
-          event,
-          meta: {
-            event: readModel.meta,
-            user: { status: "not_going", role: "anonymous" },
-          },
-        });
-
-        expect(hydrateEvent).toHaveBeenCalledWith(eventId);
-        expect(getRsvp).not.toHaveBeenCalled();
-        expect(getRole).not.toHaveBeenCalled();
-      },
-    );
+  it("propagates missing-event failures", async () => {
+    const db = createMockDb();
+    jest.mocked(db.events.select.hydrate).mockRejectedValue(new Error("Event not found"));
+    await expect(new EventQueryHandler(db).hydrate("missing", USER_ID)).rejects.toThrow("Event not found");
   });
 });

@@ -149,7 +149,11 @@ export class RawGroupsReader implements IGroupsReader {
         jsonArrayFrom(
           eb
             .selectFrom("events as timeline_event")
-            .leftJoin("event_attendants as timeline_attendant", "timeline_event.id", "timeline_attendant.event_id")
+            .leftJoin(
+              "event_attendants as timeline_attendant",
+              "timeline_event.id",
+              "timeline_attendant.event_id",
+            )
             .whereRef("timeline_event.group_id", "=", "g.id")
             .where("timeline_event.status", "=", "scheduled")
             .select((eb) => [
@@ -158,11 +162,23 @@ export class RawGroupsReader implements IGroupsReader {
               "timeline_event.group_id",
               "timeline_event.created_at",
               "timeline_event.img as image",
-              eb.fn.countAll().filterWhere("timeline_attendant.status", "=", "going").as("number_attended"),
-              eb.case()
-                .when(eb.cast<string>("timeline_event.starts_at", "date"), "<", sql<string>`current_date`)
+              eb.fn
+                .countAll()
+                .filterWhere("timeline_attendant.status", "=", "going")
+                .as("number_attended"),
+              eb
+                .case()
+                .when(
+                  eb.cast<string>("timeline_event.starts_at", "date"),
+                  "<",
+                  sql<string>`current_date`,
+                )
                 .then("past" as const)
-                .when(eb.cast<string>("timeline_event.starts_at", "date"), "=", sql<string>`current_date`)
+                .when(
+                  eb.cast<string>("timeline_event.starts_at", "date"),
+                  "=",
+                  sql<string>`current_date`,
+                )
                 .then("today" as const)
                 .else("upcoming" as const)
                 .end()

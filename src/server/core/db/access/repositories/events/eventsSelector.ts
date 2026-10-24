@@ -16,14 +16,19 @@ import {
   EventReadModelSchemaType,
   EventSchemaType,
   GroupEventSummarySchemaType,
+  HydratedEventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IEventsSelector {
   discovery(): Promise<EventDiscoverySummarySchemaType[]>;
   upcoming(): Promise<EventDiscoverySummarySchemaType[]>;
   popular(): Promise<EventDiscoverySummarySchemaType[]>;
-  hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
+  hydrate(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedEventSchemaType>;
   search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
   suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
   nextEventByGroupId(
@@ -44,9 +49,12 @@ export class EventsSelector implements IEventsSelector {
     private readonly read: IEventsReader,
   ) {}
 
-  async hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType> {
-    const raw = await this.read.hydrateEvent(id);
-    return this.validate.eventWithGroupDetails(raw);
+  async hydrate(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedEventSchemaType> {
+    const raw = await this.read.hydrateEvent(id, userId);
+    return this.validate.hydratedEvent(raw);
   }
 
   async discovery(): Promise<EventDiscoverySummarySchemaType[]> {

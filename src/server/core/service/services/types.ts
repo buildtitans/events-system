@@ -1,7 +1,4 @@
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
-import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
 import {
   NotificationSchemaType,
   UserNotificationsSchemaType,
@@ -10,11 +7,8 @@ import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   AuthClientLoginResponse,
   NewUserResponse,
-  RecoveredSession,
-  StoredSession,
 } from "@/src/server/core/db/access/types/types";
 import {
-  IEventHydrationHandler,
   IEventLayoutHandler,
   IEventLifecycleHandler,
   IEventQueryHandler,
@@ -25,18 +19,12 @@ import {
   IMembershipHandler,
 } from "../handlers/groups/types";
 import type { RecoveredSessionSchemaType } from "@/src/schemas/auth/recoveredSessionSchema";
-import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
 import { IUserSelectHandler } from "../handlers/user/userSelectHandler";
 import { IUserWriteHandler } from "../handlers/user/userWriteHandler";
 import { LoginCredentialsSchemaType } from "../../../../schemas/auth/loginCredentialsSchema";
 import { IGroupHydrationHandler } from "../handlers/groups/groupHydrationHandler";
 
 export type SessionServiceDb = Pick<IDBClient, "auth">;
-
-export type ParticipationsServiceDb = Pick<
-  IDBClient,
-  "eventAttendants" | "groupMembers" | "groups" | "events"
->;
 
 export type UserServiceDb = Pick<
   IDBClient,
@@ -67,7 +55,6 @@ export interface IPasswordResetEmailService {
 }
 
 export interface IEventService {
-  readonly hydrate: IEventHydrationHandler;
   readonly query: IEventQueryHandler;
   readonly layout: IEventLayoutHandler;
   readonly lifecycle: IEventLifecycleHandler;
@@ -78,11 +65,6 @@ export interface IGroupService {
   readonly memberships: IMembershipHandler;
   readonly query: IGroupQueryHandler;
   readonly hydrate: IGroupHydrationHandler;
-}
-
-export interface IParticipationsService {
-  readonly census: ICensusHandler;
-  readonly attendance: IRsvpHandler;
 }
 
 export interface INotificationService {

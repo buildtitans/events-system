@@ -7,7 +7,7 @@ import {
   EventForDiscovery,
   RawDiscoverableEvent,
   RawGroupEvent,
-  RawHydratedEvent,
+  RawHydratedEventShape,
   RawNextEvent,
   RawReadHydratedEvent,
   ReadEventById,
@@ -18,7 +18,7 @@ import {
 } from "./types";
 
 export interface IEventsParser {
-  toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEvent;
+  toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEventShape;
   toDiscoverableEvents(results: EventForDiscovery[]): RawDiscoverableEvent[];
   toGroupEvents(results: ReadGroupEvent[]): RawGroupEvent[];
   toNextEvent(result: ReadNextEvent): RawNextEvent | undefined;
@@ -28,8 +28,16 @@ export interface IEventsParser {
 }
 
 export class EventsParser implements IEventsParser {
-  public toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEvent {
-    const { group_name, group_slug, going, interested, ...event } = result;
+  public toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEventShape {
+    const {
+      group_name,
+      group_slug,
+      going,
+      interested,
+      viewer_role,
+      viewer_status,
+      ...event
+    } = result;
 
     return {
       event: {
@@ -40,11 +48,17 @@ export class EventsParser implements IEventsParser {
         updated_at: event.updated_at?.toISOString() ?? null,
       },
       meta: {
-        group_name,
-        group_slug,
-        attendants: {
-          going: Number(going),
-          interested: Number(interested),
+        event: {
+          group_name,
+          group_slug,
+          attendants: {
+            going: Number(going),
+            interested: Number(interested),
+          },
+        },
+        user: {
+          status: viewer_status,
+          role: viewer_role,
         },
       },
     };

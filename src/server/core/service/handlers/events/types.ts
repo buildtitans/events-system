@@ -36,11 +36,17 @@ export type EventTimelineDb = Pick<IDBClient, "events">;
 export type EventLifecycleDb = Pick<IDBClient, "events">;
 
 export interface IEventQueryHandler {
+  hydrate(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedEventSchemaType>;
   nextEventForGroup(
     group_id: GroupSchemaType["id"],
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
   searchEvents(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
-  suggestEvents(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
+  suggestEvents(
+    query: SearchSchemaType,
+  ): Promise<EventSearchSuggestionSchemaType[]>;
   getGroupEvents(group_id: string): Promise<GroupEventSummarySchemaType[]>;
 }
 
@@ -67,13 +73,6 @@ export interface IEventLayoutHandler {
 
 export interface IEventLayoutComposer {
   compileLayout(events: EventSurfaceSchemaType[]): PaginatedLayoutSchemaType;
-}
-
-export interface IEventHydrationHandler {
-  event(
-    user_id: AuthenticatedUserId | undefined | null,
-    event_id: string,
-  ): Promise<HydratedEventSchemaType>;
 }
 
 export type AttendanceAndRole = {

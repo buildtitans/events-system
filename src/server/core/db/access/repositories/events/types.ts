@@ -12,8 +12,41 @@ export type RawReadHydratedEvent = {
   updated_at: Date;
   group_name: string;
   group_slug: string;
+  viewer_role: string;
+  viewer_status: string;
   going: string | number | bigint;
   interested: string | number | bigint;
+};
+
+export type RawHydratedEventShape = {
+  event: {
+    id: string;
+    group_id: string;
+    status: string;
+    starts_at: string;
+    starts_at_ms: number;
+    img: string;
+    tag: string | null;
+    title: string;
+    description: string;
+    meeting_location: string;
+    created_at: string;
+    updated_at: string | null;
+  };
+  meta: {
+    event: {
+      group_name: string;
+      group_slug: string;
+      attendants: {
+        going: number;
+        interested: number;
+      };
+    };
+    user: {
+      status: string;
+      role: string;
+    };
+  };
 };
 
 export type ReadSearchResult = {
@@ -103,31 +136,6 @@ export type EventForDiscovery = {
   category_name: string | null;
   going_count: number;
   interested_count: number;
-};
-
-export type RawHydratedEvent = {
-  event: {
-    starts_at: string;
-    starts_at_ms: number;
-    created_at: string;
-    updated_at: string;
-    id: string;
-    group_id: string;
-    status: string;
-    img: string;
-    tag: string | null;
-    title: string;
-    description: string;
-    meeting_location: string;
-  };
-  meta: {
-    group_name: string;
-    group_slug: string;
-    attendants: {
-      going: number;
-      interested: number;
-    };
-  };
 };
 
 export type EventById = {
