@@ -56,7 +56,7 @@ export function Search(): JSX.Element {
         inputValue={input}
         onChange={selectOption}
         onInputChange={onInputChange}
-        getOptionLabel={(option: SuggestionType) => option.label}
+        getOptionLabel={(option: SuggestionType) => option.data.meta.label}
         renderOption={(
           props: HTMLAttributes<HTMLLIElement> & {
             key: React.Key;

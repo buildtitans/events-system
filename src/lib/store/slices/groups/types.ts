@@ -1,21 +1,21 @@
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
 import type {
-  EventSchemaType,
   GroupEventSummarySchemaType,
 } from "@/src/schemas/events/eventSchema";
 import {
   ArchivedEventSchemaType,
   GroupHydratedSchemaType,
-  GroupSchemaType,
   NextEventForGroupSummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../events/types";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
+import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
 export type GroupsFilter = "all" | "popular" | "category";
 
 export type LandingGroupsDisplayedState = AsyncState<
-  GroupSchemaType[][],
+  GroupDiscoverySummarySchemaType[][],
   "0 results for the applied filter"
 >;
 
@@ -35,7 +35,7 @@ export type GroupCategoryState = AsyncState<
 >;
 
 export type GroupEventsCalandarState = AsyncState<
-  GroupEventSummarySchemaType[],
+  TimelineElementSchemaType[],
   "No Events held for this group"
 >;
 

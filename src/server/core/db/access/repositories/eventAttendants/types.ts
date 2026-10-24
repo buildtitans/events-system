@@ -28,5 +28,19 @@ export type RawRsvp = {
   meta: {
     group_slug: string;
     group_name: string;
+    category_name: string;
   };
+};
+
+export type ReadRsvp = {
+  group_id: string;
+  event_id: string;
+  attendance_status: string;
+  event_title: string;
+  location: string;
+  starts_at: Date;
+  scheduled_status: string;
+  group_slug: string;
+  group_name: string;
+  category_name: string;
 };

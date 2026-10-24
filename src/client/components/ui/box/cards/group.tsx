@@ -4,8 +4,10 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupSchemaType, GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import EventRoundedIcon from "@mui/icons-material/EventRounded";
+import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import {
   getGroupCardCategorySx,
@@ -63,12 +65,11 @@ export const TitleTypography = styled(Typography)(({ theme }) => ({
 }));
 
 type GroupCardProps = {
-  group: GroupSchemaType;
+  summary: GroupDiscoverySummarySchemaType;
   index: number;
   handleFocus: (index: number) => void;
   handleBlur: () => void;
   focusedCardIndex: number | null;
-  categoryName?: string | null;
   handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void;
   variant?: GroupCardVariant;
 };
@@ -77,14 +78,14 @@ export type GroupCardVariant = "landing" | "dashboard";
 
 function Group({
   index,
-  group,
+  summary,
   handleFocus,
   handleBlur,
   focusedCardIndex,
-  categoryName,
   handleGroupClicked,
   variant = "landing",
 }: GroupCardProps): React.JSX.Element {
+  const { group, meta } = summary;
   const isFocused = focusedCardIndex === index;
 
   return (
@@ -100,7 +101,7 @@ function Group({
           component="div"
           sx={getGroupCardCategorySx(variant)}
         >
-          {categoryName ?? "Community"}
+          {meta.category_name || "Community"}
         </Typography>
         <TitleTypography
           gutterBottom
@@ -126,7 +127,12 @@ function Group({
           {group.description ?? "No description provided yet."}
         </StyledTypography>
 
-        <GroupMetaRow location={group.location} variant={variant} />
+        <GroupMetaRow
+          location={group.location}
+          memberCount={meta.member_count}
+          variant={variant}
+        />
+        <GroupNextEvent meta={meta} />
       </Box>
     </Grid>
   );
@@ -136,9 +142,11 @@ export default React.memo(Group);
 
 function GroupMetaRow({
   location,
+  memberCount,
   variant,
 }: {
   location: GroupSchemaType["location"];
+  memberCount: number;
   variant: GroupCardVariant;
 }): React.JSX.Element {
   return (
@@ -146,7 +154,7 @@ function GroupMetaRow({
       <Box sx={getGroupCardMetaChipSx(variant, true)}>
         <GroupsRoundedIcon sx={getGroupCardMetaIconSx(true)} />
         <Typography variant="caption" sx={{ fontWeight: 700 }}>
-          Community
+          {memberCount} {memberCount === 1 ? "member" : "members"}
         </Typography>
       </Box>
 
@@ -161,3 +169,59 @@ function GroupMetaRow({
     </Box>
   );
 }
+
+function GroupNextEvent({
+  meta,
+}: {
+  meta: GroupDiscoverySummarySchemaType["meta"];
+}): React.JSX.Element {
+  if (meta.kind === "no_next_event") {
+    return (
+      <Box sx={nextEventSx}>
+        <Typography variant="body2" color="text.secondary">
+          No upcoming event scheduled
+        </Typography>
+      </Box>
+    );
+  }
+
+  const { event, meta: eventMeta } = meta.next_event;
+  return (
+    <Box sx={nextEventSx}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+        <EventRoundedIcon sx={getGroupCardMetaIconSx(true)} />
+        <Typography variant="caption" sx={{ color: "#cde6ff", fontWeight: 700 }}>
+          Next event
+        </Typography>
+      </Box>
+      <Typography variant="body2" sx={{ fontWeight: 700, overflowWrap: "anywhere" }}>
+        {event.title}
+      </Typography>
+      <Typography
+        component="time"
+        dateTime={event.starts_at}
+        variant="caption"
+        color="text.secondary"
+      >
+        {toMonthDayYearHour(event.starts_at)}
+      </Typography>
+      {event.description && (
+        <StyledTypography variant="body2" color="text.secondary">
+          {event.description}
+        </StyledTypography>
+      )}
+      <Typography variant="caption" color="text.secondary">
+        {eventMeta.attendance.going} going · {eventMeta.attendance.interested} interested
+      </Typography>
+    </Box>
+  );
+}
+
+const nextEventSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 0.75,
+  minWidth: 0,
+  pt: 1.5,
+  borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+};

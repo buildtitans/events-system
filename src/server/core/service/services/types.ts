@@ -1,37 +1,30 @@
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
-import { DbUserSchemaType } from "@/src/schemas/auth/userSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
-import { UserMembershipSurfaceSchemaType } from "@/src/schemas/groups/userMembershipSchema";
-import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import {
+  NotificationSchemaType,
+  UserNotificationsSchemaType,
+} from "@/src/schemas/notifications/notificationsSchema";
 import { IDBClient } from "@/src/server/core/db/access/client/dbClient";
 import {
   AuthClientLoginResponse,
   NewUserResponse,
-  StoredSession,
 } from "@/src/server/core/db/access/types/types";
 import {
-  IEventHydrationHandler,
   IEventLayoutHandler,
   IEventLifecycleHandler,
   IEventQueryHandler,
-  IEventTimelineHandler,
 } from "../handlers/events/types";
 import {
   IGroupLifecycleHandler,
   IGroupQueryHandler,
   IMembershipHandler,
 } from "../handlers/groups/types";
-import { ICensusHandler, IRsvpHandler } from "../handlers/participations/types";
+import type { RecoveredSessionSchemaType } from "@/src/schemas/auth/recoveredSessionSchema";
 import { IUserSelectHandler } from "../handlers/user/userSelectHandler";
 import { IUserWriteHandler } from "../handlers/user/userWriteHandler";
 import { LoginCredentialsSchemaType } from "../../../../schemas/auth/loginCredentialsSchema";
+import { IGroupHydrationHandler } from "../handlers/groups/groupHydrationHandler";
 
 export type SessionServiceDb = Pick<IDBClient, "auth">;
-
-export type ParticipationsServiceDb = Pick<
-  IDBClient,
-  "eventAttendants" | "groupMembers" | "groups" | "events"
->;
 
 export type UserServiceDb = Pick<
   IDBClient,
@@ -62,9 +55,7 @@ export interface IPasswordResetEmailService {
 }
 
 export interface IEventService {
-  readonly hydrate: IEventHydrationHandler;
   readonly query: IEventQueryHandler;
-  readonly timeline: IEventTimelineHandler;
   readonly layout: IEventLayoutHandler;
   readonly lifecycle: IEventLifecycleHandler;
 }
@@ -73,22 +64,17 @@ export interface IGroupService {
   readonly groupLifecycle: IGroupLifecycleHandler;
   readonly memberships: IMembershipHandler;
   readonly query: IGroupQueryHandler;
-}
-
-export interface IParticipationsService {
-  readonly census: ICensusHandler;
-  readonly attendance: IRsvpHandler;
+  readonly hydrate: IGroupHydrationHandler;
 }
 
 export interface INotificationService {
-  getNotifications(user_id: AuthenticatedUserId | undefined | null): Promise<{
-    new: NotificationSchemaType[];
-    seen: NotificationSchemaType[];
-  }>;
+  getNotifications(
+    user_id: AuthenticatedUserId | undefined | null,
+  ): Promise<UserNotificationsSchemaType>;
   createNotification(
     notification: NewNotification,
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<NotificationSchemaType | undefined>;
+  ): Promise<UserNotificationsSchemaType["new"][number] | undefined>;
   markSeen(
     user_id: AuthenticatedUserId | undefined | null,
     ids: NotificationSchemaType["id"][],
@@ -104,7 +90,7 @@ export interface ISessionService {
   logout(token: string | undefined): Promise<boolean>;
   recoverSession(
     token: string | undefined | null,
-  ): Promise<StoredSession | undefined>;
+  ): Promise<RecoveredSessionSchemaType>;
   resetPassword(token: string, password: string): Promise<{ ok: true }>;
   emailForPwReset(email: string): Promise<{
     ok: true;

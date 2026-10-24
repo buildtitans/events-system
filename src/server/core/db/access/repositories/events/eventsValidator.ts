@@ -8,6 +8,8 @@ import {
   EventsForDiscoverySchema,
   GroupEventSummarySchemaType,
   EventsForGoupSchema,
+  HydratedEventSchema,
+  HydratedEventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { Selectable } from "kysely";
 import { Events } from "../../../types/db";
@@ -17,9 +19,9 @@ import {
 } from "../../../../../../schemas/groups/groupSchema";
 
 export interface IEventsValidator {
+  hydratedEvent(data: unknown): HydratedEventSchemaType;
   events(rows: Selectable<Events>[]): EventSchemaType[];
   event(raw: Selectable<Events>): EventSchemaType;
-  eventWithGroupDetails(data: unknown): EventReadModelSchemaType;
   eventsForDiscovery(data: unknown[]): EventDiscoverySummarySchemaType[];
   eventsForGroup(data: unknown): GroupEventSummarySchemaType[];
   nextEvent(event: unknown): NextEventForGroupSummarySchemaType;
@@ -59,8 +61,8 @@ export class EventsValidator implements IEventsValidator {
     return validateOrThrow(EventsForGoupSchema, data);
   }
 
-  eventWithGroupDetails(data: unknown): EventReadModelSchemaType {
-    return validateOrThrow(EventReadModelSchema, data);
+  hydratedEvent(data: unknown): HydratedEventSchemaType {
+    return validateOrThrow(HydratedEventSchema, data);
   }
 
   event(raw: Selectable<Events>): EventSchemaType {

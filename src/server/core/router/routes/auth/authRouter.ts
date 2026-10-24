@@ -77,23 +77,15 @@ const writeAuthRouter = router({
 
 const statusRouter = router({
   recover: publicProcedure.query(async ({ ctx }) => {
-    const session = await ctx.api.services.domains.session.recoverSession(
+    const result = await ctx.api.services.domains.session.recoverSession(
       ctx.req.cookies.session,
     );
 
-    if (!session) {
+    if (result.kind === "anonymous") {
       ctx.session.removeCookieHeader();
-      return null;
     }
 
-    const email = await ctx.api.services.domains.users.select.email(
-      ctx.req.user?.id,
-    );
-
-    return {
-      session,
-      email,
-    };
+    return result;
   }),
 
   checkSession: publicProcedure.query(async ({ ctx }) => {

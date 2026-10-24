@@ -6,6 +6,7 @@ import {
   SessionServiceDb,
 } from "./types";
 import { LoginCredentialsSchemaType } from "../../../../schemas/auth/loginCredentialsSchema";
+import { RecoveredSessionSchemaType } from "../../../../schemas/auth/recoveredSessionSchema";
 
 export class SessionService implements ISessionService {
   constructor(
@@ -38,9 +39,11 @@ export class SessionService implements ISessionService {
     return await this.db.auth.logOut(cookie);
   }
 
-  async recoverSession(token: string | undefined | null) {
+  async recoverSession(
+    token: string | undefined | null,
+  ): Promise<RecoveredSessionSchemaType> {
     const cookie = this.policy.requireToken(token);
-    return await this.retrieveSession(cookie);
+    return await this.db.auth.recover(cookie);
   }
 
   async resetPassword(token: string, password: string) {
@@ -55,17 +58,5 @@ export class SessionService implements ISessionService {
 
   async emailForPwReset(email: string) {
     return await this.emailer.request(email);
-  }
-
-  private async retrieveSession(cookie: string) {
-    const session = await this.db.auth.getSession(cookie);
-
-    if (!session) return undefined;
-
-    if (session?.expires_at <= new Date()) {
-      return undefined;
-    }
-
-    return session;
   }
 }

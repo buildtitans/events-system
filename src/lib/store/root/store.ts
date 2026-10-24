@@ -8,7 +8,6 @@ import EventDrawerSlice from "@/src/lib/store/slices/events/EventDrawerSlice";
 import OpenedGroupSlice from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 import NotificationSlice from "../slices/notifications/notificationSlice";
 import UserSlice from "@/src/lib/store/slices/user/userSlice";
-import ViewerSlice from "@/src/lib/store/slices/viewer/ViewerSlice";
 import BootStrapSlice from "@/src/lib/store/slices/bootstrap/bootstrapSlice";
 import AppSearchSlice from "@/src/lib/store/slices/search/appSearchSlice";
 
@@ -21,7 +20,6 @@ export function makeStore() {
       rendering: RenderingSlice,
       auth: AuthSlice,
       categories: CategoriesSlice,
-      viewer: ViewerSlice,
       eventDrawer: EventDrawerSlice,
       openGroup: OpenedGroupSlice,
       notifications: NotificationSlice,

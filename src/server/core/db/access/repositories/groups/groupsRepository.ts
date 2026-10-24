@@ -11,6 +11,7 @@ import {
 import { GroupsValidator } from "@/src/server/core/db/access/repositories/groups/groupsValidator";
 import { IGroupsReader, RawGroupsReader } from "./rawGroupsReader";
 import { EventsValidator } from "../events/eventsValidator";
+import { GroupsParser } from "./groupsParser";
 
 export interface IGroupsRepository {
   readonly select: IGroupsSelector;
@@ -24,7 +25,7 @@ export class GroupsRepository implements IGroupsRepository {
   private readonly read: IGroupsReader;
   constructor(private readonly db: Kysely<DB>) {
     this.validator = new GroupsValidator(new EventsValidator());
-    this.read = new RawGroupsReader(this.db);
+    this.read = new RawGroupsReader(this.db, new GroupsParser());
     this.select = new GroupsSelector(this.read, this.validator);
     this.write = new GroupsWriter(this.db, this.validator);
   }

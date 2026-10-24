@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type {
-  GroupSchemaType,
-  GroupsSchemaType,
+  GroupDiscoverySummarySchemaType,
+
 } from "@/src/schemas/groups/groupSchema";
 import { initializeDomains } from "../rendering/RenderingSlice";
 import { GroupsFilter } from "./types";
 
 type GroupsInitialState = {
-  communities: GroupsSchemaType;
+  communities: GroupDiscoverySummarySchemaType[];
   currentPage: number;
-  popularCommunities: GroupsSchemaType;
+  popularCommunities: GroupDiscoverySummarySchemaType[];
   groupsDisplayed: GroupsFilter;
 };
 
@@ -32,7 +32,7 @@ const GroupsSlice = createSlice({
     },
     addGroup: (
       state: GroupsInitialState,
-      action: PayloadAction<GroupSchemaType>,
+      action: PayloadAction<GroupDiscoverySummarySchemaType>,
     ) => {
       state.communities.push(action.payload);
     },

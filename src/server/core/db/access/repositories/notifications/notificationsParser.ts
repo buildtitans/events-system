@@ -1,11 +1,16 @@
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import {
+  NotificationSchema,
   NotificationSchemaArray,
+  NotificationSchemaType,
+  UserNotificationsSchema,
+  UserNotificationsSchemaType,
   type CreateNotificationSchemaType,
   type NotificationSchemaArrayType,
 } from "@/src/schemas/notifications/notificationsSchema";
 import type { Notifications } from "@/src/server/core/db/types/db";
 import type { Insertable, Selectable } from "kysely";
+import { RawUserNotifications } from "./types";
 
 export interface INotificationsParser {
   toInsertableNotifications(
@@ -15,9 +20,35 @@ export interface INotificationsParser {
   parseRawNotifications(
     rows: Selectable<Notifications>[],
   ): NotificationSchemaArrayType;
+  notification(data: unknown): NotificationSchemaType;
+  notifications(data: RawUserNotifications): UserNotificationsSchemaType;
+  newNotification(data: unknown): UserNotificationsSchemaType["new"][number];
 }
 
 export class NotificationsParser implements INotificationsParser {
+  notifications(data: RawUserNotifications): UserNotificationsSchemaType {
+    return validateOrThrow(UserNotificationsSchema, {
+      new: data.new.map(({ group_name, group_slug, ...notification }) => ({
+        kind: "new",
+        data: notification,
+        meta: { group_name, group_slug },
+      })),
+      seen: data.seen.map(({ group_name, group_slug, ...notification }) => ({
+        kind: "seen",
+        data: notification,
+        meta: { group_name, group_slug },
+      })),
+    });
+  }
+
+  newNotification(data: unknown): UserNotificationsSchemaType["new"][number] {
+    return validateOrThrow(UserNotificationsSchema.properties.new.items, data);
+  }
+
+  notification(data: unknown): NotificationSchemaType {
+    return validateOrThrow(NotificationSchema, data);
+  }
+
   toInsertableNotifications(
     notification: CreateNotificationSchemaType,
     memberIds: string[],

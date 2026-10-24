@@ -1,3 +1,14 @@
+import type { EventPhaseSchemaType, TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
+
+type CalendarBadgeState = Exclude<TimelineElementSchemaType["timeline_status"], "today"> | EventPhaseSchemaType;
+
+const calendarColors = {
+  upcoming: "#7cc6ff",
+  ongoing: "#69d9a0",
+  past: "#ffbd59",
+  completed: "#ffbd59",
+} satisfies Record<CalendarBadgeState, string>;
+
 const groupCalendarHeaderSx = {
   display: "flex",
   flexDirection: "column",
@@ -138,31 +149,27 @@ const groupCalendarLegendItemSx = {
   color: "rgba(255, 255, 255, 0.74)",
 };
 
-const getGroupCalendarLegendDotSx = (state: "upcoming" | "past") => ({
+const getGroupCalendarLegendDotSx = (state: CalendarBadgeState) => ({
   width: 9,
   height: 9,
   borderRadius: "50%",
-  backgroundColor: state === "upcoming" ? "#7cc6ff" : "#ffbd59",
-  boxShadow:
-    state === "upcoming"
-      ? "0 0 0 3px rgba(124, 198, 255, 0.14)"
-      : "0 0 0 3px rgba(255, 189, 89, 0.12)",
+  backgroundColor: calendarColors[state],
+  boxShadow: `0 0 0 3px ${calendarColors[state]}22`,
 });
 
-const getGroupCalendarDayBadgeSx = (state: "upcoming" | "past") => ({
+const getGroupCalendarDayBadgeSx = (state?: CalendarBadgeState) => ({
   "& .MuiBadge-badge": {
     minWidth: 8,
     width: 8,
     height: 8,
     borderRadius: "50%",
-    backgroundColor: state === "upcoming" ? "#7cc6ff" : "#ffbd59",
+    backgroundColor: state ? calendarColors[state] : "transparent",
     boxShadow: "0 0 0 2px rgba(16, 16, 16, 0.98)",
   },
 });
 
 const getGroupCalendarDaySx = (
-  hasScheduledEvent: boolean,
-  isPast: boolean,
+  state: CalendarBadgeState | undefined,
   isOutsideMonth: boolean,
 ) => ({
   width: { xs: 36, md: 44 },
@@ -171,15 +178,11 @@ const getGroupCalendarDaySx = (
   color: isOutsideMonth
     ? "rgba(255, 255, 255, 0.2)"
     : "rgba(255, 255, 255, 0.82)",
-  fontWeight: hasScheduledEvent ? 700 : 600,
+  fontWeight: state && !isOutsideMonth ? 700 : 600,
   borderRadius: "50%",
   border: "1px solid transparent",
   backgroundColor:
-    hasScheduledEvent && !isPast
-      ? "rgba(124, 198, 255, 0.05)"
-      : hasScheduledEvent && isPast
-        ? "rgba(255, 189, 89, 0.05)"
-        : "transparent",
+    state && !isOutsideMonth ? `${calendarColors[state]}0d` : "transparent",
   transition: "all 180ms ease",
   "&:hover": {
     backgroundColor: "rgba(124, 198, 255, 0.12)",
@@ -197,10 +200,8 @@ const getGroupCalendarDaySx = (
       "linear-gradient(135deg, rgba(141, 211, 255, 1) 0%, rgba(108, 172, 255, 0.94) 100%)",
   },
   "&.MuiPickersDay-today": {
-    borderColor: hasScheduledEvent
-      ? isPast
-        ? "rgba(255, 189, 89, 0.3)"
-        : "rgba(124, 198, 255, 0.34)"
+    borderColor: state && !isOutsideMonth
+      ? `${calendarColors[state]}55`
       : "rgba(255, 255, 255, 0.22)",
   },
   "&.Mui-selected.MuiPickersDay-today": {

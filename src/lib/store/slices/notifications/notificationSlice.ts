@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { NewAndSeenNotifications, NotificationState } from "./types";
 import { hydrateNotifications, refreshNotifications } from "./thunks";
-import { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import { UserNotificationsSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 
 const initialState: NotificationState = {
   notifications: { status: "initial" },
@@ -16,7 +16,7 @@ export const NotificationSlice = createSlice({
   reducers: {
     appendNewNotification: (
       state: NotificationState,
-      action: PayloadAction<NotificationSchemaType>,
+      action: PayloadAction<UserNotificationsSchemaType["new"][number]>,
     ) => {
       if (state.notifications.status === "ready") {
         state.notifications.data.new.push(action.payload);
@@ -27,7 +27,13 @@ export const NotificationSlice = createSlice({
         state.notifications.status = "ready";
 
         state.notifications.data.seen = [
-          ...state.notifications.data.new,
+          ...state.notifications.data.new.map(
+            (notification): UserNotificationsSchemaType["seen"][number] => ({
+              kind: "seen",
+              data: { ...notification.data, status: "viewed" },
+              meta: notification.meta,
+            }),
+          ),
           ...state.notifications.data.seen,
         ];
 

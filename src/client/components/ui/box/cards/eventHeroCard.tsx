@@ -4,6 +4,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import {
   StyledCard,
   StyledCardContent,
@@ -12,13 +14,11 @@ import { CardFooter } from "@/src/client/components/ui/box/cards/cardFooter";
 import type { JSX } from "react";
 import type {
   EventDiscoverySummarySchemaType,
-  GroupEventSummarySchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { toMonthDayYearHour } from "@/src/lib/utils/parsing/toMonthDayYearHour";
 import { isFutureOrNow } from "@/src/lib/utils/dates/isFutureOrNow";
 import {
   eventCardContentSx,
-  eventCardGroupLabelSx,
   eventCardMediaOverlaySx,
   eventCardMediaSx,
   eventCardMediaWrapSx,
@@ -46,14 +46,11 @@ export type EventCardProps = {
   handleFocus: (index: number) => void;
   handleBlur: () => void;
   focusedCardIndex: number | null;
-  event: EventDiscoverySummarySchemaType["event"];
-  eventMetaData: EventDiscoverySummarySchemaType["meta"];
+  summary: EventDiscoverySummarySchemaType;
   variant: CardDesignation;
   index: number;
-  groupName: string;
-  location: string;
   handleOpenEvent: (
-    event_id: GroupEventSummarySchemaType["event"]["id"],
+    event_id: EventDiscoverySummarySchemaType["event"]["id"],
   ) => void;
 };
 
@@ -61,13 +58,12 @@ function EventHeroCard({
   handleFocus,
   handleBlur,
   focusedCardIndex,
-  event,
+  summary,
   variant,
   index,
-  groupName,
-  location,
   handleOpenEvent,
 }: EventCardProps): JSX.Element {
+  const { event, meta } = summary;
   const scheduled_at = useMemo(() => {
     return toMonthDayYearHour(event.starts_at_ms);
   }, [event]);
@@ -88,7 +84,7 @@ function EventHeroCard({
         onFocus={() => handleFocus(index)}
         onBlur={handleBlur}
         tabIndex={0}
-        className={focusedCardIndex === 2 ? "Mui-focused" : ""}
+        className={focusedCardIndex === index ? "Mui-focused" : ""}
         sx={{
           ...eventCardRootSx,
           height: "100%",
@@ -98,7 +94,7 @@ function EventHeroCard({
         <Box sx={eventCardMediaWrapSx}>
           <CardMedia
             component="img"
-            alt="green iguana"
+            alt={event.title}
             loading="lazy"
             decoding="async"
             image={event.img ?? undefined}
@@ -110,30 +106,71 @@ function EventHeroCard({
           <Box sx={eventCardMediaOverlaySx} />
         </Box>
 
-        <StyledCardContent sx={eventCardContentSx}>
-          {
+        <StyledCardContent
+          sx={{
+            ...eventCardContentSx,
+            p: { xs: 2, sm: 2.5 },
+            gap: 1.25,
+            minWidth: 0,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
             <Typography
-              gutterBottom
-              variant="caption"
-              component="div"
-              sx={eventCardGroupLabelSx}
+              variant="overline"
+              sx={{ color: "#9acff5", fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.14em", lineHeight: 1.5 }}
             >
-              {groupName}
+              {meta.category_name}
             </Typography>
-          }
+            {event.tag && (
+              <Chip
+                label={event.tag}
+                size="small"
+                sx={{
+                  alignSelf: "flex-start",
+                  maxWidth: "100%",
+                  height: 23,
+                  border: "1px solid rgba(124, 198, 255, 0.16)",
+                  backgroundColor: "rgba(124, 198, 255, 0.07)",
+                  color: "rgba(205, 230, 255, 0.86)",
+                  fontSize: "0.65rem",
+                  fontWeight: 600,
+                }}
+              />
+            )}
+          </Box>
           <Typography
-            gutterBottom
             variant="h6"
-            component="div"
-            sx={eventCardTitleSx}
+            component="h3"
+            sx={{
+              ...eventCardTitleSx,
+              fontSize: { xs: "1.1rem", sm: "1.3rem" },
+              lineHeight: 1.3,
+              overflowWrap: "anywhere",
+              m: 0,
+            }}
           >
             {event.title}
           </Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: "rgba(255, 255, 255, 0.58)", fontSize: "0.78rem", lineHeight: 1.5, overflowWrap: "anywhere" }}
+          >
+            Hosted by {meta.group_name}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 0.75, mt: "auto", pt: 1 }}>
+            <GroupsRoundedIcon sx={{ fontSize: "1rem", color: "#7cc6ff" }} />
+            <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.84)", fontWeight: 600 }}>
+              {meta.attendance.going} going
+            </Typography>
+            <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.48)" }}>
+              · {meta.attendance.interested} interested
+            </Typography>
+          </Box>
         </StyledCardContent>
         <CardFooter
           isFutureDateOrNow={isFutureDateOrNow}
           scheduled_at={scheduled_at}
-          location={location}
+          location={meta.group_location}
         />
       </StyledCard>
     </Grid>

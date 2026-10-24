@@ -1,10 +1,10 @@
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 import type { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 
 interface IGroupFilterService {
-  filter(args: GroupFilterArgs): Promise<GroupSchemaType[]>;
+  filter(args: GroupFilterArgs): Promise<GroupDiscoverySummarySchemaType[]>;
 }
 
 export type GroupFilterArgs =
@@ -15,7 +15,7 @@ export type GroupFilterArgs =
 export class GroupFilterService implements IGroupFilterService {
   constructor(private readonly trpc: TrpcClientType) {}
 
-  public async filter(args: GroupFilterArgs): Promise<GroupSchemaType[]> {
+  public async filter(args: GroupFilterArgs): Promise<GroupDiscoverySummarySchemaType[]> {
     switch (args.filter) {
       case "all": {
         return await this.noFilter();
@@ -33,17 +33,17 @@ export class GroupFilterService implements IGroupFilterService {
     }
   }
 
-  private async noFilter(): Promise<GroupSchemaType[]> {
+  private async noFilter(): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.trpc.hydrate.groups.list.all.query();
   }
 
-  private async filterPopular(): Promise<GroupSchemaType[]> {
+  private async filterPopular(): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.trpc.hydrate.groups.list.popular.query();
   }
 
   private async byCategory(
     category: CategorySchemaType["name"],
-  ): Promise<GroupSchemaType[]> {
+  ): Promise<GroupDiscoverySummarySchemaType[]> {
     return await this.trpc.hydrate.groups.list.fromCategory.query(category);
   }
 }

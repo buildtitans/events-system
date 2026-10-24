@@ -5,15 +5,17 @@ import { SearchSchema } from "@/src/schemas/search/searchSchema";
 
 const listGroupsRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.discovery();
+    return await ctx.api.services.domains.groups.hydrate.list.discovery();
   }),
   popular: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.groups.query.popular();
+    return await ctx.api.services.domains.groups.hydrate.list.popular();
   }),
   fromCategory: publicProcedure
     .input(validateRouterInput(SearchSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.byCategory(input);
+      return await ctx.api.services.domains.groups.hydrate.list.byCategory(
+        input,
+      );
     }),
 });
 
@@ -21,7 +23,11 @@ export const hydrateGroupsRouter = router({
   single: publicProcedure
     .input(validateRouterInput(GroupSlugSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.hydrateGroup(input);
+      const userId = ctx.req.user?.id;
+      return await ctx.api.services.domains.groups.hydrate.single(
+        input,
+        userId,
+      );
     }),
 
   list: listGroupsRouter,

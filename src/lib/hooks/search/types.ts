@@ -1,3 +1,4 @@
+import type { SearchSuggestionSchemaType, SearchResultSchemaType } from "@/src/schemas/search/searchSchema";
 import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
 import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AsyncState } from "../../types/state/types";
@@ -68,20 +69,7 @@ export type SearchLookupType =
   | { status: "failed"; error: string }
   | { status: "n/a"; message: "Couldn't find events lookup for autocomplete" };
 
-export type SuggestionType =
-  | {
-      kind: "event";
-      label: EventSchemaType["title"];
-      event_id: string;
-      group_id: string;
-      slug: GroupSchemaType["slug"];
-    }
-  | {
-      kind: "group";
-      label: GroupSchemaType["name"];
-      group_id: string;
-      slug: GroupSchemaType["slug"];
-    };
+export type SuggestionType = SearchSuggestionSchemaType;
 
 export type SuggestionOptions = Array<SuggestionType>;
 
@@ -95,15 +83,7 @@ export type AutoCompleteSuggestions = AsyncState<
   "Your query had 0 Results"
 >;
 
-export type SearchResult =
-  | {
-      kind: "event";
-      data: EventSchemaType;
-    }
-  | {
-      kind: "group";
-      data: GroupSchemaType;
-    };
+export type SearchResult = SearchResultSchemaType;
 
 export type SearchResults = SearchResult[];
 

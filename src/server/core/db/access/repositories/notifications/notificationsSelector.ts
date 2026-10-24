@@ -1,10 +1,12 @@
-import { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
+import { UserNotificationsSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import { INotificationsReader } from "./notificationsReader";
 import { INotificationsParser } from "./notificationsParser";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface INotificationsSelector {
-  getUnseenNotifications(user_id: string): Promise<NotificationSchemaArrayType>;
-  getOpenedNotifications(user_id: string): Promise<NotificationSchemaArrayType>;
+  getNotifications(
+    userId: AuthenticatedUserId,
+  ): Promise<UserNotificationsSchemaType>;
 }
 
 export class NotificationsSelector implements INotificationsSelector {
@@ -13,18 +15,10 @@ export class NotificationsSelector implements INotificationsSelector {
     private readonly parse: INotificationsParser,
   ) {}
 
-  async getUnseenNotifications(
-    user_id: string,
-  ): Promise<NotificationSchemaArrayType> {
-    const rows = await this.read.getRawNotifications(user_id);
-
-    return this.parse.parseRawNotifications(rows);
-  }
-
-  async getOpenedNotifications(
-    user_id: string,
-  ): Promise<NotificationSchemaArrayType> {
-    const rows = await this.read.getRawReadNotifications(user_id);
-    return this.parse.parseRawNotifications(rows);
+  async getNotifications(
+    userId: AuthenticatedUserId,
+  ): Promise<UserNotificationsSchemaType> {
+    const notifications = await this.read.notifications(userId);
+    return this.parse.notifications(notifications);
   }
 }

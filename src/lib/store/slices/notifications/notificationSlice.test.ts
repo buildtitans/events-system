@@ -21,29 +21,12 @@ import notificationReducer, {
   markSeen,
 } from "./notificationSlice";
 import { hydrateNotifications, refreshNotifications } from "./thunks";
-import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
-
-function makeNotification(
-  overrides: Partial<NotificationSchemaType> = {},
-): NotificationSchemaType {
-  return {
-    created_at: "2026-08-09T12:00:00.000Z",
-    group_id: "00000000-0000-4000-8000-000000000001",
-    id: "00000000-0000-4000-8000-000000000002",
-    subject: "Notification subject",
-    message: "Notification message",
-    priority: "moderate",
-    status: "new",
-    updated_at: null,
-    user_id: "00000000-0000-4000-8000-000000000003",
-    ...overrides,
-  };
-}
+import { makeNewNotification, makeSeenNotification } from "@/src/test/fixtures/notifications";
 
 describe("NotificationSlice", () => {
   it("hydrates new and viewed notifications", () => {
-    const newNotification = makeNotification({ id: "new-1" });
-    const seenNotification = makeNotification({
+    const newNotification = makeNewNotification({ id: "new-1" });
+    const seenNotification = makeSeenNotification({
       id: "seen-1",
       status: "viewed",
       updated_at: "2026-08-10T12:00:00.000Z",
@@ -73,8 +56,8 @@ describe("NotificationSlice", () => {
   });
 
   it("moves new notifications into viewed history without replacing existing history", () => {
-    const newNotification = makeNotification({ id: "new-1" });
-    const existingSeenNotification = makeNotification({
+    const newNotification = makeNewNotification({ id: "new-1" });
+    const existingSeenNotification = makeSeenNotification({
       id: "seen-1",
       status: "viewed",
     });
@@ -93,17 +76,17 @@ describe("NotificationSlice", () => {
       status: "ready",
       data: {
         new: [],
-        seen: [newNotification, existingSeenNotification],
+        seen: [{ ...newNotification, kind: "seen", data: { ...newNotification.data, status: "viewed" } }, existingSeenNotification],
       },
     });
   });
 
   it("appends newly created notifications without changing viewed history", () => {
-    const existingSeenNotification = makeNotification({
+    const existingSeenNotification = makeSeenNotification({
       id: "seen-1",
       status: "viewed",
     });
-    const createdNotification = makeNotification({ id: "new-1" });
+    const createdNotification = makeNewNotification({ id: "new-1" });
     const readyState = notificationReducer(
       undefined,
       hydrateNotifications.fulfilled(
@@ -128,7 +111,7 @@ describe("NotificationSlice", () => {
   });
 
   it("preserves notification data when a refresh fails", () => {
-    const notification = makeNotification({ id: "new-1" });
+    const notification = makeNewNotification({ id: "new-1" });
     const readyState = notificationReducer(
       undefined,
       hydrateNotifications.fulfilled(
@@ -158,7 +141,7 @@ describe("NotificationSlice", () => {
   });
 
   it("clears notification data and refresh metadata", () => {
-    const notification = makeNotification({ id: "new-1" });
+    const notification = makeNewNotification({ id: "new-1" });
     const readyState = notificationReducer(
       undefined,
       hydrateNotifications.fulfilled(

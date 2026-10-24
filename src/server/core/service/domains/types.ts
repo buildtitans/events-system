@@ -2,7 +2,6 @@ import {
   IEventService,
   IGroupService,
   INotificationService,
-  IParticipationsService,
   ISessionService,
   IUserService,
 } from "../services/types";

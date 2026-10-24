@@ -29,7 +29,7 @@ import {
   confirmModalTitleSx,
 } from "@/src/client/styles/sx/confirmModal";
 import { clearNotificationSlice } from "@/src/lib/store/slices/notifications/notificationSlice";
-import { clearPermissionsSlice } from "@/src/lib/store/slices/viewer/ViewerSlice";
+import { getCurrentRole } from "@/src/lib/store/slices/groups/OpenedGroupSlice";
 
 export default function ConfirmModal({
   activeModal,
@@ -44,7 +44,7 @@ export default function ConfirmModal({
   ) {
     dispatch(logout());
     dispatch(clearNotificationSlice());
-    dispatch(clearPermissionsSlice());
+    dispatch(getCurrentRole("anonymous"));
     dispatch(
       enqueueSnackbar({
         kind: "logout",

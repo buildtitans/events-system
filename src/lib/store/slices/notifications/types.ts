@@ -1,10 +1,7 @@
-import type { NotificationSchemaArrayType } from "@/src/schemas/notifications/notificationsSchema";
+import type { UserNotificationsSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import type { AsyncState } from "@/src/lib/types/state/types";
 
-export type NewAndSeenNotifications = {
-  seen: NotificationSchemaArrayType;
-  new: NotificationSchemaArrayType;
-};
+export type NewAndSeenNotifications = UserNotificationsSchemaType;
 
 export type NotificationAsyncState = AsyncState<
   NewAndSeenNotifications,

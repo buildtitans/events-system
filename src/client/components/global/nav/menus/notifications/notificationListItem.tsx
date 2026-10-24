@@ -1,27 +1,26 @@
 "use client";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { JSX } from "react";
-import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import { type ReactNode, JSX } from "react";
+import type { UserNotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
 import Typography from "@mui/material/Typography";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import Box from "@mui/material/Box";
 import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 
 type NotificationListItemProps = {
-  notification: NotificationSchemaType;
-  handleClick: (group_id: GroupSchemaType["id"]) => void;
+  notification: UserNotificationSchemaType;
+  icon: ReactNode;
+  handleClick: (groupSlug: GroupSchemaType["slug"]) => void;
 };
 
 function NotificationListItem({
   notification,
   handleClick,
+  icon,
 }: NotificationListItemProps): JSX.Element {
-  const shouldDim: boolean = notification.status === "new";
-
   return (
     <MenuItem
-      onClick={() => handleClick(notification.group_id)}
+      onClick={() => handleClick(notification.meta.group_slug)}
       divider
       sx={{
         paddingY: 1.25,
@@ -36,15 +35,7 @@ function NotificationListItem({
         },
       }}
     >
-      <ListItemIcon sx={{ minWidth: 34 }}>
-        <NotificationsActiveIcon
-          sx={{
-            color: "#2196f3",
-            opacity: shouldDim ? 1 : 0.5,
-          }}
-          fontSize="medium"
-        />
-      </ListItemIcon>
+      <ListItemIcon sx={{ minWidth: 34 }}>{icon}</ListItemIcon>
 
       <Box
         sx={{
@@ -55,6 +46,9 @@ function NotificationListItem({
           gap: 1,
         }}
       >
+        <Typography variant="caption" sx={{ color: "#9acff5", fontWeight: 600 }}>
+          {notification.meta.group_name}
+        </Typography>
         <Typography
           fontStyle={"oblique"}
           component={"h4"}
@@ -65,7 +59,7 @@ function NotificationListItem({
             fontWeight: 500,
           }}
         >
-          {notification.subject}:
+          {notification.data.subject}:
         </Typography>
 
         <Typography
@@ -77,7 +71,7 @@ function NotificationListItem({
             fontWeight: 400,
           }}
         >
-          {notification.message}
+          {notification.data.message}
         </Typography>
       </Box>
     </MenuItem>

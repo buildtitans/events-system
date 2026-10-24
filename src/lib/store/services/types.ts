@@ -1,7 +1,7 @@
 import { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
 import { EventsPages } from "../slices/events/types";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
+import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
 export type SyncOpenGroupPayload =
   | {
@@ -17,5 +17,5 @@ export type OpenedGroupPayload = {
   hydrated: GroupHydratedSchemaType;
   layout: EventsPages;
   role: GroupMemberSchemaType["role"];
-  calandar: GroupEventSummarySchemaType[];
+  calandar: TimelineElementSchemaType[];
 };

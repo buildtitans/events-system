@@ -15,16 +15,11 @@ jest.mock("./thunks", () => {
   };
 });
 
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
+import { makeEventResult } from "../../services/search/search.fixtures";
 import appSearchReducer, { resetSearchResults } from "./appSearchSlice";
 import { searchQuery } from "./thunks";
 
-const event = {
-  id: "event-1",
-  title: "React Night",
-} as EventSchemaType;
-
-const result = { kind: "event", data: event } as const;
+const result = makeEventResult();
 
 describe("AppSearchSlice search results", () => {
   it("stores the normalized query and request ID when a search begins", () => {

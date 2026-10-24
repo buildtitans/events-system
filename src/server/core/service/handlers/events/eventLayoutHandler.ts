@@ -7,9 +7,6 @@ import type {
 import { PaginatedLayoutSchemaType } from "@/src/schemas/events/layoutSlotSchema";
 import { EventLayoutComposer } from "./eventLayoutComposer";
 import { IEventLayoutHandler, EventLayoutDb } from "./types";
-import { curatePopularEventsIds } from "../../../lib/utils/curatePopularEventsIds";
-import { filterActiveRecords } from "../../../lib/utils/filterActiveRecords";
-const WINDOW = 30 * 24 * 60 * 60 * 1000;
 
 export class EventLayoutHandler implements IEventLayoutHandler {
   constructor(
@@ -33,8 +30,9 @@ export class EventLayoutHandler implements IEventLayoutHandler {
   }
 
   async popular(): Promise<PaginatedLayoutSchemaType> {
-    const ids = await this.getPopularEventIds();
-    return await this.byIds(ids);
+    const events = await this.db.events.select.popular();
+    const eventSurfaces = this.toEventDiscoverySurfaces(events);
+    return this.composer.compileLayout(eventSurfaces);
   }
 
   async forGroup(groupId: string): Promise<PaginatedLayoutSchemaType> {
@@ -44,9 +42,9 @@ export class EventLayoutHandler implements IEventLayoutHandler {
   }
 
   async upcoming(): Promise<PaginatedLayoutSchemaType> {
-    const events = await this.db.events.select.allScheduled();
-    const ids = this.extractUpcoming(events);
-    return await this.byIds(ids);
+    const events = await this.db.events.select.upcoming();
+    const eventSurfaces = this.toEventDiscoverySurfaces(events);
+    return this.composer.compileLayout(eventSurfaces);
   }
 
   private toEventDiscoverySurfaces(
@@ -75,31 +73,5 @@ export class EventLayoutHandler implements IEventLayoutHandler {
         (a, b) => a.content.event.starts_at_ms - b.content.event.starts_at_ms,
       );
     return this.composer.compileLayout(upcoming);
-  }
-
-  private async getPopularEventIds() {
-    const records = await this.db.eventAttendants.select.allRecords();
-    const events = await this.db.events.select.allScheduled();
-    const activeRecords = filterActiveRecords(events, records);
-    return curatePopularEventsIds(activeRecords);
-  }
-
-  private extractUpcoming(events: EventSchemaType[]): EventSchemaType["id"][] {
-    const results: EventSchemaType["id"][] = [];
-    const nowMs = Date.now();
-
-    for (const event of events) {
-      const upcomingEvent = this.isUpcoming(event, nowMs);
-      if (upcomingEvent) {
-        results.push(event.id);
-      }
-    }
-    return results;
-  }
-
-  private isUpcoming(event: EventSchemaType, nowMs: number): boolean {
-    const windowEndMs = nowMs + WINDOW;
-    const starts_at_ms = event.starts_at_ms;
-    return starts_at_ms >= nowMs && starts_at_ms <= windowEndMs;
   }
 }

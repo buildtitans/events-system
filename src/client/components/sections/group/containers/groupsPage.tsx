@@ -3,16 +3,13 @@ import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Group from "@/src/client/components/ui/box/cards/group";
 import type { GroupCardVariant } from "@/src/client/components/ui/box/cards/group";
-import type { CategoryMap } from "./groupsPages";
 import {
   GroupSchemaType,
-  GroupsSchemaType,
+  GroupDiscoverySummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { getCategoryName } from "@/src/lib/utils/rendering/getCategoryName";
 
 type GroupsPageProps = {
-  page: GroupsSchemaType;
-  categoryMap: CategoryMap;
+  page: GroupDiscoverySummarySchemaType[];
   columns: number;
   handleGroupClicked: (slug: GroupSchemaType["slug"]) => () => void;
   cardVariant?: GroupCardVariant;
@@ -20,7 +17,6 @@ type GroupsPageProps = {
 
 export function GroupsPage({
   page,
-  categoryMap,
   columns,
   handleGroupClicked,
   cardVariant = "landing",
@@ -42,12 +38,11 @@ export function GroupsPage({
       columns={columns}
       sx={{ minHeight: 400 }}
     >
-      {page.map((group, index) => (
+      {page.map((summary, index) => (
         <Group
           handleGroupClicked={handleGroupClicked}
-          key={group.id}
-          categoryName={getCategoryName(group.category_id, categoryMap)}
-          group={group}
+          key={summary.group.id}
+          summary={summary}
           index={index}
           handleBlur={handleBlur}
           handleFocus={handleFocus}

@@ -24,10 +24,14 @@ const groupEventsRoute = router({
   history: publicProcedure
     .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.timeline.getPastEventsForGroup(
-        input,
-      );
+      return await ctx.api.services.domains.groups.query.history(input);
     }),
+  timeline: publicProcedure
+    .input(validateRouterInput(GroupIdSchema))
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.query.calandar(input);
+    }),
+
   list: publicProcedure
     .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {

@@ -32,7 +32,11 @@ type GroupActonsContainerProps = {
 export default function GroupActonsContainer({
   group_id,
 }: GroupActonsContainerProps): JSX.Element | null {
-  const role = useSelector((s: RootState) => s.viewer.viewerRole);
+  const role = useSelector((s: RootState) =>
+    s.openGroup.group.status === "ready"
+      ? s.openGroup.group.data.meta.viewer_role
+      : "anonymous",
+  );
   const group = useSelector((s: RootState) => s.openGroup.group);
 
   if (group.status !== "ready") {

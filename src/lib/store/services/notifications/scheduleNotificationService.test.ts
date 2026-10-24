@@ -1,3 +1,4 @@
+import { makeNewNotification } from "@/src/test/fixtures/notifications";
 import { ScheduleNotificationService } from "@/src/lib/store/services/notifications/scheduleNotificationService";
 import type {
   EventSchemaType,
@@ -21,7 +22,7 @@ describe("ScheduleNotificationService", () => {
   let service: ScheduleNotificationService;
 
   beforeEach(() => {
-    mutate = jest.fn().mockResolvedValue({ ok: true });
+    mutate = jest.fn().mockResolvedValue(makeNewNotification());
     service = new ScheduleNotificationService({
       entities: { notifications: { write: { create: { mutate } } } },
     } as unknown as TrpcClientType);
@@ -30,7 +31,7 @@ describe("ScheduleNotificationService", () => {
   it("creates a low-priority notification for a new event", async () => {
     const group = { name: "Local Developers" } as GroupSchemaType;
 
-    await service.createNewEventNotification(event, group);
+    await expect(service.createNewEventNotification(event, group)).resolves.toEqual(makeNewNotification());
 
     expect(mutate).toHaveBeenCalledWith({
       subject: "Local Developers scheduled a new event",
@@ -44,7 +45,7 @@ describe("ScheduleNotificationService", () => {
     ["cancelled", 'The event: "Community Night" has been cancelled'],
     ["scheduled", 'The event: "Community Night" is back on, set for'],
   ] as const)("creates the expected %s status message", async (status, message) => {
-    await service.createScheduleNotification(event, updates(status));
+    await expect(service.createScheduleNotification(event, updates(status))).resolves.toEqual(makeNewNotification());
 
     expect(mutate).toHaveBeenCalledWith({
       priority: "high",

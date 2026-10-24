@@ -1,5 +1,10 @@
-import type { EventSchemaType } from "@/src/schemas/events/eventSchema";
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type {
+  EventSearchResultSchemaType,
+  GroupSearchResultSchemaType,
+  EventSearchSuggestionSchemaType,
+  GroupSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
+
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 import type {
   SearchResults,
@@ -12,10 +17,7 @@ import {
 
 interface IAppSearchService {
   search(query: string): Promise<SearchResults>;
-  suggestions(
-    query: string,
-    storedGroups: GroupSchemaType[],
-  ): Promise<SuggestionOptions>;
+  suggestions(query: string): Promise<SuggestionOptions>;
 }
 
 export class AppSearchService implements IAppSearchService {
@@ -29,17 +31,14 @@ export class AppSearchService implements IAppSearchService {
     return this.compiler.compileSearchResults(events, groups, query);
   }
 
-  public async suggestions(
-    query: string,
-    storedGroups: GroupSchemaType[],
-  ): Promise<SuggestionOptions> {
+  public async suggestions(query: string): Promise<SuggestionOptions> {
     const { events, groups } = await this.fireSuggestionsQuery(query);
-    return this.compiler.compileSuggestionOptions(events, groups, storedGroups);
+    return this.compiler.compileSuggestionOptions(events, groups);
   }
 
   private async fireSearchQuery(
     query: string,
-  ): Promise<{ events: EventSchemaType[]; groups: GroupSchemaType[] }> {
+  ): Promise<{ events: EventSearchResultSchemaType[]; groups: GroupSearchResultSchemaType[] }> {
     const [events, groups] = await Promise.all([
       this.trpc.discovery.search.events.query(query),
       this.trpc.discovery.search.groups.query(query),
@@ -53,7 +52,7 @@ export class AppSearchService implements IAppSearchService {
 
   private async fireSuggestionsQuery(
     query: string,
-  ): Promise<{ events: EventSchemaType[]; groups: GroupSchemaType[] }> {
+  ): Promise<{ events: EventSearchSuggestionSchemaType[]; groups: GroupSearchSuggestionSchemaType[] }> {
     const [events, groups] = await Promise.all([
       this.trpc.discovery.suggest.events.query(query),
       this.trpc.discovery.suggest.groups.query(query),

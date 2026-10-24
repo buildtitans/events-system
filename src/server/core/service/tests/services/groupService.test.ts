@@ -6,6 +6,7 @@ import {
   createMockDb,
   makeGroup,
   makeEvent,
+  makeGroupEventSummary,
   authenticateAs,
   unauthenticated,
 } from "@/src/server/core/service/tests/mockers/mocks";
@@ -142,5 +143,24 @@ describe("GroupService.query.archives", () => {
     getArchives.mockRejectedValue(new Error("Database unavailable"));
 
     await expect(service.query.archives(USER_ID, groupId)).rejects.toThrow("Database unavailable");
+  });
+});
+
+describe("GroupService.query.history", () => {
+  it("returns persistence-provided summaries in their supplied order", async () => {
+    const db = createMockDb();
+    const history = [makeGroupEventSummary({ id: "older" }), makeGroupEventSummary({ id: "recent" })];
+    jest.mocked(db.groups.select.history).mockResolvedValue(history);
+    const service = new GroupService(db, policyMock);
+    await expect(service.query.history("group-1")).resolves.toEqual(history);
+    expect(db.groups.select.history).toHaveBeenCalledWith("group-1");
+    expect(db.events.select.byGroupId).not.toHaveBeenCalled();
+  });
+
+  it("returns an empty history when the read finds no past events", async () => {
+    const db = createMockDb();
+    jest.mocked(db.groups.select.history).mockResolvedValue([]);
+    const service = new GroupService(db, policyMock);
+    await expect(service.query.history("group-1")).resolves.toEqual([]);
   });
 });

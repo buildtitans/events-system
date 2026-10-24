@@ -1,16 +1,12 @@
 "use client";
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense } from "react";
 import EventSearchResultItemSkeleton from "@/src/client/features/search/eventSearchResultItemSkeleton";
 import GroupSearchResultItemSkeleton from "@/src/client/features/search/groupSearchResultItemSkeleton";
 import { SearchResult } from "@/src/lib/hooks/search/types";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { useRouter } from "next/navigation";
 import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
-import { CategoryLookupType } from "@/src/lib/utils/helpers/categories/createCategoryLookup";
-import { useSelector } from "react-redux";
-import { RootState } from "@/src/lib/store";
-import { seedCategoryMap } from "@/src/lib/utils/rendering/seedCategoryMap";
-import { getCategoryName } from "@/src/lib/utils/rendering/getCategoryName";
+
 const EventSearchResultItem = lazy(
   () => import("@/src/client/features/search/eventSearchResultItem"),
 );
@@ -20,7 +16,7 @@ const GroupSearchResultItem = lazy(
 
 type RenderSearchResultsProps = {
   results: SearchResult[];
-  categoryLookup?: CategoryLookupType;
+
 };
 
 export default function RenderSearchResults({
@@ -28,21 +24,19 @@ export default function RenderSearchResults({
 }: RenderSearchResultsProps) {
   const { handleOpenEvent } = useSelectEvent();
   const router = useRouter();
-  const categories = useSelector((s: RootState) => s.categories.categories);
-  const categoryMap = useMemo(() => {
-    return seedCategoryMap(categories);
-  }, [categories]);
 
   return results.map((result) => {
     switch (result.kind) {
       case "event": {
         return (
           <Suspense
-            key={`event-${result.data.id}`}
+            key={`event-${result.data.event.id}`}
             fallback={<EventSearchResultItemSkeleton />}
           >
             <EventSearchResultItem
-              event={result.data}
+              event={result.data.event}
+              groupName={result.data.meta.group.group_name}
+              groupLocation={result.data.meta.group.group_location}
               onAction={handleOpenEvent}
             />
           </Suspense>
@@ -51,15 +45,12 @@ export default function RenderSearchResults({
       case "group": {
         return (
           <Suspense
-            key={`group-${result.data.id}`}
+            key={`group-${result.data.group.id}`}
             fallback={<GroupSearchResultItemSkeleton />}
           >
             <GroupSearchResultItem
-              categoryName={getCategoryName(
-                result.data.category_id,
-                categoryMap,
-              )}
-              group={result.data}
+              categoryName={result.data.meta.category_name}
+              group={result.data.group}
               onAction={(slug) => router.push(`/group/${slug}`)}
             />
           </Suspense>

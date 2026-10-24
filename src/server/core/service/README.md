@@ -204,31 +204,39 @@ reusable transformations that support a handler's private workflow.
 
 ### Events
 
-- `EventQueryHandler` performs event reads and search.
+- `EventQueryHandler` exposes event reads, search, suggestions, and complete
+  event hydration. Persistence supplies the event, host group details,
+  attendance counts, and viewer role/RSVP status in one query; the parser
+  normalizes dates and counts, and the selector validates the hydrated contract.
+  Missing viewer memberships default to `anonymous`; missing attendance
+  records and anonymous requests default to `not_going`.
 - `EventLifecycleHandler` creates events and changes scheduling status.
-- `EventTimelineHandler` filters group summaries to past events and sorts them
-  chronologically, returning the summary array directly.
 - `EventLayoutHandler` loads summaries and wraps them as discovery or
   within-group surfaces for client layouts.
 - `EventLayoutComposer` paginates events and produces validated layout slots.
-- `EventHydrationHandler` adds viewer role and RSVP status to the validated
-  event read model supplied by persistence for the opened-event drawer.
 
 ### Groups
 
-- `GroupQueryHandler` exposes group hydration, discovery, search, category
-  filtering, and organizer-authorized archives. Group hydration includes member
-  count, organizer email, category name, and an optional next-event summary.
+- `GroupHydrationHandler` exposes single-group hydration and discovery lists,
+  including popular groups and category filtering. The single-group read gathers
+  member count, organizer email, category name, viewer role, an optional next
+  event, group event summaries, and calendar data in persistence.
+- The validated persistence contract keeps event fields flat under `meta`.
+  The hydration handler composes event summaries into layout slots and returns
+  `next_event`, `group_events`, and `calandar` under `meta.events`.
+- `GroupQueryHandler` exposes search, suggestions, categories, calendar,
+  history, and organizer-authorized archives.
 - `GroupLifecycleHandler` creates a group and assigns its organizer membership.
 - `MembershipHandler` joins users to groups, removes memberships, and resolves
   roles.
 
-### Participations
+### Users
 
-- `RsvpHandler` updates attendance and retrieves authenticated RSVP surfaces
-  through the persistence selector.
-- `CensusHandler` returns popular groups selected by persistence. Popular event
-  selection belongs to `EventLayoutHandler`.
+- `UserSelectHandler` retrieves authenticated RSVP surfaces, memberships,
+  created groups, email, and viewer roles. Persistence assembles the related
+  event and group data needed by those views.
+- `UserWriteHandler` handles RSVP changes and membership mutations with the
+  existing authorization guards. No separate participation service is needed.
 
 ### Session
 

@@ -8,7 +8,6 @@ import {
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-import { getCurrentRole } from "../viewer/ViewerSlice";
 import {
   enqueueAlert,
   enqueueDrawer,
@@ -16,10 +15,13 @@ import {
   enqueueSnackbar,
 } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { HydrateOpenGroupService } from "../../services/hydration/hydrateOpenGroupService";
 import { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
-import { addGroup } from "./GroupsSlice";
-import { getGroupHistory, populateGroupArchives } from "./OpenedGroupSlice";
+import { getAllGroups } from "./GroupsSlice";
+import {
+  getCurrentRole,
+  getGroupHistory,
+  populateGroupArchives,
+} from "./OpenedGroupSlice";
 import { sortByDate } from "@/src/lib/utils/helpers/sort/sortByDate";
 
 export const hydrateGroup = createAsyncThunk(
@@ -28,20 +30,10 @@ export const hydrateGroup = createAsyncThunk(
     slug: GroupSchemaType["slug"],
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
-    const service = new HydrateOpenGroupService(trpcClient);
-
     thunkAPI.dispatch(enqueueSidebar("group"));
 
     try {
-      const results = await service.hydrate(slug);
-
-      if (!results.ok) {
-        throw new Error("Failed to hydrate group selected");
-      }
-
-      thunkAPI.dispatch(getCurrentRole(results.data.role));
-
-      return results.data;
+      return await trpcClient.hydrate.groups.single.query(slug);
     } catch (err) {
       logCaughtError("OpenedGroupSlice.hydrateGroup()", err);
       return thunkAPI.rejectWithValue(err);
@@ -90,11 +82,13 @@ export const refreshGroupEvents = createAsyncThunk(
     try {
       const refreshedEventsLayout =
         await trpcClient.hydrate.events.layouts.forGroup.query(id);
-      const calandarEvents = await trpcClient.entities.group.events.list.query(id);
-      const nextEvent = await trpcClient.entities.group.events.nextEvent.query(id);
+      const calandar =
+        await trpcClient.entities.group.events.timeline.query(id);
+      const nextEvent =
+        await trpcClient.entities.group.events.nextEvent.query(id);
       return {
         refreshedEventsLayout,
-        calandarEvents,
+        calandar,
         nextEvent,
       };
     } catch (err) {
@@ -113,7 +107,8 @@ export const refreshArchivedEvents = createAsyncThunk(
     thunkAPI.dispatch(populateGroupArchives({ status: "pending" }));
 
     try {
-      const result = await trpcClient.entities.group.organizer.archives.query(id);
+      const result =
+        await trpcClient.entities.group.organizer.archives.query(id);
 
       return result;
     } catch (err) {
@@ -170,7 +165,12 @@ export const createGroup = createAsyncThunk(
       if (!result.ok) {
         throw new Error(result.error);
       }
-      thunkAPI.dispatch(addGroup(result.data));
+      try {
+        const groups = await trpcClient.hydrate.groups.list.all.query();
+        thunkAPI.dispatch(getAllGroups(groups));
+      } catch (error) {
+        logCaughtError("createGroup.refreshDiscovery()", error);
+      }
       thunkAPI.dispatch(enqueueSnackbar({ kind: null, status: "idle" }));
       thunkAPI.dispatch(
         enqueueAlert({ kind: "success", action: "createGroup" }),
@@ -197,7 +197,8 @@ export const makeMembership = createAsyncThunk(
     );
 
     try {
-      const result = await trpcClient.entities.group.member.joinGroup.mutate(group_id);
+      const result =
+        await trpcClient.entities.group.member.joinGroup.mutate(group_id);
       thunkAPI.dispatch(
         enqueueSnackbar({ kind: "joiningGroup", status: "success" }),
       );

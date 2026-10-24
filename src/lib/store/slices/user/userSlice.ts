@@ -1,3 +1,4 @@
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import {
   AsyncThunkConfig,
   createAsyncThunk,
@@ -17,7 +18,6 @@ import type {
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
 import { enqueueSidebar } from "../rendering/RenderingSlice";
 import { trpcClient } from "@/src/trpc/trpcClient";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { hydrateUserMemberships, hydrateUserRsvps } from "./thunks";
 
 type InitialState = {
@@ -130,7 +130,7 @@ const UserSlice = createSlice({
       hydrateAccountPage.fulfilled,
       (
         state: InitialState,
-        action: PayloadAction<{ email: string; myGroups: GroupSchemaType[][] }>,
+        action: PayloadAction<{ email: string; myGroups: GroupDiscoverySummarySchemaType[][] }>,
       ) => {
         state.email = { status: "ready", data: action.payload.email };
 

@@ -1,5 +1,6 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
+import { GroupSchema } from "../groups/groupSchema";
 
 const PrioritySchema = Type.Union([
   Type.Literal("high"),
@@ -8,16 +9,70 @@ const PrioritySchema = Type.Union([
 ]);
 
 export const NotificationSchema = Type.Object({
+  id: Type.String({ format: "uuid" }),
+  group_id: Type.String({ format: "uuid" }),
+  subject: Type.String(),
+  message: Type.String(),
+  priority: PrioritySchema,
+  status: Type.Union([Type.Literal("new"), Type.Literal("viewed")]),
+  created_at: Type.String({ format: "date-time" }),
+  updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+  user_id: Type.String({ format: "uuid" }),
+});
+
+const NotificationMetadataSchema = Type.Object({
+  group_slug: GroupSchema.properties.slug,
+  group_name: GroupSchema.properties.name,
+});
+
+const NewNotification = Type.Object({
   created_at: Type.String({ format: "date-time" }),
   group_id: Type.String({ format: "uuid" }),
   id: Type.String({ format: "uuid" }),
   subject: Type.String(),
   message: Type.String(),
   priority: PrioritySchema,
-  status: Type.Union([Type.Literal("new"), Type.Literal("viewed")]),
+  status: Type.Literal("new"),
   updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
   user_id: Type.String({ format: "uuid" }),
 });
+
+const NewNotificationSchema = Type.Object({
+  kind: Type.Literal("new"),
+  data: NewNotification,
+  meta: NotificationMetadataSchema,
+});
+
+const ViewedNotification = Type.Object({
+  created_at: Type.String({ format: "date-time" }),
+  group_id: Type.String({ format: "uuid" }),
+  id: Type.String({ format: "uuid" }),
+  subject: Type.String(),
+  message: Type.String(),
+  priority: PrioritySchema,
+  status: Type.Literal("viewed"),
+  updated_at: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+  user_id: Type.String({ format: "uuid" }),
+});
+
+const ViewedNotificationSchema = Type.Object({
+  kind: Type.Literal("seen"),
+  data: ViewedNotification,
+  meta: NotificationMetadataSchema,
+});
+
+export const UserNotificationsSchema = Type.Object({
+  new: Type.Array(NewNotificationSchema),
+  seen: Type.Array(ViewedNotificationSchema),
+});
+
+export type UserNotificationSchemaType =
+  | UserNotificationsSchemaType["new"][number]
+  | UserNotificationsSchemaType["seen"][number];
+
+export type UserNotificationsSchemaType = Static<
+  typeof UserNotificationsSchema
+>;
 
 export const CreateNotificationSchema = Type.Object({
   group_id: Type.String({ format: "uuid" }),

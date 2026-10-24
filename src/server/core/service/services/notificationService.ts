@@ -1,4 +1,7 @@
-import type { NotificationSchemaType } from "@/src/schemas/notifications/notificationsSchema";
+import type {
+  NotificationSchemaType,
+  UserNotificationsSchemaType,
+} from "@/src/schemas/notifications/notificationsSchema";
 import { IAuthorization } from "../auth/authorization";
 import {
   INotificationService,
@@ -15,18 +18,14 @@ export class NotificationService implements INotificationService {
 
   async getNotifications(
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<{
-    new: NotificationSchemaType[];
-    seen: NotificationSchemaType[];
-  }> {
-    const userId = this.policy.requireAuthenticated(user_id);
-    return await this.getNewAndSeenNotifications(userId);
+  ): Promise<UserNotificationsSchemaType> {
+    return await this.executeGetNotifications(user_id);
   }
 
   async createNotification(
     notification: NewNotification,
     user_id: AuthenticatedUserId | undefined | null,
-  ): Promise<NotificationSchemaType | undefined> {
+  ): Promise<UserNotificationsSchemaType["new"][number] | undefined> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, notification.group_id);
     return await this.executeCreateNotifications(notification, userId);
@@ -67,27 +66,17 @@ export class NotificationService implements INotificationService {
   private async executeCreateNotifications(
     notification: NewNotification,
     userId: AuthenticatedUserId,
-  ): Promise<NotificationSchemaType | undefined> {
-    const memberIds = await this.db.groupMembers.select.memberIds(
-      notification.group_id,
-    );
-
-    return await this.db.notifications.write.addNewNotifications(
+  ): Promise<UserNotificationsSchemaType["new"][number]> {
+    return await this.db.notifications.write.newNotification(
       notification,
-      memberIds,
       userId,
     );
   }
 
-  private async getNewAndSeenNotifications(
-    userId: AuthenticatedUserId,
-  ): Promise<{
-    new: NotificationSchemaType[];
-    seen: NotificationSchemaType[];
-  }> {
-    return {
-      new: await this.db.notifications.select.getUnseenNotifications(userId),
-      seen: await this.db.notifications.select.getOpenedNotifications(userId),
-    };
+  private async executeGetNotifications(
+    user_id: AuthenticatedUserId | undefined | null,
+  ): Promise<UserNotificationsSchemaType> {
+    const userId = this.policy.requireAuthenticated(user_id);
+    return this.db.notifications.select.getNotifications(userId);
   }
 }

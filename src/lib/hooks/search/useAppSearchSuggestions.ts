@@ -1,4 +1,7 @@
 "use client";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store";
+
 import { useState, useCallback } from "react";
 import type {
   AutocompleteChangeReason,
@@ -7,8 +10,7 @@ import type {
 import type { SuggestionType } from "./types";
 import type { AppSearchSuggestionsHook } from "../../types/hooks/types";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store";
+
 import { useSelectEvent } from "../hydration/event/useSelectEvent";
 import { assertNever } from "../../utils/assert/assertNever";
 import { useDebouncedCallback } from "./useDebounce";
@@ -17,7 +19,7 @@ import { querySuggestions } from "../../store/slices/search/thunks";
 
 export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
   const dispatch = useDispatch<AppDispatch>();
-  const storedGroups = useSelector((s: RootState) => s.groups.communities);
+
   const router = useRouter();
   const [input, setInput] = useState<string>("");
 
@@ -32,9 +34,9 @@ export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
         return;
       }
 
-      void dispatch(querySuggestions({ query: trimmedQuery, storedGroups }));
+      void dispatch(querySuggestions({ query: trimmedQuery }));
     },
-    [storedGroups, dispatch],
+    [dispatch],
   );
 
   const { run: debounce, cancel: cancelDebounce } =
@@ -77,12 +79,12 @@ export const useAppSearchSuggestions = (): AppSearchSuggestionsHook => {
 
       switch (value.kind) {
         case "event": {
-          handleOpenEvent(value.event_id);
+          handleOpenEvent(value.data.event.id);
           return;
         }
         case "group": {
-          setInput(value.label);
-          const redirectRoute = `/group/${value.slug}`;
+          setInput(value.data.meta.label);
+          const redirectRoute = `/group/${value.data.group.slug}`;
           router.push(redirectRoute);
           return;
         }

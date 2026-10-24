@@ -14,6 +14,25 @@ export type PrivateUserAttendanceUpdate = Pick<
   "event_id" | "user_id"
 >;
 
+export type RecoveredSession =
+  | {
+      kind: "anonymous";
+    }
+  | {
+      kind: "authenticated";
+      data: {
+        session: {
+          id: string;
+          expires_at: string;
+          created_at: string;
+        };
+        user: {
+          user_id: string;
+          email: string;
+        };
+      };
+    };
+
 type StoredSession = {
   id: string;
   expires_at: Date;

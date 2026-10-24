@@ -40,11 +40,8 @@ function RenderEventsLayout({
               >
                 <HeroCard
                   index={i}
-                  eventMetaData={slot.event.content.meta}
-                  groupName={slot.event.content.meta.group_name}
-                  location={slot.event.content.meta.group_location}
+                  summary={slot.event.content}
                   key={slot.event.content.event.id}
-                  event={slot.event.content.event}
                   variant={slot.variant}
                   handleBlur={handleBlur}
                   handleFocus={handleFocus}

@@ -276,8 +276,6 @@ Current examples include:
 - `AppSearchService`, which queries events and groups concurrently for focused
   suggestions and full search results;
 - `EventFilterService`, which resolves filters into event layouts;
-- `HydrateOpenGroupService`, which loads a group and its related metadata;
-- `HydrateUserService`, which retrieves user dashboard data;
 - `SearchResultsCompiler`, which transforms server responses into suggestion
   shapes and relevance-ranked, unified event and group results.
 
@@ -306,9 +304,11 @@ Use a **thunk** when the main problem is:
 - coordinating updates across slices;
 - exposing a result through `dispatch`.
 
-They can work together. `hydrateGroup`, for example, is a thunk because Redux
-owns the opened-group lifecycle, but it delegates the multi-request hydration
-work to `HydrateOpenGroupService`.
+A thunk can also call a query directly. `hydrateGroup` requests
+`hydrate.groups.single` and returns its complete validated response. The server
+now assembles the group metadata, viewer role, event layout, next event, and
+calendar, so this path no longer needs a client hydration service or a separate
+`{ ok, data }` payload wrapper.
 
 ## Hooks
 
@@ -369,10 +369,19 @@ states and singular/plural result counts remain exhaustively testable.
 ## Hydrated Views and Event Summaries
 
 Opened-group state stores `{ group, meta }` inside its ready data. Group details
-come from `data.group`; member count, organizer email, category name, and the
-optional next event come from `data.meta`. Opened-event state similarly stores
-the hydrated event with public event metadata and viewer-specific role/RSVP
-metadata. Components consume these responses instead of separate lookup state.
+come from `data.group`; member count, organizer email, category name, and viewer
+role come from `data.meta`. The optional next event, event layout, and calendar
+are under `data.meta.events.next_event`, `group_events`, and `calandar`.
+
+Viewer role has one stored location: `data.meta.viewer_role`. Role consumers
+fall back to `anonymous` when the group is not ready. Membership changes and
+session resets update that field through `getCurrentRole`. There is no separate
+viewer slice or standalone `viewerRole` state. Hydration also populates the
+existing event and calendar lifecycle fields for their UI consumers.
+
+Opened-event state stores the hydrated event with host details and attendance
+under `meta.event` and viewer-specific role/RSVP status under `meta.user`.
+Components consume these responses instead of separate lookup state.
 
 Event layout slots contain discriminated surfaces:
 
@@ -385,9 +394,10 @@ from each summary's metadata; no separate attendance dictionary is synchronized.
 ### Refreshing Group Events
 
 `refreshGroupEvents` requests `hydrate.events.layouts.forGroup`,
-`entities.group.events.list`, and `entities.group.events.nextEvent`. Its fulfilled
+`entities.group.events.timeline`, and `entities.group.events.nextEvent`. Its fulfilled
 reducer updates layout and calendar state together and, while the group is ready,
-assigns `meta.next_event` directly from the response. This handles first assignment,
+updates `meta.events.group_events`, `meta.events.calandar`, and
+`meta.events.next_event` from the responses. This handles first assignment,
 replacement, updated data for the same event ID, and clearing a missing next event.
 
 The pending reducer marks events as refreshing and the calendar as pending while

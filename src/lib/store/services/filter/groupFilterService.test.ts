@@ -1,11 +1,11 @@
 import { GroupFilterService } from "@/src/lib/store/services/filter/groupFilterService";
-import type { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import type { TrpcClientType } from "@/src/trpc/trpcClient";
 
 describe("GroupFilterService.filter", () => {
   it("gets groups using the selected category id", async () => {
     const categoryId = "category-1";
-    const groups: GroupSchemaType[] = [];
+    const groups: GroupDiscoverySummarySchemaType[] = [];
     const byCategory = jest.fn().mockResolvedValue(groups);
     const trpc = {
       hydrate: {

@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import DayScheduled from "./dayScheduled";
 import { JSX } from "react";
 import type { DayScheduledProps } from "./dayScheduled";
-import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import { useHydrateCalendar } from "@/src/lib/hooks/hydration/group/useHydrateCalandar";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -19,9 +18,10 @@ import {
   groupCalendarRootSx,
   groupCalendarSurfaceSx,
 } from "@/src/client/styles/sx/groupCalendar";
+import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
 type CalandarProps = {
-  history: GroupEventSummarySchemaType[];
+  history: TimelineElementSchemaType[];
 };
 
 export default function Calandar({ history }: CalandarProps): JSX.Element {
@@ -56,7 +56,13 @@ export default function Calandar({ history }: CalandarProps): JSX.Element {
           <Box sx={groupCalendarLegendItemSx}>
             <Box sx={getGroupCalendarLegendDotSx("past")} />
             <Typography variant="caption" sx={{ fontWeight: 700 }}>
-              Past event
+              Past / completed event
+            </Typography>
+          </Box>
+          <Box sx={groupCalendarLegendItemSx}>
+            <Box sx={getGroupCalendarLegendDotSx("ongoing")} />
+            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+              Ongoing event
             </Typography>
           </Box>
         </Stack>

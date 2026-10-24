@@ -1,10 +1,10 @@
 import type { EventsPages } from "../../store/slices/events/types";
-import type { GroupsSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 
 type DomainStateType = {
   events: EventsPages;
-  groups: GroupsSchemaType;
+  groups: GroupDiscoverySummarySchemaType[];
   categories: CategoriesSchemaType;
 };
 

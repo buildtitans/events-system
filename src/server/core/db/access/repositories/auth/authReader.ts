@@ -2,11 +2,22 @@ import { Kysely } from "kysely";
 import { DB } from "../../../types/db";
 import { PublicUserSchemaType } from "@/src/schemas/auth/userSchema";
 import argon2 from "argon2";
-import { StoredSession } from "../../types/types";
+import { RecoveredSession } from "../../types/types";
 import { InvalidCredentialsError } from "@/src/server/core/lib/errors/invalidCredentialsError";
+import { RawReadSession } from "./types";
 
 export class AuthReader {
   constructor(private readonly db: Kysely<DB>) {}
+
+  async authenticatedUser(token: string) {
+    return await this.db
+      .selectFrom("sessions as s")
+      .innerJoin("users as u", "s.user_id", "u.id")
+      .select(["u.id", "u.email"])
+      .where("s.id", "=", token)
+      .where("s.expires_at", ">", new Date())
+      .executeTakeFirst();
+  }
 
   async getUser(user_id: string) {
     return await this.db
@@ -55,16 +66,44 @@ export class AuthReader {
       .executeTakeFirstOrThrow();
   }
 
-  async checkSession(token: string): Promise<StoredSession | undefined> {
-    if (!token) return undefined;
-
-    const session = await this.db
-      .selectFrom("sessions")
-      .select(["id", "user_id", "expires_at"])
-      .where("id", "=", token)
-      .where("expires_at", ">", new Date())
+  async recoverSession(token: string): Promise<RecoveredSession> {
+    const result = await this.db
+      .selectFrom("sessions as s")
+      .innerJoin("users as u", "s.user_id", "u.id")
+      .select((eb) => [
+        "s.created_at",
+        "s.expires_at",
+        "s.id",
+        "u.id as user_id",
+        "u.email",
+      ])
+      .where("s.expires_at", ">", new Date())
+      .where("s.id", "=", token)
       .executeTakeFirst();
 
-    return session;
+    return this.toRecoveredSession(result);
+  }
+
+  private toRecoveredSession(result: RawReadSession): RecoveredSession {
+    if (result === undefined) {
+      return {
+        kind: "anonymous",
+      };
+    }
+
+    return {
+      kind: "authenticated",
+      data: {
+        session: {
+          id: result.id,
+          expires_at: result.expires_at.toISOString(),
+          created_at: result.created_at.toISOString(),
+        },
+        user: {
+          email: result.email,
+          user_id: result.user_id,
+        },
+      },
+    };
   }
 }

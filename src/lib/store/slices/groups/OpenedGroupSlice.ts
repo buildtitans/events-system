@@ -1,5 +1,5 @@
+import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
   GroupEventsCalandarState,
@@ -8,7 +8,6 @@ import type {
   GroupHistoryType,
   CurrentDisplay,
 } from "@/src/lib/store/slices/groups/types";
-import type { OpenedGroupPayload } from "../../services/types";
 import {
   hydrateGroup,
   refreshGroupEvents,
@@ -16,7 +15,10 @@ import {
   scheduleNewEvent,
 } from "./thunks";
 
-import { ArchivedEventSchemaType } from "@/src/schemas/groups/groupSchema";
+import type {
+  ArchivedEventSchemaType,
+  GroupHydratedSchemaType,
+} from "@/src/schemas/groups/groupSchema";
 
 type InitialState = {
   group: GroupHydrated;
@@ -42,6 +44,11 @@ const OpenedGroupSlice = createSlice({
   name: "OpenedGroup",
   initialState: initialState,
   reducers: {
+    getCurrentRole: (state, action: PayloadAction<GroupMemberSchemaType["role"]>) => {
+      if (state.group.status === "ready") {
+        state.group.data.meta.viewer_role = action.payload;
+      }
+    },
     getGroupEvents: (
       state: InitialState,
       action: PayloadAction<EventsOfGroup>,
@@ -133,11 +140,12 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(
       refreshGroupEvents.fulfilled,
       (state: InitialState, action) => {
-        const { refreshedEventsLayout, calandarEvents, nextEvent } =
-          action.payload;
+        const { refreshedEventsLayout, calandar, nextEvent } = action.payload;
 
         if (state.group.status === "ready") {
-          state.group.data.meta.next_event = nextEvent;
+          state.group.data.meta.events.next_event = nextEvent;
+          state.group.data.meta.events.group_events = refreshedEventsLayout;
+          state.group.data.meta.events.calandar = calandar;
         }
 
         if (refreshedEventsLayout.length > 0) {
@@ -149,8 +157,8 @@ const OpenedGroupSlice = createSlice({
           };
         }
 
-        if (calandarEvents.length > 0) {
-          state.calandar = { status: "ready", data: calandarEvents };
+        if (calandar.length > 0) {
+          state.calandar = { status: "ready", data: calandar };
         } else {
           state.calandar = {
             status: "n/a",
@@ -161,6 +169,7 @@ const OpenedGroupSlice = createSlice({
     );
 
     builder.addCase(hydrateGroup.rejected, (state: InitialState) => {
+
       state.group = {
         status: "failed",
         error: "Unexpected error while trying to hydrate selected group",
@@ -176,6 +185,7 @@ const OpenedGroupSlice = createSlice({
     });
 
     builder.addCase(hydrateGroup.pending, (state: InitialState) => {
+
       state.group = { status: "pending" };
       state.events = { status: "pending" };
       state.calandar = { status: "pending" };
@@ -184,8 +194,10 @@ const OpenedGroupSlice = createSlice({
 
     builder.addCase(
       hydrateGroup.fulfilled,
-      (state: InitialState, action: PayloadAction<OpenedGroupPayload>) => {
-        const { hydrated, layout, calandar } = action.payload;
+      (state: InitialState, action: PayloadAction<GroupHydratedSchemaType>) => {
+        const hydrated = action.payload;
+        const { group_events: layout, calandar } = hydrated.meta.events;
+
 
         state.group = { status: "ready", data: hydrated };
 
@@ -212,6 +224,7 @@ const OpenedGroupSlice = createSlice({
 });
 
 export const {
+  getCurrentRole,
   getGroupEvents,
   groupOpened,
   displaySection,

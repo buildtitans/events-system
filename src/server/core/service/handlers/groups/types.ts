@@ -1,15 +1,17 @@
-import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import type {
-  CategoriesSchemaType,
-  CategorySchemaType,
-} from "@/src/schemas/groups/categoriesSchema";
+  GroupSearchResultSchemaType,
+  GroupSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
+import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
+import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type {
   ArchivedEventSchemaType,
-  GroupHydratedSchemaType,
   GroupSchemaType,
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
+import { TimelineElementSchemaType } from "../../../../../schemas/groups/timelineSchema";
+import { GroupEventSummarySchemaType } from "../../../../../schemas/events/eventSchema";
 
 export interface IGroupLifecycleHandler {
   createNewGroup(
@@ -37,19 +39,13 @@ export interface IMembershipHandler {
 }
 
 export interface IGroupQueryHandler {
-  hydrateGroup(
-    group_id: GroupSchemaType["id"],
-  ): Promise<GroupHydratedSchemaType>;
+  calandar(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
   archives(
     user_id: AuthenticatedUserId | undefined | null,
     id: GroupSchemaType["id"],
   ): Promise<ArchivedEventSchemaType[]>;
-  getGroupCategories(): Promise<CategoriesSchemaType>;
-  discovery(): Promise<GroupSchemaType[]>;
-  popular(): Promise<GroupSchemaType[]>;
-  searchGroups(query: string): Promise<GroupSchemaType[]>;
-  suggestGroups(query: string): Promise<GroupSchemaType[]>;
-  byCategory(
-    categoryName: CategorySchemaType["name"],
-  ): Promise<GroupSchemaType[]>;
+  categories(): Promise<CategoriesSchemaType>;
+  searchGroups(query: string): Promise<GroupSearchResultSchemaType[]>;
+  suggestGroups(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
+  history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
 }

@@ -2,9 +2,7 @@
 import { JSX } from "react";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import Badge from "@mui/material/Badge";
-import dayjs from "dayjs";
 import { CalendarLookup } from "@/src/lib/hooks/hydration/group/useHydrateCalandar";
-import { checkCalandarDay } from "@/src/lib/utils/dates/checkCalandarDay";
 import {
   getGroupCalendarDayBadgeSx,
   getGroupCalendarDaySx,
@@ -14,23 +12,19 @@ export type DayScheduledProps = PickersDayProps & {
   scheduledDateKeys?: CalendarLookup;
 };
 
-export default function DayScheduled(
-  props: DayScheduledProps,
-): JSX.Element {
+export default function DayScheduled(props: DayScheduledProps): JSX.Element {
   const { scheduledDateKeys, day, outsideCurrentMonth, ...rest } = props;
-  const hasScheduledEvent = checkCalandarDay({
-    scheduledDateKeys,
-    outsideCurrentMonth,
-    day,
-  });
-  const isPast = day.isBefore(dayjs(), "day");
-  const badgeState = isPast ? "past" : "upcoming";
+  const item = scheduledDateKeys?.get(day.format("YYYY-MM-DD"));
+  const badgeState =
+    item?.timeline_status === "today"
+      ? item.event_phase
+      : item?.timeline_status;
 
   return (
     <Badge
       key={day.toString()}
       overlap="circular"
-      invisible={!hasScheduledEvent}
+      invisible={outsideCurrentMonth || !item}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       sx={getGroupCalendarDayBadgeSx(badgeState)}
       badgeContent={<span />}
@@ -39,11 +33,7 @@ export default function DayScheduled(
         {...rest}
         outsideCurrentMonth={outsideCurrentMonth}
         day={day}
-        sx={getGroupCalendarDaySx(
-          hasScheduledEvent,
-          isPast,
-          Boolean(outsideCurrentMonth),
-        )}
+        sx={getGroupCalendarDaySx(badgeState, Boolean(outsideCurrentMonth))}
       />
     </Badge>
   );

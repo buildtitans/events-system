@@ -1,5 +1,12 @@
+import {
+  EventSearchResultSchemaType,
+  EventSearchSuggestionSchemaType,
+  EventSearchResultSchema,
+  EventSearchSuggestionSchema,
+} from "@/src/schemas/search/searchSchema";
+import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { IEventsValidator } from "./eventsValidator";
-import { RawEventsReader } from "./rawEventsReader";
+import { IEventsReader } from "./eventsReader";
 import {
   GroupSchemaType,
   NextEventForGroupSummarySchemaType,
@@ -7,17 +14,23 @@ import {
 import {
   EventDiscoverySummarySchemaType,
   EventReadModelSchemaType,
-  EventsArraySchemaType,
   EventSchemaType,
   GroupEventSummarySchemaType,
+  HydratedEventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { SearchSchemaType } from "@/src/schemas/search/searchSchema";
+import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IEventsSelector {
   discovery(): Promise<EventDiscoverySummarySchemaType[]>;
-  hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType>;
-  search(query: SearchSchemaType): Promise<EventsArraySchemaType>;
-  suggest(query: SearchSchemaType): Promise<EventSchemaType[]>;
+  upcoming(): Promise<EventDiscoverySummarySchemaType[]>;
+  popular(): Promise<EventDiscoverySummarySchemaType[]>;
+  hydrate(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedEventSchemaType>;
+  search(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
+  suggest(query: SearchSchemaType): Promise<EventSearchSuggestionSchemaType[]>;
   nextEventByGroupId(
     group_id: string,
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
@@ -33,12 +46,15 @@ export interface IEventsSelector {
 export class EventsSelector implements IEventsSelector {
   constructor(
     private readonly validate: IEventsValidator,
-    private readonly read: RawEventsReader,
+    private readonly read: IEventsReader,
   ) {}
 
-  async hydrate(id: EventSchemaType["id"]): Promise<EventReadModelSchemaType> {
-    const raw = await this.read.rawHydratedWithGroupDetails(id);
-    return this.validate.eventWithGroupDetails(raw);
+  async hydrate(
+    id: EventSchemaType["id"],
+    userId?: AuthenticatedUserId,
+  ): Promise<HydratedEventSchemaType> {
+    const raw = await this.read.hydrateEvent(id, userId);
+    return this.validate.hydratedEvent(raw);
   }
 
   async discovery(): Promise<EventDiscoverySummarySchemaType[]> {
@@ -46,21 +62,29 @@ export class EventsSelector implements IEventsSelector {
     return this.validate.eventsForDiscovery(raw);
   }
 
-  async search(query: SearchSchemaType): Promise<EventsArraySchemaType> {
-    const raw = await this.read.rawSearchByTitle(query);
-
-    return this.validate.events(raw);
+  async popular(): Promise<EventDiscoverySummarySchemaType[]> {
+    const raw = await this.read.popular();
+    return this.validate.eventsForDiscovery(raw);
   }
 
-  async suggest(query: SearchSchemaType): Promise<EventSchemaType[]> {
-    const raw = await this.read.rawSuggestByTitle(query);
-    return this.validate.events(raw);
+  async search(
+    query: SearchSchemaType,
+  ): Promise<EventSearchResultSchemaType[]> {
+    const raw = await this.read.search(query);
+    return raw.map((row) => validateOrThrow(EventSearchResultSchema, row));
+  }
+
+  async suggest(
+    query: SearchSchemaType,
+  ): Promise<EventSearchSuggestionSchemaType[]> {
+    const raw = await this.read.suggest(query);
+    return raw.map((row) => validateOrThrow(EventSearchSuggestionSchema, row));
   }
 
   async nextEventByGroupId(
     group_id: string,
   ): Promise<NextEventForGroupSummarySchemaType | undefined> {
-    const nextEvent = await this.read.rawNextEventByGroupId(group_id);
+    const nextEvent = await this.read.nextEvent(group_id);
 
     if (!nextEvent) return undefined;
 
@@ -68,12 +92,17 @@ export class EventsSelector implements IEventsSelector {
   }
 
   async allScheduled(): Promise<EventSchemaType[]> {
-    const raw = await this.read.allRawScheduledEvents();
+    const raw = await this.read.scheduled();
     return this.validate.events(raw);
   }
 
+  async upcoming(): Promise<EventDiscoverySummarySchemaType[]> {
+    const raw = await this.read.upcoming();
+    return this.validate.eventsForDiscovery(raw);
+  }
+
   async byIds(ids: EventSchemaType["id"][]) {
-    const raw = await this.read.rawByIds(ids);
+    const raw = await this.read.byIds(ids);
     return this.validate.eventsForDiscovery(raw);
   }
 

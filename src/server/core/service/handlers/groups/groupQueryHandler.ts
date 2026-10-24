@@ -1,19 +1,20 @@
+import type {
+  GroupSearchResultSchemaType,
+  GroupSearchSuggestionSchemaType,
+} from "@/src/schemas/search/searchSchema";
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import {
   ArchivedEventSchemaType,
-  GroupHydratedSchemaType,
   GroupSchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import {
-  CategoriesSchemaType,
-  CategorySchemaType,
-} from "@/src/schemas/groups/categoriesSchema";
+import { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { IGroupQueryHandler } from "./types";
 import { GroupServiceDb } from "../../services/types";
 import { IAuthorization } from "../../auth/authorization";
+import { TimelineElementSchemaType } from "../../../../../schemas/groups/timelineSchema";
+import { GroupEventSummarySchemaType } from "../../../../../schemas/events/eventSchema";
 
 export class GroupQueryHandler implements IGroupQueryHandler {
   constructor(
@@ -21,37 +22,25 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     private readonly policy: IAuthorization,
   ) {}
 
-  async hydrateGroup(
-    group_id: GroupSchemaType["id"],
-  ): Promise<GroupHydratedSchemaType> {
-    return await this.db.groups.select.hydrateGroup(group_id);
+  async calandar(
+    id: GroupSchemaType["id"],
+  ): Promise<TimelineElementSchemaType[]> {
+    return this.db.groups.select.timeline(id);
   }
 
-  async getGroupCategories(): Promise<CategoriesSchemaType> {
+  async categories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
   }
 
-  async discovery(): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.all();
-  }
-
-  async popular(): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.popular();
-  }
-
-  async byCategory(
-    categoryId: CategorySchemaType["id"],
-  ): Promise<GroupSchemaType[]> {
-    return await this.db.groups.select.byCategory(categoryId);
-  }
-
-  async suggestGroups(query: string): Promise<GroupSchemaType[]> {
+  async suggestGroups(
+    query: string,
+  ): Promise<GroupSearchSuggestionSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.suggestByName(validatedQuery);
   }
 
-  async searchGroups(query: string): Promise<GroupSchemaType[]> {
+  async searchGroups(query: string): Promise<GroupSearchResultSchemaType[]> {
     const trimmed = query.trim();
     const validatedQuery = validateOrThrow(SearchSchema, trimmed);
     return await this.db.groups.select.search(validatedQuery);
@@ -64,5 +53,11 @@ export class GroupQueryHandler implements IGroupQueryHandler {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, id);
     return await this.db.groups.select.archives(id);
+  }
+
+  async history(
+    id: GroupSchemaType["id"],
+  ): Promise<GroupEventSummarySchemaType[]> {
+    return await this.db.groups.select.history(id);
   }
 }
