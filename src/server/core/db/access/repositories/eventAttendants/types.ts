@@ -8,7 +8,7 @@ export interface IEventAttendantsReader {
   }: {
     user_id: AuthenticatedUserId;
     event_id: string;
-  }): Promise<{ status: string }>;
+  }): Promise<string>;
 }
 
 export type RawRsvp = {

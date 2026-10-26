@@ -1,9 +1,10 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
-import type { PrivateUserAttendanceUpdate } from "../../types/types";
-import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import { RsvpUpdateResponseSchemaType } from "../../../../../../schemas/events/rsvpSchema";
+import type { PrivateUserAttendanceUpdate } from "../../../../types/types";
+import { EventAttendantsValidator } from "../validate/eventAttendantsValidator";
+import { RsvpUpdateResponseSchemaType } from "../../../../../../../../schemas/events/rsvpSchema";
+import { IEventAttendantsParser } from "../parse/eventAttendantsParser";
 
 export interface IEventAttendantsWriter {
   rsvp(
@@ -16,6 +17,7 @@ export class EventAttendantsWriter implements IEventAttendantsWriter {
   constructor(
     private readonly validator: EventAttendantsValidator,
     private readonly db: Kysely<DB>,
+    private readonly parse: IEventAttendantsParser,
   ) {}
 
   async rsvp(
@@ -68,7 +70,7 @@ export class EventAttendantsWriter implements IEventAttendantsWriter {
       .executeTakeFirstOrThrow();
 
     return {
-      updated: this.validator.parseRawAttendant(updated),
+      updated: this.parse.toAttendant(updated),
       headCount: {
         going: Number(attendance.going),
         interested: Number(attendance.interested),

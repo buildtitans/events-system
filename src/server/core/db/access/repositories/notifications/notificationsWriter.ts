@@ -6,8 +6,9 @@ import {
   NotificationSchemaType,
   UserNotificationsSchemaType,
 } from "@/src/schemas/notifications/notificationsSchema";
-import { INotificationsParser } from "./notificationsParser";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
+import { INotificationValidator } from "./notificationValidator";
+import { INotificationParser } from "./notificationParser";
 
 export interface INotificationsWriter {
   markOpenedNotifications({
@@ -26,7 +27,8 @@ export interface INotificationsWriter {
 export class NotificationsWriter implements INotificationsWriter {
   constructor(
     private readonly db: Kysely<DB>,
-    private readonly parse: INotificationsParser,
+    private readonly validate: INotificationValidator,
+    private readonly parse: INotificationParser,
   ) {}
 
   async markOpenedNotifications({
@@ -93,18 +95,7 @@ export class NotificationsWriter implements INotificationsWriter {
       .where("n.user_id", "=", userId)
       .executeTakeFirstOrThrow();
 
-    const { created_at, updated_at, group_name, group_slug, ...rest } = result;
-
-    const rawNotification = {
-      created_at: created_at.toISOString(),
-      updated_at: updated_at?.toISOString() ?? null,
-      ...rest,
-    };
-
-    return this.parse.newNotification({
-      kind: "new",
-      data: rawNotification,
-      meta: { group_name, group_slug },
-    });
+    const newNotification = this.parse.toNewNotification(result);
+    return this.validate.newNotification(newNotification);
   }
 }

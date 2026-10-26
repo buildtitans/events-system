@@ -1,7 +1,7 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
-import { GroupMembersValidator } from "./groupMembersValidator";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
+import { GroupMembersValidator } from "../validate/groupMembersValidator";
 
 type InsertableMember = Pick<GroupMemberSchemaType, "group_id" | "user_id">;
 
