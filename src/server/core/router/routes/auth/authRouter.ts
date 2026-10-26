@@ -29,7 +29,6 @@ const sessionRouter = router({
             cause: error,
           });
         }
-
         throw error;
       }
 
@@ -86,12 +85,6 @@ const statusRouter = router({
     }
 
     return result;
-  }),
-
-  checkSession: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.api.services.domains.session.recoverSession(
-      ctx.req.cookies.session,
-    );
   }),
 });
 

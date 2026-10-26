@@ -31,12 +31,6 @@ const groupEventsRoute = router({
     .query(async ({ ctx, input }) => {
       return await ctx.api.services.domains.groups.query.calandar(input);
     }),
-
-  list: publicProcedure
-    .input(validateRouterInput(GroupIDForInsertSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.getGroupEvents(input);
-    }),
 });
 
 const membersRoute = router({

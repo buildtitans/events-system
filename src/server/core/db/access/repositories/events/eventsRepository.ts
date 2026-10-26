@@ -1,10 +1,13 @@
 import type { Kysely } from "kysely";
 import type { DB } from "@/src/server/core/db/types/db";
-import { EventsSelector, IEventsSelector } from "./eventsSelector";
-import { EventsValidator, IEventsValidator } from "./eventsValidator";
-import { EventsWriter, IEventsWriter } from "./eventsWriter";
-import { EventsReader, IEventsReader } from "./eventsReader";
-import { EventsParser } from "./eventsParser";
+import {
+  EventsSelector,
+  IEventsSelector,
+} from "./handlers/select/eventsSelector";
+import { EventsValidator, IEventsValidator } from "@/src/server/core/db/access/repositories/events/handlers/validate/eventsValidator";
+import { EventsWriter, IEventsWriter } from "@/src/server/core/db/access/repositories/events/handlers/write/eventsWriter";
+import { EventsReader, IEventsReader } from "@/src/server/core/db/access/repositories/events/handlers/read/eventsReader";
+import { EventsParser } from "@/src/server/core/db/access/repositories/events/handlers/parse/eventsParser";
 
 export interface IEventsRepository {
   readonly select: IEventsSelector;

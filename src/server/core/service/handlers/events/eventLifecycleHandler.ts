@@ -5,7 +5,7 @@ import {
 } from "@/src/schemas/events/eventSchema";
 import { IAuthorization } from "@/src/server/core/service/auth/authorization";
 import { EventLifecycleDb, IEventLifecycleHandler } from "./types";
-import { AuthenticatedUserId } from "../session/SessionHandler";
+import { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 
 export class EventLifecycleHandler implements IEventLifecycleHandler {
   constructor(

@@ -21,7 +21,6 @@ export const hydrateUserMemberships = createAsyncThunk(
       if (!result) {
         throw new Error(`Failed to hydrate user memberships`);
       }
-
       return result;
     } catch (err) {
       logCaughtError("UserSlice.hydrateUserMemberships()", err);

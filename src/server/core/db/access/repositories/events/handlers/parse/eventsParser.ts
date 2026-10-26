@@ -1,28 +1,25 @@
 import {
   EventSearchResultSchemaType,
   EventSearchSuggestionSchemaType,
-} from "../../../../../../schemas/search/searchSchema";
+} from "@/src/schemas/search/searchSchema";
 import {
-  EventById,
   EventForDiscovery,
   RawDiscoverableEvent,
   RawGroupEvent,
   RawHydratedEventShape,
   RawNextEvent,
   RawReadHydratedEvent,
-  ReadEventById,
   ReadGroupEvent,
   ReadNextEvent,
   ReadSearchResult,
   ReadSuggestedEvent,
-} from "./types";
+} from "@/src/server/core/db/access/repositories/events/types";
 
 export interface IEventsParser {
   toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEventShape;
   toDiscoverableEvents(results: EventForDiscovery[]): RawDiscoverableEvent[];
   toGroupEvents(results: ReadGroupEvent[]): RawGroupEvent[];
   toNextEvent(result: ReadNextEvent): RawNextEvent | undefined;
-  toEventsByIds(results: ReadEventById[]): EventById[];
   toSuggestions(rows: ReadSuggestedEvent[]): EventSearchSuggestionSchemaType[];
   toSearchResults(rows: ReadSearchResult[]): EventSearchResultSchemaType[];
 }
@@ -112,36 +109,6 @@ export class EventsParser implements IEventsParser {
         },
       }),
     );
-  }
-
-  public toEventsByIds(results: ReadEventById[]): EventById[] {
-    return results.map((event) => {
-      const {
-        going_count,
-        interested_count,
-        group_name,
-        category_name,
-        group_location,
-        starts_at,
-        ...rest
-      } = event;
-      return {
-        event: {
-          ...rest,
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-        },
-        meta: {
-          attendance: {
-            going: Number(going_count),
-            interested: Number(interested_count),
-          },
-          group_name,
-          group_location: group_location ?? "Online",
-          category_name,
-        },
-      };
-    });
   }
 
   public toNextEvent(result: ReadNextEvent): RawNextEvent | undefined {

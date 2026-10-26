@@ -1,7 +1,11 @@
 import { Type, Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
-import { EventStatusSchema } from "./eventSchema";
-import { EventAttendantStatusSchema } from "./eventAttendantsSchema";
+import { EventStatusSchema } from "@/src/schemas/events/eventSchema";
+import {
+  EventAttendantsSchema,
+  EventAttendantStatusSchema,
+  EventHeadCountSchema,
+} from "./eventAttendantsSchema";
 import { GroupSchema } from "../groups/groupSchema";
 import { CategorySchema } from "../groups/categoriesSchema";
 
@@ -34,3 +38,12 @@ export const RsvpSchemaArray = Type.Array(RsvpSchema);
 export type RsvpSchemaType = Static<typeof RsvpSchema>;
 
 export const CompiledRsvpSchema = TypeCompiler.Compile(RsvpSchema);
+
+export const RsvpUpdateResponseSchema = Type.Object({
+  updated: EventAttendantsSchema,
+  headCount: EventHeadCountSchema,
+});
+
+export type RsvpUpdateResponseSchemaType = Static<
+  typeof RsvpUpdateResponseSchema
+>;

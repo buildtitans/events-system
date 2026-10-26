@@ -57,7 +57,7 @@ export class UserSelectHandler implements IUserSelectHandler {
     user_id: AuthenticatedUserId | undefined | null,
   ): Promise<GroupDiscoverySummarySchemaType[][]> {
     const userId = this.policy.requireAuthenticated(user_id);
-    const createdGroups = await this.db.groups.select.byOrganizerId(userId);
+    const createdGroups = await this.db.groups.select.view.list.byOrganizerId(userId);
     return chunkUserGroupsIntoPages(createdGroups);
   }
 

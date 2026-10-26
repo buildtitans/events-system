@@ -1,10 +1,4 @@
-import type {
-  GroupSearchResultSchemaType,
-  GroupSearchSuggestionSchemaType,
-} from "@/src/schemas/search/searchSchema";
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
-import { validateOrThrow } from "@/src/schemas/validateOrThrow";
-import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import {
   ArchivedEventSchemaType,
   GroupSchemaType,
@@ -25,25 +19,11 @@ export class GroupQueryHandler implements IGroupQueryHandler {
   async calandar(
     id: GroupSchemaType["id"],
   ): Promise<TimelineElementSchemaType[]> {
-    return this.db.groups.select.timeline(id);
+    return this.db.groups.select.query.timeline(id);
   }
 
   async categories(): Promise<CategoriesSchemaType> {
     return await this.db.categories.getCategories();
-  }
-
-  async suggestGroups(
-    query: string,
-  ): Promise<GroupSearchSuggestionSchemaType[]> {
-    const trimmed = query.trim();
-    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
-    return await this.db.groups.select.suggestByName(validatedQuery);
-  }
-
-  async searchGroups(query: string): Promise<GroupSearchResultSchemaType[]> {
-    const trimmed = query.trim();
-    const validatedQuery = validateOrThrow(SearchSchema, trimmed);
-    return await this.db.groups.select.search(validatedQuery);
   }
 
   async archives(
@@ -52,12 +32,12 @@ export class GroupQueryHandler implements IGroupQueryHandler {
   ): Promise<ArchivedEventSchemaType[]> {
     const userId = this.policy.requireAuthenticated(user_id);
     await this.policy.requireOrganizer(userId, id);
-    return await this.db.groups.select.archives(id);
+    return await this.db.groups.select.query.archives(id);
   }
 
   async history(
     id: GroupSchemaType["id"],
   ): Promise<GroupEventSummarySchemaType[]> {
-    return await this.db.groups.select.history(id);
+    return await this.db.groups.select.query.history(id);
   }
 }

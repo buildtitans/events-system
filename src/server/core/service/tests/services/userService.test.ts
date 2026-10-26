@@ -39,7 +39,7 @@ describe("UserService.select.memberships", () => {
     await expect(service.select.memberships(USER_ID)).resolves.toEqual(surfaces);
     expect(policyMock.requireAuthenticated).toHaveBeenCalledWith(USER_ID);
     expect(db.groupMembers.select.memberships).toHaveBeenCalledWith(USER_ID);
-    expect(db.groups.select.all).not.toHaveBeenCalled();
+    expect(db.groups.select.view.list.all).not.toHaveBeenCalled();
   });
 });
 
@@ -66,7 +66,7 @@ describe("UserService.select.groups", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     db = createMockDb();
-    getGroupsByOrganizerIdinDb = db.groups.select.byOrganizerId as jest.Mock;
+    getGroupsByOrganizerIdinDb = db.groups.select.view.list.byOrganizerId as jest.Mock;
     service = new UserService(db, policyMock);
   });
 

@@ -4,6 +4,73 @@ import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
 import { Events } from "../../../types/db";
 import { RawGroupEvent, ReadGroupEvent } from "../events/types";
 
+export type ParsedRefreshGroupRead = {
+  next_event?:
+    | {
+        event: {
+          id: string;
+          group_id: string;
+          status: string;
+          starts_at: string;
+          starts_at_ms: number;
+          img: string;
+          tag: string | null;
+          title: string;
+          description: string;
+          meeting_location: string;
+        };
+        meta: {
+          category_name: string;
+          attendance: {
+            going: number;
+            interested: number;
+          };
+        };
+      }
+    | undefined;
+  group_events: RawGroupEvent[];
+  calandar: TimelineElementSchemaType[];
+};
+
+export type RefreshGroupRead = {
+  category_name: string;
+  next_event: {
+    id: string;
+    description: string;
+    group_id: string;
+    img: string;
+    meeting_location: string;
+    starts_at: string;
+    status: string;
+    tag: string | null;
+    title: string;
+    going_count: string | number;
+    interested_count: string | number;
+  } | null;
+  group_events: {
+    id: string;
+    starts_at: string;
+    group_id: string;
+    status: string;
+    img: string;
+    tag: string | null;
+    title: string;
+    meeting_location: string;
+    going_count: string | number;
+    interested_count: string | number;
+  }[];
+  calandar: {
+    id: string;
+    created_at: string;
+    group_id: string;
+    starts_at: string;
+    image: string;
+    number_attended: string | number;
+    timeline_status: "past" | "today" | "upcoming";
+  }[];
+  group_name: string;
+};
+
 export type RawGroupForDiscovery = {
   description: string | null;
   id: string;
@@ -211,7 +278,10 @@ export type ReadHydratedGroupResult = {
   member_count: number;
   next_event: NextGroupEventRead;
   group_events: GroupEventQueryResult[];
-  calandar: (Omit<ReadTimelineItem, "starts_at" | "created_at" | "number_attended"> & {
+  calandar: (Omit<
+    ReadTimelineItem,
+    "starts_at" | "created_at" | "number_attended"
+  > & {
     starts_at: string;
     created_at: string;
     number_attended: string | number;

@@ -12,11 +12,11 @@ import {
   HydratedEventSchemaType,
 } from "@/src/schemas/events/eventSchema";
 import { Selectable } from "kysely";
-import { Events } from "../../../types/db";
+import { Events } from "@/src/server/core/db/types/db";
 import {
   NextEventForGroupSummarySchema,
   NextEventForGroupSummarySchemaType,
-} from "../../../../../../schemas/groups/groupSchema";
+} from "@/src/schemas/groups/groupSchema";
 
 export interface IEventsValidator {
   hydratedEvent(data: unknown): HydratedEventSchemaType;

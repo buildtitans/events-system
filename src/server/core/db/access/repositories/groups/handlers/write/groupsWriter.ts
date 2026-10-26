@@ -6,7 +6,7 @@ import type {
   NewGroupInputSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { slugify } from "@/src/server/core/lib/utils/slugify";
-import { GroupsValidator } from "./groupsValidator";
+import { GroupsValidator } from "../validate/groupsValidator";
 
 export interface IGroupsWriter {
   createGroup(

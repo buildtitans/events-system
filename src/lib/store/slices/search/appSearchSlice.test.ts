@@ -15,7 +15,7 @@ jest.mock("./thunks", () => {
   };
 });
 
-import { makeEventResult } from "../../services/search/search.fixtures";
+import { makeEventResult } from "@/src/test/fixtures/search";
 import appSearchReducer, { resetSearchResults } from "./appSearchSlice";
 import { searchQuery } from "./thunks";
 

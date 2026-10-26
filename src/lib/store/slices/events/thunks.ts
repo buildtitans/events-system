@@ -15,8 +15,6 @@ import {
   enqueueDrawer,
   enqueueSnackbar,
 } from "@/src/lib/store/slices/rendering/RenderingSlice";
-import { getGroupEvents } from "../groups/OpenedGroupSlice";
-import { updateRsvpStatus } from "./EventDrawerSlice";
 
 type UpdateRsvpParams = {
   event_id: EventSchemaType["id"];
@@ -41,7 +39,6 @@ export const updateRSVP = createAsyncThunk(
       thunkAPI.dispatch(
         enqueueAlert({ action: "updateAttendance", kind: "success" }),
       );
-      thunkAPI.dispatch(updateRsvpStatus(result.status));
       return result;
     } catch (err) {
       logCaughtError("EventSlice.updateRSVP()", err);
@@ -82,8 +79,6 @@ export const updateEventStatus = createAsyncThunk(
           enqueueSnackbar({ kind: "changeEventScheduling", status: "failed" }),
         );
       }
-
-      thunkAPI.dispatch(getGroupEvents({ status: "refreshing" }));
 
       thunkAPI.dispatch(enqueueDrawer(null));
     } catch (err) {

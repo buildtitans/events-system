@@ -1,8 +1,6 @@
 import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
-import type {
-  GroupEventSummarySchemaType,
-} from "@/src/schemas/events/eventSchema";
+import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import {
   ArchivedEventSchemaType,
   GroupHydratedSchemaType,
@@ -45,6 +43,17 @@ export type NextEventState = AsyncState<
 >;
 
 export type GroupHydrated = AsyncState<GroupHydratedSchemaType>;
+
+export type ScheduledGroupEvents =
+  GroupHydratedSchemaType["meta"]["events"]["group_events"];
+
+export type GroupEventsState =
+  | { status: "initial" }
+  | { status: "pending" }
+  | { status: "ready"; data: ScheduledGroupEvents }
+  | { status: "refreshing"; data: ScheduledGroupEvents | undefined }
+  | { status: "n/a"; message: "No upcoming events scheduled" }
+  | { status: "failed"; error: string };
 
 export type EventsOfGroup =
   | AsyncState<EventsPages, "No events have been scheduled for this group">

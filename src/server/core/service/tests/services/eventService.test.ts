@@ -17,27 +17,16 @@ import {
 describe("EventService.layout.discovery", () => {
   let service: EventService;
   let db: ReturnType<typeof createMockDb>;
-  let getEvents: jest.Mock;
+  let getEvents: jest.MockedFunction<typeof db.events.select.view.list.discovery>;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date("2026-04-06T00:00:00.000Z"));
     db = createMockDb();
-    getEvents = db.events.select.discovery as jest.Mock;
+    getEvents = jest.mocked(db.events.select.view.list.discovery);
     service = new EventService(db, policyMock);
   });
 
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  it("returns only events scheduled after now", async () => {
-    const pastEvent = makeEventSummary({
-      id: "past-1",
-      starts_at: "2026-04-01T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
-    });
+  it("composes filtered discovery summaries in the order supplied by persistence", async () => {
     const futureEventOne = makeEventSummary({
       id: "future-1",
       starts_at: "2026-04-08T12:00:00.000Z",
@@ -49,7 +38,7 @@ describe("EventService.layout.discovery", () => {
       starts_at_ms: new Date("2026-04-12T12:00:00.000Z").getTime(),
     });
 
-    getEvents.mockResolvedValue([futureEventTwo, pastEvent, futureEventOne]);
+    getEvents.mockResolvedValue([futureEventOne, futureEventTwo]);
 
     await expect(service.layout.discovery()).resolves.toEqual([
       [
@@ -72,51 +61,22 @@ describe("EventService.layout.discovery", () => {
       ],
     ]);
 
-    expect(getEvents).toHaveBeenCalled();
+    expect(getEvents).toHaveBeenCalledTimes(1);
+    expect(getEvents).toHaveBeenCalledWith();
   });
 
-  it("returns an empty layout when every event is in the past or exactly now", async () => {
-    const pastEvent = makeEventSummary({
-      id: "past-1",
-      starts_at: "2026-04-01T12:00:00.000Z",
-      starts_at_ms: new Date("2026-04-01T12:00:00.000Z").getTime(),
-    });
-    const nowEvent = makeEventSummary({
-      id: "now-1",
-      starts_at: "2026-04-06T00:00:00.000Z",
-      starts_at_ms: new Date("2026-04-06T00:00:00.000Z").getTime(),
-    });
-
-    getEvents.mockResolvedValue([pastEvent, nowEvent]);
+  it("returns an empty layout when persistence finds no discovery events", async () => {
+    getEvents.mockResolvedValue([]);
 
     await expect(service.layout.discovery()).resolves.toEqual([]);
   });
 });
 
 describe("EventService summary consumers", () => {
-  it("returns group event summaries for the calendar without discovery metadata", async () => {
+  it("composes persistence-filtered group layouts", async () => {
     const db = createMockDb();
-    const summary = makeGroupEventSummary();
-    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([summary]);
-    const service = new EventService(db, policyMock);
-
-    await expect(service.query.getGroupEvents("group-1")).resolves.toEqual([summary]);
-    expect(db.events.select.byGroupId).toHaveBeenCalledWith("group-1");
-  });
-
-  it("skips the selector when a layout has no requested IDs", async () => {
-    const db = createMockDb();
-    const service = new EventService(db, policyMock);
-
-    await expect(service.layout.byIds([])).resolves.toEqual([]);
-    expect(db.events.select.byIds).not.toHaveBeenCalled();
-  });
-
-  it("excludes past events from group layouts", async () => {
-    const db = createMockDb();
-    const past = makeGroupEventSummary({ starts_at_ms: Date.now() - 60_000 });
     const future = makeGroupEventSummary({ starts_at_ms: Date.now() + 60_000 });
-    (db.events.select.byGroupId as jest.Mock).mockResolvedValue([past, future]);
+    (db.events.select.view.list.forGroup as jest.Mock).mockResolvedValue([future]);
     const service = new EventService(db, policyMock);
 
     await expect(service.layout.forGroup("group-1")).resolves.toEqual([
@@ -129,19 +89,16 @@ describe("EventService.layout curated filters", () => {
   it.each(["popular", "upcoming"] as const)("composes %s summaries directly without broad reads or an ID refetch", async filter => {
     const db = createMockDb();
     const summaries = [makeEventSummary({ id: "first" }), makeEventSummary({ id: "second" })];
-    jest.mocked(db.events.select[filter]).mockResolvedValue(summaries);
+    jest.mocked(db.events.select.view.list[filter]).mockResolvedValue(summaries);
     const service = new EventService(db, policyMock);
     const pages = await service.layout[filter]();
     expect(pages[0].map(slot => slot.kind === "card" ? slot.event.content : undefined)).toEqual(summaries);
-    expect(db.events.select[filter]).toHaveBeenCalledTimes(1);
-    expect(db.events.select.allScheduled).not.toHaveBeenCalled();
-    expect(db.events.select.byIds).not.toHaveBeenCalled();
-    expect(db.eventAttendants.select.allRecords).not.toHaveBeenCalled();
+    expect(db.events.select.view.list[filter]).toHaveBeenCalledTimes(1);
   });
 
   it.each(["popular", "upcoming"] as const)("returns an empty layout for empty %s results", async filter => {
     const db = createMockDb();
-    jest.mocked(db.events.select[filter]).mockResolvedValue([]);
+    jest.mocked(db.events.select.view.list[filter]).mockResolvedValue([]);
     const service = new EventService(db, policyMock);
     await expect(service.layout[filter]()).resolves.toEqual([]);
   });

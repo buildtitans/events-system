@@ -3,6 +3,7 @@ import {
   GroupSchemaType,
   GroupDiscoverySummarySchemaType,
   GroupHydratedSchema,
+  GroupRefreshSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
 import { GroupServiceDb } from "../../services/types";
@@ -19,6 +20,7 @@ export interface IGroupHydrationHandler {
     slug: GroupSchemaType["slug"],
     userId?: AuthenticatedUserId,
   ): Promise<GroupHydratedSchemaType>;
+  refresh(id: GroupSchemaType["id"]): Promise<GroupRefreshSchemaType>;
   readonly list: IListGroupsHandler;
 }
 
@@ -34,7 +36,7 @@ export class GroupHydrationHandler implements IGroupHydrationHandler {
     slug: GroupSchemaType["slug"],
     userId?: AuthenticatedUserId,
   ): Promise<GroupHydratedSchemaType> {
-    const hydrated = await this.db.groups.select.hydrateGroup(slug, userId);
+    const hydrated = await this.db.groups.select.view.single(slug, userId);
     const { group_events, next_event, calandar, ...rest } = hydrated.meta;
     const groupEventSurfaces = this.toGroupEventSurfaces(group_events);
     const layout = this.eventLayouts.compileLayout(groupEventSurfaces);
@@ -51,6 +53,17 @@ export class GroupHydrationHandler implements IGroupHydrationHandler {
       },
     };
     return validateOrThrow(GroupHydratedSchema, hydratedGroup);
+  }
+
+  async refresh(id: GroupSchemaType["id"]): Promise<GroupRefreshSchemaType> {
+    const result = await this.db.groups.select.view.refresh(id);
+    const { group_events, ...rest } = result;
+    const surfaces = this.toGroupEventSurfaces(group_events);
+    const layout = this.eventLayouts.compileLayout(surfaces);
+    return {
+      group_events: layout,
+      ...rest,
+    };
   }
 
   private toGroupEventSurfaces(
@@ -74,16 +87,16 @@ interface IListGroupsHandler {
 class ListGroupsHandler implements IListGroupsHandler {
   constructor(private readonly db: GroupServiceDb) {}
   async discovery(): Promise<GroupDiscoverySummarySchemaType[]> {
-    return await this.db.groups.select.all();
+    return await this.db.groups.select.view.list.all();
   }
 
   async popular(): Promise<GroupDiscoverySummarySchemaType[]> {
-    return await this.db.groups.select.popular();
+    return await this.db.groups.select.view.list.popular();
   }
 
   async byCategory(
     categoryId: CategorySchemaType["id"],
   ): Promise<GroupDiscoverySummarySchemaType[]> {
-    return await this.db.groups.select.byCategory(categoryId);
+    return await this.db.groups.select.view.list.byCategory(categoryId);
   }
 }

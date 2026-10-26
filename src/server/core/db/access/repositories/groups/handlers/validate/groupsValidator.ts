@@ -4,10 +4,10 @@ import {
   GroupArchivesSchema,
   GroupDiscoverySchema,
   GroupDiscoverySummarySchemaType,
-  GroupHydratedSchema,
-  GroupHydratedSchemaType,
   GroupHydrationReadSchema,
   GroupHydrationReadSchemaType,
+  GroupRefreshReadSchema,
+  GroupRefreshReadSchemaType,
   GroupSchema,
   GroupsSchema,
   type GroupSchemaType,
@@ -15,19 +15,34 @@ import {
 } from "@/src/schemas/groups/groupSchema";
 import type { Selectable } from "kysely";
 import type { Groups } from "@/src/server/core/db/types/db";
-import { EventsValidator } from "../events/eventsValidator";
 import {
   TimelineElementSchemaType,
   TimelineSchema,
-} from "../../../../../../schemas/groups/timelineSchema";
-import { RawArchives } from "./types";
+} from "../../../../../../../../schemas/groups/timelineSchema";
+import { RawArchives } from "../../types";
 import {
   EventsForGoupSchema,
   GroupEventSummarySchemaType,
-} from "../../../../../../schemas/events/eventSchema";
+} from "../../../../../../../../schemas/events/eventSchema";
+import { EventsValidator } from "@/src/server/core/db/access/repositories/events/handlers/validate/eventsValidator";
 
-export class GroupsValidator {
+export interface IGroupsValidator {
+  discovery(data: unknown): GroupDiscoverySummarySchemaType[];
+  timeline(data: unknown): TimelineElementSchemaType[];
+  hydrated(data: unknown): GroupHydrationReadSchemaType;
+  groups(groups: Selectable<Groups>[]): GroupsSchemaType;
+  eventsForGroup(data: unknown): GroupEventSummarySchemaType[];
+  archives(archives: RawArchives): ArchivedEventSchemaType[];
+  group(group: Selectable<Groups>): GroupSchemaType;
+  refresh(data: unknown): GroupRefreshReadSchemaType;
+}
+
+export class GroupsValidator implements IGroupsValidator {
   constructor(private readonly eventsValidator: EventsValidator) {}
+
+  refresh(data: unknown): GroupRefreshReadSchemaType {
+    return validateOrThrow(GroupRefreshReadSchema, data);
+  }
 
   discovery(data: unknown): GroupDiscoverySummarySchemaType[] {
     return validateOrThrow(GroupDiscoverySchema, data);

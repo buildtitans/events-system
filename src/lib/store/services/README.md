@@ -37,15 +37,19 @@ the server remains authoritative for business rules and access control.
 ```text
 services/
 ├── filter/         # Resolve display filters into domain queries
-├── hydration/      # Compose data required to initialize client views
 ├── notifications/  # Build and submit notification workflows
-├── search/         # Query and compile application search results
 └── types.ts        # Shared service result types
 ```
 
 Services receive the typed tRPC client through their constructor. Keeping the
 transport dependency explicit makes the workflow easy to test and avoids
 coupling it to a particular component or store instance.
+
+Application search now uses direct requests from Redux thunks to
+`discovery.app.search` and `discovery.app.suggestions`. The server owns the
+concurrent event/group reads and result compilation; no client search service
+or compiler is needed. Address lookups use `discovery.locations.cities` and
+`discovery.locations.addresses`.
 
 ## Testing
 

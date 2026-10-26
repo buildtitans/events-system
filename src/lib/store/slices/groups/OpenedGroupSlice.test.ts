@@ -1,3 +1,7 @@
+jest.mock("../events/thunks", () => {
+  const { createAsyncThunk } = jest.requireActual("@reduxjs/toolkit") as typeof import("@reduxjs/toolkit");
+  return { updateEventStatus: createAsyncThunk("EventSlice/updateEventStatus", async () => undefined) };
+});
 jest.mock("./thunks", () => {
   const { createAsyncThunk } = jest.requireActual(
     "@reduxjs/toolkit",
@@ -66,7 +70,7 @@ describe("OpenedGroupSlice", () => {
     ));
     expect(state.group).toEqual({ status: "ready", data: hydrated });
     expect(state.events.status).toBe("n/a");
-    expect(state.calandar.status).toBe("n/a");
+    expect(state).not.toHaveProperty("calandar");
   });
 
   it("keeps a group ready when it has no upcoming event", () => {
@@ -85,22 +89,21 @@ describe("OpenedGroupSlice", () => {
     ));
     const pending = openedGroupReducer(initial, refreshGroupEvents.pending("refresh-1", "group-1"));
     expect(pending.events.status).toBe("refreshing");
-    expect(pending.calandar.status).toBe("pending");
     expect(pending.group).toEqual(initial.group);
     const nextEvent = makeNextEvent();
     const timelineItem = makeTimelineItem();
     const state = openedGroupReducer(pending, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandar: [timelineItem], nextEvent,
+      group_events: [], calandar: [timelineItem], next_event: nextEvent,
     }, "refresh-1", "group-1"));
-    expect(state.calandar).toEqual({ status: "ready", data: [timelineItem] });
+    expect(state.group).toMatchObject({ data: { meta: { events: { calandar: [timelineItem] } } } });
     expect(state.events.status).toBe("n/a");
   });
 
   it("settles an empty calendar refresh as unavailable", () => {
     const state = openedGroupReducer(undefined, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandar: [], nextEvent: undefined,
+      group_events: [], calandar: [], next_event: undefined,
     }, "refresh-1", "group-1"));
-    expect(state.calandar.status).toBe("n/a");
+    expect(state).not.toHaveProperty("calandar");
     expect(state.events.status).toBe("n/a");
   });
 
@@ -113,7 +116,6 @@ describe("OpenedGroupSlice", () => {
       new Error("network unavailable"), "refresh-1", "group-1",
     ));
     expect(state.events.status).toBe("failed");
-    expect(state.calandar.status).toBe("failed");
     expect(state.group).toEqual(initial.group);
   });
 
@@ -129,7 +131,7 @@ describe("OpenedGroupSlice", () => {
     { scenario: "assigns the first next event", previous: undefined, nextEvent: previousEvent },
     { scenario: "replaces the next event", previous: previousEvent, nextEvent: replacementEvent },
     { scenario: "updates details and attendance for the same event ID", previous: previousEvent, nextEvent: updatedEvent },
-    { scenario: "clears the next event when none remains", previous: previousEvent, nextEvent: undefined },
+    { scenario: "clears the next event when none remains", previous: previousEvent, next_event: undefined },
   ])("$scenario after a refresh", ({ previous, nextEvent }) => {
     const hydrated = makeHydratedGroup({ next_event: previous });
     const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
@@ -137,7 +139,7 @@ describe("OpenedGroupSlice", () => {
     ));
 
     const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandar: [], nextEvent,
+      group_events: [], calandar: [], next_event: nextEvent,
     }, "refresh-1", hydrated.group.id));
 
     expect(state.group).toEqual({
@@ -159,11 +161,40 @@ describe("OpenedGroupSlice timeline variants", () => {
     const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
       payload, "hydrate-1", payload.group.slug,
     ));
-    expect(initial.calandar).toEqual({ status: "ready", data: [item] });
+    expect(initial.group).toMatchObject({ data: { meta: { events: { calandar: [item] } } } });
 
     const refreshed = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
-      refreshedEventsLayout: [], calandar: [item], nextEvent: undefined,
+      group_events: [], calandar: [item], next_event: undefined,
     }, "refresh-1", payload.group.id));
-    expect(refreshed.calandar).toEqual({ status: "ready", data: [item] });
+    expect(refreshed.group).toMatchObject({ data: { meta: { events: { calandar: [item] } } } });
+  });
+});
+
+describe("OpenedGroupSlice consolidated refresh", () => {
+  const nextEvent = makeNextEvent();
+  const layout: import("@/src/schemas/groups/groupSchema").GroupRefreshSchemaType["group_events"] = [[{
+    kind: "card", variant: { type: "hero", size: { xs: 12, md: 6 } },
+    event: { for: "withinGroup", content: nextEvent },
+  }]];
+
+  it("settles a nonempty refresh and synchronizes the layout and calendar", () => {
+    const hydrated = makeHydratedGroup();
+    const ready = openedGroupReducer(undefined, hydrateGroup.fulfilled(hydrated, "hydrate", hydrated.group.slug));
+    const pending = openedGroupReducer(ready, refreshGroupEvents.pending("refresh", hydrated.group.id));
+    const calandar = [makeTimelineItem()];
+    const response = { group_events: layout, calandar, next_event: nextEvent };
+    const result = openedGroupReducer(pending, refreshGroupEvents.fulfilled(response, "refresh", hydrated.group.id));
+    expect(result.events).toEqual({ status: "ready", data: layout });
+    expect(result.group).toMatchObject({ status: "ready", data: { meta: { events: response } } });
+    expect(result).not.toHaveProperty("calandar");
+  });
+
+  it("clears the prior next event, layout, and calendar after the last event disappears", () => {
+    const hydrated = makeHydratedGroup({ group_events: layout, next_event: nextEvent, calandar: [makeTimelineItem()] });
+    const ready = openedGroupReducer(undefined, hydrateGroup.fulfilled(hydrated, "hydrate", hydrated.group.slug));
+    const response = { group_events: [], calandar: [], next_event: undefined };
+    const result = openedGroupReducer(ready, refreshGroupEvents.fulfilled(response, "refresh", hydrated.group.id));
+    expect(result.events.status).toBe("n/a");
+    expect(result.group).toMatchObject({ status: "ready", data: { meta: { events: response } } });
   });
 });

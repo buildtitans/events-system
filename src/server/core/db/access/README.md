@@ -59,6 +59,18 @@ notifications. It is a convention rather than a requirement for trivial
 repositories: categories keeps a small flat interface, while authentication
 uses a facade that coordinates private reader and writer collaborators.
 
+Events and groups further organize their public reads into two branches:
+
+| Branch | Purpose | Examples |
+| --- | --- | --- |
+| `select.view` | Complete single views, list summaries, and group event refresh data | `events.select.view.single`, `groups.select.view.list.popular`, `groups.select.view.refresh` |
+| `select.query` | Focused search, suggestion, timeline, history, archive, and next-event reads | `events.select.query.search`, `groups.select.query.history` |
+
+Their supporting components live under `handlers/read`, `handlers/parse`,
+`handlers/validate`, `handlers/select`, and `handlers/write`. The reader facade
+exposes `hydrate` and `query`; selectors expose the corresponding `view` and
+`query` capabilities. Other repositories retain their smaller existing shapes.
+
 ## Component Roles
 
 ### Repository
@@ -119,6 +131,9 @@ as private repository methods.
 ### Parser
 
 A parser performs cohesive transformations that are broader than validation.
+Event and group readers call parsers to serialize timestamps, convert aggregate
+counts, and shape joined or nested JSON results. Selectors then validate the
+result against shared schemas before it reaches the service layer.
 For example, the notifications parser converts raw rows to validated DTOs and
 expands one application notification into insertable rows for multiple members.
 
@@ -139,6 +154,17 @@ email, category name, and an optional next-event summary. RSVP and membership
 reads likewise supply their own metadata instead of requiring service-built
 lookup dictionaries. Services retain authentication, authorization, and
 application orchestration responsibilities.
+
+Group refresh reads return `{ next_event?, group_events, calandar }` together.
+The parser normalizes JSON timestamps and counts, and the selector validates
+`GroupRefreshReadSchema`. `GroupHydrationHandler` converts the event summaries
+into layout slots for `hydrate.groups.refresh`. Calendar data and the optional
+next event come from the same read rather than separate client requests.
+
+Filtering and ordering belong to the relevant persistence read: discovery uses
+future scheduled events ordered by start time and ID ascending; group history
+uses past scheduled events ordered by start time and ID descending. The server
+search service combines validated query results and owns their global ranking.
 
 ## Boundary Rules
 

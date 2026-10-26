@@ -67,13 +67,18 @@ The root router exposes four branches, organized under `router/routes/`:
 | Branch | Directory | Responsibility |
 | --- | --- | --- |
 | `entities` | `entities/` | Group events, member and organizer operations, current-user reads, and notifications |
-| `hydrate` | `hydration/` | Initial application data, single group/event views, group lists, and event layouts |
+| `hydrate` | `hydration/` | Initial application data, single group/event views, group event refreshes, group lists, and event layouts |
 | `discovery` | `discovery/` | User-entered searches and event, group, city, and address suggestions |
 | `auth` | `auth/` | Authentication, sessions, signup, and password recovery |
 
 Examples include `entities.group.member.rsvp`, `entities.group.organizer.newEvent`,
 `entities.user.memberships`, `hydrate.groups.single`, `hydrate.events.layouts.discovery`,
-`discovery.search.events`, and `auth.write.resetPassword`.
+`discovery.app.search`, and `auth.write.resetPassword`.
+
+`discovery.app.suggestions` returns combined event/group suggestions. Location
+suggestions use `discovery.locations.cities` and `discovery.locations.addresses`.
+`hydrate.groups.refresh` returns the group's event layout, calendar, and optional
+next event together.
 
 Input-bearing procedures use `validateRouterInput(existingSchema)` from
 `router/adaptors/validateRouterInput.ts`. It registers TypeBox formats, caches

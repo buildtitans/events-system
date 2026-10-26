@@ -1,4 +1,5 @@
 "use client";
+import type { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 import Stack from "@mui/material/Stack";
 import type { JSX } from "react";
 import { useSelector } from "react-redux";
@@ -12,17 +13,16 @@ import { useSelectEvent } from "@/src/lib/hooks/hydration/event/useSelectEvent";
 import UpNextEventFallback from "./upNextEventFallback";
 
 export default function GroupOverview(): JSX.Element {
-  const calandar = useSelector((s: RootState) => s.openGroup.calandar);
   const hydrated = useSelector((s: RootState) => s.openGroup.group);
   const { handleOpenEvent } = useSelectEvent();
 
   return (
     <Stack gap={6} direction={{ xs: "column", md: "row" }}>
       <AsyncStateRenderer
-        state={calandar}
+        state={hydrated}
         empty={() => <OpenedGroupFallback />}
       >
-        {(state) => <Calandar history={state} />}
+        {(state) => <RenderGroupCalendar calandar={state.meta.events.calandar} />}
       </AsyncStateRenderer>
       <AsyncStateRenderer
         state={hydrated}
@@ -45,4 +45,11 @@ export default function GroupOverview(): JSX.Element {
       </AsyncStateRenderer>
     </Stack>
   );
+}
+
+function RenderGroupCalendar({ calandar }: { calandar: TimelineElementSchemaType[] }): JSX.Element {
+  if (calandar.length === 0) {
+    return <OpenedGroupFallback />;
+  }
+  return <Calandar history={calandar} />;
 }

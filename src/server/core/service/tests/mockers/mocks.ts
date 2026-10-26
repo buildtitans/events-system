@@ -109,39 +109,18 @@ export const unauthenticated = () => {
 };
 
 function createMockEventsRepo() {
-  return {
-    select: {
-      hydrate: jest.fn(),
-      search: jest.fn(),
-      allScheduled: jest.fn(),
-      discovery: jest.fn(),
-      popular: jest.fn(),
-      upcoming: jest.fn(),
-      byIds: jest.fn(),
-      byGroupId: jest.fn(),
-    },
-    write: {
-      update: jest.fn(),
-      create: jest.fn(),
-    },
-  } as unknown as EventsRepository;
+  const select = {
+    view: { single: jest.fn(), list: { discovery: jest.fn(), popular: jest.fn(), upcoming: jest.fn(), forGroup: jest.fn() } },
+    query: { search: jest.fn(), suggest: jest.fn(), nextEventByGroupId: jest.fn() },
+  } satisfies { view: { single: jest.Mock; list: Record<"discovery" | "popular" | "upcoming" | "forGroup", jest.Mock> }; query: Record<"search" | "suggest" | "nextEventByGroupId", jest.Mock> };
+  return { select, write: { update: jest.fn(), create: jest.fn() } } as unknown as EventsRepository;
 }
 
 function createMockGroupsRepo() {
-  return {
-    select: {
-      timeline: jest.fn(),
-      history: jest.fn(),
-      popular: jest.fn(),
-      archives: jest.fn(),
-      all: jest.fn(),
-      byOrganizerId: jest.fn(),
-      search: jest.fn(),
-    },
-    write: {
-      createGroup: jest.fn(),
-    },
-  } as unknown as GroupsRepository;
+ return { select: {
+ view: { single: jest.fn(), list: { all: jest.fn(), popular: jest.fn(), byCategory: jest.fn(), byOrganizerId: jest.fn() } },
+ query: { timeline: jest.fn(), history: jest.fn(), archives: jest.fn(), search: jest.fn(), suggestByName: jest.fn() },
+ }, write: { createGroup: jest.fn() } } as unknown as GroupsRepository;
 }
 
 function createMockGroupMembersRepo() {
@@ -162,12 +141,11 @@ function createMockGroupMembersRepo() {
 function createMockEventAttendantsRepo() {
   return {
     select: {
-      allRecords: jest.fn(),
       rsvps: jest.fn(),
       rsvp: jest.fn(),
     },
     write: {
-      updateAttendanceStatus: jest.fn(),
+      rsvp: jest.fn(),
     },
   } as unknown as EventAttendantsRepository;
 }

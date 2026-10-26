@@ -1,3 +1,4 @@
+import { ISearchService } from "../services/searchService";
 import {
   IEventService,
   IGroupService,
@@ -12,4 +13,5 @@ export interface IServiceDomains {
   readonly groups: IGroupService;
   readonly events: IEventService;
   readonly notifications: INotificationService;
+  readonly query: ISearchService;
 }
