@@ -1,17 +1,14 @@
-import { Selectable } from "kysely";
-import { EventAttendants } from "@/src/server/core/db/types/db";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 
 export interface IEventAttendantsReader {
   rsvps(user_id: AuthenticatedUserId): Promise<RawRsvp[]>;
-  rawRsvp({
+  rsvp({
     user_id,
     event_id,
   }: {
-    user_id: string;
+    user_id: AuthenticatedUserId;
     event_id: string;
-  }): Promise<{ status: string } | undefined>;
-  allRawRecords(): Promise<Selectable<EventAttendants>[]>;
+  }): Promise<{ status: string }>;
 }
 
 export type RawRsvp = {

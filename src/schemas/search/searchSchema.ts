@@ -62,6 +62,8 @@ export const SearchSuggestionSchema = Type.Union([
   EventSearchSuggestionSchema,
 ]);
 
+export const SuggestionsSchema = Type.Array(SearchSuggestionSchema);
+
 export type SearchSuggestionSchemaType = Static<typeof SearchSuggestionSchema>;
 
 const CurrentDayEventPhase = Type.Union([
@@ -151,6 +153,12 @@ export type SearchResultSchemaType = Static<typeof SearchResultSchema>;
 
 export const SearchResultsSchema = Type.Array(SearchResultSchema);
 
-export type GroupSearchResultSchemaType = Static<typeof GroupSearchResultSchema>;
-export type EventSearchSuggestionSchemaType = Static<typeof EventSearchSuggestionSchema>;
-export type GroupSearchSuggestionSchemaType = Static<typeof GroupSearchSuggestionSchema>;
+export type GroupSearchResultSchemaType = Static<
+  typeof GroupSearchResultSchema
+>;
+export type EventSearchSuggestionSchemaType = Static<
+  typeof EventSearchSuggestionSchema
+>;
+export type GroupSearchSuggestionSchemaType = Static<
+  typeof GroupSearchSuggestionSchema
+>;

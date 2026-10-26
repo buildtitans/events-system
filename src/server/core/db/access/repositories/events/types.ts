@@ -76,22 +76,6 @@ export type ReadSuggestedEvent = {
   group_slug: string;
 };
 
-export type ReadEventById = {
-  group_id: string;
-  id: string;
-  status: string;
-  starts_at: Date;
-  img: string;
-  tag: string | null;
-  title: string;
-  meeting_location: string;
-  group_name: string;
-  group_location: string | null;
-  category_name: string;
-  going_count: number;
-  interested_count: number;
-};
-
 export type ReadNextEvent =
   | {
       group_id: string;
@@ -136,29 +120,6 @@ export type EventForDiscovery = {
   category_name: string | null;
   going_count: number;
   interested_count: number;
-};
-
-export type EventById = {
-  event: {
-    starts_at: string;
-    starts_at_ms: number;
-    id: string;
-    group_id: string;
-    img: string;
-    meeting_location: string;
-    status: string;
-    tag: string | null;
-    title: string;
-  };
-  meta: {
-    attendance: {
-      going: number;
-      interested: number;
-    };
-    group_name: string;
-    group_location: string;
-    category_name: string;
-  };
 };
 
 export type RawNextEvent = {

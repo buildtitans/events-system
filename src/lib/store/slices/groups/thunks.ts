@@ -53,8 +53,7 @@ export const hydrateGroupHistory = createAsyncThunk(
       const result = await trpcClient.entities.group.events.history.query(id);
 
       if (result.length > 0) {
-        const sorted = sortByDate(result);
-        thunkAPI.dispatch(getGroupHistory({ status: "ready", data: sorted }));
+        thunkAPI.dispatch(getGroupHistory({ status: "ready", data: result }));
       } else {
         thunkAPI.dispatch(
           getGroupHistory({ status: "n/a", message: "No history to display" }),
@@ -80,17 +79,7 @@ export const refreshGroupEvents = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const refreshedEventsLayout =
-        await trpcClient.hydrate.events.layouts.forGroup.query(id);
-      const calandar =
-        await trpcClient.entities.group.events.timeline.query(id);
-      const nextEvent =
-        await trpcClient.entities.group.events.nextEvent.query(id);
-      return {
-        refreshedEventsLayout,
-        calandar,
-        nextEvent,
-      };
+      return await trpcClient.hydrate.groups.refresh.query(id);
     } catch (err) {
       logCaughtError("OpenedGroupSlice.refreshGroupEvents()", err);
       return thunkAPI.rejectWithValue(err);

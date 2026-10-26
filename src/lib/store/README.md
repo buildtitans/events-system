@@ -273,16 +273,13 @@ substantial than a single request but does not itself own Redux state.
 
 Current examples include:
 
-- `AppSearchService`, which queries events and groups concurrently for focused
-  suggestions and full search results;
 - `EventFilterService`, which resolves filters into event layouts;
-- `SearchResultsCompiler`, which transforms server responses into suggestion
-  shapes and relevance-ranked, unified event and group results.
+- `GroupFilterService`, which requests group summaries for the selected filter.
 
 Services commonly receive the typed tRPC client through their constructor:
 
 ```ts
-const service = new AppSearchService(trpcClient);
+const service = new EventFilterService(trpcClient);
 ```
 
 This keeps transport dependencies visible and makes orchestration easier to
@@ -343,8 +340,8 @@ context of results available elsewhere.
 The navigation suggestion workflow is:
 
 1. `useAppSearchSuggestions` owns the controlled input and debounces changes.
-2. `querySuggestions` asks `AppSearchService` for limited event and group
-   suggestions.
+2. `querySuggestions` requests `discovery.app.suggestions`, which returns
+   combined event and group suggestions from the server.
 3. The search slice records the active suggestion request ID and ignores stale
    responses.
 4. Selecting a suggestion opens the event or navigates directly to the group.
@@ -353,8 +350,9 @@ The full-search workflow is:
 
 1. A free-text submission navigates to `/search?q=...` with an encoded query.
 2. The search controller normalizes the query and dispatches `searchQuery`.
-3. `AppSearchService` queries event and group search procedures concurrently.
-4. `SearchResultsCompiler` merges and globally ranks the results by relevance.
+3. `searchQuery` requests `discovery.app.search`.
+4. The server queries events and groups concurrently, then merges and globally
+   ranks the results by relevance before returning the complete view.
 5. The search slice stores the normalized `resultsQuery`, request ID, and
    explicit pending, ready, empty, or failed state.
 6. The controller renders results only when `resultsQuery` matches the active
@@ -377,7 +375,9 @@ Viewer role has one stored location: `data.meta.viewer_role`. Role consumers
 fall back to `anonymous` when the group is not ready. Membership changes and
 session resets update that field through `getCurrentRole`. There is no separate
 viewer slice or standalone `viewerRole` state. Hydration also populates the
-existing event and calendar lifecycle fields for their UI consumers.
+separate event-layout lifecycle field for its UI consumers. The calendar reads
+directly from the hydrated group's `meta.events.calandar`; it has no separate
+stored lifecycle field.
 
 Opened-event state stores the hydrated event with host details and attendance
 under `meta.event` and viewer-specific role/RSVP status under `meta.user`.
@@ -393,16 +393,18 @@ from each summary's metadata; no separate attendance dictionary is synchronized.
 
 ### Refreshing Group Events
 
-`refreshGroupEvents` requests `hydrate.events.layouts.forGroup`,
-`entities.group.events.timeline`, and `entities.group.events.nextEvent`. Its fulfilled
-reducer updates layout and calendar state together and, while the group is ready,
-updates `meta.events.group_events`, `meta.events.calandar`, and
-`meta.events.next_event` from the responses. This handles first assignment,
+`refreshGroupEvents` makes one request to `hydrate.groups.refresh`. The server
+returns `{ group_events, calandar, next_event? }`, with event summaries composed
+into layout slots. While the group is ready, the fulfilled reducer updates
+`meta.events.group_events`, `meta.events.calandar`, and `meta.events.next_event`
+from that response, and synchronizes the separate event-layout lifecycle field.
+This handles first assignment,
 replacement, updated data for the same event ID, and clearing a missing next event.
 
-The pending reducer marks events as refreshing and the calendar as pending while
-retaining the hydrated group. Rejection marks those event/calendar states failed
-without discarding the group. This flow does not rerun full group hydration.
+The pending reducer marks events as refreshing while retaining the hydrated
+group and its calendar. Rejection marks the event-layout state failed without
+discarding the group or its existing calendar. This flow does not rerun full
+group hydration.
 
 ## Application Bootstrap
 

@@ -5,10 +5,10 @@ import { discoveryRoute } from "./routes/discovery/discoveryRoute";
 import { entitiesRoute } from "./routes/entities/entitiesRoute";
 
 export const appRouter = router({
-  entities: entitiesRoute,
-  hydrate: hydrationRouter,
   auth: authRouter,
+  entities: entitiesRoute,
   discovery: discoveryRoute,
+  hydrate: hydrationRouter,
 });
 
 export type AppRouter = typeof appRouter;

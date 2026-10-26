@@ -1,20 +1,12 @@
 import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 import { GroupIDForInsertSchema } from "@/src/schemas/groups/groupMembersSchema";
-import {
-  EventIdSchema,
-  EventIdsSchema,
-} from "@/src/schemas/events/eventAttendantsSchema";
+import { EventIdSchema } from "@/src/schemas/events/eventAttendantsSchema";
 import { router, publicProcedure } from "@/src/server/core/context/init";
 
 const eventLayoutRouter = router({
   discovery: publicProcedure.query(async ({ ctx }) => {
     return await ctx.api.services.domains.events.layout.discovery();
   }),
-  byIds: publicProcedure
-    .input(validateRouterInput(EventIdsSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.layout.byIds(input);
-    }),
   forGroup: publicProcedure
     .input(validateRouterInput(GroupIDForInsertSchema))
     .query(async ({ ctx, input }) => {

@@ -1,5 +1,5 @@
 import { Type, Static } from "@sinclair/typebox";
-import { EventSurfaceSchema } from "../events/eventSchema";
+import { EventSurfaceSchema } from "@/src/schemas/events/eventSchema";
 
 const CardVariantTypeSchema = Type.Union([
   Type.Literal("hero"),

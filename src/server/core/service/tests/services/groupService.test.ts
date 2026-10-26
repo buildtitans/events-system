@@ -86,13 +86,13 @@ describe("GroupService.query.archives", () => {
   const groupId = "group-1";
   let service: GroupService;
   let getArchives: jest.MockedFunction<
-    ReturnType<typeof createMockDb>["groups"]["select"]["archives"]
+    ReturnType<typeof createMockDb>["groups"]["select"]["query"]["archives"]
   >;
 
   beforeEach(() => {
     jest.resetAllMocks();
     const db = createMockDb();
-    getArchives = jest.mocked(db.groups.select.archives);
+    getArchives = jest.mocked(db.groups.select.query.archives);
     service = new GroupService(db, policyMock);
     authenticateAs();
   });
@@ -150,16 +150,16 @@ describe("GroupService.query.history", () => {
   it("returns persistence-provided summaries in their supplied order", async () => {
     const db = createMockDb();
     const history = [makeGroupEventSummary({ id: "older" }), makeGroupEventSummary({ id: "recent" })];
-    jest.mocked(db.groups.select.history).mockResolvedValue(history);
+    jest.mocked(db.groups.select.query.history).mockResolvedValue(history);
     const service = new GroupService(db, policyMock);
     await expect(service.query.history("group-1")).resolves.toEqual(history);
-    expect(db.groups.select.history).toHaveBeenCalledWith("group-1");
-    expect(db.events.select.byGroupId).not.toHaveBeenCalled();
+    expect(db.groups.select.query.history).toHaveBeenCalledWith("group-1");
+    expect(db.events.select.view.list.forGroup).not.toHaveBeenCalled();
   });
 
   it("returns an empty history when the read finds no past events", async () => {
     const db = createMockDb();
-    jest.mocked(db.groups.select.history).mockResolvedValue([]);
+    jest.mocked(db.groups.select.query.history).mockResolvedValue([]);
     const service = new GroupService(db, policyMock);
     await expect(service.query.history("group-1")).resolves.toEqual([]);
   });

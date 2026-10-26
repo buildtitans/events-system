@@ -14,7 +14,7 @@ import { createMockDb, makeEvent, makeGroup } from "../mockers/mocks";
         user: userId ? { status: "interested", role: "organizer" } : { status: "not_going", role: "anonymous" },
       },
     };
-    const hydrate = jest.mocked(db.events.select.hydrate);
+    const hydrate = jest.mocked(db.events.select.view.single);
     hydrate.mockResolvedValue(result);
     await expect(new EventQueryHandler(db).hydrate(result.event.id, userId)).resolves.toEqual(result);
     expect(hydrate).toHaveBeenCalledWith(result.event.id, userId);
@@ -25,7 +25,7 @@ import { createMockDb, makeEvent, makeGroup } from "../mockers/mocks";
 
   it("propagates missing-event failures", async () => {
     const db = createMockDb();
-    jest.mocked(db.events.select.hydrate).mockRejectedValue(new Error("Event not found"));
+    jest.mocked(db.events.select.view.single).mockRejectedValue(new Error("Event not found"));
     await expect(new EventQueryHandler(db).hydrate("missing", USER_ID)).rejects.toThrow("Event not found");
   });
 });

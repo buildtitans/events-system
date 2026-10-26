@@ -9,9 +9,8 @@ dayjs.extend(utc);
 
 export interface IEventAttendantsSelector {
   rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]>;
-  allRecords(): Promise<EventAttendantsSchemaType[]>;
   rsvp(
-    user_id: string,
+    user_id: AuthenticatedUserId,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]>;
 }
@@ -22,18 +21,13 @@ export class EventAttendantsSelector implements IEventAttendantsSelector {
     private readonly read: IEventAttendantsReader,
   ) {}
 
-  async allRecords(): Promise<EventAttendantsSchemaType[]> {
-    const raw = await this.read.allRawRecords();
-    return this.validator.parseRawAttendants(raw);
-  }
-
   async rsvp(
-    user_id: string,
+    user_id: AuthenticatedUserId,
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
-    const raw = await this.read.rawRsvp({ user_id, event_id });
+    const raw = await this.read.rsvp({ user_id, event_id });
     const status = raw?.status ? raw.status : "not_going";
-    return this.validator.parseRsvpStatusResult(status);
+    return this.validator.rsvpStatus(status);
   }
 
   async rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]> {

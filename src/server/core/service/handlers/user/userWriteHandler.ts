@@ -1,4 +1,5 @@
 import { EventAttendantsSchemaType } from "../../../../../schemas/events/eventAttendantsSchema";
+import { RsvpUpdateResponseSchemaType } from "../../../../../schemas/events/rsvpSchema";
 import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
 import { GroupSchemaType } from "../../../../../schemas/groups/groupSchema";
 import { IAuthorization } from "../../auth/authorization";
@@ -10,7 +11,7 @@ export interface IUserWriteHandler {
     user_id: AuthenticatedUserId | undefined | null,
     event_id: string,
     newStatus: EventAttendantsSchemaType["status"],
-  ): Promise<EventAttendantsSchemaType>;
+  ): Promise<RsvpUpdateResponseSchemaType>;
   joinGroup(
     user_id: AuthenticatedUserId | undefined | null,
     group_id: GroupMemberSchemaType["group_id"],
@@ -54,7 +55,7 @@ export class UserWriteHandler implements IUserWriteHandler {
     newStatus: EventAttendantsSchemaType["status"],
   ) {
     const userId = this.policy.requireAuthenticated(user_id);
-    return await this.db.eventAttendants.write.updateAttendanceStatus(
+    return await this.db.eventAttendants.write.rsvp(
       { event_id, user_id: userId },
       newStatus,
     );

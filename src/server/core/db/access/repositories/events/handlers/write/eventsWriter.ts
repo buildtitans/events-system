@@ -1,5 +1,5 @@
 import type { Insertable, Kysely, UpdateResult } from "kysely";
-import { EventsValidator } from "./eventsValidator";
+import { EventsValidator } from "@/src/server/core/db/access/repositories/events/handlers/validate/eventsValidator";
 import type {
   NewEventInputSchemaType,
   UpdateEventArgsSchemaType,

@@ -1,7 +1,7 @@
 import { router } from "@/src/server/core/context/init";
 import { groupRouter } from "./groupsRouter";
 import { notificationRouter } from "./notificationsRouter";
-import { userRouter } from "./usersRouter";
+import { userRouter } from "./userRouter";
 
 export const entitiesRoute = router({
   group: groupRouter,

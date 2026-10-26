@@ -12,28 +12,14 @@ import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
 import {
   RsvpSurfaceSchemaType,
   RsvpSurfacesSchema,
+  RsvpUpdateResponseSchema,
+  RsvpUpdateResponseSchemaType,
 } from "../../../../../../schemas/events/rsvpSchema";
 dayjs.extend(utc);
 
 export class EventAttendantsValidator {
-  parseRawAttendants(
-    raw: Selectable<EventAttendants>[],
-  ): EventAttendantsSchemaType[] {
-    return raw.map((row) => {
-      const created_at = dayjs(row.created_at).utc().format(ISO_FORMAT);
-
-      const updated_at = row.updated_at
-        ? dayjs(row.updated_at).utc().format(ISO_FORMAT)
-        : null;
-
-      return validateOrThrow(EventAttendantsSchema, {
-        event_id: row.event_id,
-        user_id: row.user_id,
-        status: row.status,
-        created_at,
-        updated_at,
-      });
-    });
+  rsvp(data: unknown): RsvpUpdateResponseSchemaType {
+    return validateOrThrow(RsvpUpdateResponseSchema, data);
   }
 
   parseRsvps(rsvps: unknown[]): RsvpSurfaceSchemaType[] {
@@ -58,7 +44,7 @@ export class EventAttendantsValidator {
     });
   }
 
-  parseRsvpStatusResult(status: unknown): EventAttendantsSchemaType["status"] {
+  rsvpStatus(status: unknown): EventAttendantsSchemaType["status"] {
     return validateOrThrow(EventAttendantStatusSchema, status);
   }
 }

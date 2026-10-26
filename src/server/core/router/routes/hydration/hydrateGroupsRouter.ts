@@ -2,6 +2,7 @@ import { validateRouterInput } from "@/src/server/core/router/adaptors/validateR
 import { router, publicProcedure } from "@/src/server/core/context/init";
 import { GroupSlugSchema } from "@/src/schemas/groups/groupSchema";
 import { SearchSchema } from "@/src/schemas/search/searchSchema";
+import { GroupIdSchema } from "../../../../../schemas/events/eventSchema";
 
 const listGroupsRouter = router({
   all: publicProcedure.query(async ({ ctx }) => {
@@ -28,6 +29,12 @@ export const hydrateGroupsRouter = router({
         input,
         userId,
       );
+    }),
+
+  refresh: publicProcedure
+    .input(validateRouterInput(GroupIdSchema))
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.groups.hydrate.refresh(input);
     }),
 
   list: listGroupsRouter,

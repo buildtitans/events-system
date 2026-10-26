@@ -1,7 +1,4 @@
-import type {
-  GroupSearchResultSchemaType,
-  GroupSearchSuggestionSchemaType,
-} from "@/src/schemas/search/searchSchema";
+import type { GroupSearchResultSchemaType } from "@/src/schemas/search/searchSchema";
 import type { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 import type { CategoriesSchemaType } from "@/src/schemas/groups/categoriesSchema";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
@@ -45,7 +42,5 @@ export interface IGroupQueryHandler {
     id: GroupSchemaType["id"],
   ): Promise<ArchivedEventSchemaType[]>;
   categories(): Promise<CategoriesSchemaType>;
-  searchGroups(query: string): Promise<GroupSearchResultSchemaType[]>;
-  suggestGroups(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
   history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
 }

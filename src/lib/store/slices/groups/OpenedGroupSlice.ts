@@ -1,10 +1,12 @@
+import { updateEventStatus } from "../events/thunks";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { GroupArchivesState } from "@/src/lib/store/slices/groups/types";
 import type {
-  GroupEventsCalandarState,
-  GroupHydrated,
   EventsOfGroup,
+  GroupArchivesState,
+} from "@/src/lib/store/slices/groups/types";
+import type {
+  GroupHydrated,
   GroupHistoryType,
   CurrentDisplay,
 } from "@/src/lib/store/slices/groups/types";
@@ -27,7 +29,6 @@ type InitialState = {
   activeSection: CurrentDisplay;
   history: GroupHistoryType;
   archives: GroupArchivesState;
-  calandar: GroupEventsCalandarState;
 };
 
 const initialState: InitialState = {
@@ -37,23 +38,19 @@ const initialState: InitialState = {
   archives: { status: "initial" },
   currPage: 0,
   activeSection: "overview",
-  calandar: { status: "initial" },
 };
 
 const OpenedGroupSlice = createSlice({
   name: "OpenedGroup",
   initialState: initialState,
   reducers: {
-    getCurrentRole: (state, action: PayloadAction<GroupMemberSchemaType["role"]>) => {
+    getCurrentRole: (
+      state,
+      action: PayloadAction<GroupMemberSchemaType["role"]>,
+    ) => {
       if (state.group.status === "ready") {
         state.group.data.meta.viewer_role = action.payload;
       }
-    },
-    getGroupEvents: (
-      state: InitialState,
-      action: PayloadAction<EventsOfGroup>,
-    ) => {
-      state.events = action.payload;
     },
     groupOpened: (
       state: InitialState,
@@ -80,16 +77,14 @@ const OpenedGroupSlice = createSlice({
     ) => {
       state.archives = action.payload;
     },
-    getCalandarEvents: (
-      state: InitialState,
-      action: PayloadAction<GroupEventsCalandarState>,
-    ) => {
-      state.calandar = action.payload;
-    },
     clearOpenedGroupSlice: () => initialState,
   },
 
   extraReducers(builder) {
+    builder.addCase(updateEventStatus.fulfilled, (state: InitialState) => {
+      state.events = { status: "refreshing" };
+    });
+
     builder.addCase(scheduleNewEvent.fulfilled, (state: InitialState) => {
       state.events = { status: "refreshing" };
     });
@@ -128,48 +123,33 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to refresh group events",
       };
-      state.calandar = {
-        status: "failed",
-        error: "Failed to refresh group calandar",
-      };
     });
     builder.addCase(refreshGroupEvents.pending, (state: InitialState) => {
-      state.calandar = { status: "pending" };
       state.events = { status: "refreshing" };
     });
     builder.addCase(
       refreshGroupEvents.fulfilled,
       (state: InitialState, action) => {
-        const { refreshedEventsLayout, calandar, nextEvent } = action.payload;
+        const { group_events, calandar, next_event } = action.payload;
 
         if (state.group.status === "ready") {
-          state.group.data.meta.events.next_event = nextEvent;
-          state.group.data.meta.events.group_events = refreshedEventsLayout;
+          state.group.data.meta.events.next_event = next_event;
+          state.group.data.meta.events.group_events = group_events;
           state.group.data.meta.events.calandar = calandar;
         }
 
-        if (refreshedEventsLayout.length > 0) {
-          state.events = { status: "ready", data: refreshedEventsLayout };
+        if (group_events.length > 0) {
+          state.events = { status: "ready", data: group_events };
         } else {
           state.events = {
             status: "n/a",
             message: "No events have been scheduled for this group",
           };
         }
-
-        if (calandar.length > 0) {
-          state.calandar = { status: "ready", data: calandar };
-        } else {
-          state.calandar = {
-            status: "n/a",
-            message: "No Events held for this group",
-          };
-        }
       },
     );
 
     builder.addCase(hydrateGroup.rejected, (state: InitialState) => {
-
       state.group = {
         status: "failed",
         error: "Unexpected error while trying to hydrate selected group",
@@ -178,17 +158,11 @@ const OpenedGroupSlice = createSlice({
         status: "failed",
         error: "Failed to hydrate group and associated events",
       };
-      state.calandar = {
-        status: "failed",
-        error: "Failed to hydrate selected group and associated schedule",
-      };
     });
 
     builder.addCase(hydrateGroup.pending, (state: InitialState) => {
-
       state.group = { status: "pending" };
       state.events = { status: "pending" };
-      state.calandar = { status: "pending" };
       state.history = { status: "initial" };
     });
 
@@ -196,26 +170,16 @@ const OpenedGroupSlice = createSlice({
       hydrateGroup.fulfilled,
       (state: InitialState, action: PayloadAction<GroupHydratedSchemaType>) => {
         const hydrated = action.payload;
-        const { group_events: layout, calandar } = hydrated.meta.events;
-
+        const { group_events } = hydrated.meta.events;
 
         state.group = { status: "ready", data: hydrated };
 
-        if (layout.length > 0) {
-          state.events = { status: "ready", data: layout };
+        if (group_events.length > 0) {
+          state.events = { status: "ready", data: group_events };
         } else {
           state.events = {
             status: "n/a",
             message: "No events have been scheduled for this group",
-          };
-        }
-
-        if (calandar.length > 0) {
-          state.calandar = { status: "ready", data: calandar };
-        } else {
-          state.calandar = {
-            status: "n/a",
-            message: "No Events held for this group",
           };
         }
       },
@@ -225,13 +189,11 @@ const OpenedGroupSlice = createSlice({
 
 export const {
   getCurrentRole,
-  getGroupEvents,
   groupOpened,
   displaySection,
   getGroupHistory,
   populateGroupArchives,
   clearOpenedGroupSlice,
-  getCalandarEvents,
 } = OpenedGroupSlice.actions;
 
 export type OpenedGroupSliceType = ReturnType<typeof OpenedGroupSlice.reducer>;

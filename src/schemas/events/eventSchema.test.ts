@@ -1,5 +1,5 @@
-import { NewEventInputSchemaValidator } from "./eventSchema";
-import type { NewEventInputSchemaType } from "./eventSchema";
+import { NewEventInputSchemaValidator } from "@/src/schemas/events/eventSchema";
+import type { NewEventInputSchemaType } from "@/src/schemas/events/eventSchema";
 
 const validEvent = {
   group_id: "8cf76d94-83c9-46de-90ac-fe4047a00000",

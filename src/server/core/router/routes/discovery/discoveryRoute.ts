@@ -2,32 +2,7 @@ import { SearchSchema } from "@/src/schemas/search/searchSchema";
 import { publicProcedure, router } from "@/src/server/core/context/init";
 import { validateRouterInput } from "@/src/server/core/router/adaptors/validateRouterInput";
 
-const searchRoutes = router({
-  events: publicProcedure
-    .input(validateRouterInput(SearchSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.searchEvents(input);
-    }),
-
-  groups: publicProcedure
-    .input(validateRouterInput(SearchSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.searchGroups(input);
-    }),
-});
-
-const suggestRoutes = router({
-  events: publicProcedure
-    .input(validateRouterInput(SearchSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.events.query.suggestEvents(input);
-    }),
-  groups: publicProcedure
-    .input(validateRouterInput(SearchSchema))
-    .query(async ({ ctx, input }) => {
-      return await ctx.api.services.domains.groups.query.suggestGroups(input);
-    }),
-
+const locationsRoute = router({
   cities: publicProcedure
     .input(validateRouterInput(SearchSchema))
     .query(async ({ ctx, input }) => {
@@ -43,7 +18,21 @@ const suggestRoutes = router({
     }),
 });
 
+const appDiscoveryRoute = router({
+  search: publicProcedure
+    .input(validateRouterInput(SearchSchema))
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.query.search(input);
+    }),
+
+  suggestions: publicProcedure
+    .input(validateRouterInput(SearchSchema))
+    .query(async ({ ctx, input }) => {
+      return await ctx.api.services.domains.query.suggestions(input);
+    }),
+});
+
 export const discoveryRoute = router({
-  suggest: suggestRoutes,
-  search: searchRoutes,
+  locations: locationsRoute,
+  app: appDiscoveryRoute,
 });

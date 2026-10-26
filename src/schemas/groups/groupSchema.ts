@@ -101,11 +101,13 @@ export type NextEventForGroupSummarySchemaType = Static<
   typeof NextEventForGroupSummarySchema
 >;
 
-const GroupEventMetadata = Type.Object({
+export const GroupEventMetadata = Type.Object({
   next_event: Type.Optional(NextEventForGroupSummarySchema),
   group_events: PaginatedLayoutSchema,
   calandar: TimelineSchema,
 });
+
+export type GroupEventMetadataType = Static<typeof GroupEventMetadata>;
 
 const GroupMetadataSchema = Type.Object({
   events: GroupEventMetadata,
@@ -125,6 +127,14 @@ const GroupHydrationReadMetadata = Type.Object({
   calandar: TimelineSchema,
 });
 
+export const GroupRefreshReadSchema = Type.Pick(GroupHydrationReadMetadata, [
+  "next_event",
+  "group_events",
+  "calandar",
+]);
+
+export type GroupRefreshReadSchemaType = Static<typeof GroupRefreshReadSchema>;
+
 export const GroupHydratedSchema = Type.Object({
   group: GroupSchema,
   meta: GroupMetadataSchema,
@@ -140,6 +150,15 @@ export type GroupHydrationReadSchemaType = Static<
 >;
 
 export type GroupHydratedSchemaType = Static<typeof GroupHydratedSchema>;
+
+export const GroupRefreshSchema = Type.Object({
+  next_event: Type.Optional(NextEventForGroupSummarySchema),
+
+  group_events: PaginatedLayoutSchema,
+  calandar: TimelineSchema,
+});
+
+export type GroupRefreshSchemaType = Static<typeof GroupRefreshSchema>;
 
 export const NewGroupInputSchema = Type.Object({
   name: Type.String(),

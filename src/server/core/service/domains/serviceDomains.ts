@@ -14,6 +14,7 @@ import {
 } from "../services/types";
 import { IServiceDomains } from "./types";
 import { IDBClient } from "../../db/access/client/dbClient";
+import { ISearchService, SearchService } from "../services/searchService";
 
 export class ServiceDomains implements IServiceDomains {
   public readonly users: IUserService;
@@ -21,6 +22,7 @@ export class ServiceDomains implements IServiceDomains {
   public readonly groups: IGroupService;
   public readonly events: IEventService;
   public readonly notifications: INotificationService;
+  public readonly query: ISearchService;
   constructor(
     private readonly db: IDBClient,
     private readonly policy: IAuthorization,
@@ -31,5 +33,6 @@ export class ServiceDomains implements IServiceDomains {
     this.groups = new GroupService(this.db, this.policy);
     this.events = new EventService(this.db, this.policy);
     this.notifications = new NotificationService(this.db, this.policy);
+    this.query = new SearchService(this.db);
   }
 }

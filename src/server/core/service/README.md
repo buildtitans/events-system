@@ -107,6 +107,7 @@ This assembles the database-backed portion of the application graph.
 - `groups`
 - `events`
 - `notifications`
+- `query` (combined application search and suggestions)
 
 Routers access them through `ctx.api.services.domains`.
 
@@ -144,19 +145,20 @@ work directly; others expose smaller handler facets.
 
 | Domain | Public surface | Responsibility |
 | --- | --- | --- |
-| Events | `query`, `lifecycle`, `timeline`, `layout`, `hydrate` | Event reads, mutations, history, layout, and drawer hydration |
-| Groups | `query`, `groupLifecycle`, `memberships` | Group discovery, creation, membership, and group metadata |
+| Events | `query`, `lifecycle`, `layout` | Event hydration, next-event reads, mutations, and layouts |
+| Groups | `hydrate`, `query`, `groupLifecycle`, `memberships` | Group views and refreshes, history, calendar, archives, creation, and membership |
+| Application search (`query`) | `search`, `suggestions` | Concurrent event/group reads and combined search results or suggestions |
 | Session | Direct service methods | Signup, login, logout, recovery, and password reset |
 | Users | `select`, `write` | Account lookup, memberships, created groups, role lookup, and RSVP/membership changes |
 | Notifications | Direct service methods | Notification creation, retrieval, and seen state |
 
-The interfaces in `services/types.ts` define these public surfaces so routers
-and domain composition depend on contracts rather than concrete classes.
+The interfaces in `services/types.ts` and `ISearchService` in
+`services/searchService.ts` define these public surfaces so routers and domain
+composition depend on contracts rather than concrete classes.
 
 Signup and login both use `validateLoginCredentials` to trim and lowercase the
 email before calling the auth repository. Signup belongs to `SessionService`.
-Popular groups are exposed through `domains.groups.query.popular()`. The older
-participation service files remain but are not registered in `ServiceDomains`.
+Popular groups are exposed through `domains.groups.hydrate.list.popular()`.
 
 ## Handlers
 
@@ -193,8 +195,8 @@ A public method that only forwards one database call does not need a private
 wrapper:
 
 ```ts
-async getGroupEvents(groupId) {
-  return await this.db.events.select.byGroupId(groupId);
+async history(groupId) {
+  return await this.db.groups.select.query.history(groupId);
 }
 ```
 
@@ -204,8 +206,8 @@ reusable transformations that support a handler's private workflow.
 
 ### Events
 
-- `EventQueryHandler` exposes event reads, search, suggestions, and complete
-  event hydration. Persistence supplies the event, host group details,
+- `EventQueryHandler` exposes next-event reads and complete event hydration.
+  Persistence supplies the event, host group details,
   attendance counts, and viewer role/RSVP status in one query; the parser
   normalizes dates and counts, and the selector validates the hydrated contract.
   Missing viewer memberships default to `anonymous`; missing attendance
@@ -217,18 +219,33 @@ reusable transformations that support a handler's private workflow.
 
 ### Groups
 
-- `GroupHydrationHandler` exposes single-group hydration and discovery lists,
+- `GroupHydrationHandler` exposes single-group hydration, event refreshes, and discovery lists,
   including popular groups and category filtering. The single-group read gathers
   member count, organizer email, category name, viewer role, an optional next
   event, group event summaries, and calendar data in persistence.
 - The validated persistence contract keeps event fields flat under `meta`.
   The hydration handler composes event summaries into layout slots and returns
   `next_event`, `group_events`, and `calandar` under `meta.events`.
-- `GroupQueryHandler` exposes search, suggestions, categories, calendar,
+- `GroupQueryHandler` exposes categories, calendar,
   history, and organizer-authorized archives.
+- History is filtered to past scheduled events and ordered newest first in
+  persistence; the client consumes the supplied order.
 - `GroupLifecycleHandler` creates a group and assigns its organizer membership.
 - `MembershipHandler` joins users to groups, removes memberships, and resolves
   roles.
+
+### Application Search
+
+`SearchService`, exposed as `domains.query`, validates a trimmed query and reads
+the event and group query selectors concurrently. Its server-side
+`SearchResultsCompiler` combines suggestions with events first and ranks full
+results by exact, prefix, then substring match, followed by kind and label.
+Database matching and compilation use the same normalized query.
+
+The public routes are `discovery.app.search` and `discovery.app.suggestions`.
+Location suggestions remain separate under `discovery.locations.cities` and
+`discovery.locations.addresses`. The client owns debounce, loading/error state,
+and request IDs that prevent stale responses from replacing current results.
 
 ### Users
 

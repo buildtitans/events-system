@@ -1,10 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { GetThunkAPI, AsyncThunkConfig } from "@reduxjs/toolkit";
-import { AppSearchService } from "../../services/search/appSearchService";
 import { trpcClient } from "@/src/trpc/trpcClient";
 import { logCaughtError } from "@/src/lib/utils/errors/logCaughtError";
-
-const service = new AppSearchService(trpcClient);
 
 type SuggestionQueryParams = {
   query: string;
@@ -22,7 +19,7 @@ export const querySuggestions = createAsyncThunk(
     thunkAPI: GetThunkAPI<AsyncThunkConfig>,
   ) => {
     try {
-      const results = await service.suggestions(params.query);
+      const results = await trpcClient.discovery.app.suggestions.query(params.query);
 
       return results;
     } catch (err) {
@@ -36,7 +33,7 @@ export const searchQuery = createAsyncThunk(
   "AppSearchSlice/searchQuery",
   async (params: SearchAppParams, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
     try {
-      const results = await service.search(params.query);
+      const results = await trpcClient.discovery.app.search.query(params.query);
 
       return results;
     } catch (err) {

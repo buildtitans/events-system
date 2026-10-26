@@ -1,7 +1,4 @@
-import type {
-  EventSearchResultSchemaType,
-  EventSearchSuggestionSchemaType,
-} from "@/src/schemas/search/searchSchema";
+import type { EventSearchResultSchemaType } from "@/src/schemas/search/searchSchema";
 import {
   GroupEventSummarySchemaType,
   EventSchemaType,
@@ -20,7 +17,7 @@ import {
 } from "@/src/schemas//groups/groupSchema";
 import { IDBClient } from "../../../db/access/client/dbClient";
 import { GroupMemberSchemaType } from "../../../../../schemas/groups/groupMembersSchema";
-import { AuthenticatedUserId } from "../session/SessionHandler";
+import { AuthenticatedUserId } from "@/src/server/core/service/handlers/session/SessionHandler";
 
 export type EventHydrationDb = Pick<
   IDBClient,
@@ -43,11 +40,6 @@ export interface IEventQueryHandler {
   nextEventForGroup(
     group_id: GroupSchemaType["id"],
   ): Promise<NextEventForGroupSummarySchemaType | undefined>;
-  searchEvents(query: SearchSchemaType): Promise<EventSearchResultSchemaType[]>;
-  suggestEvents(
-    query: SearchSchemaType,
-  ): Promise<EventSearchSuggestionSchemaType[]>;
-  getGroupEvents(group_id: string): Promise<GroupEventSummarySchemaType[]>;
 }
 
 export interface IEventLifecycleHandler {
@@ -64,11 +56,10 @@ export interface IEventLifecycleHandler {
 }
 
 export interface IEventLayoutHandler {
-  byIds(ids: EventSchemaType["id"][]): Promise<PaginatedLayoutSchemaType>;
   discovery(): Promise<PaginatedLayoutSchemaType>;
-  forGroup(groupId: string): Promise<PaginatedLayoutSchemaType>;
   popular(): Promise<PaginatedLayoutSchemaType>;
   upcoming(): Promise<PaginatedLayoutSchemaType>;
+  forGroup(id: GroupSchemaType["id"]): Promise<PaginatedLayoutSchemaType>;
 }
 
 export interface IEventLayoutComposer {

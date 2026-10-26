@@ -1,5 +1,5 @@
-import { Kysely, Selectable } from "kysely";
-import { DB, EventAttendants } from "@/src/server/core/db/types/db";
+import { Kysely } from "kysely";
+import { DB } from "@/src/server/core/db/types/db";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
 import { IEventAttendantsReader, RawRsvp, ReadRsvp } from "./types";
 
@@ -31,23 +31,29 @@ export class EventAttendantsReader implements IEventAttendantsReader {
     return this.toRsvps(result);
   }
 
-  async rawRsvp({
+  async rsvp({
     user_id,
     event_id,
   }: {
-    user_id: string;
+    user_id: AuthenticatedUserId;
     event_id: string;
-  }): Promise<{ status: string } | undefined> {
+  }): Promise<{
+    status: string;
+  }> {
     return await this.db
-      .selectFrom("event_attendants")
-      .select("status")
-      .where("user_id", "=", user_id)
-      .where("event_id", "=", event_id)
-      .executeTakeFirst();
-  }
-
-  async allRawRecords(): Promise<Selectable<EventAttendants>[]> {
-    return await this.db.selectFrom("event_attendants").selectAll().execute();
+      .selectNoFrom((eb) => [
+        eb.fn
+          .coalesce(
+            eb
+              .selectFrom("event_attendants")
+              .select("status")
+              .where("user_id", "=", user_id)
+              .where("event_id", "=", event_id),
+            eb.val("not_going"),
+          )
+          .as("status"),
+      ])
+      .executeTakeFirstOrThrow();
   }
 
   private toRsvps(result: ReadRsvp[]) {

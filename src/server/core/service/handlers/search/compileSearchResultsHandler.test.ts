@@ -4,7 +4,7 @@ import {
   makeGroupResult,
   makeEventSuggestion,
   makeGroupSuggestion,
-} from "./search.fixtures";
+} from "@/src/test/fixtures/search";
 
 describe("SearchResultsCompiler", () => {
   const compiler = new SearchResultsCompiler();

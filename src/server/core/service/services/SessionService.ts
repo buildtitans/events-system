@@ -29,7 +29,6 @@ export class SessionService implements ISessionService {
       emailInput,
       passwordInput,
     );
-
     return await this.db.auth.login(email, password);
   }
 
