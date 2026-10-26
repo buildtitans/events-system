@@ -1,10 +1,14 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
-import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
-import { IEventAttendantsReader, RawRsvp, ReadRsvp } from "./types";
+import { AuthenticatedUserId } from "../../../../../../service/handlers/session/SessionHandler";
+import { IEventAttendantsReader, RawRsvp } from "../../types";
+import { IEventAttendantsParser } from "../parse/eventAttendantsParser";
 
 export class EventAttendantsReader implements IEventAttendantsReader {
-  constructor(private readonly db: Kysely<DB>) {}
+  constructor(
+    private readonly db: Kysely<DB>,
+    private readonly parse: IEventAttendantsParser,
+  ) {}
 
   async rsvps(user_id: AuthenticatedUserId): Promise<RawRsvp[]> {
     const result = await this.db
@@ -28,7 +32,7 @@ export class EventAttendantsReader implements IEventAttendantsReader {
       ])
       .execute();
 
-    return this.toRsvps(result);
+    return this.parse.toRsvps(result);
   }
 
   async rsvp({
@@ -37,10 +41,8 @@ export class EventAttendantsReader implements IEventAttendantsReader {
   }: {
     user_id: AuthenticatedUserId;
     event_id: string;
-  }): Promise<{
-    status: string;
-  }> {
-    return await this.db
+  }): Promise<string> {
+    const result = await this.db
       .selectNoFrom((eb) => [
         eb.fn
           .coalesce(
@@ -54,24 +56,7 @@ export class EventAttendantsReader implements IEventAttendantsReader {
           .as("status"),
       ])
       .executeTakeFirstOrThrow();
-  }
 
-  private toRsvps(result: ReadRsvp[]) {
-    return result.map((rsvp) => {
-      const { starts_at, group_name, group_slug, category_name, ...rest } =
-        rsvp;
-      return {
-        rsvp: {
-          ...rest,
-          starts_at: starts_at.toISOString(),
-          starts_at_ms: starts_at.getTime(),
-        },
-        meta: {
-          group_slug,
-          group_name,
-          category_name: category_name,
-        },
-      };
-    });
+    return this.parse.toRsvpStatus(result);
   }
 }

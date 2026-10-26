@@ -27,6 +27,7 @@ export class SearchService implements ISearchService {
   public async search(
     query: SearchSchemaType,
   ): Promise<SearchResultSchemaType[]> {
+    console.trace("SearchService.search()");
     return await this.executeSearch(query);
   }
 

@@ -1,13 +1,30 @@
 import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
 import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
-import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
-import { GroupScheduleSchemaType } from "../../../../../../schemas/groups/userMembershipSchema";
+import { AuthenticatedUserId } from "../../../../../../service/handlers/session/SessionHandler";
+import {
+  GroupMembershipShape,
+  IGroupMembersParser,
+} from "../parse/groupMembersParser";
 
-export class RawGroupMembersReader {
-  constructor(private readonly db: Kysely<DB>) {}
+export interface IGroupMembersReader {
+  memberships(user_id: AuthenticatedUserId): Promise<GroupMembershipShape[]>;
+  role(
+    group_id: GroupMemberSchemaType["group_id"],
+    userId: AuthenticatedUserId,
+  ): Promise<string>;
+  rawMemberIds(group_id: GroupMemberSchemaType["group_id"]): Promise<string[]>;
+}
 
-  async byUserId(user_id: AuthenticatedUserId) {
+export class GroupMembersReader implements IGroupMembersReader {
+  constructor(
+    private readonly db: Kysely<DB>,
+    private readonly parse: IGroupMembersParser,
+  ) {}
+
+  async memberships(
+    user_id: AuthenticatedUserId,
+  ): Promise<GroupMembershipShape[]> {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
 
@@ -62,46 +79,21 @@ export class RawGroupMembersReader {
       ])
       .execute();
 
-    return result.map((item) => {
-      const {
-        next_event_scheduled,
-        todays_event,
-        last_event_held,
-        member_headcount,
-        category_name,
-        location,
-        ...rest
-      } = item;
-
-      return {
-        membership: {
-          ...rest,
-          location: location ?? "Online",
-        },
-        meta: {
-          category_name: category_name ?? undefined,
-          member_headcount: Number(member_headcount),
-          schedule: this.toGroupSchedule(
-            next_event_scheduled,
-            todays_event,
-            last_event_held,
-          ),
-        },
-      };
-    });
+    return this.parse.toMemberships(result);
   }
 
-  async rawRoleInGroup(
-    user_id: GroupMemberSchemaType["user_id"],
+  async role(
     group_id: GroupMemberSchemaType["group_id"],
-  ): Promise<{ role: string } | undefined> {
-    return await this.db
-      .selectFrom("group_members")
-      .where("user_id", "=", user_id)
-      .where("group_id", "=", group_id)
-      .select("role")
-      .orderBy("joined_at", "asc")
+    userId: AuthenticatedUserId,
+  ): Promise<string> {
+    const result = await this.db
+      .selectFrom("group_members as gm")
+      .where("gm.group_id", "=", group_id)
+      .where("gm.user_id", "=", userId)
+      .select("gm.role")
       .executeTakeFirst();
+
+    return this.parse.toRole(result);
   }
 
   async rawMemberIds(
@@ -113,35 +105,6 @@ export class RawGroupMembersReader {
       .where("group_id", "=", group_id)
       .execute();
 
-    return rows.map((row) => row.user_id);
-  }
-
-  private toGroupSchedule(
-    next: Date | null,
-    today: Date | null,
-    past: Date | null,
-  ): GroupScheduleSchemaType {
-    if (next) {
-      return {
-        timeline_status: "upcoming",
-        next_event_scheduled: next.toISOString(),
-      };
-    }
-
-    if (today) {
-      return {
-        timeline_status: "today_only",
-        todays_event: today.toISOString(),
-      };
-    }
-
-    if (past) {
-      return {
-        timeline_status: "past_only",
-        last_event_held: past.toISOString(),
-      };
-    }
-
-    return { timeline_status: "no_events" };
+    return this.parse.toMemberIds(rows);
   }
 }

@@ -1,10 +1,10 @@
 import { EventAttendantsSchemaType } from "@/src/schemas/events/eventAttendantsSchema";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { EventAttendantsValidator } from "./eventAttendantsValidator";
-import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
-import { RsvpSurfaceSchemaType } from "../../../../../../schemas/events/rsvpSchema";
-import { IEventAttendantsReader } from "./types";
+import { EventAttendantsValidator } from "../validate/eventAttendantsValidator";
+import { AuthenticatedUserId } from "../../../../../../service/handlers/session/SessionHandler";
+import { RsvpSurfaceSchemaType } from "../../../../../../../../schemas/events/rsvpSchema";
+import { IEventAttendantsReader } from "../../types";
 dayjs.extend(utc);
 
 export interface IEventAttendantsSelector {
@@ -17,7 +17,7 @@ export interface IEventAttendantsSelector {
 
 export class EventAttendantsSelector implements IEventAttendantsSelector {
   constructor(
-    private readonly validator: EventAttendantsValidator,
+    private readonly validate: EventAttendantsValidator,
     private readonly read: IEventAttendantsReader,
   ) {}
 
@@ -26,12 +26,11 @@ export class EventAttendantsSelector implements IEventAttendantsSelector {
     event_id: string,
   ): Promise<EventAttendantsSchemaType["status"]> {
     const raw = await this.read.rsvp({ user_id, event_id });
-    const status = raw?.status ? raw.status : "not_going";
-    return this.validator.rsvpStatus(status);
+    return this.validate.rsvpStatus(raw);
   }
 
   async rsvps(user_id: AuthenticatedUserId): Promise<RsvpSurfaceSchemaType[]> {
     const raw = await this.read.rsvps(user_id);
-    return this.validator.parseRsvps(raw);
+    return this.validate.rsvps(raw);
   }
 }

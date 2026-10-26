@@ -2,19 +2,21 @@ import { Kysely } from "kysely";
 import { DB } from "@/src/server/core/db/types/db";
 import { jsonArrayFrom } from "kysely/helpers/postgres";
 import { AuthenticatedUserId } from "../../../../service/handlers/session/SessionHandler";
-import { RawUserNotifications } from "./types";
+import { INotificationParser } from "./notificationParser";
+import { NotificationsShape } from "./types";
 
 export interface INotificationsReader {
-  notifications(userId: AuthenticatedUserId): Promise<RawUserNotifications>;
+  notifications(userId: AuthenticatedUserId): Promise<NotificationsShape>;
 }
 
 export class NotificationsReader implements INotificationsReader {
-  constructor(private readonly db: Kysely<DB>) {}
+  constructor(
+    private readonly db: Kysely<DB>,
+    private readonly parse: INotificationParser,
+  ) {}
 
-  async notifications(
-    userId: AuthenticatedUserId,
-  ): Promise<RawUserNotifications> {
-    return await this.db
+  async notifications(userId: AuthenticatedUserId) {
+    const result = await this.db
       .selectNoFrom((eb) => [
         jsonArrayFrom(
           eb
@@ -52,5 +54,7 @@ export class NotificationsReader implements INotificationsReader {
         ).as("seen"),
       ])
       .executeTakeFirstOrThrow();
+
+    return this.parse.toNotifications(result);
   }
 }

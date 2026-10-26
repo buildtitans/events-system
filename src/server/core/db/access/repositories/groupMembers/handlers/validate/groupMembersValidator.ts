@@ -5,15 +5,15 @@ import {
   GroupRoleSchema,
   GroupMemberSchemaType,
 } from "@/src/schemas/groups/groupMembersSchema";
-import { GroupMembers } from "../../../types/db";
+import { GroupMembers } from "../../../../../types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import type { Selectable } from "kysely";
-import { ISO_FORMAT } from "../../../../lib/tokens/isoFormats";
+import { ISO_FORMAT } from "../../../../../../lib/tokens/isoFormats";
 import {
   UserMembershipsSchema,
   UserMembershipSurfaceSchemaType,
-} from "../../../../../../schemas/groups/userMembershipSchema";
+} from "@/src/schemas/groups/userMembershipSchema";
 dayjs.extend(utc);
 
 export class GroupMembersValidator {
