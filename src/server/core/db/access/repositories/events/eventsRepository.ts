@@ -20,9 +20,10 @@ export class EventsRepository implements IEventsRepository {
   private readonly read: IEventsReader;
   private readonly validate: IEventsValidator;
   constructor(private readonly db: Kysely<DB>) {
+    const parser = new EventsParser();
     this.validate = new EventsValidator();
-    this.read = new EventsReader(this.db, new EventsParser());
+    this.read = new EventsReader(this.db, parser);
     this.select = new EventsSelector(this.validate, this.read);
-    this.write = new EventsWriter(this.db, this.validate);
+    this.write = new EventsWriter(this.db, this.validate, parser);
   }
 }

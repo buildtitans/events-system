@@ -2,7 +2,7 @@
 import { RenderEventsForGroup } from "../displays/renderEventsForGroup";
 import { JSX } from "react";
 import GroupCalandar from "@/src/client/features/group/groupOverview";
-import type { OpenedGroupSection } from "@/src/lib/store/slices/groups/types";
+import type { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 import FadeIn from "../../../ui/box/motionboxes/fadeIn";
 import { assertNever } from "@/src/lib/utils/assert/assertNever";
 import { AsyncStateRenderer } from "../../async/asyncStateRenderer";
@@ -13,7 +13,7 @@ import Archives from "../../../sections/group/openedGroup/displays/archives";
 import HistoryTimeline from "../../../sections/group/openedGroup/displays/groupHistory";
 
 type RenderGroupDisplayProps = {
-  view: OpenedGroupSection;
+  view: CurrentDisplay;
   isMobile: boolean;
 };
 

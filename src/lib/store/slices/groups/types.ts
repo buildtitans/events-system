@@ -1,14 +1,14 @@
-import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
-import { AsyncState } from "@/src/lib/types/state/types";
+import type {
+  GroupDiscoverySummarySchemaType,
+  GroupRefreshSchemaType,
+} from "@/src/schemas/groups/groupSchema";
+import { AsyncState, AsyncStateWithRefresh } from "@/src/lib/types/state/types";
 import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 import {
   ArchivedEventSchemaType,
   GroupHydratedSchemaType,
   NextEventForGroupSummarySchemaType,
 } from "@/src/schemas/groups/groupSchema";
-import { EventsPages } from "../events/types";
-import { CategorySchemaType } from "@/src/schemas/groups/categoriesSchema";
-import { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 
 export type GroupsFilter = "all" | "popular" | "category";
 
@@ -27,37 +27,51 @@ export type FilterOption = {
   label: string;
 };
 
-export type GroupCategoryState = AsyncState<
-  CategorySchemaType,
-  "Could not find a valid category for this group"
->;
+type GroupHydratedMetaShape = GroupHydratedSchemaType["meta"];
 
-export type GroupEventsCalandarState = AsyncState<
-  TimelineElementSchemaType[],
-  "No Events held for this group"
->;
+type OpenGroupMetadata = Omit<GroupHydratedMetaShape, "events">;
 
-export type NextEventState = AsyncState<
-  NextEventForGroupSummarySchemaType,
-  "This Group does not have any upcoming events"
->;
+type EventsScheduled =
+  | {
+      status: "n/a";
+    }
+  | {
+      status: "ready";
+      data: GroupRefreshSchemaType["group_events"];
+    };
 
-export type GroupHydrated = AsyncState<GroupHydratedSchemaType>;
+type GroupCalandarState =
+  | {
+      status: "n/a";
+    }
+  | {
+      status: "ready";
+      data: GroupRefreshSchemaType["calandar"];
+    };
 
-export type ScheduledGroupEvents =
-  GroupHydratedSchemaType["meta"]["events"]["group_events"];
+type NextEventState =
+  | {
+      status: "n/a";
+    }
+  | {
+      status: "ready";
+      data: NextEventForGroupSummarySchemaType;
+    };
 
-export type GroupEventsState =
-  | { status: "initial" }
-  | { status: "pending" }
-  | { status: "ready"; data: ScheduledGroupEvents }
-  | { status: "refreshing"; data: ScheduledGroupEvents | undefined }
-  | { status: "n/a"; message: "No upcoming events scheduled" }
-  | { status: "failed"; error: string };
+type GroupEvents = {
+  scheduled: EventsScheduled;
+  calandar: GroupCalandarState;
+  next_event: NextEventState;
+};
 
-export type EventsOfGroup =
-  | AsyncState<EventsPages, "No events have been scheduled for this group">
-  | { status: "refreshing" };
+export type GroupEventsState = AsyncStateWithRefresh<GroupEvents>;
+
+export type GroupOpened = {
+  group: GroupHydratedSchemaType["group"];
+  meta: OpenGroupMetadata;
+};
+
+export type GroupHydrated = AsyncState<GroupOpened>;
 
 export type GroupHistoryType = AsyncState<
   GroupEventSummarySchemaType[],
@@ -69,20 +83,3 @@ export type CurrentDisplay =
   | "events"
   | "group history"
   | "archives";
-
-// ******** New Display State Model Prototype Example Below ***************
-
-export type OpenedGroupSection =
-  | "overview"
-  | "events"
-  | "group history"
-  | "archives";
-
-export const openedGroupSections = {
-  overview: { label: "Overview", access: "public" },
-  events: { label: "Events", access: "public" },
-  groupHistory: { label: "History", access: "public" },
-  archives: { label: "Archives", access: "organizer" },
-} as const;
-
-// *****************************************************

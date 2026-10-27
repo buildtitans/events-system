@@ -2,6 +2,7 @@ import { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import type { GroupAction, Permissions } from "@/src/server/core/service/types";
 import { permissionsConfig } from "@/src/server/core/lib/config/permissionsConfig";
 import type { RbacDB, IRoleBasedAccessHandler } from "./types";
+import type { AuthenticatedUserId } from "../handlers/session/SessionHandler";
 
 export class RoleBasedAccessHandler implements IRoleBasedAccessHandler {
   private readonly permissions: Permissions;
@@ -10,7 +11,7 @@ export class RoleBasedAccessHandler implements IRoleBasedAccessHandler {
   }
 
   async can(
-    user_id: GroupMemberSchemaType["user_id"] | undefined,
+    user_id: AuthenticatedUserId | undefined,
     group_id: GroupMemberSchemaType["group_id"],
     action: GroupAction,
   ): Promise<boolean> {
@@ -21,10 +22,10 @@ export class RoleBasedAccessHandler implements IRoleBasedAccessHandler {
   }
 
   private async getRoleInGroup(
-    user_id: GroupMemberSchemaType["user_id"],
+    user_id: AuthenticatedUserId,
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["role"]> {
-    return await this.db.groupMembers.select.role(user_id, group_id);
+    return await this.db.groupMembers.select.role(group_id, user_id);
   }
 
   private checkPermission(

@@ -24,7 +24,6 @@ import {
   EventsForGoupSchema,
   GroupEventSummarySchemaType,
 } from "../../../../../../../../schemas/events/eventSchema";
-import { EventsValidator } from "@/src/server/core/db/access/repositories/events/handlers/validate/eventsValidator";
 
 export interface IGroupsValidator {
   discovery(data: unknown): GroupDiscoverySummarySchemaType[];
@@ -38,7 +37,7 @@ export interface IGroupsValidator {
 }
 
 export class GroupsValidator implements IGroupsValidator {
-  constructor(private readonly eventsValidator: EventsValidator) {}
+  constructor() {}
 
   refresh(data: unknown): GroupRefreshReadSchemaType {
     return validateOrThrow(GroupRefreshReadSchema, data);
@@ -73,16 +72,7 @@ export class GroupsValidator implements IGroupsValidator {
   }
 
   archives(archives: RawArchives): ArchivedEventSchemaType[] {
-    const events = this.eventsValidator.events(
-      archives.map(({ event }) => event),
-    );
-
-    const normalized = archives.map(({ attendance }, index) => ({
-      event: events[index],
-      attendance,
-    }));
-
-    return validateOrThrow(GroupArchivesSchema, normalized);
+    return validateOrThrow(GroupArchivesSchema, archives);
   }
 
   group(group: Selectable<Groups>): GroupSchemaType {

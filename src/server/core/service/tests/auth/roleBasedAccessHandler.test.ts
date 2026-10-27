@@ -1,3 +1,4 @@
+import { USER_ID } from "../mockers/mockValues";
 import { RoleBasedAccessHandler } from "@/src/server/core/service/auth/roleBasedAccessHandler";
 import { createMockDb } from "../mockers/mocks";
 
@@ -25,12 +26,12 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "manage group"),
+      handler.can(USER_ID, "group-1", "manage group"),
     ).resolves.toBe(true);
 
     expect(getMembershipRoleInDb).toHaveBeenCalledWith(
-      "user-1",
       "group-1",
+      USER_ID,
     );
   });
 
@@ -38,7 +39,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "manage group"),
+      handler.can(USER_ID, "group-1", "manage group"),
     ).resolves.toBe(true);
   });
 
@@ -46,7 +47,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
-      handler.can("user-1", "group-1", "manage group"),
+      handler.can(USER_ID, "group-1", "manage group"),
     ).resolves.toBe(false);
   });
 
@@ -54,7 +55,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
-      handler.can("user-1", "group-1", "manage group"),
+      handler.can(USER_ID, "group-1", "manage group"),
     ).resolves.toBe(false);
   });
 
@@ -62,7 +63,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
-      handler.can("user-1", "group-1", "change membership"),
+      handler.can(USER_ID, "group-1", "change membership"),
     ).resolves.toBe(true);
   });
 
@@ -70,7 +71,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("anonymous");
 
     await expect(
-      handler.can("user-1", "group-1", "change membership"),
+      handler.can(USER_ID, "group-1", "change membership"),
     ).resolves.toBe(true);
   });
 
@@ -78,7 +79,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "change membership"),
+      handler.can(USER_ID, "group-1", "change membership"),
     ).resolves.toBe(false);
   });
 
@@ -86,7 +87,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("member");
 
     await expect(
-      handler.can("user-1", "group-1", "read or receive notifications"),
+      handler.can(USER_ID, "group-1", "read or receive notifications"),
     ).resolves.toBe(true);
   });
 
@@ -94,7 +95,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "read or receive notifications"),
+      handler.can(USER_ID, "group-1", "read or receive notifications"),
     ).resolves.toBe(true);
   });
 
@@ -102,7 +103,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("anonymous");
 
     await expect(
-      handler.can("user-1", "group-1", "read or receive notifications"),
+      handler.can(USER_ID, "group-1", "read or receive notifications"),
     ).resolves.toBe(false);
   });
 
@@ -110,7 +111,7 @@ describe("RoleBasedAccessHandler.can", () => {
     getMembershipRoleInDb.mockResolvedValue("organizer");
 
     await expect(
-      handler.can("user-1", "group-1", "change membership"),
+      handler.can(USER_ID, "group-1", "change membership"),
     ).resolves.toBe(false);
   });
 });

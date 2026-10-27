@@ -13,7 +13,7 @@ import { textSearchRelevance } from "../../../../../../lib/utils/queries/textSea
 export interface IGroupsQueryReader {
   timeline(id: GroupSchemaType["id"]): Promise<RawtimelineItem[]>;
   history(group_id: GroupSchemaType["id"]): Promise<RawGroupEvent[]>;
-  archivedEventsWithAttendance(id: GroupSchemaType["id"]): Promise<RawArchives>;
+  archives(id: GroupSchemaType["id"]): Promise<RawArchives>;
   search(query: string): Promise<GroupSearchResultSchemaType[]>;
   suggest(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
 }
@@ -114,9 +114,7 @@ export class GroupsQueryReader implements IGroupsQueryReader {
     return this.parser.toTimeline(result);
   }
 
-  async archivedEventsWithAttendance(
-    id: GroupSchemaType["id"],
-  ): Promise<RawArchives> {
+  async archives(id: GroupSchemaType["id"]): Promise<RawArchives> {
     const rows = await this.db
       .selectFrom("events")
       .leftJoin("event_attendants", "event_attendants.event_id", "events.id")

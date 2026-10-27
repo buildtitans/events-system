@@ -9,6 +9,8 @@ import type { Events, DB } from "@/src/server/core/db/types/db";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { ISO_FORMAT } from "@/src/server/core/lib/tokens/isoFormats";
+import { IEventsParser } from "../parse/eventsParser";
+import { EventShape } from "../../types";
 dayjs.extend(utc);
 
 export interface IEventsWriter {
@@ -22,6 +24,7 @@ export class EventsWriter implements IEventsWriter {
   constructor(
     private readonly db: Kysely<DB>,
     private readonly validate: EventsValidator,
+    private readonly parse: IEventsParser,
   ) {}
 
   async update(
@@ -64,11 +67,15 @@ export class EventsWriter implements IEventsWriter {
     };
   }
 
-  private async insertNewEvent(newEvent: Insertable<Events>) {
-    return await this.db
+  private async insertNewEvent(
+    newEvent: Insertable<Events>,
+  ): Promise<EventShape> {
+    const result = await this.db
       .insertInto("events")
       .values(newEvent)
       .returningAll()
       .executeTakeFirstOrThrow();
+
+    return this.parse.toEvent(result);
   }
 }

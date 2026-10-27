@@ -36,7 +36,7 @@ export class UserSelectHandler implements IUserSelectHandler {
     group_id: GroupSchemaType["id"],
   ): Promise<GroupRoleSchemaType> {
     if (!user_id) return "anonymous";
-    return await this.db.groupMembers.select.role(user_id, group_id);
+    return await this.db.groupMembers.select.role(group_id, user_id);
   }
 
   public async rsvps(

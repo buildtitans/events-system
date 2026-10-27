@@ -41,6 +41,6 @@ export class MembershipHandler implements IMembershipHandler {
     group_id: GroupSchemaType["id"],
   ) {
     if (!user_id) return "anonymous";
-    return await this.db.groupMembers.select.role(user_id, group_id);
+    return await this.db.groupMembers.select.role(group_id, user_id);
   }
 }

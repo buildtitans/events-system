@@ -2,7 +2,7 @@ import type { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSch
 import { Selectable } from "kysely";
 import { EventSchemaType } from "../../../../../../schemas/events/eventSchema";
 import { Events } from "../../../types/db";
-import { RawGroupEvent, ReadGroupEvent } from "../events/types";
+import { EventShape, RawGroupEvent, ReadGroupEvent } from "../events/types";
 
 export type ParsedRefreshGroupRead = {
   next_event?:
@@ -90,7 +90,7 @@ export type RawGroupForDiscovery = {
 };
 
 export type RawArchives = {
-  event: Selectable<Events>;
+  event: EventShape;
   attendance: {
     going: number;
     interested: number;

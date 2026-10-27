@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HydratedEventSchemaType } from "@/src/schemas/events/eventSchema";
-import { GroupSchemaType } from "@/src/schemas/groups/groupSchema";
 import { AsyncState } from "@/src/lib/types/state/types";
 import { hydrateEventDrawer, updateRSVP } from "./thunks";
 
@@ -8,19 +7,6 @@ export type OpenedEventState = AsyncState<
   HydratedEventSchemaType,
   "Event not found"
 >;
-
-export type NumberOfAttendantsType =
-  | { status: "initial" }
-  | { status: "none" }
-  | { status: "ready"; data: number };
-
-export type NameOfGroup =
-  | { status: "initial" }
-  | { status: "ready"; data: string };
-
-export type GroupSlug =
-  | { status: "initial" }
-  | { status: "ready"; data: GroupSchemaType["slug"] };
 
 type InitialState = {
   event: OpenedEventState;

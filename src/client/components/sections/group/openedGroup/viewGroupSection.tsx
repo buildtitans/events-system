@@ -1,6 +1,6 @@
 "use client";
 import { type JSX } from "react";
-import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupOpened } from "@/src/lib/store/slices/groups/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/lib/store";
 import Stack from "@mui/material/Stack";
@@ -10,7 +10,7 @@ import { useTheme } from "@mui/material/styles";
 import OpenedGroupPanel from "@/src/client/components/sections/group/openedGroup/displays/openedGroupPanel";
 
 type ViewGroupSectionProps = {
-  hydrated: GroupHydratedSchemaType;
+  hydrated: GroupOpened;
 };
 
 export default function ViewGroupSection({

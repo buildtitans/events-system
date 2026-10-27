@@ -1,4 +1,5 @@
 import { GroupsParser } from "./groupsParser";
+import { EventsParser } from "../../../events/handlers/parse/eventsParser";
 import type { ReadTimelineItem, ReadHydratedGroupResult } from "../../types";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { TimelineSchema } from "@/src/schemas/groups/timelineSchema";
@@ -46,7 +47,7 @@ function makeHydratedGroup(
 }
 
 describe("GroupsParser", () => {
-  const parser = new GroupsParser();
+  const parser = new GroupsParser(new EventsParser());
 
   afterEach(() => jest.useRealTimers());
 
