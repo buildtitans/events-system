@@ -134,8 +134,17 @@ A parser performs cohesive transformations that are broader than validation.
 Event and group readers call parsers to serialize timestamps, convert aggregate
 counts, and shape joined or nested JSON results. Selectors then validate the
 result against shared schemas before it reaches the service layer.
-For example, the notifications parser converts raw rows to validated DTOs and
-expands one application notification into insertable rows for multiple members.
+The notifications parser separates group metadata from notification data and
+serializes dates returned by notification creation. The notifications reader
+invokes the parser before the selector validates the complete new/seen buckets;
+the writer parses its creation result before validating the new-notification
+contract. Notification fan-out itself uses an insert-from-membership query.
+
+`EventsParser.toEvent` serializes a database event row for event creation and
+archive reads. `GroupsParser.toArchives` combines parsed events with normalized
+attendance counts. `GroupsValidator.archives` validates that complete
+`{ event, attendance }[]` shape directly against `GroupArchivesSchema` rather
+than parsing rows or treating archive wrappers as standalone events.
 
 Use a parser when both directions of a persistence transformation belong
 together. A parser does not replace runtime schema validation for values leaving

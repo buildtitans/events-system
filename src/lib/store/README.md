@@ -127,9 +127,15 @@ ordinary absence of data as an error.
 
 ### Domain-specific variants
 
-Some workflows extend the same idea with domain-specific states. For example,
-opened-group event state can use `refreshing` when existing content should
-remain conceptually separate from its background refresh.
+`AsyncStateWithRefresh<T>` represents `initial`, `pending`, `refreshing`,
+`failed`, or `ready` with data. It has no outer `n/a` branch. Opened-group event
+data uses this lifecycle around three independent content states: `scheduled`,
+`calandar`, and `next_event`. Each content state is either `ready` with data or
+`n/a` without data.
+
+Both `pending` and `refreshing` intentionally show a pending fallback. The
+`refreshing` branch does not retain previous data. A successful request is
+outer `ready` even if all three content states are `n/a`.
 
 Use the generic `AsyncState<T>` when its five states describe the lifecycle.
 Introduce a domain-specific union only when the interface must render a
@@ -160,6 +166,26 @@ The renderer is intentionally separate from the slice:
 
 Other renderer pipelines use the same exhaustive-switch approach for
 non-async unions, such as selected group views or role-specific drawer content.
+
+`AsyncStateWithRefreshRenderer` handles the request lifecycle and one selected
+ready/empty content branch together:
+
+```tsx
+<AsyncStateWithRefreshRenderer
+  state={events}
+  selectContent={(data) => data.scheduled}
+  ready={(pages) => (
+    <EventsLayout eventsPages={pages} currentPage={page} />
+  )}
+  empty={() => <OpenedGroupFallback />}
+/>
+```
+
+`selectContent` runs only when the outer state is `ready`. Its selected content
+determines whether `ready(data)` or `empty()` renders. The renderer supplies a
+default spinner for pending/refreshing and a default failure component; callers
+can override `pending`, `initial`, and `failed`. Calendar and next-event panels
+select `data.calandar` and `data.next_event` respectively.
 
 ## Redux Slices
 
@@ -366,18 +392,26 @@ states and singular/plural result counts remain exhaustively testable.
 
 ## Hydrated Views and Event Summaries
 
-Opened-group state stores `{ group, meta }` inside its ready data. Group details
-come from `data.group`; member count, organizer email, category name, and viewer
-role come from `data.meta`. The optional next event, event layout, and calendar
-are under `data.meta.events.next_event`, `group_events`, and `calandar`.
+The server hydration response contains `{ group, meta }`, including event data
+under `meta.events`. Redux separates that response into two owners:
+
+- `openGroup.group` stores `{ group, meta }` with `events` removed from metadata.
+  Group details come from its ready `data.group`; member count, organizer email,
+  category name, and viewer role come from `data.meta`.
+- `openGroup.events` stores the refreshable content. Its ready data contains
+  `scheduled`, `calandar`, and `next_event`, each with an independent ready/empty
+  state. Scheduled content contains the event layout pages.
+
+The hydration reducer constructs the smaller group object explicitly; narrowing
+the TypeScript type alone would not remove event properties at runtime.
 
 Viewer role has one stored location: `data.meta.viewer_role`. Role consumers
 fall back to `anonymous` when the group is not ready. Membership changes and
 session resets update that field through `getCurrentRole`. There is no separate
-viewer slice or standalone `viewerRole` state. Hydration also populates the
-separate event-layout lifecycle field for its UI consumers. The calendar reads
-directly from the hydrated group's `meta.events.calandar`; it has no separate
-stored lifecycle field.
+viewer slice or standalone `viewerRole` state. Calendar, next-event, and scheduled
+event consumers read `openGroup.events`; the group metadata contains no duplicate
+event content. A group can have an empty schedule and next-event state while its
+calendar still contains past events.
 
 Opened-event state stores the hydrated event with host details and attendance
 under `meta.event` and viewer-specific role/RSVP status under `meta.user`.
@@ -395,16 +429,16 @@ from each summary's metadata; no separate attendance dictionary is synchronized.
 
 `refreshGroupEvents` makes one request to `hydrate.groups.refresh`. The server
 returns `{ group_events, calandar, next_event? }`, with event summaries composed
-into layout slots. While the group is ready, the fulfilled reducer updates
-`meta.events.group_events`, `meta.events.calandar`, and `meta.events.next_event`
-from that response, and synchronizes the separate event-layout lifecycle field.
-This handles first assignment,
-replacement, updated data for the same event ID, and clearing a missing next event.
+into layout slots. Hydration and refresh share `toGroupEventsState` to map that
+response into the nested content states. While the group is ready, a successful
+refresh replaces `openGroup.events` without modifying `openGroup.group`. This
+handles first assignment, replacement, updated data for the same event ID, and
+clearing content that is no longer present.
 
-The pending reducer marks events as refreshing while retaining the hydrated
-group and its calendar. Rejection marks the event-layout state failed without
-discarding the group or its existing calendar. This flow does not rerun full
-group hydration.
+The pending reducer replaces event state with `{ status: "refreshing" }`, so
+event consumers show their pending fallbacks. Rejection replaces it with a
+failed state. Both transitions retain group details but do not retain prior
+event content. This flow does not rerun full group hydration.
 
 ## Application Bootstrap
 
