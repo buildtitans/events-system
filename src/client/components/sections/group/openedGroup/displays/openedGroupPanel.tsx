@@ -1,5 +1,4 @@
-import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
-import { CurrentDisplay } from "@/src/lib/store/slices/groups/types";
+import type { GroupOpened, CurrentDisplay } from "@/src/lib/store/slices/groups/types";
 import { RenderGroupDisplay } from "@/src/client/components/pipelines/groups/switchers/renderGroupDisplay";
 import {
   openedGroupHeroPanelSx,
@@ -12,7 +11,7 @@ import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 
 type OpenedGroupContentProps = {
-  hydrated: GroupHydratedSchemaType;
+  hydrated: GroupOpened;
   displayed: CurrentDisplay;
   isMobile: boolean;
 };

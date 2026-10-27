@@ -1,4 +1,3 @@
-import { EventsValidator } from "@/src/server/core/db/access/repositories/events/handlers/validate/eventsValidator";
 import type { IGroupsReader } from "../read/groupsReader";
 import { GroupsValidator } from "../validate/groupsValidator";
 import { GroupsSelector } from "./groupsSelector";
@@ -21,14 +20,14 @@ function setup() {
         Parameters<IGroupsReader["query"]["timeline"]>
       >(),
       history: jest.fn(),
-      archivedEventsWithAttendance: jest.fn(),
+      archives: jest.fn(),
       search: jest.fn(),
       suggest: jest.fn(),
     },
   } satisfies IGroupsReader;
   const selector = new GroupsSelector(
     read,
-    new GroupsValidator(new EventsValidator()),
+    new GroupsValidator(),
   );
   return { read, selector };
 }
@@ -94,6 +93,28 @@ describe("GroupsSelector branches", () => {
     await expect(selector.query.search("react")).resolves.toEqual([]);
     expect(read.query.search).toHaveBeenCalledWith("react");
     expect(read.hydrate.list.all).not.toHaveBeenCalled();
+  });
+});
+
+describe("GroupsSelector.query.archives", () => {
+  it("validates archive data from the renamed reader method", async () => {
+    const { read, selector } = setup();
+    read.query.archives.mockResolvedValue([]);
+    await expect(selector.query.archives("group-1")).resolves.toEqual([]);
+    expect(read.query.archives).toHaveBeenCalledWith("group-1");
+  });
+
+  it("rejects malformed archive entries", async () => {
+    const { read, selector } = setup();
+    read.query.archives.mockResolvedValue([{ event: {}, attendance: { going: -1, interested: 0 } }]);
+    await expect(selector.query.archives("group-1")).rejects.toThrow("Invalid Schema");
+  });
+
+  it("propagates archive read failures", async () => {
+    const { read, selector } = setup();
+    const error = new Error("Database unavailable");
+    read.query.archives.mockRejectedValue(error);
+    await expect(selector.query.archives("group-1")).rejects.toBe(error);
   });
 });
 

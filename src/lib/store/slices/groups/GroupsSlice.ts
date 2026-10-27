@@ -1,22 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type {
-  GroupDiscoverySummarySchemaType,
-
-} from "@/src/schemas/groups/groupSchema";
+import type { GroupDiscoverySummarySchemaType } from "@/src/schemas/groups/groupSchema";
 import { initializeDomains } from "../rendering/RenderingSlice";
 import { GroupsFilter } from "./types";
 
 type GroupsInitialState = {
   communities: GroupDiscoverySummarySchemaType[];
   currentPage: number;
-  popularCommunities: GroupDiscoverySummarySchemaType[];
   groupsDisplayed: GroupsFilter;
 };
 
 const initialState: GroupsInitialState = {
   communities: [],
   currentPage: 0,
-  popularCommunities: [],
   groupsDisplayed: "all",
 };
 

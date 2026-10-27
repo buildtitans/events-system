@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import type { JSX } from "react";
-import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupOpened } from "@/src/lib/store/slices/groups/types";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import AlternateEmailRoundedIcon from "@mui/icons-material/AlternateEmailRounded";
@@ -21,7 +21,7 @@ import {
 } from "@/src/client/styles/sx/openedGroupHero";
 
 type GroupDescriptionProps = {
-  hydrated: GroupHydratedSchemaType;
+  hydrated: GroupOpened;
 };
 
 export default function GroupDescription({

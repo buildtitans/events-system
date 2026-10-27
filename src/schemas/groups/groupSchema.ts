@@ -153,7 +153,6 @@ export type GroupHydratedSchemaType = Static<typeof GroupHydratedSchema>;
 
 export const GroupRefreshSchema = Type.Object({
   next_event: Type.Optional(NextEventForGroupSummarySchema),
-
   group_events: PaginatedLayoutSchema,
   calandar: TimelineSchema,
 });

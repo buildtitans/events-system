@@ -14,14 +14,12 @@ import { initializeDomains } from "../rendering/RenderingSlice";
 export type EventCategoryState = {
   displayed: EventDisplayFilter;
   eventPages: EventsStateType;
-  allEventsPages: EventsStateType;
   currentPage: number;
   nameByGroupId: GroupNameByGroupID;
 };
 
 const initialState: EventCategoryState = {
   displayed: "All Events",
-  allEventsPages: { status: "initial" },
   eventPages: { status: "initial" },
   currentPage: 0,
   nameByGroupId: {},

@@ -14,15 +14,17 @@ export const RenderEventsForGroup = (): JSX.Element => {
   const page = useSelector((s: RootState) => s.openGroup.currPage);
   switch (events.status) {
     case "ready": {
+      if (events.data.scheduled.status === "n/a") {
+        return <OpenedGroupFallback />;
+      }
       return (
         <React.Fragment>
-          <EventsLayout eventsPages={events.data} currentPage={page} />
+          <EventsLayout
+            eventsPages={events.data.scheduled.data}
+            currentPage={page}
+          />
         </React.Fragment>
       );
-    }
-
-    case "n/a": {
-      return <OpenedGroupFallback />;
     }
 
     case "failed": {

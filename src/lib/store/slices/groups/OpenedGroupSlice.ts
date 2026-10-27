@@ -2,8 +2,8 @@ import { updateEventStatus } from "../events/thunks";
 import type { GroupMemberSchemaType } from "@/src/schemas/groups/groupMembersSchema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type {
-  EventsOfGroup,
   GroupArchivesState,
+  GroupEventsState,
 } from "@/src/lib/store/slices/groups/types";
 import type {
   GroupHydrated,
@@ -16,19 +16,19 @@ import {
   refreshArchivedEvents,
   scheduleNewEvent,
 } from "./thunks";
-
 import type {
   ArchivedEventSchemaType,
   GroupHydratedSchemaType,
+  GroupRefreshSchemaType,
 } from "@/src/schemas/groups/groupSchema";
 
 type InitialState = {
   group: GroupHydrated;
-  events: EventsOfGroup;
-  currPage: number;
-  activeSection: CurrentDisplay;
+  events: GroupEventsState;
   history: GroupHistoryType;
   archives: GroupArchivesState;
+  activeSection: CurrentDisplay;
+  currPage: number;
 };
 
 const initialState: InitialState = {
@@ -39,6 +39,27 @@ const initialState: InitialState = {
   currPage: 0,
   activeSection: "overview",
 };
+
+function toGroupEventsState({
+  group_events,
+  calandar,
+  next_event,
+}: GroupRefreshSchemaType): Extract<GroupEventsState, { status: "ready" }> {
+  return {
+    status: "ready",
+    data: {
+      scheduled: group_events.length > 0
+        ? { status: "ready", data: group_events }
+        : { status: "n/a" },
+      calandar: calandar.length > 0
+        ? { status: "ready", data: calandar }
+        : { status: "n/a" },
+      next_event: next_event !== undefined
+        ? { status: "ready", data: next_event }
+        : { status: "n/a" },
+    },
+  };
+}
 
 const OpenedGroupSlice = createSlice({
   name: "OpenedGroup",
@@ -52,13 +73,6 @@ const OpenedGroupSlice = createSlice({
         state.group.data.meta.viewer_role = action.payload;
       }
     },
-    groupOpened: (
-      state: InitialState,
-      action: PayloadAction<GroupHydrated>,
-    ) => {
-      state.group = action.payload;
-    },
-
     displaySection: (
       state: InitialState,
       action: PayloadAction<CurrentDisplay>,
@@ -129,22 +143,9 @@ const OpenedGroupSlice = createSlice({
     });
     builder.addCase(
       refreshGroupEvents.fulfilled,
-      (state: InitialState, action) => {
-        const { group_events, calandar, next_event } = action.payload;
-
+      (state: InitialState, action: PayloadAction<GroupRefreshSchemaType>) => {
         if (state.group.status === "ready") {
-          state.group.data.meta.events.next_event = next_event;
-          state.group.data.meta.events.group_events = group_events;
-          state.group.data.meta.events.calandar = calandar;
-        }
-
-        if (group_events.length > 0) {
-          state.events = { status: "ready", data: group_events };
-        } else {
-          state.events = {
-            status: "n/a",
-            message: "No events have been scheduled for this group",
-          };
+          state.events = toGroupEventsState(action.payload);
         }
       },
     );
@@ -169,19 +170,18 @@ const OpenedGroupSlice = createSlice({
     builder.addCase(
       hydrateGroup.fulfilled,
       (state: InitialState, action: PayloadAction<GroupHydratedSchemaType>) => {
-        const hydrated = action.payload;
-        const { group_events } = hydrated.meta.events;
+        const { group, meta } = action.payload;
+        const { events, ...groupMeta } = meta;
 
-        state.group = { status: "ready", data: hydrated };
+        state.group = {
+          status: "ready",
+          data: {
+            group,
+            meta: groupMeta,
+          },
+        };
 
-        if (group_events.length > 0) {
-          state.events = { status: "ready", data: group_events };
-        } else {
-          state.events = {
-            status: "n/a",
-            message: "No events have been scheduled for this group",
-          };
-        }
+        state.events = toGroupEventsState(events);
       },
     );
   },
@@ -189,7 +189,6 @@ const OpenedGroupSlice = createSlice({
 
 export const {
   getCurrentRole,
-  groupOpened,
   displaySection,
   getGroupHistory,
   populateGroupArchives,

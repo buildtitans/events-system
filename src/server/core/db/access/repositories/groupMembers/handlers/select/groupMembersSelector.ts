@@ -9,8 +9,8 @@ export interface IGroupMembersSelector {
     group_id: GroupMemberSchemaType["group_id"],
   ): Promise<GroupMemberSchemaType["group_id"][]>;
   role(
-    user_id: GroupMemberSchemaType["user_id"],
     group_id: GroupMemberSchemaType["group_id"],
+    userId: AuthenticatedUserId,
   ): Promise<GroupMemberSchemaType["role"]>;
   memberships(
     user_id: AuthenticatedUserId,

@@ -14,18 +14,19 @@ import {
 import type { TimelineElementSchemaType } from "@/src/schemas/groups/timelineSchema";
 import type { GroupEventSummarySchemaType } from "@/src/schemas/events/eventSchema";
 
-
-
 export interface IGroupsQuerySelector {
- timeline(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
- history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
- archives(id: GroupSchemaType["id"]): Promise<ArchivedEventSchemaType[]>;
- search(query: string): Promise<GroupSearchResultSchemaType[]>;
- suggestByName(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
+  timeline(id: GroupSchemaType["id"]): Promise<TimelineElementSchemaType[]>;
+  history(id: GroupSchemaType["id"]): Promise<GroupEventSummarySchemaType[]>;
+  archives(id: GroupSchemaType["id"]): Promise<ArchivedEventSchemaType[]>;
+  search(query: string): Promise<GroupSearchResultSchemaType[]>;
+  suggestByName(query: string): Promise<GroupSearchSuggestionSchemaType[]>;
 }
 export class GroupsQuerySelector implements IGroupsQuerySelector {
- constructor(private readonly read: IGroupsReader["query"], private readonly validator: IGroupsValidator) {}
-   async timeline(id: GroupSchemaType["id"]) {
+  constructor(
+    private readonly read: IGroupsReader["query"],
+    private readonly validator: IGroupsValidator,
+  ) {}
+  async timeline(id: GroupSchemaType["id"]) {
     const timeline = await this.read.timeline(id);
     return this.validator.timeline(timeline);
   }
@@ -36,7 +37,7 @@ export class GroupsQuerySelector implements IGroupsQuerySelector {
     return this.validator.eventsForGroup(history);
   }
   async archives(id: GroupSchemaType["id"]) {
-    const archives = await this.read.archivedEventsWithAttendance(id);
+    const archives = await this.read.archives(id);
     return this.validator.archives(archives);
   }
   async search(query: string): Promise<GroupSearchResultSchemaType[]> {

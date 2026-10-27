@@ -25,176 +25,151 @@ jest.mock("./thunks", () => {
 });
 
 import { makeHydratedGroup, makeNextEvent, makeTimelineItem } from "@/src/test/fixtures/groupHydration";
+import type { GroupRefreshSchemaType } from "@/src/schemas/groups/groupSchema";
 import openedGroupReducer, { clearOpenedGroupSlice, getCurrentRole } from "./OpenedGroupSlice";
-import { hydrateGroup, refreshGroupEvents } from "./thunks";
+import { hydrateGroup, refreshGroupEvents, scheduleNewEvent } from "./thunks";
+import { updateEventStatus } from "../events/thunks";
 
-describe("OpenedGroupSlice", () => {
-  it("stores the viewer role with the hydrated group", () => {
+function hydrate(events: Partial<GroupRefreshSchemaType> = {}) {
+  const payload = makeHydratedGroup(events, { viewer_role: "organizer" });
+  return openedGroupReducer(undefined, hydrateGroup.fulfilled(payload, "hydrate", payload.group.slug));
+}
+
+function makeLayout(): GroupRefreshSchemaType["group_events"] {
+  return [[{
+    kind: "card", variant: { type: "hero", size: { xs: 12, md: 6 } },
+    event: { for: "withinGroup", content: makeNextEvent() },
+  }]];
+}
+
+const emptyContent = {
+  scheduled: { status: "n/a" },
+  calandar: { status: "n/a" },
+  next_event: { status: "n/a" },
+};
+
+describe("OpenedGroupSlice separated state", () => {
+  it("stores group details and viewer metadata without event data", () => {
     const payload = makeHydratedGroup({}, { viewer_role: "organizer" });
-    const state = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "hydrate-1", payload.group.slug,
-    ));
-    expect(state.group).toMatchObject({ data: { meta: { viewer_role: "organizer" } } });
-    expect(state).not.toHaveProperty("viewerRole");
-    expect(state.group).toEqual({ status: "ready", data: payload });
+    const { events, ...meta } = payload.meta;
+    const state = hydrate();
+    expect(state.group).toEqual({ status: "ready", data: { group: payload.group, meta } });
+    expect(state.group).not.toHaveProperty("data.meta.events");
+    expect(state.events).toEqual({ status: "ready", data: emptyContent });
+    expect(events.group_events).toEqual([]);
   });
 
-  it("updates membership role and resets it without discarding the public group", () => {
-    const payload = makeHydratedGroup();
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "hydrate-1", payload.group.slug,
-    ));
+  it("updates viewer role without changing event content", () => {
+    const initial = hydrate({ calandar: [makeTimelineItem()] });
     const joined = openedGroupReducer(initial, getCurrentRole("member"));
     const anonymous = openedGroupReducer(joined, getCurrentRole("anonymous"));
     expect(joined.group).toMatchObject({ data: { meta: { viewer_role: "member" } } });
     expect(anonymous.group).toMatchObject({ data: { meta: { viewer_role: "anonymous" } } });
-    expect(anonymous.group).toEqual(initial.group);
+    expect(anonymous.events).toEqual(initial.events);
   });
 
-  it("clears the prior role when changing groups, failing hydration, or closing a group", () => {
-    const payload = makeHydratedGroup({}, { viewer_role: "organizer" });
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(payload, "hydrate-1", payload.group.slug));
-    const pending = openedGroupReducer(initial, hydrateGroup.pending("hydrate-2", "another-group"));
-    const failed = openedGroupReducer(initial, hydrateGroup.rejected(
-      new Error("network unavailable"), "hydrate-2", "another-group",
-    ));
+  it("resets both state branches when hydrating another group or closing", () => {
+    const initial = hydrate({ next_event: makeNextEvent() });
+    const pending = openedGroupReducer(initial, hydrateGroup.pending("hydrate-2", "other-group"));
     expect(pending.group).toEqual({ status: "pending" });
+    expect(pending.events).toEqual({ status: "pending" });
+    const failed = openedGroupReducer(pending, hydrateGroup.rejected(new Error("offline"), "hydrate-2", "other-group"));
     expect(failed.group.status).toBe("failed");
-    expect(openedGroupReducer(initial, clearOpenedGroupSlice()).group).toEqual({ status: "initial" });
+    expect(failed.events.status).toBe("failed");
+    const closed = openedGroupReducer(initial, clearOpenedGroupSlice());
+    expect(closed.group).toEqual({ status: "initial" });
+    expect(closed.events).toEqual({ status: "initial" });
   });
 
-  it("stores hydrated group metadata together", () => {
-    const hydrated = makeHydratedGroup({ next_event: makeNextEvent() });
-    const state = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      hydrated, "request-1", hydrated.group.slug,
-    ));
-    expect(state.group).toEqual({ status: "ready", data: hydrated });
-    expect(state.events.status).toBe("n/a");
-    expect(state).not.toHaveProperty("calandar");
-  });
-
-  it("keeps a group ready when it has no upcoming event", () => {
-    const payload = makeHydratedGroup();
-    const state = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "request-1", payload.group.slug,
-    ));
-    expect(state.group).toEqual({ status: "ready", data: payload });
-    expect(payload.meta.events.next_event).toBeUndefined();
-  });
-
-  it("refreshes layout and calendar while retaining the opened group", () => {
-    const payload = makeHydratedGroup();
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "hydrate-1", payload.group.slug,
-    ));
-    const pending = openedGroupReducer(initial, refreshGroupEvents.pending("refresh-1", "group-1"));
-    expect(pending.events.status).toBe("refreshing");
+  it.each([false, true])("maps each content branch independently during hydration and refresh (scheduled: %s)", hasScheduled => {
+    const group_events = hasScheduled ? makeLayout() : [];
+    const calandar = [makeTimelineItem({ timeline_status: "past", meta: { number_attendend: 4 } })];
+    const next_event = hasScheduled ? makeNextEvent() : undefined;
+    const response: GroupRefreshSchemaType = { group_events, calandar, next_event };
+    const expected = {
+      status: "ready",
+      data: {
+        scheduled: hasScheduled ? { status: "ready", data: group_events } : { status: "n/a" },
+        calandar: { status: "ready", data: calandar },
+        next_event: next_event ? { status: "ready", data: next_event } : { status: "n/a" },
+      },
+    };
+    const hydrated = hydrate(response);
+    expect(hydrated.events).toEqual(expected);
+    const initial = hydrate();
+    const pending = openedGroupReducer(initial, refreshGroupEvents.pending("refresh", "group-1"));
+    expect(pending.events).toEqual({ status: "refreshing" });
     expect(pending.group).toEqual(initial.group);
-    const nextEvent = makeNextEvent();
-    const timelineItem = makeTimelineItem();
-    const state = openedGroupReducer(pending, refreshGroupEvents.fulfilled({
-      group_events: [], calandar: [timelineItem], next_event: nextEvent,
-    }, "refresh-1", "group-1"));
-    expect(state.group).toMatchObject({ data: { meta: { events: { calandar: [timelineItem] } } } });
-    expect(state.events.status).toBe("n/a");
+    const refreshed = openedGroupReducer(pending, refreshGroupEvents.fulfilled(response, "refresh", "group-1"));
+    expect(refreshed.events).toEqual(expected);
+    expect(refreshed.group).toEqual(initial.group);
   });
 
-  it("settles an empty calendar refresh as unavailable", () => {
-    const state = openedGroupReducer(undefined, refreshGroupEvents.fulfilled({
-      group_events: [], calandar: [], next_event: undefined,
-    }, "refresh-1", "group-1"));
-    expect(state).not.toHaveProperty("calandar");
-    expect(state.events.status).toBe("n/a");
+  it("clears all previous event content on an empty successful refresh", () => {
+    const initial = hydrate({ group_events: makeLayout(), calandar: [makeTimelineItem()], next_event: makeNextEvent() });
+    const response: GroupRefreshSchemaType = { group_events: [], calandar: [] };
+    const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled(response, "refresh", "group-1"));
+    expect(state.events).toEqual({ status: "ready", data: emptyContent });
+    expect(state.group).toEqual(initial.group);
   });
 
-  it("reports refresh failures without discarding the opened group", () => {
-    const payload = makeHydratedGroup();
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "hydrate-1", payload.group.slug,
-    ));
-    const state = openedGroupReducer(initial, refreshGroupEvents.rejected(
-      new Error("network unavailable"), "refresh-1", "group-1",
-    ));
+  it.each([makeNextEvent(), undefined])("replaces or clears the previous next event on refresh (%#)", next_event => {
+    const previous = makeNextEvent();
+    previous.event.id = "previous-event";
+    const initial = hydrate({ next_event: previous });
+    const response: GroupRefreshSchemaType = { group_events: [], calandar: [], next_event };
+    const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled(response, "refresh", "group-1"));
+    expect(state.events).toMatchObject({ status: "ready", data: {
+      next_event: next_event ? { status: "ready", data: next_event } : { status: "n/a" },
+    } });
+    expect(state.group).toEqual(initial.group);
+  });
+
+  it("reports refresh failure without discarding group details", () => {
+    const initial = hydrate();
+    const state = openedGroupReducer(initial, refreshGroupEvents.rejected(new Error("offline"), "refresh", "group-1"));
     expect(state.events.status).toBe("failed");
     expect(state.group).toEqual(initial.group);
   });
 
-  const previousEvent = makeNextEvent();
-  const replacementEvent = makeNextEvent();
-  replacementEvent.event.id = "event-2";
-  const updatedEvent = makeNextEvent();
-  updatedEvent.event.starts_at = "2026-08-20T18:00:00.000Z";
-  updatedEvent.event.starts_at_ms = Date.parse(updatedEvent.event.starts_at);
-  updatedEvent.meta.attendance = { going: 5, interested: 3 };
-
-  it.each([
-    { scenario: "assigns the first next event", previous: undefined, nextEvent: previousEvent },
-    { scenario: "replaces the next event", previous: previousEvent, nextEvent: replacementEvent },
-    { scenario: "updates details and attendance for the same event ID", previous: previousEvent, nextEvent: updatedEvent },
-    { scenario: "clears the next event when none remains", previous: previousEvent, next_event: undefined },
-  ])("$scenario after a refresh", ({ previous, nextEvent }) => {
-    const hydrated = makeHydratedGroup({ next_event: previous });
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      hydrated, "hydrate-1", hydrated.group.slug,
-    ));
-
-    const state = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
-      group_events: [], calandar: [], next_event: nextEvent,
-    }, "refresh-1", hydrated.group.id));
-
-    expect(state.group).toEqual({
-      status: "ready",
-      data: { ...hydrated, meta: { ...hydrated.meta, events: { ...hydrated.meta.events, next_event: nextEvent, group_events: [], calandar: [] } } },
-    });
+  it("ignores refresh completion after closing the group", () => {
+    const closed = openedGroupReducer(hydrate(), clearOpenedGroupSlice());
+    const response: GroupRefreshSchemaType = { group_events: [], calandar: [] };
+    expect(openedGroupReducer(closed, refreshGroupEvents.fulfilled(response, "refresh", "group-1"))).toEqual(closed);
   });
-});
 
-describe("OpenedGroupSlice timeline variants", () => {
   it.each([
     makeTimelineItem({ timeline_status: "upcoming" }),
     makeTimelineItem({ timeline_status: "past", meta: { number_attendend: 4 } }),
     makeTimelineItem({ timeline_status: "today", event_phase: "upcoming" }),
     makeTimelineItem({ timeline_status: "today", event_phase: "ongoing" }),
     makeTimelineItem({ timeline_status: "today", event_phase: "completed" }),
-  ])("preserves timeline metadata through hydration and refresh (%#)", (item) => {
-    const payload = makeHydratedGroup({ calandar: [item] });
-    const initial = openedGroupReducer(undefined, hydrateGroup.fulfilled(
-      payload, "hydrate-1", payload.group.slug,
-    ));
-    expect(initial.group).toMatchObject({ data: { meta: { events: { calandar: [item] } } } });
-
-    const refreshed = openedGroupReducer(initial, refreshGroupEvents.fulfilled({
-      group_events: [], calandar: [item], next_event: undefined,
-    }, "refresh-1", payload.group.id));
-    expect(refreshed.group).toMatchObject({ data: { meta: { events: { calandar: [item] } } } });
-  });
-});
-
-describe("OpenedGroupSlice consolidated refresh", () => {
-  const nextEvent = makeNextEvent();
-  const layout: import("@/src/schemas/groups/groupSchema").GroupRefreshSchemaType["group_events"] = [[{
-    kind: "card", variant: { type: "hero", size: { xs: 12, md: 6 } },
-    event: { for: "withinGroup", content: nextEvent },
-  }]];
-
-  it("settles a nonempty refresh and synchronizes the layout and calendar", () => {
-    const hydrated = makeHydratedGroup();
-    const ready = openedGroupReducer(undefined, hydrateGroup.fulfilled(hydrated, "hydrate", hydrated.group.slug));
-    const pending = openedGroupReducer(ready, refreshGroupEvents.pending("refresh", hydrated.group.id));
-    const calandar = [makeTimelineItem()];
-    const response = { group_events: layout, calandar, next_event: nextEvent };
-    const result = openedGroupReducer(pending, refreshGroupEvents.fulfilled(response, "refresh", hydrated.group.id));
-    expect(result.events).toEqual({ status: "ready", data: layout });
-    expect(result.group).toMatchObject({ status: "ready", data: { meta: { events: response } } });
-    expect(result).not.toHaveProperty("calandar");
+  ])("preserves calendar metadata through hydration and refresh (%#)", item => {
+    const initial = hydrate({ calandar: [item] });
+    const response: GroupRefreshSchemaType = { group_events: [], calandar: [item] };
+    const refreshed = openedGroupReducer(initial, refreshGroupEvents.fulfilled(response, "refresh", "group-1"));
+    for (const state of [initial, refreshed]) {
+      expect(state.events).toMatchObject({ status: "ready", data: {
+        scheduled: { status: "n/a" }, calandar: { status: "ready", data: [item] },
+      } });
+    }
   });
 
-  it("clears the prior next event, layout, and calendar after the last event disappears", () => {
-    const hydrated = makeHydratedGroup({ group_events: layout, next_event: nextEvent, calandar: [makeTimelineItem()] });
-    const ready = openedGroupReducer(undefined, hydrateGroup.fulfilled(hydrated, "hydrate", hydrated.group.slug));
-    const response = { group_events: [], calandar: [], next_event: undefined };
-    const result = openedGroupReducer(ready, refreshGroupEvents.fulfilled(response, "refresh", hydrated.group.id));
-    expect(result.events.status).toBe("n/a");
-    expect(result.group).toMatchObject({ status: "ready", data: { meta: { events: response } } });
+  it("marks events refreshing after scheduling or changing event status", () => {
+    const initial = hydrate();
+    const scheduled = openedGroupReducer(initial, scheduleNewEvent.fulfilled({
+      ...makeNextEvent().event,
+      created_at: "2029-12-01T12:00:00Z",
+      updated_at: null,
+    }, "schedule", {
+      group_id: "group-1", title: "Meetup", description: "Meetup", starts_at: "2030-01-01T18:00:00Z", meeting_location: "Library", img: null, tag: null,
+    }));
+    const updated = openedGroupReducer(initial, updateEventStatus.fulfilled(undefined, "update", {
+      group_id: "group-1", event_id: "event-1", status: "cancelled",
+    }));
+    for (const state of [scheduled, updated]) {
+      expect(state.events).toEqual({ status: "refreshing" });
+      expect(state.group).toEqual(initial.group);
+    }
   });
 });

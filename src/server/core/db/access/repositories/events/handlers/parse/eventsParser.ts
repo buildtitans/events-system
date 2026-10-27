@@ -4,6 +4,7 @@ import {
 } from "@/src/schemas/search/searchSchema";
 import {
   EventForDiscovery,
+  EventShape,
   RawDiscoverableEvent,
   RawGroupEvent,
   RawHydratedEventShape,
@@ -14,6 +15,8 @@ import {
   ReadSearchResult,
   ReadSuggestedEvent,
 } from "@/src/server/core/db/access/repositories/events/types";
+import { Selectable } from "kysely";
+import { Events } from "../../../../../types/db";
 
 export interface IEventsParser {
   toHydratedEvent(result: RawReadHydratedEvent): RawHydratedEventShape;
@@ -22,6 +25,8 @@ export interface IEventsParser {
   toNextEvent(result: ReadNextEvent): RawNextEvent | undefined;
   toSuggestions(rows: ReadSuggestedEvent[]): EventSearchSuggestionSchemaType[];
   toSearchResults(rows: ReadSearchResult[]): EventSearchResultSchemaType[];
+  toEvent(raw: Selectable<Events>): EventShape;
+  toEvents(rows: Selectable<Events>[]): EventShape[];
 }
 
 export class EventsParser implements IEventsParser {
@@ -59,6 +64,47 @@ export class EventsParser implements IEventsParser {
         },
       },
     };
+  }
+
+  public toEvent(raw: Selectable<Events>): EventShape {
+    const startsAtMs = raw.starts_at.getTime();
+
+    return {
+      id: raw.id,
+      tag: raw.tag,
+      title: raw.title,
+      description: raw.description,
+      updated_at: raw.updated_at.toISOString(),
+      created_at: raw.created_at.toISOString(),
+      group_id: raw.group_id,
+      starts_at: raw.starts_at.toISOString(),
+      starts_at_ms: startsAtMs,
+      img: raw.img,
+      meeting_location: raw.meeting_location,
+      status: raw.status,
+    };
+  }
+
+  public toEvents(rows: Selectable<Events>[]): EventShape[] {
+    return rows.map((row) => {
+      const startsAtMs = row.starts_at.getTime();
+      const updatedAt = row.updated_at.toISOString();
+
+      return {
+        id: String(row.id),
+        img: row.img,
+        tag: row.tag,
+        title: row.title,
+        description: row.description,
+        starts_at_ms: startsAtMs,
+        starts_at: row.starts_at.toISOString(),
+        meeting_location: row.meeting_location,
+        group_id: row.group_id,
+        created_at: row.created_at.toISOString(),
+        updated_at: updatedAt,
+        status: row.status,
+      };
+    });
   }
 
   public toSearchResults(

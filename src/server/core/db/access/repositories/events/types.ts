@@ -18,6 +18,21 @@ export type RawReadHydratedEvent = {
   interested: string | number | bigint;
 };
 
+export type EventShape = {
+  id: string;
+  tag: string | null;
+  title: string;
+  description: string;
+  updated_at: string;
+  created_at: string;
+  group_id: string;
+  starts_at: string;
+  starts_at_ms: number;
+  img: string;
+  meeting_location: string;
+  status: string;
+};
+
 export type RawHydratedEventShape = {
   event: {
     id: string;

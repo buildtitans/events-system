@@ -24,6 +24,7 @@ import {
   ReadTimelineItem,
   RefreshGroupRead,
 } from "../../types";
+import { IEventsParser } from "../../../events/handlers/parse/eventsParser";
 
 export interface IGroupsParser {
   toTimeline(items: ReadTimelineItem[]): TimelineElementSchemaType[];
@@ -39,6 +40,8 @@ export interface IGroupsParser {
 }
 
 export class GroupsParser implements IGroupsParser {
+  constructor(private readonly eventsParser: IEventsParser) {}
+
   public toGroupRefresh(rows: RefreshGroupRead): ParsedRefreshGroupRead {
     const { category_name } = rows;
 
@@ -96,13 +99,16 @@ export class GroupsParser implements IGroupsParser {
   }
 
   public toArchives(rows: RawReadArchivedEvent[]): RawArchives {
-    return rows.map(({ going, interested, ...event }) => ({
-      event,
-      attendance: {
-        going: Number(going),
-        interested: Number(interested),
-      },
-    }));
+    return rows.map(({ going, interested, ...event }) => {
+      const parsedEvent = this.eventsParser.toEvent(event);
+      return {
+        event: parsedEvent,
+        attendance: {
+          going: Number(going),
+          interested: Number(interested),
+        },
+      };
+    });
   }
 
   public toHydratedGroup(result: ReadHydratedGroupResult): HydratedGroupRead {

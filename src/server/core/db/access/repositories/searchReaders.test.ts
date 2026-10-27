@@ -11,6 +11,9 @@ import { EventsReader } from "@/src/server/core/db/access/repositories/events/ha
 import { EventsParser } from "@/src/server/core/db/access/repositories/events/handlers/parse/eventsParser";
 import { GroupsReader as RawGroupsReader } from "./groups/handlers/read/groupsReader";
 import { GroupsParser } from "./groups/handlers/parse/groupsParser";
+import { GroupsQuerySelector } from "./groups/handlers/select/groupsQuerySelector";
+import { GroupsValidator } from "./groups/handlers/validate/groupsValidator";
+import type { RawReadArchivedEvent } from "./groups/types";
 import { validateOrThrow } from "@/src/schemas/validateOrThrow";
 import { GroupDiscoverySchema } from "@/src/schemas/groups/groupSchema";
 import {
@@ -25,6 +28,7 @@ function setup(rows: Record<string, unknown>[]) {
     innerJoin: jest.fn().mockReturnThis(),
     leftJoin: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
+    selectAll: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     groupBy: jest.fn().mockReturnThis(),
@@ -37,7 +41,7 @@ function setup(rows: Record<string, unknown>[]) {
   } as unknown as Kysely<DB>;
   return {
     events: new EventsReader(db, new EventsParser()),
-    groups: new RawGroupsReader(db, new GroupsParser()),
+    groups: new RawGroupsReader(db, new GroupsParser(new EventsParser())),
     query,
   };
 }
@@ -271,6 +275,42 @@ describe("search readers", () => {
       "=",
       "organizer-1",
     );
+  });
+});
+
+describe("group archive read pipeline", () => {
+  it("parses and validates cancelled events with dates and attendance metadata", async () => {
+    const startsAt = new Date("2030-01-01T18:00:00Z");
+    const createdAt = new Date("2029-12-01T12:00:00Z");
+    const updatedAt = new Date("2029-12-02T12:00:00Z");
+    const row: RawReadArchivedEvent = {
+      id: "event-1", group_id: "group-1", title: "Cancelled meetup",
+      description: "Meetup", status: "cancelled", img: "event.png",
+      tag: null, meeting_location: "Library", starts_at: startsAt,
+      created_at: createdAt, updated_at: updatedAt, going: "0", interested: BigInt(2),
+    };
+    const { groups, query } = setup([row]);
+    const selector = new GroupsQuerySelector(groups.query, new GroupsValidator());
+    const { going, interested, ...event } = row;
+
+    await expect(selector.archives("group-1")).resolves.toEqual([{
+      event: {
+        ...event,
+        starts_at: startsAt.toISOString(), starts_at_ms: startsAt.getTime(),
+        created_at: createdAt.toISOString(), updated_at: updatedAt.toISOString(),
+      },
+      attendance: { going: 0, interested: 2 },
+    }]);
+    expect(query.where).toHaveBeenCalledWith("events.group_id", "=", "group-1");
+    expect(query.where).toHaveBeenCalledWith("events.status", "=", "cancelled");
+    expect(query.leftJoin).toHaveBeenCalledWith("event_attendants", "event_attendants.event_id", "events.id");
+    expect(query.orderBy).toHaveBeenCalledWith("events.starts_at", "desc");
+  });
+
+  it("returns an empty archive when no cancelled events are found", async () => {
+    const { groups } = setup([]);
+    const selector = new GroupsQuerySelector(groups.query, new GroupsValidator());
+    await expect(selector.archives("group-1")).resolves.toEqual([]);
   });
 });
 

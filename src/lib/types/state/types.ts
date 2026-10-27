@@ -5,6 +5,13 @@ export type AsyncState<T, TEmptyMessage extends string = "No data found"> =
   | { status: "n/a"; message: TEmptyMessage }
   | { status: "failed"; error: string };
 
+export type AsyncStateWithRefresh<T> =
+  | { status: "initial" }
+  | { status: "pending" }
+  | { status: "ready"; data: T }
+  | { status: "failed"; error: string }
+  | { status: "refreshing" };
+
 export type AppBootState =
   | { status: "initial" }
   | { status: "pending" }

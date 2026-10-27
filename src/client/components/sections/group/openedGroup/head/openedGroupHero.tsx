@@ -1,4 +1,4 @@
-import type { GroupHydratedSchemaType } from "@/src/schemas/groups/groupSchema";
+import type { GroupOpened } from "@/src/lib/store/slices/groups/types";
 import { Divider, Stack } from "@mui/material";
 import GroupHeadSecton from "./groupHeadSection";
 import GroupDescription from "./groupDescription";
@@ -8,7 +8,7 @@ import {
 } from "@/src/client/styles/sx/openedGroupHero";
 
 type OpenedGroupHeroProps = {
-  hydrated: GroupHydratedSchemaType;
+  hydrated: GroupOpened;
 };
 
 export default function OpenedGroupHero({

@@ -148,7 +148,7 @@ describe("MembershipHandler", () => {
         "member",
       );
 
-      expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
+      expect(getMembershipRoleInDb).toHaveBeenCalledWith(groupId, userId);
     });
 
     it("returns anonymous when the selector reports no membership", async () => {
@@ -158,7 +158,7 @@ describe("MembershipHandler", () => {
         "anonymous",
       );
 
-      expect(getMembershipRoleInDb).toHaveBeenCalledWith(userId, groupId);
+      expect(getMembershipRoleInDb).toHaveBeenCalledWith(groupId, userId);
     });
   });
 });
